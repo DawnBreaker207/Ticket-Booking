@@ -10,7 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.backend.exception.wrapper.ExceptionMessage;
+import com.example.backend.exception.payload.ExceptionMessage;
+import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.exception.wrapper.MovieExistedException;
+import com.example.backend.exception.wrapper.MovieNotFoundException;
+import com.example.backend.exception.wrapper.OrderNotFoundException;
+import com.example.backend.exception.wrapper.UserNotFoundException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
