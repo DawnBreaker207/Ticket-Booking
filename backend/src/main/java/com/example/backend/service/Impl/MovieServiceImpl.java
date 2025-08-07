@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.backend.exception.MovieExistedException;
-import com.example.backend.exception.MovieNotFoundException;
+import com.example.backend.exception.wrapper.MovieExistedException;
+import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.model.Movie;
 import com.example.backend.repository.Impl.MovieRepositoryImpl;
 import com.example.backend.service.MovieService;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class MovieServiceImpl implements MovieService {
+    public static final String MOVIE_CACHE = "movie";
     private final RestTemplate restTemplate;
     private final MovieRepositoryImpl movieRepository;
 
@@ -30,17 +32,21 @@ public class MovieServiceImpl implements MovieService {
 	this.movieRepository = movieRepository;
     }
 
+    @Cacheable(value = MOVIE_CACHE, key = "#movie")
     @Override
     public List<Movie> findAll() {
 	return movieRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = MOVIE_CACHE, key = "#movie")
     public Movie findOne(Long id) {
-	return movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException("Not match found with id " + id));
+	return movieRepository.findOne(id)
+		.orElseThrow(() -> new MovieNotFoundException("Not match found with id " + id));
     }
 
     @Override
+    @Cacheable(value = MOVIE_CACHE, key = "#movie")
     public Movie findByMovieId(String id) {
 	return movieRepository.findByMovieId(id)
 		.orElseThrow(() -> new MovieNotFoundException("Not match found with id " + id));
