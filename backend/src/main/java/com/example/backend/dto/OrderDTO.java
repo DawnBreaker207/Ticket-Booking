@@ -3,9 +3,9 @@ package com.example.backend.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.example.backend.config.OrderStatus;
-import com.example.backend.config.PaymentMethod;
-import com.example.backend.config.PaymentStatus;
+import com.example.backend.constant.OrderStatus;
+import com.example.backend.constant.PaymentMethod;
+import com.example.backend.constant.PaymentStatus;
 
 public class OrderDTO {
     private Long userId;

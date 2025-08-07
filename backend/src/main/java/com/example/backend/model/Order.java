@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import com.example.backend.config.OrderStatus;
-import com.example.backend.config.PaymentMethod;
-import com.example.backend.config.PaymentStatus;
+import com.example.backend.constant.OrderStatus;
+import com.example.backend.constant.PaymentMethod;
+import com.example.backend.constant.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Order {

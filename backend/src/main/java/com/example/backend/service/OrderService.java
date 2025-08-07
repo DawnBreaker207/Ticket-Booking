@@ -10,7 +10,9 @@ public interface OrderService {
 
     Order findOne(String id);
 
-    Order save(OrderDTO o);
+    String create(OrderDTO o);
+
+    void confirm(String holdKey);
 
     Order update(String id, Order o);
 

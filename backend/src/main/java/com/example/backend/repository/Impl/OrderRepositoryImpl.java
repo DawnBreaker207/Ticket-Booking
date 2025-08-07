@@ -15,11 +15,11 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.config.OrderStatus;
-import com.example.backend.config.PaymentMethod;
-import com.example.backend.config.PaymentStatus;
-import com.example.backend.config.SeatStatus;
-import com.example.backend.exception.OrderNotFoundException;
+import com.example.backend.constant.OrderStatus;
+import com.example.backend.constant.PaymentMethod;
+import com.example.backend.constant.PaymentStatus;
+import com.example.backend.constant.SeatStatus;
+import com.example.backend.exception.wrapper.OrderNotFoundException;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
 import com.example.backend.repository.OrderRepository;

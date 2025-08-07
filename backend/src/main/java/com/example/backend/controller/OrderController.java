@@ -38,8 +38,13 @@ public class OrderController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Order> save(@RequestBody OrderDTO o) {
-	return ResponseEntity.status(HttpStatus.OK).body(orderService.save(o));
+    public ResponseEntity<String> create(@RequestBody OrderDTO o) {
+	return ResponseEntity.status(HttpStatus.OK).body(orderService.create(o));
+    }
+
+    @PostMapping("/confirm/{holdKey}")
+    public void confirm(@PathVariable String holdKey) {
+	orderService.confirm(holdKey);
     }
 
     @PutMapping("/{id}")
