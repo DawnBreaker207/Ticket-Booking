@@ -1,4 +1,4 @@
-package com.example.backend.exception.wrapper;
+package com.example.backend.exception.payload;
 
 import java.io.Serial;
 import java.io.Serializable;
