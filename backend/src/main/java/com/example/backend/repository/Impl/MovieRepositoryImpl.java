@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.exception.MovieNotFoundException;
+import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.model.Movie;
 import com.example.backend.repository.MovieRepository;
 
