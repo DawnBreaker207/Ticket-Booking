@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.exception.UserNotFoundException;
+import com.example.backend.exception.wrapper.UserNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 

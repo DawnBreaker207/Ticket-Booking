@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.backend.config.SeatStatus;
-import com.example.backend.exception.CinemaHallNotFoundException;
+import com.example.backend.constant.SeatStatus;
+import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.repository.Impl.CinemaHallRepositoryImpl;
 import com.example.backend.service.CinemaHallService;
