@@ -13,8 +13,8 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.config.SeatStatus;
-import com.example.backend.exception.CinemaHallNotFoundException;
+import com.example.backend.constant.SeatStatus;
+import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Seat;
 import com.example.backend.repository.CinemaHallRepository;

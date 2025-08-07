@@ -3,7 +3,7 @@ package com.example.backend.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.backend.config.SeatStatus;
+import com.example.backend.constant.SeatStatus;
 import com.example.backend.model.CinemaHall;
 
 public interface CinemaHallRepository extends DAO<CinemaHall> {

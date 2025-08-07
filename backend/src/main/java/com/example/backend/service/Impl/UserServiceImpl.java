@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.exception.UserNotFoundException;
+import com.example.backend.exception.wrapper.UserNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repository.Impl.UserRepositoryImpl;
 import com.example.backend.service.UserService;

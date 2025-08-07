@@ -2,7 +2,7 @@ package com.example.backend.dto;
 
 import java.util.List;
 
-import com.example.backend.config.SeatStatus;
+import com.example.backend.constant.SeatStatus;
 
 public class CinemaHallUpdateDTO {
     public String movieSession;
@@ -49,7 +49,7 @@ public class CinemaHallUpdateDTO {
     public SeatStatus getSeatStatus() {
 	return seatStatus;
     }
-    
+
     public void setSeatStatus(SeatStatus seatStatus) {
 	this.seatStatus = seatStatus;
     }

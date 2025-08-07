@@ -2,7 +2,7 @@ package com.example.backend.model;
 
 import java.util.Objects;
 
-import com.example.backend.config.SeatStatus;
+import com.example.backend.constant.SeatStatus;
 
 public class Seat {
     private int id;
@@ -52,30 +52,26 @@ public class Seat {
     public void setSeatStatus(SeatStatus status) {
 	this.status = status;
     }
-    
+
     @Override
     public String toString() {
-        return "Seat{" +
-        	"id=" + id +
-        	", cinemaHallId=" + cinemaHallId + '\'' +
-        	", seatNumber=" + seatNumber + '\'' +
-        	", status=" + status + '\'' + 
-        	"}";
+	return "Seat{" + "id=" + id + ", cinemaHallId=" + cinemaHallId + '\'' + ", seatNumber=" + seatNumber + '\''
+		+ ", status=" + status + '\'' + "}";
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
-        Seat seat = (Seat) obj;
-        return Objects.equals(id, seat.id) 
-        	&& Objects.equals(cinemaHallId, seat.cinemaHallId) 
-        	&& Objects.equals(seatNumber, seat.seatNumber) 
-        	&& Objects.equals(status, seat.status);
+	if (this == obj)
+	    return true;
+	if (obj == null || getClass() != obj.getClass())
+	    return false;
+	Seat seat = (Seat) obj;
+	return Objects.equals(id, seat.id) && Objects.equals(cinemaHallId, seat.cinemaHallId)
+		&& Objects.equals(seatNumber, seat.seatNumber) && Objects.equals(status, seat.status);
     }
-    
+
     @Override
     public int hashCode() {
-    return Objects.hash(id, cinemaHallId, seatNumber, status); 
+	return Objects.hash(id, cinemaHallId, seatNumber, status);
     }
 }

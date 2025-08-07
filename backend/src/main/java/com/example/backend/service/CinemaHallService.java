@@ -2,7 +2,7 @@ package com.example.backend.service;
 
 import java.util.List;
 
-import com.example.backend.config.SeatStatus;
+import com.example.backend.constant.SeatStatus;
 import com.example.backend.model.CinemaHall;
 
 public interface CinemaHallService {
