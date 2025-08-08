@@ -1,5 +1,6 @@
 package com.example.backend.repository.Impl;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 		Seat seat = new Seat();
 		seat.setId(rs.getInt("seat.id"));
 		seat.setCinemaHallId(rs.getInt("cinema_hall_id"));
+		seat.setPrice(rs.getBigDecimal("price"));
 		seat.setSeatStatus(SeatStatus.valueOf(rs.getString("status")));
 		seat.setSeatNumber(rs.getString("seat_number"));
 		hall.getSeats().add(seat);
@@ -62,7 +64,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
     @Override
     public Optional<CinemaHall> findOne(Long id) {
-	String sql = "SELECT ch.id AS hall_id, ch.movie_id, ch.movie_session, s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status "
+	String sql = "SELECT ch.id AS hall_id, ch.movie_id, ch.movie_session, s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status , s.price "
 		+ "FROM cinema_hall ch " + "INNER JOIN seat s ON ch.id = s.cinema_hall_id " + "WHERE ch.id = ? ";
 	try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql);) {
 
@@ -86,6 +88,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 			seat.setId(seatId);
 			seat.setCinemaHallId(rs.getInt("cinema_hall_id"));
 			seat.setSeatNumber(rs.getString("seat_number"));
+			seat.setPrice(rs.getBigDecimal("price"));
 			seat.setSeatStatus(SeatStatus.valueOf(rs.getString("status")));
 			seats.add(seat);
 		    }
@@ -136,7 +139,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
     @Override
     public CinemaHall save(CinemaHall hall) {
 	String insertHall = "INSERT INTO cinema_hall (movie_id, movie_session) VALUES (? ,?)";
-	String insertSeat = "INSERT INTO  seat (seat_number, status, cinema_hall_id) VALUES (? ,'AVAILABLE' , ?)";
+	String insertSeat = "INSERT INTO  seat (seat_number, status, cinema_hall_id, price) VALUES (? ,'AVAILABLE' , ? , ?)";
 	try (var conn = datasource.getConnection();
 		var pre = conn.prepareStatement(insertHall, Statement.RETURN_GENERATED_KEYS);) {
 
@@ -156,13 +159,15 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 		    for (int i = 1; i <= 10; i++) {
 			seat.setString(1, row + String.valueOf(i));
 			seat.setLong(2, hall.getId());
+			seat.setBigDecimal(3, BigDecimal.valueOf(50000));
 			seat.addBatch();
 		    }
 		}
 
 		seat.executeBatch();
 	    }
-	    return findOne(hall.getId()).orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after create"));
+	    return findOne(hall.getId())
+		    .orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after create"));
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
 	    throw new RuntimeException(ex);
@@ -183,7 +188,8 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 		throw new CinemaHallNotFoundException("No cinema hall updated");
 	    }
 
-	    return findOne(h.getId()).orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after update"));
+	    return findOne(h.getId())
+		    .orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after update"));
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
 	    throw new RuntimeException(ex);
