@@ -3,6 +3,7 @@ package com.example.backend.service;
 import java.util.List;
 
 import com.example.backend.dto.OrderDTO;
+import com.example.backend.dto.OrderSeatDTO;
 import com.example.backend.model.Order;
 
 public interface OrderService {
@@ -10,11 +11,15 @@ public interface OrderService {
 
     Order findOne(String id);
 
-    String create(OrderDTO o);
+    String initOrder(OrderDTO order);
 
-    void confirm(String holdKey);
+    void holdSeats(String orderId, List<OrderSeatDTO> seatsId, Long userId);
+
+    Order confirm(String orderId, Long userId);
 
     Order update(String id, Order o);
 
     void delete(String id);
+    
+    
 }
