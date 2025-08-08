@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.OrderDTO;
 import com.example.backend.model.Order;
+import com.example.backend.response.ResponseObject;
 import com.example.backend.service.Impl.OrderServiceImpl;
 
 @RestController
@@ -37,14 +38,21 @@ public class OrderController {
 	return ResponseEntity.status(HttpStatus.OK).body(orderService.findOne(id));
     }
 
-    @PostMapping("")
-    public ResponseEntity<String> create(@RequestBody OrderDTO o) {
-	return ResponseEntity.status(HttpStatus.OK).body(orderService.create(o));
+    @PostMapping("/init")
+    public ResponseObject<String> initOrder(@RequestBody OrderDTO order) {
+	return new ResponseObject<>(HttpStatus.OK, "Success", orderService.initOrder(order));
     }
 
-    @PostMapping("/confirm/{holdKey}")
-    public void confirm(@PathVariable String holdKey) {
-	orderService.confirm(holdKey);
+    @PostMapping("/seatHold")
+    public ResponseObject<Void> seatHold(@RequestBody OrderDTO o) {
+	orderService.holdSeats(o.getOrderId(), o.getSeats(), o.getUserId());
+	return new ResponseObject<>(HttpStatus.OK, "Success", null);
+    }
+
+    @PostMapping("/confirm")
+    public ResponseObject<Order> confirm(@RequestBody OrderDTO o) {
+	return new ResponseObject<>(HttpStatus.OK, "Success", orderService.confirm(o.getOrderId(), o.getUserId()));
+
     }
 
     @PutMapping("/{id}")

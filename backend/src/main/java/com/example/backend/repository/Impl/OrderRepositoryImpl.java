@@ -2,8 +2,8 @@ package com.example.backend.repository.Impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +148,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	    pre.executeUpdate();
 
 //	    Insert seats
-	    try (var seatStmt = conn.prepareStatement(insertSeat)) {
+	    try (var seatStmt = conn.prepareStatement(insertSeat, Statement.RETURN_GENERATED_KEYS)) {
 		for (OrderSeat seat : o.getSeats()) {
 		    seatStmt.setString(1, o.getOrderId());
 		    seatStmt.setLong(2, seat.getSeatId());
@@ -157,7 +157,17 @@ public class OrderRepositoryImpl implements OrderRepository {
 		}
 
 		seatStmt.executeBatch();
-		updateSeatStatusByOrderId(conn, o.getOrderId(), SeatStatus.RESERVED);
+
+		try (var rs = seatStmt.getGeneratedKeys()) {
+		    int index = 0;
+		    while (rs.next()) {
+			o.getSeats().get(index).setId(rs.getLong(1));
+			index++;
+
+		    }
+		}
+
+		updateSeatStatusByOrderId(conn, o.getOrderId(), SeatStatus.BOOKED);
 	    }
 	    conn.commit();
 	    return findOne(o.getOrderId())
@@ -224,13 +234,13 @@ public class OrderRepositoryImpl implements OrderRepository {
 	    return false;
 	String seatJoin = seats.stream().map(id -> "?").collect(Collectors.joining(","));
 	String sql = "SELECT COUNT(*) FROM order_seat os " + "JOIN orders o ON os.order_id = o.id "
-		+ "WHERE os.seat_id IN (" + seatJoin + ") " + "AND o.expired_at > ? " + "AND o.status = 'PENDING'";
+		+ "WHERE os.seat_id IN (" + seatJoin + ") " + "AND o.status = 'CONFIRMED'";
 	try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
 	    int i = 1;
 	    for (OrderSeat seat : seats) {
+		System.out.println(seat.getSeatId());
 		pre.setLong(i++, seat.getSeatId());
 	    }
-	    pre.setTimestamp(i, Timestamp.valueOf(LocalDateTime.now()));
 
 	    try (var rs = pre.executeQuery()) {
 		if (rs.next()) {
@@ -238,72 +248,6 @@ public class OrderRepositoryImpl implements OrderRepository {
 		}
 	    }
 	    return false;
-	} catch (SQLException ex) {
-	    ex.printStackTrace();
-	    throw new RuntimeException(ex);
-	}
-    }
-
-    @Override
-    public List<Order> findPendingOrderExpired() {
-	String sql = "SELECT * FROM orders WHERE status = ? AND expired_at < NOW()";
-	List<Order> orders = new ArrayList<>();
-	try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
-	    pre.setString(1, "CREATED");
-
-	    try (var rs = pre.executeQuery()) {
-		while (rs.next()) {
-		    Order o = new Order();
-		    o.setOrderId(rs.getString("order_id"));
-		    o.setUserId(rs.getLong("user_id"));
-		    o.setCinemaHallId(rs.getLong("cinema_hall_id"));
-		    o.setOrderStatus(OrderStatus.valueOf(rs.getString("status")));
-		    o.setPaymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")));
-		    o.setPaymentStatus(PaymentStatus.valueOf(rs.getString("payment_status")));
-		    o.setTotalAmount(rs.getBigDecimal("total_amount"));
-		    o.setOrderTime(rs.getTimestamp("order_time").toLocalDateTime());
-		    o.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-		    o.setExpiredAt(rs.getTimestamp("expired_at").toLocalDateTime());
-		    orders.add(o);
-		}
-	    }
-
-	    return orders;
-	} catch (SQLException ex) {
-	    ex.printStackTrace();
-	    throw new RuntimeException(ex);
-	}
-    }
-
-    @Override
-    public int updateExpiredOrder() {
-	String select = "SELECT id FROM orders WHERE status = ? AND expired_at < NOW()";
-	String update = "UPDATE orders SET status = ? WHERE id = ?";
-	try (var conn = datasource.getConnection()) {
-	    conn.setAutoCommit(false);
-	    List<String> orderIds = new ArrayList<>();
-
-	    try (var pre = conn.prepareStatement(select)) {
-		pre.setString(1, OrderStatus.CREATED.name());
-		try (var rs = pre.executeQuery()) {
-		    while (rs.next()) {
-			orderIds.add(rs.getString("id"));
-		    }
-		}
-	    }
-
-	    try (var preUpdate = conn.prepareStatement(update)) {
-		for (String orderId : orderIds) {
-		    preUpdate.setString(1, OrderStatus.EXPIRED.name());
-		    preUpdate.setString(2, orderId);
-		    preUpdate.executeUpdate();
-
-		    updateSeatStatusByOrderId(conn, orderId, SeatStatus.AVAILABLE);
-		}
-	    }
-
-	    conn.commit();
-	    return orderIds.size();
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
 	    throw new RuntimeException(ex);
