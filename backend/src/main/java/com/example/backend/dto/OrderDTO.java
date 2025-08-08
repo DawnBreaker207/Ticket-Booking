@@ -8,6 +8,8 @@ import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 
 public class OrderDTO {
+    private String orderId;
+    
     private Long userId;
 
     private Long cinemaHallId;
@@ -26,8 +28,10 @@ public class OrderDTO {
 
     }
 
-    public OrderDTO(Long userId, Long cinemaHallId, OrderStatus orderStatus, PaymentMethod paymentMethod,
-	    PaymentStatus paymentStatus, BigDecimal totalAmount, List<OrderSeatDTO> seats) {
+    public OrderDTO(String orderId, Long userId, Long cinemaHallId, OrderStatus orderStatus,
+	    PaymentMethod paymentMethod, PaymentStatus paymentStatus, BigDecimal totalAmount,
+	    List<OrderSeatDTO> seats) {
+	this.orderId = orderId;
 	this.userId = userId;
 	this.cinemaHallId = cinemaHallId;
 	this.orderStatus = orderStatus;
@@ -35,6 +39,14 @@ public class OrderDTO {
 	this.paymentStatus = paymentStatus;
 	this.totalAmount = totalAmount;
 	this.seats = seats;
+    }
+
+    public String getOrderId() {
+	return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+	this.orderId = orderId;
     }
 
     public Long getUserId() {

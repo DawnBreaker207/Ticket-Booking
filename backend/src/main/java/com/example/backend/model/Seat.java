@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.example.backend.constant.SeatStatus;
@@ -8,16 +9,18 @@ public class Seat {
     private int id;
     private int cinemaHallId;
     private String seatNumber;
+    private BigDecimal price;
     private SeatStatus status;
 
     public Seat() {
 
     }
 
-    public Seat(int id, int cinemaHallId, String seatNumber, SeatStatus status) {
+    public Seat(int id, int cinemaHallId, String seatNumber, BigDecimal price, SeatStatus status) {
 	this.id = id;
 	this.cinemaHallId = cinemaHallId;
 	this.seatNumber = seatNumber;
+	this.price = price;
 	this.status = status;
     }
 
@@ -45,6 +48,14 @@ public class Seat {
 	this.seatNumber = seatNumber;
     }
 
+    public BigDecimal getPrice() {
+	return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+	this.price = price;
+    }
+
     public SeatStatus getSeatStatus() {
 	return status;
     }
@@ -55,8 +66,12 @@ public class Seat {
 
     @Override
     public String toString() {
-	return "Seat{" + "id=" + id + ", cinemaHallId=" + cinemaHallId + '\'' + ", seatNumber=" + seatNumber + '\''
-		+ ", status=" + status + '\'' + "}";
+	return "Seat{" + 
+		"id=" + id + 
+		", cinemaHallId=" + cinemaHallId + '\'' + 
+		", seatNumber=" + seatNumber + '\'' +
+		", price=" + price + '\''+ 
+		", status=" + status + '\'' + "}";
     }
 
     @Override
@@ -66,12 +81,15 @@ public class Seat {
 	if (obj == null || getClass() != obj.getClass())
 	    return false;
 	Seat seat = (Seat) obj;
-	return Objects.equals(id, seat.id) && Objects.equals(cinemaHallId, seat.cinemaHallId)
-		&& Objects.equals(seatNumber, seat.seatNumber) && Objects.equals(status, seat.status);
+	return Objects.equals(id, seat.id) 
+		&& Objects.equals(cinemaHallId, seat.cinemaHallId)
+		&& Objects.equals(seatNumber, seat.seatNumber) 
+		&& Objects.equals(price, seat.price) 
+		&& Objects.equals(status, seat.status);
     }
 
     @Override
     public int hashCode() {
-	return Objects.hash(id, cinemaHallId, seatNumber, status);
+	return Objects.hash(id, cinemaHallId, seatNumber, price ,status);
     }
 }
