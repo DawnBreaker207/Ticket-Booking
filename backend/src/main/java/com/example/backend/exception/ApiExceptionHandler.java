@@ -12,17 +12,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.backend.exception.payload.ExceptionMessage;
 import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.exception.wrapper.ForbiddenPermissionException;
 import com.example.backend.exception.wrapper.MovieExistedException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
+import com.example.backend.exception.wrapper.OrderExpiredException;
 import com.example.backend.exception.wrapper.OrderNotFoundException;
+import com.example.backend.exception.wrapper.RedisStorageException;
+import com.example.backend.exception.wrapper.SeatUnavailableException;
 import com.example.backend.exception.wrapper.UserNotFoundException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
-    @ExceptionHandler(value = { UserNotFoundException.class, MovieNotFoundException.class,
-	    CinemaHallNotFoundException.class, OrderNotFoundException.class, MovieExistedException.class })
+    @ExceptionHandler(value = { 
+	    UserNotFoundException.class, 
+	    MovieNotFoundException.class,
+	    CinemaHallNotFoundException.class, 
+	    OrderNotFoundException.class, 
+	    MovieExistedException.class,
+	    ForbiddenPermissionException.class,
+	    OrderExpiredException.class,
+	    SeatUnavailableException.class,
+	    RedisStorageException.class
+	    
+    })
 
     public <T extends RuntimeException> ResponseEntity<ExceptionMessage> handleApiRequestException(final T e) {
 	log.info("**ApiExceptionHandler controller, handler API request*\n");
