@@ -10,7 +10,6 @@ const { Sider, Content } = Layout;
 const AdminLayout: React.FC = () => {
     const { pathname } = useLocation();
     const handleLogout = () => {
-        // TODO: implement logout logic (e.g., clear auth and redirect)
         console.log('User logged out');
     };
 
