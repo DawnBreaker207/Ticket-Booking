@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/payment")
+@Tag(name = "Payment" , description = "Operations related to payment")
 public class PaymentController {
     private final PaymentService paymentService;
 
@@ -19,10 +22,12 @@ public class PaymentController {
 	this.paymentService = paymentService;
     }
 
+    @GetMapping("/vnpay")
     public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest req) {
 	return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVNPayPayment(req));
     }
 
+    @GetMapping("/vnpay-return")
     public ResponseObject<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest req) {
 	String status = req.getParameter("vnp_ResponseCode");
 	if (status.equals("00")) {
