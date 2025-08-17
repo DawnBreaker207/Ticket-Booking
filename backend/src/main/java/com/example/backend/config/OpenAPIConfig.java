@@ -1,5 +1,6 @@
 package com.example.backend.config;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,15 +14,15 @@ public class OpenAPIConfig {
 
     @Bean
     public OpenAPI ServiceAPI() {
-	return new OpenAPI()
-		.info(new Info()
-			.title("Booking Ticket API")
-			.description("This is the REST API for Booking Ticket service")
-			.version("v0.0.1")
-			.license(new License()
-				.name("Apache 2.0")))
-			.externalDocs(new ExternalDocumentation()
-				.description("You can refer to Booking Ticket Wiki Documentation")
-				.url("https://booking-ticket-dummy-url.com/docs"));
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Booking Ticket API")
+                        .description("This is the REST API for Booking Ticket service")
+                        .version("v0.0.1")
+                        .license(new License()
+                                .name("Apache 2.0")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("You can refer to Booking Ticket Wiki Documentation")
+                        .url("https://booking-ticket-dummy-url.com/docs"));
     }
 }

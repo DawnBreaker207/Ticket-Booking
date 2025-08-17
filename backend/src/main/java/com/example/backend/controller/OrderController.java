@@ -2,8 +2,8 @@ package com.example.backend.controller;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,49 +21,50 @@ import com.example.backend.service.Impl.OrderServiceImpl;
 
 @RestController
 @RequestMapping("/order")
+@Tag(name = "Order", description = "Operations related to order")
 public class OrderController {
     private final OrderServiceImpl orderService;
 
     public OrderController(OrderServiceImpl orderService) {
-	this.orderService = orderService;
+        this.orderService = orderService;
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Order>> getAll() {
-	return ResponseEntity.status(HttpStatus.OK).body(orderService.findAll());
+    public ResponseObject<List<Order>> getAll() {
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOne(@PathVariable String id) {
-	return ResponseEntity.status(HttpStatus.OK).body(orderService.findOne(id));
+    public ResponseObject<Order> getOne(@PathVariable String id) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findOne(id));
     }
 
     @PostMapping("/init")
     public ResponseObject<String> initOrder(@RequestBody OrderDTO order) {
-	return new ResponseObject<>(HttpStatus.OK, "Success", orderService.initOrder(order));
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.initOrder(order));
     }
 
     @PostMapping("/seatHold")
     public ResponseObject<Void> seatHold(@RequestBody OrderDTO o) {
-	orderService.holdSeats(o.getOrderId(), o.getSeats(), o.getUserId());
-	return new ResponseObject<>(HttpStatus.OK, "Success", null);
+        orderService.holdSeats(o.getOrderId(), o.getSeats(), o.getUserId());
+        return new ResponseObject<>(HttpStatus.OK, "Success", null);
     }
 
     @PostMapping("/confirm")
     public ResponseObject<Order> confirm(@RequestBody OrderDTO o) {
-	return new ResponseObject<>(HttpStatus.OK, "Success", orderService.confirm(o.getOrderId(), o.getUserId()));
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.confirm(o.getOrderId(), o.getUserId()));
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> update(@PathVariable String id, @RequestBody Order o) {
-	return ResponseEntity.status(HttpStatus.OK).body(orderService.update(id, o));
+    public ResponseObject<Order> update(@PathVariable String id, @RequestBody Order o) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.update(id, o));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {
-	orderService.delete(id);
+        orderService.delete(id);
     }
 
 }
