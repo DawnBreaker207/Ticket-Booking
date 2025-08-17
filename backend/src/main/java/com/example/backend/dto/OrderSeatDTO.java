@@ -11,23 +11,23 @@ public class OrderSeatDTO {
     }
 
     public OrderSeatDTO(Long seatId, BigDecimal price) {
-	this.seatId = seatId;
-	this.price = price;
+        this.seatId = seatId;
+        this.price = price;
     }
 
     public Long getSeatId() {
-	return seatId;
+        return seatId;
     }
 
     public void setSeatId(Long seatId) {
-	this.seatId = seatId;
+        this.seatId = seatId;
     }
 
     public BigDecimal getPrice() {
-	return price;
+        return price;
     }
 
     public void setPrice(BigDecimal price) {
-	this.price = price;
+        this.price = price;
     }
 }

@@ -22,42 +22,42 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-	return new LettuceConnectionFactory("redis", 6379);
+        return new LettuceConnectionFactory("redis", 6379);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-	RedisTemplate<String, Object> template = new RedisTemplate<>();
-	template.setConnectionFactory(connectionFactory);
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
 
-	GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
 
-	template.setKeySerializer(new StringRedisSerializer());
-	template.setValueSerializer(serializer);
-	template.setHashKeySerializer(new StringRedisSerializer());
-	template.setHashValueSerializer(serializer);
-	template.setDefaultSerializer(serializer);
-	template.afterPropertiesSet();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+        template.setDefaultSerializer(serializer);
+        template.afterPropertiesSet();
 
-	return template;
+        return template;
     }
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-	ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-	objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
-		ObjectMapper.DefaultTyping.NON_FINAL);
+        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL);
 
-	Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
 
-	RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
-		.defaultCacheConfig()
-		.entryTtl(Duration.ofMinutes(10)).disableCachingNullValues()
-		.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
-	return RedisCacheManager
-		.builder(RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory))
-		.cacheDefaults(redisCacheConfiguration)
-		.build();
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
+                .defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10)).disableCachingNullValues()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+        return RedisCacheManager
+                .builder(RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory))
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
     }
 }

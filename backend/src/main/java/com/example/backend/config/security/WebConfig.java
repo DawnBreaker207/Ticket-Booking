@@ -12,11 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Bean
     public RestTemplate restTemplate() {
-	return new RestTemplate();
+        return new RestTemplate();
     }
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-	configurer.addPathPrefix("/api/v1", HandlerTypePredicate.forAnnotation(RestController.class));
+        configurer.addPathPrefix("/api/v1", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 }

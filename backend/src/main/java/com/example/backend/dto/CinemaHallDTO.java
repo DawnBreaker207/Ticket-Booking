@@ -1,56 +1,56 @@
 package com.example.backend.dto;
 
-import java.util.List;
-
 import com.example.backend.constant.SeatStatus;
 
-public class CinemaHallUpdateDTO {
+import java.util.List;
+
+public class CinemaHallDTO {
     public String movieSession;
     public String orderTime;
     private List<String> seatCodes;
     private SeatStatus seatStatus;
 
-    public CinemaHallUpdateDTO() {
+    public CinemaHallDTO() {
 
     }
 
-    public CinemaHallUpdateDTO(String movieSession, String orderTime, List<String> seatCodes, SeatStatus seatStatus) {
-	this.movieSession = movieSession;
-	this.orderTime = orderTime;
-	this.seatCodes = seatCodes;
-	this.seatStatus = seatStatus;
+    public CinemaHallDTO(String movieSession, String orderTime, List<String> seatCodes, SeatStatus seatStatus) {
+        this.movieSession = movieSession;
+        this.orderTime = orderTime;
+        this.seatCodes = seatCodes;
+        this.seatStatus = seatStatus;
     }
 
     public String getMovieSession() {
-	return movieSession;
+        return movieSession;
 
     }
 
     public void setMovieSession(String movieSession) {
-	this.movieSession = movieSession;
+        this.movieSession = movieSession;
     }
 
     public String getOrderTime() {
-	return orderTime;
+        return orderTime;
     }
 
     public void setOrderTime(String orderTime) {
-	this.orderTime = orderTime;
+        this.orderTime = orderTime;
     }
 
     public List<String> getSeatCodes() {
-	return seatCodes;
+        return seatCodes;
     }
 
     public void setSeatCodes(List<String> seatCodes) {
-	this.seatCodes = seatCodes;
+        this.seatCodes = seatCodes;
     }
 
     public SeatStatus getSeatStatus() {
-	return seatStatus;
+        return seatStatus;
     }
 
     public void setSeatStatus(SeatStatus seatStatus) {
-	this.seatStatus = seatStatus;
+        this.seatStatus = seatStatus;
     }
 }
