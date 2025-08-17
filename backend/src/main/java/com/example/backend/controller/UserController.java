@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import java.util.List;
 
+import com.example.backend.response.ResponseObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,55 +14,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend.dto.LoginResponseDTO;
+import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
 import com.example.backend.service.Impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User", description = "Operations related to user")
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
     public UserController(UserServiceImpl userService) {
-	this.userService = userService;
+        this.userService = userService;
     }
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getAll() {
-	return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
+    public ResponseObject<List<User>> getAll() {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getOne(@PathVariable Long id) {
-	return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(id));
+    public ResponseObject<User> getOne(@PathVariable Long id) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.findOne(id));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getEmail(@PathVariable String email) {
-	return ResponseEntity.status(HttpStatus.OK).body(userService.findByEmail(email));
+    public ResponseObject<User> getEmail(@PathVariable String email) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User newUser) {
-	return ResponseEntity.status(HttpStatus.OK).body(userService.registerUser(newUser));
+    public ResponseObject<User> register(@RequestBody UserDTO newUser) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.registerUser(newUser));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody User loginRequest) {
-	User user = userService.findByEmail(loginRequest.getEmail());
-	if (user == null) {
-	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		    .body(new LoginResponseDTO("Invalid credentials", null, null));
-	}
-
-	if (userService.isPasswordMatch(loginRequest.getPassword(), user.getPassword())) {
-	    LoginResponseDTO response = new LoginResponseDTO("Login successful", user.getName(), user.getId());
-	    return ResponseEntity.ok().body(response);
-	} else {
-	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		    .body(new LoginResponseDTO("Invalid credentials", null, null));
-	}
+    public ResponseObject<User> login(@RequestBody UserDTO user) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.login(user));
     }
 
 }
