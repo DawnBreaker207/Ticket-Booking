@@ -1,15 +1,15 @@
 package com.example.backend.dto;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public class OrderDTO {
     private String orderId;
-    
+
     private Long userId;
 
     private Long cinemaHallId;
@@ -29,80 +29,80 @@ public class OrderDTO {
     }
 
     public OrderDTO(String orderId, Long userId, Long cinemaHallId, OrderStatus orderStatus,
-	    PaymentMethod paymentMethod, PaymentStatus paymentStatus, BigDecimal totalAmount,
-	    List<OrderSeatDTO> seats) {
-	this.orderId = orderId;
-	this.userId = userId;
-	this.cinemaHallId = cinemaHallId;
-	this.orderStatus = orderStatus;
-	this.paymentMethod = paymentMethod;
-	this.paymentStatus = paymentStatus;
-	this.totalAmount = totalAmount;
-	this.seats = seats;
+                    PaymentMethod paymentMethod, PaymentStatus paymentStatus, BigDecimal totalAmount,
+                    List<OrderSeatDTO> seats) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.cinemaHallId = cinemaHallId;
+        this.orderStatus = orderStatus;
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = paymentStatus;
+        this.totalAmount = totalAmount;
+        this.seats = seats;
     }
 
     public String getOrderId() {
-	return orderId;
+        return orderId;
     }
 
     public void setOrderId(String orderId) {
-	this.orderId = orderId;
+        this.orderId = orderId;
     }
 
     public Long getUserId() {
-	return userId;
+        return userId;
     }
 
     public void setUserId(Long userId) {
-	this.userId = userId;
+        this.userId = userId;
     }
 
     public Long getCinemaHallId() {
-	return cinemaHallId;
+        return cinemaHallId;
     }
 
     public void setCinemaHallId(Long cinemaHallId) {
-	this.cinemaHallId = cinemaHallId;
+        this.cinemaHallId = cinemaHallId;
     }
 
     public OrderStatus getOrderStatus() {
-	return orderStatus;
+        return orderStatus;
     }
 
     public void setOrderStatus(OrderStatus orderStatus) {
-	this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus;
     }
 
     public PaymentMethod getPaymentMethod() {
-	return paymentMethod;
+        return paymentMethod;
     }
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
-	this.paymentMethod = paymentMethod;
+        this.paymentMethod = paymentMethod;
     }
 
     public PaymentStatus getPaymentStatus() {
-	return paymentStatus;
+        return paymentStatus;
     }
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
-	this.paymentStatus = paymentStatus;
+        this.paymentStatus = paymentStatus;
     }
 
     public BigDecimal getTotalAmount() {
-	return totalAmount;
+        return totalAmount;
     }
 
     public void setTotalAmount(BigDecimal totalAmount) {
-	this.totalAmount = totalAmount;
+        this.totalAmount = totalAmount;
     }
 
     public List<OrderSeatDTO> getSeats() {
-	return seats;
+        return seats;
     }
 
     public void setSeats(List<OrderSeatDTO> seats) {
-	this.seats = seats;
+        this.seats = seats;
     }
 
 }

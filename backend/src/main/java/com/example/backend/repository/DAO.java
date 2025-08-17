@@ -5,30 +5,30 @@ import java.util.Optional;
 
 public interface DAO<T> {
     default List<T> findAll() {
-	return null;
+        return null;
     }
 
     default Optional<T> findOne(Long id) {
-	return null;
+        return null;
     }
 
     default Optional<T> findOne(String id) {
-	return null;
+        return null;
     }
 
     default T save(T t) {
-	return null;
+        return null;
     }
 
     default T update(T t) {
-	return null;
+        return null;
     }
 
     default void delete(Long id) {
-	return;
+        return;
     }
 
     default void delete(String id) {
-	return;
+        return;
     }
 }

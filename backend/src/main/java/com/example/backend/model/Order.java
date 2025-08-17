@@ -1,200 +1,202 @@
 package com.example.backend.model;
 
+import com.example.backend.constant.OrderStatus;
+import com.example.backend.constant.PaymentMethod;
+import com.example.backend.constant.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.Hidden;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import com.example.backend.constant.OrderStatus;
-import com.example.backend.constant.PaymentMethod;
-import com.example.backend.constant.PaymentStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+@Hidden
 public class Order {
-        private String orderId;
-    
-        private Long userId;
-    
-        private Long cinemaHallId;
-    
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-        private LocalDateTime orderTime;
-    
-        private OrderStatus orderStatus;
+    private String orderId;
 
-        private PaymentMethod paymentMethod;
+    private Long userId;
 
-        private PaymentStatus paymentStatus;
-        
-        private BigDecimal totalAmount;
-    
-        private List<OrderSeat> seats;
-    
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-        private LocalDateTime createdAt;
-        
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-        private LocalDateTime expiredAt;
+    private Long cinemaHallId;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime orderTime;
+
+    private OrderStatus orderStatus;
+
+    private PaymentMethod paymentMethod;
+
+    private PaymentStatus paymentStatus;
+
+    private BigDecimal totalAmount;
+
+    private List<OrderSeat> seats;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime expiredAt;
 
     public Order() {
     }
 
     public Order(
-	    String orderId, 
-	    Long userId, 
-	    Long cinemaHallId, 
-	    LocalDateTime orderTime, 
-	    OrderStatus orderStatus,
-	    PaymentMethod paymentMethod,
-	    PaymentStatus paymentStatus,
-	    BigDecimal totalAmount, 
-	    List<OrderSeat> seats, 
-	    LocalDateTime expiredAt,
-	    LocalDateTime createdAt) {
-	this.orderId = orderId;
-	this.userId = userId;
-	this.cinemaHallId = cinemaHallId;
-	this.orderTime = orderTime;
-	this.orderStatus = orderStatus;
-	this.paymentMethod = paymentMethod;
-	this.paymentStatus = paymentStatus;
-	this.totalAmount = totalAmount;
-	this.seats = seats;
-	this.expiredAt = expiredAt;
-	this.createdAt = createdAt;
+            String orderId,
+            Long userId,
+            Long cinemaHallId,
+            LocalDateTime orderTime,
+            OrderStatus orderStatus,
+            PaymentMethod paymentMethod,
+            PaymentStatus paymentStatus,
+            BigDecimal totalAmount,
+            List<OrderSeat> seats,
+            LocalDateTime expiredAt,
+            LocalDateTime createdAt) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.cinemaHallId = cinemaHallId;
+        this.orderTime = orderTime;
+        this.orderStatus = orderStatus;
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = paymentStatus;
+        this.totalAmount = totalAmount;
+        this.seats = seats;
+        this.expiredAt = expiredAt;
+        this.createdAt = createdAt;
     }
 
     public String getOrderId() {
-	return orderId;
+        return orderId;
     }
 
     public void setOrderId(String orderId) {
-	this.orderId = orderId;
+        this.orderId = orderId;
     }
-    
+
     public Long getUserId() {
-  	return userId;
+        return userId;
     }
 
     public void setUserId(Long userId) {
-  	this.userId = userId;
+        this.userId = userId;
     }
 
     public Long getCinemaHallId() {
-	return cinemaHallId;
+        return cinemaHallId;
     }
-    
+
     public void setCinemaHallId(Long cinemaHallId) {
-	this.cinemaHallId = cinemaHallId;
+        this.cinemaHallId = cinemaHallId;
     }
 
     public LocalDateTime getOrderTime() {
-  	return orderTime;
+        return orderTime;
     }
 
     public void setOrderTime(LocalDateTime orderTime) {
-  	this.orderTime = orderTime;
+        this.orderTime = orderTime;
     }
 
     public OrderStatus getOrderStatus() {
-   	return orderStatus;
+        return orderStatus;
     }
 
     public void setOrderStatus(OrderStatus orderStatus) {
-   	this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus;
     }
-    
+
     public PaymentMethod getPaymentMethod() {
-	return paymentMethod;
+        return paymentMethod;
     }
-    
+
     public void setPaymentMethod(PaymentMethod paymentMethod) {
-	this.paymentMethod = paymentMethod;
+        this.paymentMethod = paymentMethod;
     }
-    
+
     public PaymentStatus getPaymentStatus() {
-	return paymentStatus;
+        return paymentStatus;
     }
-    
+
     public void setPaymentStatus(PaymentStatus paymentStatus) {
-	this.paymentStatus = paymentStatus;
+        this.paymentStatus = paymentStatus;
     }
-    
+
     public BigDecimal getTotalAmount() {
-	return totalAmount;
+        return totalAmount;
     }
-    
+
     public void setTotalAmount(BigDecimal totalAmount) {
-	this.totalAmount = totalAmount;
+        this.totalAmount = totalAmount;
     }
 
     public List<OrderSeat> getSeats() {
-	return seats;
+        return seats;
     }
-    
+
     public void setSeats(List<OrderSeat> seats) {
-	this.seats = seats;
+        this.seats = seats;
     }
-    
+
     public LocalDateTime getExpiredAt() {
-	return expiredAt;
+        return expiredAt;
     }
 
     public void setExpiredAt(LocalDateTime expiredAt) {
-	this.expiredAt = expiredAt;
+        this.expiredAt = expiredAt;
     }
-    
-    
+
+
     public LocalDateTime getCreatedAt() {
-	return createdAt;
+        return createdAt;
     }
-    
+
     public void setCreatedAt(LocalDateTime createdAt) {
-	this.createdAt = createdAt;
+        this.createdAt = createdAt;
     }
 
     @Override
     public String toString() {
 
-	return "Order{" + 
-		"orderId=" + orderId + 
-		", userId=" + userId + 
-		", cinemaHallId='" + cinemaHallId + '\''+ 
-		", orderTime='" + orderTime + '\''+ 
-		", orderStatus='" + orderStatus + '\'' + 
-		", paymentMethod='" + paymentMethod + '\'' + 
-		", paymentStatus='" + paymentStatus + '\'' + 
-		", totalAmount='" + totalAmount + '\'' + 
-		", seats=" + seats + '\'' +
-		", orderTime='" + orderTime + '\'' + 
-		", createdAt='" + createdAt + '\'' + 
-		", expiredAt='" + expiredAt  + 
-		'}';
+        return "Order{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", cinemaHallId='" + cinemaHallId + '\'' +
+                ", orderTime='" + orderTime + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", paymentStatus='" + paymentStatus + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                ", seats=" + seats + '\'' +
+                ", orderTime='" + orderTime + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", expiredAt='" + expiredAt +
+                '}';
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj)
-	    return true;
-	if (obj == null || getClass() != obj.getClass())
-	    return false;
-	Order order = (Order) obj;
-	return Objects.equals(orderId, order.orderId) 
-		&& Objects.equals(userId, order.userId)
-		&& Objects.equals(cinemaHallId, order.cinemaHallId) 
-		&& Objects.equals(orderTime, order.orderTime) 
-		&& Objects.equals(orderStatus, order.orderStatus)
-		&& Objects.equals(paymentMethod, order.paymentMethod)
-		&& Objects.equals(paymentStatus, order.paymentStatus)
-		&& Objects.equals(totalAmount, order.totalAmount) 
-		&& Objects.equals(seats, order.seats)
-		&& Objects.equals(createdAt, order.createdAt)
-		&& Objects.equals(expiredAt, order.expiredAt);
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Order order = (Order) obj;
+        return Objects.equals(orderId, order.orderId)
+                && Objects.equals(userId, order.userId)
+                && Objects.equals(cinemaHallId, order.cinemaHallId)
+                && Objects.equals(orderTime, order.orderTime)
+                && Objects.equals(orderStatus, order.orderStatus)
+                && Objects.equals(paymentMethod, order.paymentMethod)
+                && Objects.equals(paymentStatus, order.paymentStatus)
+                && Objects.equals(totalAmount, order.totalAmount)
+                && Objects.equals(seats, order.seats)
+                && Objects.equals(createdAt, order.createdAt)
+                && Objects.equals(expiredAt, order.expiredAt);
     }
 
     @Override
     public int hashCode() {
-	return Objects.hash(orderId, userId, cinemaHallId, orderTime, orderStatus, paymentMethod, paymentStatus, totalAmount, seats, createdAt, expiredAt);
+        return Objects.hash(orderId, userId, cinemaHallId, orderTime, orderStatus, paymentMethod, paymentStatus, totalAmount, seats, createdAt, expiredAt);
     }
 
 }

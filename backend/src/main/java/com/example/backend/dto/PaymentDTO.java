@@ -4,42 +4,42 @@ public class PaymentDTO {
 
     public static class VNPayResponse {
 
-	public String code;
-	public String message;
-	public String paymentUrl;
+        public String code;
+        public String message;
+        public String paymentUrl;
 
-	public VNPayResponse() {
+        public VNPayResponse() {
 
-	}
+        }
 
-	public VNPayResponse(String code, String message, String paymentUrl) {
-	    this.code = code;
-	    this.message = message;
-	    this.paymentUrl = paymentUrl;
-	}
+        public VNPayResponse(String code, String message, String paymentUrl) {
+            this.code = code;
+            this.message = message;
+            this.paymentUrl = paymentUrl;
+        }
 
-	public String getCode() {
-	    return code;
-	}
+        public String getCode() {
+            return code;
+        }
 
-	public void setCode(String code) {
-	    this.code = code;
-	}
+        public void setCode(String code) {
+            this.code = code;
+        }
 
-	public String getMessage() {
-	    return message;
-	}
+        public String getMessage() {
+            return message;
+        }
 
-	public void setMessage(String message) {
-	    this.message = message;
-	}
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
-	public String getPaymentUrl() {
-	    return paymentUrl;
-	}
+        public String getPaymentUrl() {
+            return paymentUrl;
+        }
 
-	public void setPaymentUrl(String paymentUrl) {
-	    this.paymentUrl = paymentUrl;
-	}
+        public void setPaymentUrl(String paymentUrl) {
+            this.paymentUrl = paymentUrl;
+        }
     }
 }

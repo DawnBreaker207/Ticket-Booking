@@ -1,7 +1,5 @@
 package com.example.backend.config.security;
 
-import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,39 +10,42 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public CorsFilter corsFilter() {
-	CorsConfiguration config = new CorsConfiguration();
-	config.setAllowCredentials(true);
-	config.addAllowedOrigin("http://localhost:3000");
-	config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-	config.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-		HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:3000");
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        config.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
 
-	config.setMaxAge(3600L);
-	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	source.registerCorsConfiguration("/**", config);
-	source.registerCorsConfiguration("/api/**", config);
+        config.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/api/v1/**", config);
 
-	return new CorsFilter(source);
+        return new CorsFilter(source);
     }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-	return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
         return http.build();
     }
 }
