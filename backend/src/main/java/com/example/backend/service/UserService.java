@@ -1,9 +1,8 @@
 package com.example.backend.service;
 
-import java.util.List;
-
-import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
+
+import java.util.List;
 
 public interface UserService {
     List<User> findAll();
@@ -13,10 +12,6 @@ public interface UserService {
     User update(Long id, User user);
 
     User findByEmail(String email);
-    
-    boolean isPasswordMatch(String rawPassword, String encodedPassword);
 
-    User registerUser(UserDTO newUser);
 
-    User login(UserDTO user);
 }

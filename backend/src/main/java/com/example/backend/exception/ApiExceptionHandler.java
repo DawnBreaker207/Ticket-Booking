@@ -1,8 +1,6 @@
 package com.example.backend.exception;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
+import com.example.backend.exception.payload.ExceptionMessage;
 import com.example.backend.exception.wrapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.backend.exception.payload.ExceptionMessage;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -21,6 +20,7 @@ public class ApiExceptionHandler {
             UserNotFoundException.class,
             UserEmailExistedException.class,
             UserPasswordNotMatchException.class,
+            UsernameExistedException.class,
             MovieNotFoundException.class,
             CinemaHallNotFoundException.class,
             OrderNotFoundException.class,
