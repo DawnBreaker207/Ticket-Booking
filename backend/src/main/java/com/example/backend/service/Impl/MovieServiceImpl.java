@@ -1,13 +1,12 @@
 package com.example.backend.service.Impl;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.example.backend.dto.MovieDTO;
-import org.springframework.cache.annotation.Cacheable;
+import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.exception.wrapper.MovieExistedException;
+import com.example.backend.exception.wrapper.MovieNotFoundException;
+import com.example.backend.model.Movie;
+import com.example.backend.repository.Impl.MovieRepositoryImpl;
+import com.example.backend.service.MovieService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,12 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.backend.exception.wrapper.MovieExistedException;
-import com.example.backend.exception.wrapper.MovieNotFoundException;
-import com.example.backend.model.Movie;
-import com.example.backend.repository.Impl.MovieRepositoryImpl;
-import com.example.backend.service.MovieService;
-import com.fasterxml.jackson.databind.JsonNode;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {

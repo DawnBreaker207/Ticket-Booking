@@ -1,12 +1,12 @@
 package com.example.backend.helper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.example.backend.dto.OrderDTO;
-import com.example.backend.dto.OrderSeatDTO;
+import com.example.backend.dto.shared.OrderDTO;
+import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface OrderMappingHelper {
     static OrderDTO map(final Order o) {

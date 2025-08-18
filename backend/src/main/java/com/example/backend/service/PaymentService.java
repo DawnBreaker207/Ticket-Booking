@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.config.payment.VNPayConfig;
-import com.example.backend.dto.PaymentDTO;
+import com.example.backend.dto.shared.PaymentDTO;
 import com.example.backend.util.VNPayUtils;
 
 import jakarta.servlet.http.HttpServletRequest;

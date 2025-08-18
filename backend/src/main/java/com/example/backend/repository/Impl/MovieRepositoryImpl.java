@@ -1,20 +1,18 @@
 package com.example.backend.repository.Impl;
 
+import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.exception.wrapper.MovieNotFoundException;
+import com.example.backend.model.Movie;
+import com.example.backend.repository.MovieRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import javax.sql.DataSource;
-
-import com.example.backend.dto.MovieDTO;
-import org.springframework.stereotype.Repository;
-
-import com.example.backend.exception.wrapper.MovieNotFoundException;
-import com.example.backend.model.Movie;
-import com.example.backend.repository.MovieRepository;
 
 @Repository
 public class MovieRepositoryImpl implements MovieRepository {

@@ -1,15 +1,14 @@
 package com.example.backend.controller;
 
-import java.util.List;
-
-import com.example.backend.dto.MovieDTO;
-import com.example.backend.response.ResponseObject;
+import com.example.backend.config.response.ResponseObject;
+import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.model.Movie;
+import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.backend.model.Movie;
-import com.example.backend.service.Impl.MovieServiceImpl;
+import java.util.List;
 
 @RestController
 @RequestMapping("/movie")
