@@ -1,21 +1,15 @@
 package com.example.backend.repository.Impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
-import org.springframework.stereotype.Repository;
-
 import com.example.backend.exception.wrapper.UserNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -104,8 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
         User user = new User();
-        try (var conn = datasource.getConnection()) {
-            var pre = conn.prepareStatement(sql);
+        try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
             pre.setString(1, email);
             try (var result = pre.executeQuery()) {
                 if (result.next()) {
@@ -125,6 +118,31 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        String sql = "SELECT * FROM user WHERE name = ?";
+        User user = new User();
+        try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
+            pre.setString(1, username);
+            try (var result = pre.executeQuery()) {
+                if (result.next()) {
+                    user.setId(result.getLong("id"));
+                    user.setName(result.getString("name"));
+                    user.setSurname(result.getString("surname"));
+                    user.setEmail(result.getString("email"));
+                    user.setPassword(result.getString("password"));
+                    return Optional.of(user);
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
+
 
     @Override
     public User update(User u) {
