@@ -2,8 +2,8 @@ package com.example.backend.service;
 
 import java.util.List;
 
-import com.example.backend.dto.OrderDTO;
-import com.example.backend.dto.OrderSeatDTO;
+import com.example.backend.dto.shared.OrderDTO;
+import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.Order;
 
 public interface OrderService {

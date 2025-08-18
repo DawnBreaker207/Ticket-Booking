@@ -1,14 +1,13 @@
 package com.example.backend.service.Impl;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.repository.Impl.CinemaHallRepositoryImpl;
 import com.example.backend.service.CinemaHallService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CinemaHallServiceImpl implements CinemaHallService {

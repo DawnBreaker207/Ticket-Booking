@@ -1,9 +1,8 @@
-package com.example.backend.response;
-
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+package com.example.backend.config.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 public class ResponseObject<T> extends ResponseEntity<ResponseObject.Payload<T>> {
     public ResponseObject(HttpStatusCode code, String message, T data) {
