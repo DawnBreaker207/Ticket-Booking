@@ -7,7 +7,7 @@ public interface UserMappingHelper {
     static UserDTO map(final User u) {
         UserDTO user = new UserDTO();
         user.setUserId(u.getId());
-        user.setUsername(u.getSurname());
+        user.setUsername(u.getUsername());
         user.setEmail(u.getEmail());
         user.setPassword(u.getPassword());
         return user;
@@ -16,7 +16,7 @@ public interface UserMappingHelper {
     static User map(final UserDTO u) {
         User user = new User();
         user.setId(u.getUserId());
-        user.setName(u.getUsername());
+        user.setUsername(u.getUsername());
         user.setEmail(u.getEmail());
         user.setPassword(u.getPassword());
         return user;

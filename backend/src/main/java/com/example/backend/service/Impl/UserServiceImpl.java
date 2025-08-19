@@ -36,8 +36,7 @@ public class UserServiceImpl implements UserService {
         var check = userRepository.findOne(id).orElseThrow(() -> new UserNotFoundException("Can not find user with id " + id));
 
         check.setEmail(user.getEmail());
-        check.setName(user.getName());
-        check.setSurname(user.getSurname());
+        check.setUsername(user.getUsername());
 
         return userRepository.save(check);
 

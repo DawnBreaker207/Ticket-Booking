@@ -8,7 +8,7 @@ public interface AuthService {
 
     boolean isPasswordMatch(String rawPassword, String encodedPassword);
 
-    void registerUser(RegisterRequest newUser);
+    void register(RegisterRequest newUser);
 
     JwtResponse login(LoginRequest user);
 }
