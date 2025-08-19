@@ -46,7 +46,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                     order.setPaymentStatus(PaymentStatus.valueOf(rs.getString("payment_status")));
                     order.setTotalAmount(rs.getBigDecimal("total_amount"));
                     order.setOrderTime(rs.getTimestamp("order_time").toLocalDateTime());
-                    order.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    order.setCreatedAt(rs.getTimestamp("created_at").toInstant());
                     order.setExpiredAt(rs.getTimestamp("expired_at").toLocalDateTime());
                     order.setSeats(new ArrayList<>());
                     orders.put(orderId, order);
@@ -85,7 +85,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                         order.setPaymentStatus(PaymentStatus.valueOf(rs.getString("payment_status")));
                         order.setTotalAmount(rs.getBigDecimal("total_amount"));
                         order.setOrderTime(rs.getTimestamp("order_time").toLocalDateTime());
-                        order.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        order.setCreatedAt(rs.getTimestamp("created_at").toInstant());
                         order.setExpiredAt(rs.getTimestamp("expired_at").toLocalDateTime());
                         order.setSeats(new ArrayList<>());
                     }
@@ -137,7 +137,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             pre.setString(6, o.getPaymentStatus().name());
             pre.setBigDecimal(7, o.getTotalAmount());
             pre.setTimestamp(8, Timestamp.valueOf(o.getOrderTime()));
-            pre.setTimestamp(9, Timestamp.valueOf(o.getCreatedAt()));
+            pre.setTimestamp(9, Timestamp.from(o.getCreatedAt()));
             pre.setTimestamp(10, Timestamp.valueOf(o.getExpiredAt()));
             pre.executeUpdate();
 

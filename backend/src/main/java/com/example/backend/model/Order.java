@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
-public class Order {
+public class Order extends AbstractMappedEntity {
     private String orderId;
 
     private Long userId;
@@ -33,12 +33,10 @@ public class Order {
     private List<OrderSeat> seats;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdAt;
-
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime expiredAt;
 
     public Order() {
+        super();
     }
 
     public Order(
@@ -51,8 +49,8 @@ public class Order {
             PaymentStatus paymentStatus,
             BigDecimal totalAmount,
             List<OrderSeat> seats,
-            LocalDateTime expiredAt,
-            LocalDateTime createdAt) {
+            LocalDateTime expiredAt) {
+        super();
         this.orderId = orderId;
         this.userId = userId;
         this.cinemaHallId = cinemaHallId;
@@ -63,7 +61,6 @@ public class Order {
         this.totalAmount = totalAmount;
         this.seats = seats;
         this.expiredAt = expiredAt;
-        this.createdAt = createdAt;
     }
 
     public String getOrderId() {
@@ -146,15 +143,6 @@ public class Order {
         this.expiredAt = expiredAt;
     }
 
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     @Override
     public String toString() {
 
@@ -169,7 +157,6 @@ public class Order {
                 ", totalAmount='" + totalAmount + '\'' +
                 ", seats=" + seats + '\'' +
                 ", orderTime='" + orderTime + '\'' +
-                ", createdAt='" + createdAt + '\'' +
                 ", expiredAt='" + expiredAt +
                 '}';
     }
@@ -190,13 +177,12 @@ public class Order {
                 && Objects.equals(paymentStatus, order.paymentStatus)
                 && Objects.equals(totalAmount, order.totalAmount)
                 && Objects.equals(seats, order.seats)
-                && Objects.equals(createdAt, order.createdAt)
                 && Objects.equals(expiredAt, order.expiredAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderId, userId, cinemaHallId, orderTime, orderStatus, paymentMethod, paymentStatus, totalAmount, seats, createdAt, expiredAt);
+        return Objects.hash(orderId, userId, cinemaHallId, orderTime, orderStatus, paymentMethod, paymentStatus, totalAmount, seats, expiredAt);
     }
 
 }

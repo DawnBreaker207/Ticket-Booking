@@ -12,26 +12,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/payment")
-@Tag(name = "Payment" , description = "Operations related to payment")
+@Tag(name = "Payment", description = "Operations related to payment")
 public class PaymentController {
     private final PaymentService paymentService;
 
     PaymentController(PaymentService paymentService) {
-	this.paymentService = paymentService;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/vnpay")
     public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest req) {
-	return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVNPayPayment(req));
+        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVNPayPayment(req));
     }
 
     @GetMapping("/vnpay-return")
     public ResponseObject<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest req) {
-	String status = req.getParameter("vnp_ResponseCode");
-	if (status.equals("00")) {
-	    return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO.VNPayResponse("00", "Success", ""));
-	} else {
-	    return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
-	}
+        String status = req.getParameter("vnp_ResponseCode");
+        if (status.equals("00")) {
+            return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO.VNPayResponse("00", "Success", ""));
+        } else {
+            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
+        }
     }
 }

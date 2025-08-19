@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
-public class Movie {
+public class Movie extends AbstractMappedEntity {
     private Long id;
     private String title;
     private String poster;
@@ -20,11 +20,12 @@ public class Movie {
     private String filmId;
 
     public Movie() {
-
+        super();
     }
 
     public Movie(Long id, String title, String poster, String overview, int duration, List<String> genre,
                  Date releaseDate, String imdbId, String filmId) {
+        super();
         this.id = id;
         this.title = title;
         this.poster = poster;
