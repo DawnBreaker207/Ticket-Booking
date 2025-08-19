@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
-public class CinemaHall {
+public class CinemaHall extends AbstractMappedEntity {
     private Long id;
     private Long movieId;
     private String movieSession;
@@ -14,10 +14,11 @@ public class CinemaHall {
     private List<Seat> seats;
 
     public CinemaHall() {
-
+        super();
     }
 
     public CinemaHall(Long id, Long movieId, String movieSession, List<Seat> seats) {
+        super();
         this.id = id;
         this.movieId = movieId;
         this.movieSession = movieSession;

@@ -132,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
 	o.setOrderId(orderId);
 	o.setUserId(userId);
 	o.setOrderTime(now);
-	o.setCreatedAt(now);
+    o.markCreated();
 	o.setTotalAmount(dto.getSeats().stream().map(OrderSeatDTO::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
 	o.setCinemaHallId(dto.getCinemaHallId());
 	o.setExpiredAt(now.plusMinutes(15));
