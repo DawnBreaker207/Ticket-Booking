@@ -9,6 +9,7 @@ import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.util.OrderUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -165,7 +166,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             }
             conn.commit();
             return findOne(o.getOrderId())
-                    .orElseThrow(() -> new OrderNotFoundException("Order not found after create"));
+                    .orElseThrow(() -> new OrderNotFoundException(HttpStatus.NOT_FOUND, "Order not found after create"));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -187,7 +188,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
             if (affected == 0) {
                 conn.rollback();
-                throw new OrderNotFoundException("No order updated");
+                throw new OrderNotFoundException(HttpStatus.NOT_FOUND, "No order updated");
             }
 
             if (o.getOrderStatus() == OrderStatus.CANCELLED) {
@@ -195,7 +196,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             }
             conn.commit();
             return findOne(o.getOrderId())
-                    .orElseThrow(() -> new OrderNotFoundException("Order not found after update"));
+                    .orElseThrow(() -> new OrderNotFoundException(HttpStatus.NOT_FOUND, "Order not found after update"));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -212,7 +213,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             int rows = pre.executeUpdate();
             if (rows == 0) {
                 conn.rollback();
-                throw new OrderNotFoundException("Not match found with id " + id);
+                throw new OrderNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id);
             }
             conn.commit();
         } catch (SQLException ex) {
@@ -232,7 +233,6 @@ public class OrderRepositoryImpl implements OrderRepository {
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
             int i = 1;
             for (OrderSeat seat : seats) {
-                System.out.println(seat.getSeatId());
                 pre.setLong(i++, seat.getSeatId());
             }
 
