@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+    private static final HttpStatus DEFAULT_STATUS = HttpStatus.BAD_REQUEST;
 
     @ExceptionHandler(value = {
             UserNotFoundException.class,
@@ -28,15 +29,15 @@ public class ApiExceptionHandler {
             ForbiddenPermissionException.class,
             OrderExpiredException.class,
             SeatUnavailableException.class,
-            RedisStorageException.class
-
+            RedisStorageException.class,
+            RefreshTokenNotFoundException.class,
+            RefreshTokenExpiredException.class
     })
-
     public <T extends RuntimeException> ResponseEntity<ExceptionMessage> handleApiRequestException(final T e) {
         log.info("**ApiExceptionHandler controller, handler API request*\n");
-        final var badRequest = HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), badRequest,
-                "#### " + e.getMessage() + "! ####"), badRequest);
+        final var status = (e instanceof ApiException ae && ae.getStatus() != null) ? ae.getStatus() : DEFAULT_STATUS;
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), status,
+                "#### " + e.getMessage() + "! ####"), status);
 
     }
 }

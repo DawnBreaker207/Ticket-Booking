@@ -1,22 +1,19 @@
 package com.example.backend.exception.wrapper;
 
+import com.example.backend.exception.ApiException;
+import org.springframework.http.HttpStatus;
+
 import java.io.Serial;
 
-public class UsernameExistedException extends RuntimeException {
+public class UsernameExistedException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
-
-    public UsernameExistedException(Throwable cause) {
-        super(cause);
-    }
-
-    public UsernameExistedException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
     public UsernameExistedException(String message) {
         super(message);
     }
 
-
+    public UsernameExistedException(HttpStatus status, String message) {
+        super(status, message);
+    }
 }

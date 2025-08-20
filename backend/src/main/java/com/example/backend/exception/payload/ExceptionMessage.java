@@ -16,7 +16,7 @@ public class ExceptionMessage implements Serializable {
 
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy__HH::mm:ss:SSSSSS")
-    private final ZonedDateTime timeStamp;
+    private final ZonedDateTime timestamp;
 
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private Throwable throwable;
@@ -25,21 +25,21 @@ public class ExceptionMessage implements Serializable {
 
     private final String message;
 
-    public ExceptionMessage(ZonedDateTime timeStamp, HttpStatus httpStatus, String message) {
-	this.timeStamp = timeStamp;
+    public ExceptionMessage(ZonedDateTime timestamp, HttpStatus httpStatus, String message) {
+	this.timestamp = timestamp;
 	this.httpStatus = httpStatus;
 	this.message = message;
     }
 
     public ExceptionMessage(ZonedDateTime timestamp, Throwable throwable, HttpStatus httpStatus, String message) {
-	this.timeStamp = timestamp;
+	this.timestamp = timestamp;
 	this.throwable = throwable;
 	this.httpStatus = httpStatus;
 	this.message = message;
     }
 
     public ZonedDateTime getTimestamp() {
-	return timeStamp;
+	return timestamp;
     }
 
     public Throwable getThrowable() {

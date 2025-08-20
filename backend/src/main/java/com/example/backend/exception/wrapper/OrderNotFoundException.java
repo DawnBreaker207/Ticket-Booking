@@ -1,24 +1,19 @@
 package com.example.backend.exception.wrapper;
 
+import com.example.backend.exception.ApiException;
+import org.springframework.http.HttpStatus;
+
 import java.io.Serial;
 
-public class OrderNotFoundException extends RuntimeException {
+public class OrderNotFoundException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public OrderNotFoundException() {
-	super();
-    }
-
-    public OrderNotFoundException(String message, Throwable casue) {
-	super(message, casue);
-    }
-
     public OrderNotFoundException(String message) {
-	super(message);
+        super(message);
     }
 
-    public OrderNotFoundException(Throwable casue) {
-	super(casue);
+    public OrderNotFoundException(HttpStatus status, String message) {
+        super(status, message);
     }
 }
