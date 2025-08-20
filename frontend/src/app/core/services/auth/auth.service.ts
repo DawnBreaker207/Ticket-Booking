@@ -23,8 +23,8 @@ export class AuthService {
   URL = `${environment.ApiUrl}/auth`;
   private http = inject(HttpClient);
 
-  login(email: string, password: string) {
-    return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, {email, password}).pipe(
+  login(username: string, password: string) {
+    return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, {username, password}).pipe(
       map((res) => res.data),
       tap(res => this.accessToken = res.token),
       catchError(this.handleError<Jwt>('login')),

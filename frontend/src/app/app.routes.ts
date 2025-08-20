@@ -5,5 +5,5 @@ export const routes: Routes = [
   {path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
   {path: 'admin', loadChildren: () => import('./modules/admin/admin-module').then(m => m.AdminModule)},
   {path: 'errors', loadChildren: () => import('./modules/error/error.module').then(m => m.ErrorModule)},
-  {path: '', redirectTo: 'errors/404'}
+  {path: '**', redirectTo: 'errors/404'}
 ];

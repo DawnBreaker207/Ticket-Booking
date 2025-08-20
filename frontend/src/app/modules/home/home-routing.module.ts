@@ -12,7 +12,7 @@ const routes: Routes = [
       {path: 'signup', component: SignUpComponent}
     ]
   },
-  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+  {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: '**', redirectTo: 'errors/404'}
 ];
 
