@@ -5,6 +5,7 @@ import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Seat;
 import com.example.backend.repository.CinemaHallRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -159,7 +160,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                 seat.executeBatch();
             }
             return findOne(hall.getId())
-                    .orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after create"));
+                    .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Cinema hall not found after create"));
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -177,11 +178,11 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
             int affected = pre.executeUpdate();
 
             if (affected == 0) {
-                throw new CinemaHallNotFoundException("No cinema hall updated");
+                throw new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "No cinema hall updated");
             }
 
             return findOne(h.getId())
-                    .orElseThrow(() -> new CinemaHallNotFoundException("Cinema hall not found after update"));
+                    .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Cinema hall not found after update"));
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -199,7 +200,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
             if (rows == 0) {
                 conn.rollback();
-                throw new CinemaHallNotFoundException("Not match found with id " + id);
+                throw new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id);
             }
             conn.commit();
         } catch (SQLException ex) {
@@ -218,7 +219,6 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
         String placeHolders = seatIds.stream().map(id -> "?").collect(Collectors.joining(", "));
         String sql = "UPDATE seat SET status = ? WHERE seat_number IN (" + placeHolders + ")";
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
-            System.out.println(seatStatus.name());
             pre.setString(1, seatStatus.name());
             for (int i = 0; i < seatIds.size(); i++) {
                 pre.setString(i + 2, seatIds.get(i));

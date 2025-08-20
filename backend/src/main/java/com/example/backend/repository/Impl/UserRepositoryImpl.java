@@ -5,6 +5,7 @@ import com.example.backend.exception.wrapper.UserNotFoundException;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -20,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     public User save(User user) {
-        String sql = "INSERT INTO user (username, email, password) VALUES ( ?, ? ,? )";
+        String sql = "INSERT INTO users (username, email, password) VALUES ( ?, ? ,? )";
         String sqlRole = "INSERT INTO user_role (user_id, role_id) VALUES (?, ?)";
         try (Connection conn = datasource.getConnection()) {
             PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -52,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        String sql = "SELECT * FROM user";
+        String sql = "SELECT * FROM users";
         String sqlRole = """
                 SELECT r.id, r.name
                 FROM roles r
@@ -101,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findOne(Long id) {
-        String sql = "SELECT * FROM user WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE id = ?";
         String sqlRole = """
                 SELECT r.id, r.name
                 FROM roles r
@@ -144,7 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT * FROM user WHERE email = ?";
+        String sql = "SELECT * FROM users WHERE email = ?";
         String sqlRole = """
                 SELECT r.id, r.name
                 FROM roles r
@@ -187,7 +188,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        String sql = "SELECT * FROM user WHERE username = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
         String sqlRole = """
                 SELECT r.id, r.name
                 FROM roles r
@@ -230,10 +231,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(User u) {
-        String sql = "UPDATE user SET username = ?, email = ?, password = ? WHERE id = ?";
+        String sql = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
         String deleteRoles = "DELETE FROM user_role WHERE user_id = ?";
         String insertRole = "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)";
-        String selectUser = "SELECT * FROM user WHERE id = ?";
+        String selectUser = "SELECT * FROM users WHERE id = ?";
         String selectRoles = """
                 SELECT r.id, r.name
                 FROM roles r
@@ -275,7 +276,7 @@ public class UserRepositoryImpl implements UserRepository {
                         user.setPassword(result.getString("password"));
 
                     } else {
-                        throw new UserNotFoundException("Not match found with id " + u.getId());
+                        throw new UserNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + u.getId());
                     }
                 }
             }
@@ -304,7 +305,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(Long id) {
-        String sql = "DELETE FROM user WHERE id = ?";
+        String sql = "DELETE FROM users WHERE id = ?";
         try (var conn = datasource.getConnection()) {
             var pre = conn.prepareStatement(sql);
 
@@ -313,7 +314,7 @@ public class UserRepositoryImpl implements UserRepository {
             int rows = pre.executeUpdate();
 
             if (rows == 0) {
-                throw new UserNotFoundException("Not match found with id " + id);
+                throw new UserNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id);
             }
             return;
         } catch (SQLException ex) {

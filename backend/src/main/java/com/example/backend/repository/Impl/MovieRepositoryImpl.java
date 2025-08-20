@@ -4,6 +4,7 @@ import com.example.backend.dto.shared.MovieDTO;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.model.Movie;
 import com.example.backend.repository.MovieRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -198,7 +199,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
                         return movie;
                     } else {
-                        throw new MovieNotFoundException("Not match found with id " + m.getId());
+                        throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + m.getId());
                     }
                 }
             }
@@ -218,7 +219,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             int rows = pre.executeUpdate();
 
             if (rows == 0) {
-                throw new MovieNotFoundException("Not match found with id " + id);
+                throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id);
             }
             return;
         } catch (SQLException ex) {

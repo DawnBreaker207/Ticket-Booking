@@ -7,10 +7,7 @@ import com.example.backend.model.Movie;
 import com.example.backend.repository.Impl.MovieRepositoryImpl;
 import com.example.backend.service.MovieService;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,7 +28,7 @@ public class MovieServiceImpl implements MovieService {
         this.movieRepository = movieRepository;
     }
 
-//    @Cacheable(MOVIE_CACHE)
+    //    @Cacheable(MOVIE_CACHE)
     @Override
     public List<Movie> findAll(MovieDTO m) {
         return movieRepository.findAll(m);
@@ -41,14 +38,14 @@ public class MovieServiceImpl implements MovieService {
 //    @Cacheable(MOVIE_CACHE)
     public Movie findOne(Long id) {
         return movieRepository.findOne(id)
-                .orElseThrow(() -> new MovieNotFoundException("Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
     @Override
 //    @Cacheable(MOVIE_CACHE)
     public Movie findByMovieId(String id) {
         return movieRepository.findByMovieId(id)
-                .orElseThrow(() -> new MovieNotFoundException("Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
     @Override
@@ -112,7 +109,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie update(Long id, Movie m) {
-        movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException("Not match foundd with id " + id));
+        movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match foundd with id " + id));
 
         return movieRepository.update(m);
     }

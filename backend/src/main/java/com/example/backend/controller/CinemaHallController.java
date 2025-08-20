@@ -56,7 +56,6 @@ public class CinemaHallController {
 
     @PutMapping("/seat/{hallId}")
     public void updateSeats(@PathVariable Long hallId, @RequestBody CinemaHallDTO cinemaHall) {
-        System.out.println(cinemaHall.getSeatStatus());
         cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getSeatStatus());
     }
 
