@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `user`
+CREATE TABLE IF NOT EXISTS users
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     username   VARCHAR(255) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS orders
     created_at     DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP,
     updated_at     DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP,
     expired_at     DATETIME,
-    CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_order_hall FOREIGN KEY (cinema_hall_id) REFERENCES cinema_hall (id) ON DELETE CASCADE
 );
 
@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS roles
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     name       ENUM ('USER', 'MODERATOR','ADMIN') DEFAULT 'USER',
-    created_at DATETIME NOT NULL                                 DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL                                 DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME NOT NULL                  DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL                  DEFAULT CURRENT_TIMESTAMP
 
 );
 
@@ -84,6 +84,16 @@ CREATE TABLE IF NOT EXISTS user_role
     user_id BIGINT NOT NULL,
     role_id BIGINT NOT NULL,
     PRIMARY KEY (user_id, role_id),
-    CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_role_user FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS refresh_token
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id     BIGINT       NOT NULL,
+    token       VARCHAR(512) NOT NULL UNIQUE,
+    expiry_date DATETIME     NOT NULL,
+    CONSTRAINT fk_user_refresh FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

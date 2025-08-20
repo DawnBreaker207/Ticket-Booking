@@ -1,8 +1,11 @@
 package com.example.backend.config.security;
 
+import com.example.backend.config.response.SignOutHandler;
 import com.example.backend.service.Impl.UserDetailsServiceImpl;
 import com.example.backend.util.AuthEntryPointJwt;
 import com.example.backend.util.AuthTokenFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +34,8 @@ public class SecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    @Autowired
+    private SignOutHandler signOutHandler;
 
     @Bean
     public AuthTokenFilter authenticationTokenFilter() {
@@ -71,8 +76,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+    public SecurityFilterChain filterChain(HttpSecurity http, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session
@@ -80,9 +86,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
 //                        .requestMatchers("/api/v1/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+                .logout(logout -> logout
+                        .logoutUrl("/api/v1/auth/logout")
+                        .addLogoutHandler(signOutHandler)
+                        .logoutSuccessHandler((req, res, auth) -> {
+                            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                        })
+                )
+        ;
 
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
