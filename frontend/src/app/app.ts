@@ -1,15 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { Component } from "@angular/core";
+import { Seat } from "./modules/home/components/layout/seat/seat";
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterLink, RouterOutlet, NzIconModule, NzLayoutModule, NzMenuModule],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  selector: "app-root",
+  imports: [Seat],
+  templateUrl: "./app.html",
+  styleUrl: "./app.css",
 })
-export class App {
-  isCollapsed = false;
-}
+export class App {}
