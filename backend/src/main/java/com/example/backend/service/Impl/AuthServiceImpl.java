@@ -3,8 +3,12 @@ package com.example.backend.service.Impl;
 import com.example.backend.dto.request.LoginRequest;
 import com.example.backend.dto.request.RegisterRequest;
 import com.example.backend.dto.response.JwtResponse;
+import com.example.backend.dto.response.TokenRefreshResponse;
+import com.example.backend.exception.wrapper.RefreshTokenExpiredException;
+import com.example.backend.exception.wrapper.RefreshTokenNotFoundException;
 import com.example.backend.exception.wrapper.UserEmailExistedException;
 import com.example.backend.exception.wrapper.UsernameExistedException;
+import com.example.backend.model.RefreshToken;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.repository.Impl.RoleRepositoryImpl;
@@ -12,6 +16,9 @@ import com.example.backend.repository.Impl.UserRepositoryImpl;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
 import com.example.backend.util.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,19 +34,29 @@ import java.util.stream.Collectors;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final UserRepositoryImpl userRepository;
     private final RoleRepositoryImpl roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtils jWTUtils;
+    private final RefreshTokenServiceImpl refreshTokenService;
 
-    public AuthServiceImpl(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JWTUtils jWTUtils) {
+    public AuthServiceImpl(
+            UserRepositoryImpl userRepository,
+            RoleRepositoryImpl roleRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JWTUtils jWTUtils,
+            RefreshTokenServiceImpl refreshTokenService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jWTUtils = jWTUtils;
+        this.refreshTokenService = refreshTokenService;
     }
+
 
     @Override
     public void register(RegisterRequest newUser) {
@@ -58,10 +75,9 @@ public class AuthServiceImpl implements AuthService {
                 .getRole()
                 .stream()
                 .map(roleName -> roleRepository
-                        .findByName(roleName.toUpperCase())
-                        .orElseThrow(() -> new IllegalArgumentException("Role not found " + roleName))
-
-                )
+                        .findByName(roleName
+                                .toUpperCase())
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found " + roleName)))
                 .collect(Collectors.toSet());
 
         user.setRoles(roles);
@@ -76,11 +92,35 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, refreshToken.getToken());
     }
 
     @Override
-    public boolean isPasswordMatch(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+    public void logout() {
+        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principle instanceof UserDetailsImpl user) {
+            Long userId = user.getId();
+            refreshTokenService.deleteByUserId(userId);
+        }
+
+
+    }
+
+    @Override
+    public TokenRefreshResponse refreshToken(HttpServletRequest token) {
+        String refreshToken = jWTUtils.getJwtRefreshCookie(token);
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new RefreshTokenExpiredException("Refresh token not existed");
+        }
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String jwtCookie = jWTUtils.generateToken(user.getUsername());
+                    return new TokenRefreshResponse(jwtCookie, refreshToken);
+                })
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found " + token));
     }
 }

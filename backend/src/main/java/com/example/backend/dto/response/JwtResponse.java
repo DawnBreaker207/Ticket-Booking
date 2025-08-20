@@ -11,20 +11,13 @@ public class JwtResponse {
     private String email;
     private List<String> roles;
 
-    public JwtResponse(String token, Long id, String username, String email, List<String> roles) {
+    public JwtResponse(String token, Long id, String username, String email, List<String> roles, String refreshToken) {
         this.roles = roles;
         this.email = email;
         this.username = username;
         this.id = id;
-//        this.refreshToken = refreshToken;
+        this.refreshToken = refreshToken;
         this.token = token;
-    }
-
-    public JwtResponse(String token, Long id, String username, String email) {
-        this.token = token;
-        this.id = id;
-        this.username = username;
-        this.email = email;
     }
 
     public String getRefreshToken() {
@@ -42,7 +35,6 @@ public class JwtResponse {
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
-
 
     public String getToken() {
         return token;
