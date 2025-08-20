@@ -1,0 +1,17 @@
+<form nz-form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input you user name"/>
+    <nz-input-group>
+      <input type="text" nz-input placeholder="Username" formControlName="username" >
+    </nz-input-group>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input you password"/>
+    <nz-input-group>
+      <input type="text" nz-input placeholder="Password" formControlName="password">
+    </nz-input-group>
+  </nz-form-item>
+
+  <button nz-button [nzType]="'primary'" type="submit">Submit</button>
+</form>
