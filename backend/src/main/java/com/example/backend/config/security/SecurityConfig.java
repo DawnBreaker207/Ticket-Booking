@@ -54,17 +54,11 @@ public class SecurityConfig {
         return authBuilder.build();
     }
 
-    public final String[] ALLOWED_DOMAINS = {
-            "http://localhost:3000",
-            "http://localhost:4200",
-            "http://localhost:5173"};
-
-
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList(ALLOWED_DOMAINS));
+        config.addAllowedOrigin("http://localhost:3000");
         config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         config.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
