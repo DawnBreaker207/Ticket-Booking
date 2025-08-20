@@ -1,23 +1,19 @@
 package com.example.backend.exception.wrapper;
 
+import com.example.backend.exception.ApiException;
+import org.springframework.http.HttpStatus;
+
 import java.io.Serial;
 
-public class UserPasswordNotMatchException extends RuntimeException {
+public class UserPasswordNotMatchException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
-
-    public UserPasswordNotMatchException() {
-    }
-
-    public UserPasswordNotMatchException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
     public UserPasswordNotMatchException(String message) {
         super(message);
     }
 
-    public UserPasswordNotMatchException(Throwable cause) {
-        super(cause);
+    public UserPasswordNotMatchException(HttpStatus status, String message) {
+        super(status, message);
     }
 }

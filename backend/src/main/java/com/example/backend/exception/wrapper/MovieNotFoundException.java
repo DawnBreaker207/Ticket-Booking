@@ -1,24 +1,19 @@
 package com.example.backend.exception.wrapper;
 
+import com.example.backend.exception.ApiException;
+import org.springframework.http.HttpStatus;
+
 import java.io.Serial;
 
-public class MovieNotFoundException extends RuntimeException {
+public class MovieNotFoundException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public MovieNotFoundException() {
-	super();
-    }
-
-    public MovieNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
-
     public MovieNotFoundException(String message) {
-	super(message);
+        super(message);
     }
 
-    public MovieNotFoundException(Throwable cause) {
-	super(cause);
+    public MovieNotFoundException(HttpStatus status, String message) {
+        super(status, message);
     }
 }
