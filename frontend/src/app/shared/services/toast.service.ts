@@ -14,7 +14,7 @@ type notificationInfo = {
 export class ToastService {
   private notification = inject(NzNotificationService);
 
-  createNotification(info: notificationInfo) {
+  createNotification(info: Partial<notificationInfo> = {}) {
     const {type = 'info', title = 'title', message = 'message', position = 'topRight'} = info
     this.notification.create(type,
       title,
