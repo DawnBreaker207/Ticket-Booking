@@ -1,8 +1,8 @@
 <ul class="flex flex-row justify-center">
   @for (header of headers; track header) {
     <li class="text-white flex justify-between">
-      <a href="#">
-        {{ header | uppercase }}
+      <a [routerLink]="header.path">
+        {{ header.name | uppercase }}
       </a>
     </li>
   }
