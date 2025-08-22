@@ -1,9 +1,9 @@
-<form nz-form [formGroup]="movieForm" (click)="submit()" class="w-full h-full">
+<form nz-form [formGroup]="movieForm" class="w-full h-full">
   <nz-row [nzGutter]="16">
     <!--  Poster-->
     <nz-col [nzSpan]="8">
       <div class="flex flex-col gap-3">
-        <div class="w-full bg-[#f5f5f5] border-8 overflow-hidden" [style.aspect-ratio]="'2/3'">
+        <div class="w-full bg-[#f5f5f5] border-1 rounded-lg overflow-hidden" [style.aspect-ratio]="'2/3'">
           <img [src]="movieForm.get('poster')?.value || 'https://via.placeholder.com/150x200'"
                class="w-full h-full object-cover block" alt="">
         </div>
@@ -12,70 +12,81 @@
       <nz-form-item class="mt-[60px]">
         <nz-form-label>Poster (URL)</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="poster" type="text" placeholder="URL poster">
+          <input nz-input formControlName="poster" type="text" placeholder="URL poster" [readOnly]="mode === 'view'"
+          >
         </nz-form-control>
       </nz-form-item>
     </nz-col>
 
     <nz-col [nzSpan]="16">
-      <nz-form-item>
-        <button nz-button nzType="primary" (click)="openMovieModal()">Search</button>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Film Name</nz-form-label>
-        <nz-form-control [nzSpan]="12" [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter name'">
-          <input nz-input formControlName="title" type="text">
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzRequired [nzSpan]="7" [nzSm]="6" [nzXs]="24">Description</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter description'">
-          <textarea nz-input formControlName="overview" type="text" rows="4"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-
-
-      <nz-row [nzGutter]="12">
-
-        <nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Duration (minutes)</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter duration'">
-              <input nz-input formControlName="duration" type="number">
-            </nz-form-control>
+      <div class="flex flex-col h-full justify-between">
+        @if (mode !== 'view') {
+          <nz-form-item class="justify-center">
+            <button nz-button nzType="primary" (click)="openMovieModal()">Search</button>
           </nz-form-item>
-        </nz-col>
 
-        <nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Language</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter language'">
-              <nz-select formControlName="language" nzPlaceHolder="Enter language">
-                <nz-option nzLabel="English" nzValue="en"></nz-option>
-                <nz-option nzLabel="Vietnamese" nzValue="vi"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
+        }
 
-      </nz-row>
 
-      <nz-form-item>
-        <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Genre</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter genre'">
-          <nz-select formControlName="genres" nzMode="tags"
-                     nzPlaceHolder="Enter genre"></nz-select>
-        </nz-form-control>
-      </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>Film Name</nz-form-label>
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter name'">
+            <input nz-input formControlName="title" type="text" [readOnly]="mode === 'view'">
+          </nz-form-control>
+        </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Date release</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Enter release date'">
-          <nz-date-picker class="w-full" formControlName="releaseDate"></nz-date-picker>
-        </nz-form-control>
-      </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>Description</nz-form-label>
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter description'">
+
+
+            <textarea nz-input formControlName="overview" [nzAutosize]="{minRows: 6}"
+                      class="w-full !resize-none overflow-y-auto" [readOnly]="mode === 'view'"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-row [nzGutter]="12">
+
+          <nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Duration (minutes)</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter duration'">
+                <input nz-input formControlName="duration" type="number" [readOnly]="mode === 'view'">
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+
+          <nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired [nzSpan]="12">Language</nz-form-label>
+              <nz-form-control [nzSpan]="12" [nzErrorTip]="'Enter language'">
+                <nz-select formControlName="language" nzPlaceHolder="Enter language" [nzDisabled]="mode === 'view'">
+                  <nz-option nzLabel="English" nzValue="en"></nz-option>
+                  <nz-option nzLabel="Vietnamese" nzValue="vi"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+
+        </nz-row>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Genre</nz-form-label>
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter genre'">
+            <nz-select formControlName="genres" nzMode="tags"
+                       nzPlaceHolder="Enter genre" [nzDisabled]="mode === 'view'"></nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Date release</nz-form-label>
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter release date'">
+            <nz-date-picker nzSize="default" class="w-full"
+                            formControlName="releaseDate" [nzDisabled]="mode === 'view'"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </nz-col>
   </nz-row>
 </form>

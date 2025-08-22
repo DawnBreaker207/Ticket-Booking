@@ -4,7 +4,7 @@ export interface Movie {
   poster: string;
   overview: string;
   duration: number;
-  genre: String[];
+  genres: String[];
   releaseDate: Date;
   imdbId: string;
   filmId: string;

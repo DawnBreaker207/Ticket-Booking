@@ -40,19 +40,24 @@ export class MovieComponent implements OnInit {
     this.movieService.getMovieLists().subscribe(data => this.movieList = data);
   }
 
-  openMovieModal() {
+  openMovieModal(mode: 'add' | 'edit' | 'view', id?: string | number) {
     const modal = this.modalService.create({
       nzContent: FormMovieComponent,
       nzTitle: undefined,
       nzClosable: true,
+      nzData: {
+        mode: mode,
+        movieId: id
+      },
       nzWidth: 900,
       nzKeyboard: true,
-      nzFooter: [
+      nzFooter: mode !== 'view' ? [
         {
           label: 'Confirm',
           type: 'primary',
           onClick: () => {
             const form = modal.getContentComponent() as FormMovieComponent;
+            console.log('onClick', form.movieForm.valid)
             if (form.movieForm.valid) {
               form.submit();
               modal.close()
@@ -61,20 +66,20 @@ export class MovieComponent implements OnInit {
             }
           }
         }
-      ],
+      ] : null,
       nzOnCancel: () => {
         const formComponent = modal.getContentComponent();
-        // if (!formComponent.hasData()) {
-        //   return true;
-        // } else {
-        //   return new Promise((resolve) => {
-        //     this.modalService.confirm({
-        //       nzTitle: 'Are u sure',
-        //       nzOnOk: () => resolve(true),
-        //       nzOnCancel: () => resolve(false),
-        //     })
-        //   })
-        // }
+        if (!formComponent.hasData()) {
+          return true;
+        } else {
+          return new Promise((resolve) => {
+            this.modalService.confirm({
+              nzTitle: 'Are u sure',
+              nzOnOk: () => resolve(true),
+              nzOnCancel: () => resolve(false),
+            })
+          })
+        }
 
       }
 
@@ -82,5 +87,11 @@ export class MovieComponent implements OnInit {
     });
 
 
+  }
+
+  onDelete(id: number) {
+    return this.movieService.removeMovie(id).subscribe(res => {
+      console.log(res)
+    })
   }
 }

@@ -12,7 +12,6 @@ import {ApiRes} from '@/app/core/models/common.model';
 export class MovieService {
   URL = `${environment.apiUrl}/movie`;
   private apiMovie = environment.tmbd.apiUrl;
-  private imageBase = environment.tmbd.imageUrl;
   private headers = new HttpHeaders({Authorization: `Bearer ${environment.tmbd.token}`});
   private http = inject(HttpClient);
 
@@ -29,6 +28,29 @@ export class MovieService {
       map((res) => res.data),
       catchError(this.handleError<Movie>('movie')));
   }
+
+  findOneMovie(id: number) {
+    return this.http.get<ApiRes<Movie>>(`${this.URL}/${id}`).pipe(
+      map((res) => res.data),
+      catchError(this.handleError<Movie>('movie'))
+    )
+  }
+
+  updateMovie(movie: Movie) {
+    return this.http.put<ApiRes<Movie>>(`${this.URL}/${movie.id}`, movie).pipe(
+      map((res) => res.data),
+      catchError(this.handleError<Movie>('movie'))
+    )
+  }
+
+
+  removeMovie(id: number) {
+    return this.http.delete<void>(`${this.URL}/${id}`).pipe(
+      map((res) => console.log(res)),
+      catchError(this.handleError<void>('movie'))
+    )
+  }
+
 
   searchMovies(query: string, language = 'vi-VN') {
     return this.http.get(`${this.apiMovie}/search/movie?query=${encodeURIComponent(query)}&language=${language}&page=1`,
