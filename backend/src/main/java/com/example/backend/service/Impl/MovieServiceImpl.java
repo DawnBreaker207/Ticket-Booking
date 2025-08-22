@@ -53,12 +53,9 @@ public class MovieServiceImpl implements MovieService {
         String apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjgxYTVkNmVhYTVmZWViZjEzNWM5MTJjNzQ1YmI0MSIsIm5iZiI6MTc1MzcwMTQ4OC4zNzksInN1YiI6IjY4ODc1YzcwZTA4OGQ1NzhjNzhhNzRhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zCqZxPPYPUxf-b_MJPIyb4tgaN6F_TM_n3Jn9nK8pM8";
         String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
 
-        var checkExist = movieRepository.findByMovieId(String.valueOf(id));
-
-        if (checkExist.isPresent()) {
+        movieRepository.findByMovieId(String.valueOf(id)).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
-
-        }
+        });
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
@@ -76,11 +73,11 @@ public class MovieServiceImpl implements MovieService {
         movie.setReleaseDate(Date.from(
                 LocalDate.parse(root.path("release_date").asText()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
-        List<String> genres = new ArrayList<String>();
+        List<String> genres = new ArrayList<>();
         for (JsonNode genreNode : root.path("genres")) {
             genres.add(genreNode.path("name").asText());
         }
-        movie.setGenre(genres);
+        movie.setGenres(genres);
         movieRepository.save(movie);
         return movie;
     }
@@ -88,6 +85,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie create(MovieDTO m) {
+       movieRepository.findByMovieId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
+            throw new MovieExistedException("This movie is existed");
+        });
 
         Movie movie = new Movie();
         movie.setTitle(m.getTitle());
@@ -97,12 +97,9 @@ public class MovieServiceImpl implements MovieService {
         movie.setFilmId(m.getFilmId());
         movie.setPoster(m.getPoster());
         movie.setReleaseDate(m.getReleaseDate());
-
-        List<String> genres = new ArrayList<String>();
-        for (String genreNode : m.getGenre()) {
-            genres.add(genreNode);
-        }
-        movie.setGenre(genres);
+        m.markCreated();
+        List<String> genres = new ArrayList<>(m.getGenres());
+        movie.setGenres(genres);
         movieRepository.save(movie);
         return movie;
     }

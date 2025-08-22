@@ -14,7 +14,7 @@ public class Movie extends AbstractMappedEntity {
     private String poster;
     private String overview;
     private int duration;
-    private List<String> genre;
+    private List<String> genres;
     private Date releaseDate;
     private String imdbId;
     private String filmId;
@@ -23,7 +23,7 @@ public class Movie extends AbstractMappedEntity {
         super();
     }
 
-    public Movie(Long id, String title, String poster, String overview, int duration, List<String> genre,
+    public Movie(Long id, String title, String poster, String overview, int duration, List<String> genres,
                  Date releaseDate, String imdbId, String filmId) {
         super();
         this.id = id;
@@ -31,7 +31,7 @@ public class Movie extends AbstractMappedEntity {
         this.poster = poster;
         this.overview = overview;
         this.duration = duration;
-        this.genre = genre;
+        this.genres = genres;
         this.releaseDate = releaseDate;
         this.imdbId = imdbId;
         this.filmId = filmId;
@@ -77,12 +77,12 @@ public class Movie extends AbstractMappedEntity {
         this.duration = duration;
     }
 
-    public List<String> getGenre() {
-        return genre;
+    public List<String> getGenres() {
+        return genres;
     }
 
-    public void setGenre(List<String> genre) {
-        this.genre = genre;
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
     }
 
     public Date getReleaseDate() {
@@ -117,7 +117,7 @@ public class Movie extends AbstractMappedEntity {
                 ", poster='" + poster + '\'' +
                 ", overview='" + overview + '\'' +
                 ", duration='" + duration + '\'' +
-                ", genre='" + genre + '\'' +
+                ", genres='" + genres + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", imdbId='" + imdbId + '\'' + '}' +
                 ", filmId='" + filmId + '\'' + '}';
@@ -134,7 +134,7 @@ public class Movie extends AbstractMappedEntity {
                 && Objects.equals(poster, movie.poster)
                 && Objects.equals(overview, movie.overview)
                 && Objects.equals(duration, movie.duration)
-                && Objects.equals(genre, movie.genre)
+                && Objects.equals(genres, movie.genres)
                 && Objects.equals(releaseDate, movie.releaseDate)
                 && Objects.equals(filmId, movie.filmId)
                 && Objects.equals(imdbId, movie.imdbId);
@@ -143,6 +143,6 @@ public class Movie extends AbstractMappedEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, poster, overview, duration, genre, releaseDate, imdbId, filmId);
+        return Objects.hash(id, poster, overview, duration, genres, releaseDate, imdbId, filmId);
     }
 }

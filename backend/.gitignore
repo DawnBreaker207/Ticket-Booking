@@ -30,7 +30,19 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# System files
+.DS_Store
+Thumbs.db
 
 # Docker 
 data/
+
+# FE
+.frontend/

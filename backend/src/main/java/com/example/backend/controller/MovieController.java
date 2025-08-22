@@ -6,7 +6,6 @@ import com.example.backend.model.Movie;
 import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class MovieController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<Movie> create(@RequestBody MovieDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }

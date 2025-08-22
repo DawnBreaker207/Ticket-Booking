@@ -2,8 +2,6 @@ package com.example.backend.config.security;
 
 import com.example.backend.config.response.SignOutHandler;
 import com.example.backend.service.Impl.UserDetailsServiceImpl;
-import com.example.backend.util.AuthEntryPointJwt;
-import com.example.backend.util.AuthTokenFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @Configuration
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
@@ -91,7 +89,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-//                        .requestMatchers("/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
                         .anyRequest().authenticated())
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/auth/logout")
