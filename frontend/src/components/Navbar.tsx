@@ -1,8 +1,7 @@
 import React from "react";
 import type { FC } from "react";
-import { Layout, Menu, Button, Avatar } from "antd";
-import { MenuOutlined, UserOutlined } from "@ant-design/icons";
-
+import { Layout, Menu, Button, Divider, Typography } from "antd";
+import Logo from "../assets/logo.png";
 const { Header, Content } = Layout;
 
 const topStripStyle: React.CSSProperties = {
@@ -25,46 +24,47 @@ const headerContentStyle: React.CSSProperties = {
     borderBottom: "1px solid #f0f0f0",
 };
 
-const AntdNavbar: FC = () => {
-    const menuItems = [
-        { key: "home", label: "Home" },
-        { key: "products", label: "Products" },
-        { key: "settings", label: "Settings" },
-    ];
-
+const Navbar: FC = () => {
     return (
-        <Layout style={{ minHeight: "100vh" }}>
-            <Header style={{ padding: 0, background: "transparent" }}>
-                <div style={topStripStyle}>
-                    <div style={{ display: "flex", alignItems: "start", gap: 12 }}>
-                        <button>đăng ký</button>
-                    </div>
+        <Header style={{ padding: 0, background: "transparent" }}>
+            <div style={topStripStyle}>
+                <div />
+                <div style={{ display: "flex", alignItems: "center", gap: 2, margin: "0 200px" }}>
+                    <Button
+                        type="text"
+                        size="small"
+                        style={{ color: "#fff", padding: "0 8px", height: 20, lineHeight: "20px" }}
+                    >
+                        Đăng nhập
+                    </Button>
+                    <Divider type="vertical" style={{ borderColor: "rgba(255,255,255,0.6)", height: 18 }} />
+                    <Button
+                        type="text"
+                        size="small"
+                        style={{ color: "#fff", padding: "0 8px", height: 20, lineHeight: "20px" }}
+                    >
+                        Đăng ký
+                    </Button>
                 </div>
-                <div style={headerContentStyle}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                        <div style={{ fontWeight: 700, fontSize: 18 }}>Tên Ứng Dụng</div>
-                    </div>
+            </div>
 
-                    <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
-                        <Menu
-                            mode="horizontal"
-                            selectable={false}
-                            items={menuItems as any}
-                            style={{ background: "transparent", borderBottom: "none" }}
-                        />
-                        <Button type="text" icon={<MenuOutlined />} />
-                    </div>
-                </div>
-            </Header>
+            <div style={headerContentStyle}>
+                <div style={{ display: "flex", alignItems: "center", gap: 20, margin: "0 200px" }}>
+                    <img
+                        src={Logo}
+                        alt="Logo"
+                        style={{ height: 48, objectFit: "contain" }}
+                    />
+                    <Typography.Text
+                        style={{ fontSize: 20, fontWeight: 700, marginRight: 24 }}
+                    >
+                        Alpha Cinema
+                    </Typography.Text>
 
-            {/* Main content area */}
-            <Content style={{ background: "#fff", padding: 24 }}>
-                <div style={{ minHeight: 360 }}>
-                    <p>list phim</p>
                 </div>
-            </Content>
-        </Layout>
+            </div>
+        </Header>
     );
 };
 
-export default AntdNavbar;
+export default Navbar;

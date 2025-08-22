@@ -1,38 +1,25 @@
-// File: src/pages/MoviePage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Table, Button, Input, Space, Modal, Form,
     InputNumber, Select, DatePicker, Row, Col,
-    Typography, List, Avatar, Popconfirm, Tag, Switch
+    Typography, List, Avatar, Popconfirm, Tag
 } from 'antd';
-import { DeleteOutlined, EditOutlined, EyeOutlined, RollbackOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import type { Dayjs } from 'dayjs';
+import moment from 'moment';
+import type { Moment } from 'moment';
+import axios from 'axios';
+
+import type { Movie, ApiMovie } from '../../types/movie';
+
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { addMovie, updateMovie, removeMovie } from '../../features/movies/moviesSlice';
+
+
 
 const { Title } = Typography;
 const { Option } = Select;
-
-interface Movie {
-    key: string;
-    title: string;
-    overview: string;
-    genre: string[];
-    duration: number;
-    language: string;
-    releaseDate: string;
-    poster?: string;
-    deleted?: boolean;
-}
-
-interface ApiMovie {
-    id: number;
-    Title: string;
-    Year: string;
-    Genre: string;
-    imdbID?: string;
-    Poster?: string;
-}
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY ?? '';
 
@@ -40,59 +27,34 @@ const apiUrl = 'https://api.themoviedb.org/3';
 const imageUrl = 'https://image.tmdb.org/t/p/original';
 
 const MoviePage: React.FC = () => {
-    const [data, setData] = useState<Movie[]>([]);
+    const dispatch = useAppDispatch();
+    const movies = useAppSelector(state => state.movies.items);
     const [search, setSearch] = useState<string>('');
 
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // used for add/edit/view
+    const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
+    const [isViewModalVisible, setIsViewModalVisible] = useState<boolean>(false);
     const [isApiModalVisible, setIsApiModalVisible] = useState<boolean>(false);
     const [apiResults, setApiResults] = useState<ApiMovie[]>([]);
-    const [editingKey, setEditingKey] = useState<string | null>(null);
-    const [mode, setMode] = useState<'add' | 'edit' | 'view' | null>(null);
-    const [showDeleted, setShowDeleted] = useState<boolean>(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     const [form] = Form.useForm<any>();
-    const [genresMap, setGenresMap] = useState<Record<number, string>>({});
+    const [viewForm] = Form.useForm<any>();
 
-    useEffect(() => {
-        // fetch genre list once from TMDB so we can map genre_ids -> names (vi-VN)
-        const fetchGenres = async () => {
-            try {
-                const res = await fetch(`${apiUrl}/genre/movie/list?language=vi-VN`, {
-                    headers: { Authorization: `Bearer ${apiKey}` }
-                });
-                if (!res.ok) throw new Error('Failed to fetch genres');
-                const json = await res.json();
-                const map: Record<number, string> = {};
-                (json.genres || []).forEach((g: any) => { map[g.id] = g.name; });
-                setGenresMap(map);
-            } catch (e) {
-                console.error('Genres fetch error', e);
-            }
-        };
-        fetchGenres();
-    }, []);
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(10);
 
-    // by default hide soft-deleted items
-    const filtered = data.filter(item => !item.deleted && item.title.toLowerCase().includes(search.toLowerCase()));
-    const dataSource = showDeleted ? data : filtered;
+    const filtered = movies.filter(item => item.title.toLowerCase().includes(search.toLowerCase()));
 
-    const handleSoftDelete = (key: string) => {
-        setData(prev => prev.map(item => item.key === key ? { ...item, deleted: true } : item));
-    };
 
-    const handleRestore = (key: string) => {
-        setData(prev => prev.map(item => item.key === key ? { ...item, deleted: false } : item));
-    };
 
-    const handlePermanentDelete = (key: string) => {
-        setData(prev => prev.filter(item => item.key !== key));
+    const handleDelete = (id: string) => {
+        dispatch(removeMovie(id));
     };
 
     const openAddModal = () => {
         form.resetFields();
-        setEditingKey(null);
-        setMode('add');
-        setIsModalVisible(true);
+        setEditingId(null);
+        setIsEditModalVisible(true);
     };
 
     const openEditModal = (record: Movie) => {
@@ -102,33 +64,35 @@ const MoviePage: React.FC = () => {
             genre: record.genre,
             duration: record.duration,
             language: record.language,
-            releaseDate: dayjs(record.releaseDate, 'DD/MM/YYYY'),
+            releaseDate: moment(record.releaseDate, 'DD/MM/YYYY'),
             poster: record.poster,
         });
-        setEditingKey(record.key);
-        setMode('edit');
-        setIsModalVisible(true);
+        setEditingId(record.id);
+        setIsEditModalVisible(true);
     };
 
     const openViewModal = (record: Movie) => {
-        form.setFieldsValue({
+        viewForm.setFieldsValue({
             title: record.title,
             overview: record.overview,
             genre: record.genre,
             duration: record.duration,
             language: record.language,
-            releaseDate: dayjs(record.releaseDate, 'DD/MM/YYYY'),
+            releaseDate: moment(record.releaseDate, 'DD/MM/YYYY'),
             poster: record.poster,
         });
-        setMode('view');
-        setIsModalVisible(true);
+        setIsViewModalVisible(true);
     };
 
-    const closeModal = () => {
+    const closeEditModal = () => {
         form.resetFields();
-        setEditingKey(null);
-        setMode(null);
-        setIsModalVisible(false);
+        setEditingId(null);
+        setIsEditModalVisible(false);
+    };
+
+    const closeViewModal = () => {
+        viewForm.resetFields();
+        setIsViewModalVisible(false);
     };
 
     const openApiModal = () => {
@@ -139,54 +103,38 @@ const MoviePage: React.FC = () => {
     const closeApiModal = () => setIsApiModalVisible(false);
 
     const handleSave = () => {
-        // used for both add & edit
         form.validateFields().then(values => {
-            const release: Dayjs = values.releaseDate;
-            if (mode === 'edit' && editingKey) {
-                setData(prev => prev.map(item => {
-                    if (item.key !== editingKey) return item;
-                    return {
-                        ...item,
-                        title: values.title,
-                        overview: values.overview,
-                        genre: values.genre || [],
-                        duration: values.duration,
-                        language: values.language,
-                        releaseDate: release.format('DD/MM/YYYY'),
-                        poster: values.poster || item.poster,
-                    };
-                }));
+            const release: Moment = values.releaseDate;
+            const moviePayload: Movie = {
+                id: editingId ?? Date.now().toString(),
+                title: values.title,
+                overview: values.overview,
+                genre: values.genre || [],
+                duration: values.duration,
+                language: values.language,
+                releaseDate: release.format('DD/MM/YYYY'),
+                poster: values.poster || undefined,
+            };
+
+            if (editingId) {
+                dispatch(updateMovie(moviePayload));
             } else {
-                const nextKey = (data.length + 1).toString();
-                const newMovie: Movie = {
-                    key: nextKey,
-                    title: values.title,
-                    overview: values.overview,
-                    genre: values.genre || [],
-                    duration: values.duration,
-                    language: values.language,
-                    releaseDate: release.format('DD/MM/YYYY'),
-                    poster: values.poster || undefined,
-                };
-                setData(prev => [...prev, newMovie]);
+                dispatch(addMovie(moviePayload));
             }
-            closeModal();
+            closeEditModal();
         });
     };
 
-    // Use TMDB search endpoint (language=vi-VN)
     const handleApiSearch = async (value: string) => {
         if (!value) return setApiResults([]);
         try {
             const endpoint = `${apiUrl}/search/movie?query=${encodeURIComponent(value)}&language=vi-VN&page=1`;
-            const res = await fetch(endpoint, { headers: { Authorization: `Bearer ${apiKey}` } });
-            if (!res.ok) throw new Error('TMDB search failed');
-            const json = await res.json();
+            const res = await axios.get(endpoint, { headers: { Authorization: `Bearer ${apiKey}` } });
+            const json = res.data;
             const results = (json.results || []).map((m: any) => ({
                 id: m.id,
                 Title: m.title,
                 Year: m.release_date ? m.release_date.slice(0, 4) : '',
-                Genre: (m.genre_ids || []).map((id: number) => genresMap[id]).filter(Boolean).join(', '),
                 imdbID: m.imdb_id,
                 Poster: m.poster_path ? `${imageUrl}${m.poster_path}` : undefined,
             }));
@@ -199,13 +147,12 @@ const MoviePage: React.FC = () => {
 
     const handleApiSelect = async (item: ApiMovie) => {
         try {
-            const detailsRes = await fetch(`${apiUrl}/movie/${item.id}?language=vi-VN`, {
+            const detailsRes = await axios.get(`${apiUrl}/movie/${item.id}?language=vi-VN`, {
                 headers: { Authorization: `Bearer ${apiKey}` }
             });
-            if (!detailsRes.ok) throw new Error('Failed to fetch movie details');
-            const details = await detailsRes.json();
+            const details = detailsRes.data;
 
-            const runtime: number | undefined = details.runtime; // phút
+            const runtime: number | undefined = details.runtime;
             const originalLang: string = details.original_language || details.originalLanguage || '';
             const releaseDateStr: string = details.release_date || '';
             const posterUrl = details.poster_path ? `${imageUrl}${details.poster_path}` : item.Poster;
@@ -213,30 +160,34 @@ const MoviePage: React.FC = () => {
             let langLabel = originalLang;
             if (originalLang === 'en') langLabel = 'Tiếng Anh';
             else if (originalLang === 'vi') langLabel = 'Tiếng Việt';
+            else if (originalLang === 'ja') langLabel = 'Tiếng Nhật';
+            else if (originalLang === 'ko') langLabel = 'Tiếng Hàn';
+            else if (originalLang === 'zh') langLabel = 'Tiếng Trung';
+
+            const genreNames: string[] = (details.genres || []).map((g: any) => g.name).slice(0, 3);
 
             form.setFieldsValue({
                 title: item.Title,
                 overview: details.overview ? details.overview : `${item.Title} (${item.Year})`,
-                genre: item.Genre ? item.Genre.split(', ').slice(0, 3) : [],
+                genre: genreNames,
                 poster: posterUrl,
                 duration: runtime,
                 language: langLabel,
-                releaseDate: releaseDateStr ? dayjs(releaseDateStr, 'YYYY-MM-DD') : undefined,
+                releaseDate: releaseDateStr ? moment(releaseDateStr, 'YYYY-MM-DD') : undefined,
             });
         } catch (e) {
             console.error('Movie details fetch error', e);
             form.setFieldsValue({
                 title: item.Title,
                 overview: `${item.Title} (${item.Year})`,
-                genre: item.Genre ? item.Genre.split(', ').slice(0, 3) : [],
+                genre: [],
                 poster: item.Poster,
             });
         } finally {
             closeApiModal();
-            // make sure add/edit modal is open so user can save
-            if (!isModalVisible) {
-                setMode('add');
-                setIsModalVisible(true);
+            if (!isEditModalVisible) {
+                setEditingId(null);
+                setIsEditModalVisible(true);
             }
         }
     };
@@ -271,41 +222,32 @@ const MoviePage: React.FC = () => {
         {
             title: 'Hành động',
             key: 'action',
-            render: (_text, record) => (
-                <Space>
-                    {!record.deleted ? (
-                        <>
-                            <Button type="text" icon={<EyeOutlined />} onClick={() => openViewModal(record)} />
-                            <Button type="text" icon={<EditOutlined />} onClick={() => openEditModal(record)} />
-                            <Popconfirm
-                                title={`Xóa phim "${record.title}"?`}
-                                onConfirm={() => handleSoftDelete(record.key)}
-                                okText="Có"
-                                cancelText="Không"
-                            >
-                                <Button type="text" icon={<DeleteOutlined />} />
-                            </Popconfirm>
-                        </>
-                    ) : (
-                        <>
-                            <Tag>Đã xóa</Tag>
-                            <Button type="text" icon={<RollbackOutlined />} onClick={() => handleRestore(record.key)} />
-                            <Popconfirm
-                                title={`Xóa hoàn toàn phim "${record.title}"? (không thể khôi phục)`}
-                                onConfirm={() => handlePermanentDelete(record.key)}
-                                okText="Xóa"
-                                cancelText="Hủy"
-                            >
-                                <Button type="text" danger icon={<DeleteOutlined />} />
-                            </Popconfirm>
-                        </>
-                    )}
-                </Space>
+            render: (_text, record) => (<Space>
+                <Button
+                    type="text"
+                    icon={<EyeOutlined style={{ color: '#1890ff', fontSize: 20 }} />}
+                    onClick={() => openViewModal(record)}
+                />
+                <Button
+                    type="text"
+                    icon={<EditOutlined style={{ color: '#52c41a', fontSize: 20 }} />}
+                    onClick={() => openEditModal(record)}
+                />
+                <Popconfirm
+                    title={`Xóa phim "${record.title}"?`}
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Xóa"
+                    cancelText="Hủy"
+                >
+                    <Button
+                        type="text"
+                        icon={<DeleteOutlined style={{ color: '#ff4d4f', fontSize: 20 }} />}
+                    />
+                </Popconfirm>
+            </Space>
             ),
         },
     ];
-
-    const modalTitle = mode === 'view' ? 'Chi tiết Phim' : (mode === 'edit' ? 'Sửa Phim' : 'Thêm Phim mới');
 
     return (
         <>
@@ -323,91 +265,175 @@ const MoviePage: React.FC = () => {
                     </Col>
                     <Col flex="auto" />
                     <Col style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <span>Hiện phim đã xóa</span>
-                        <Switch checked={showDeleted} onChange={setShowDeleted} />
                         <Button type="primary" onClick={openAddModal}>Thêm phim</Button>
                     </Col>
                 </Row>
 
-                <Table columns={columns} dataSource={dataSource} rowKey="key" />
+                <Table
+                    columns={columns}
+                    dataSource={filtered}
+                    rowKey="id"
+                    pagination={{
+                        current: page,
+                        pageSize,
+                        total: filtered.length,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['5', '10', '20', '50'],
+                        onChange: (p, ps) => { setPage(p); setPageSize(ps); }
+                    }}
+                />
             </Space>
 
-            {/* Shared Modal for Add / Edit / View */}
+            {/* Edit / Add Modal */}
             <Modal
-                title={modalTitle}
-                open={isModalVisible}
-                onCancel={closeModal}
+                title={editingId ? 'Sửa Phim' : 'Thêm Phim mới'}
+                open={isEditModalVisible}
+                onCancel={closeEditModal}
                 width={900}
-                footer={mode === 'view' ? [<Button key="close" onClick={closeModal}>Đóng</Button>] : undefined}
-                okText={mode === 'edit' ? 'Lưu' : 'Thêm'}
-                onOk={mode === 'view' ? undefined : handleSave}
+                okText={editingId ? 'Lưu' : 'Thêm'}
+                onOk={handleSave}
             >
                 <Form form={form} layout="vertical">
                     <Row gutter={16}>
                         <Col span={8}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                <Form.Item shouldUpdate noStyle>
-                                    {() => {
-                                        const src = form.getFieldValue('poster');
-                                        return (
-                                            <div style={{ width: '100%', aspectRatio: '2 / 3', background: '#f5f5f5', borderRadius: 8, overflow: 'hidden' }}>
-                                                <img src={src} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                                            </div>
-                                        );
-                                    }}
-                                </Form.Item>
-                            </div>
-                            <div style={{ marginTop: 60 }}></div>
+                            <Form.Item shouldUpdate noStyle>
+                                {() => {
+                                    const src = form.getFieldValue('poster');
+                                    return (
+                                        <div style={{ width: '100%', aspectRatio: '2 / 3', background: '#f5f5f5', borderRadius: 8, overflow: 'hidden' }}>
+                                            <img src={src} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                        </div>
+                                    );
+                                }}
+                            </Form.Item>
+                            <div style={{ marginTop: 56 }} />
                             <Form.Item label="Poster (URL)" name="poster">
-                                <Input placeholder="URL ảnh poster (ví dụ https://...jpg)" disabled={mode === 'view'} />
+                                <Input placeholder="URL ảnh poster (ví dụ https://...jpg)" />
                             </Form.Item>
                         </Col>
                         <Col span={16}>
                             <Form.Item>
-                                <Button type="primary" block onClick={openApiModal} disabled={mode === 'view'}>
+                                <Button type="primary" block onClick={openApiModal}>
                                     Tìm phim từ API
                                 </Button>
                             </Form.Item>
 
-                            <Form.Item label="Tên phim" name="title" rules={[{ required: true, message: 'Vui lòng nhập tên phim' }]}
-                            >
-                                <Input placeholder="Nhập tên phim" disabled={mode === 'view'} />
+                            <Form.Item label="Tên phim" name="title" rules={[{ required: true, message: 'Vui lòng nhập tên phim' }]}>
+                                <Input placeholder="Nhập tên phim" />
                             </Form.Item>
-                            <Form.Item label="Mô tả" name="overview" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
-                            >
-                                <Input.TextArea rows={4} disabled={mode === 'view'} />
+                            <Form.Item label="Mô tả" name="overview" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+                                <Input.TextArea rows={4} />
                             </Form.Item>
                             <Row gutter={12}>
                                 <Col span={12}>
-                                    <Form.Item label="Thời lượng (phút)" name="duration" rules={[{ required: true, message: 'Vui lòng nhập thời lượng' }]}
-                                    >
-                                        <InputNumber style={{ width: '100%' }} disabled={mode === 'view'} />
+                                    <Form.Item label="Thời lượng (phút)" name="duration" rules={[{ required: true, message: 'Vui lòng nhập thời lượng' }]}>
+                                        <InputNumber style={{ width: '100%' }} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label="Ngôn ngữ" name="language" rules={[{ required: true, message: 'Vui lòng nhập ngôn ngữ' }]}
-                                    >
-                                        <Select placeholder="Chọn ngôn ngữ" disabled={mode === 'view'}>
+                                    <Form.Item label="Ngôn ngữ" name="language" rules={[{ required: true, message: 'Vui lòng nhập ngôn ngữ' }]}>
+                                        <Select placeholder="Chọn ngôn ngữ">
                                             <Option value="Tiếng Anh">Tiếng Anh</Option>
                                             <Option value="Tiếng Việt">Tiếng Việt</Option>
+                                            <Option value="Tiếng Nhật">Tiếng Nhật</Option>
+                                            <Option value="Tiếng Hàn">Tiếng Hàn</Option>
+                                            <Option value="Tiếng Trung">Tiếng Trung</Option>
                                         </Select>
                                     </Form.Item>
                                 </Col>
                             </Row>
 
-                            <Form.Item label="Thể loại" name="genre" rules={[{ required: true, message: 'Vui lòng nhập thể loại' }]}
-                            >
-                                <Select mode="tags" style={{ width: '100%' }} placeholder="Thêm hoặc chọn thể loại" disabled={mode === 'view'} />
+                            <Form.Item label="Thể loại" name="genre" rules={[{ required: true, message: 'Vui lòng nhập thể loại' }]}>
+                                <Select mode="tags" style={{ width: '100%' }} placeholder="Thêm hoặc chọn thể loại" />
                             </Form.Item>
 
-                            <Form.Item label="Ngày khởi chiếu" name="releaseDate" rules={[{ required: true, message: 'Vui lòng nhập ngày khởi chiếu' }]}
-                            >
-                                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" disabled={mode === 'view'} />
+                            <Form.Item label="Ngày khởi chiếu" name="releaseDate" rules={[{ required: true, message: 'Vui lòng nhập ngày khởi chiếu' }]}>
+                                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
                             </Form.Item>
                         </Col>
                     </Row>
                 </Form>
             </Modal>
+
+            {/* View detail Modal */}
+            <Modal
+                title="Chi tiết Phim"
+                open={isViewModalVisible}
+                onCancel={closeViewModal}
+                width={900}
+                footer={[<Button key="close" onClick={closeViewModal}>Đóng</Button>]}
+            >
+                <Form form={viewForm} layout="vertical">
+                    <Row gutter={16}>
+                        <Col span={8}>
+                            <Form.Item shouldUpdate noStyle>
+                                {() => {
+                                    const src = viewForm.getFieldValue('poster');
+                                    return (
+                                        <div style={{ width: '100%', aspectRatio: '2 / 3', background: '#f5f5f5', borderRadius: 8, overflow: 'hidden' }}>
+                                            <img src={src} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                        </div>
+                                    );
+                                }}
+                            </Form.Item>
+                            <div style={{ marginTop: 16 }} />
+                            <Form.Item label="Poster">
+                                <Input readOnly value={viewForm.getFieldValue('poster') || ''} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={16}>
+                            <Form.Item label="Tên phim">
+                                <Input readOnly value={viewForm.getFieldValue('title') || ''} />
+                            </Form.Item>
+
+                            <Form.Item label="Mô tả">
+                                <Input.TextArea rows={4} readOnly value={viewForm.getFieldValue('overview') || ''} />
+                            </Form.Item>
+
+                            <Row gutter={12}>
+                                <Col span={12}>
+                                    <Form.Item label="Thời lượng (phút)">
+                                        <Input readOnly value={
+                                            (() => {
+                                                const v = viewForm.getFieldValue('duration');
+                                                return v !== undefined && v !== null ? String(v) : '';
+                                            })()
+                                        } />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item label="Ngôn ngữ">
+                                        <Input readOnly value={viewForm.getFieldValue('language') || ''} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Form.Item label="Thể loại">
+                                <div>
+                                    {Array.isArray(viewForm.getFieldValue('genre')) && viewForm.getFieldValue('genre').length > 0 &&
+                                        (viewForm.getFieldValue('genre') as string[]).map(g => <Tag key={g}>{g}</Tag>)
+                                    }
+                                </div>
+                            </Form.Item>
+
+                            <Form.Item label="Ngày khởi chiếu">
+                                <Input
+                                    readOnly
+                                    value={
+                                        (() => {
+                                            const rd = viewForm.getFieldValue('releaseDate');
+                                            if (!rd) return '';
+                                            return moment.isMoment(rd) ? rd.format('DD/MM/YYYY') : moment(rd).format('DD/MM/YYYY');
+                                        })()
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Modal>
+
+            {/* API Search Modal */}
             <Modal
                 title="Tìm phim từ API"
                 open={isApiModalVisible}
@@ -433,7 +459,7 @@ const MoviePage: React.FC = () => {
                                 <List.Item.Meta
                                     avatar={<Avatar shape="square" size={100} src={item.Poster} />}
                                     title={<span style={{ fontWeight: 500 }}>{item.Title}</span>}
-                                    description={<span style={{ fontSize: 12, color: '#888' }}>{item.Year} - {item.Genre}</span>}
+                                    description={<span style={{ fontSize: 12, color: '#888' }}>{item.Year}</span>}
                                 />
                             </List.Item>
                         )}
