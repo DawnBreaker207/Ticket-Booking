@@ -1,39 +1,36 @@
-<nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
+<nz-layout class="min-h-screen">
+  <nz-sider class="sticky top-0 h-screen"
             nzCollapsible
             nzWidth="256px"
             nzBreakpoint="md"
             [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null"
+
   >
-    <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1>Ant Design of Angular</h1>
-      </a>
+    <div class=" bg-white">
+      <h1 class="text-2xl text-center">Logo</h1>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
+
+    <ul class="mt-1" nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-menu-item [routerLink]="['dashboard']">
+        <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+        <span>Thống Kê</span>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
+      <li nz-menu-item [routerLink]="['movie']">
+        <i nz-icon nzType="video-camera" nzTheme="outline"></i>
+        <span>Phim</span>
       </li>
+      <li nz-menu-item [routerLink]="['schedule']">
+        <i nz-icon nzType="calendar" nzTheme="outline"></i>
+        <span>Suất Chiếu</span>
+      </li>
+      <li nz-menu-item [routerLink]="['order']">
+        <i nz-icon nzType="ordered-list" nzTheme="outline"></i>
+        <span>Đơn</span>
+      </li>
+
     </ul>
+
+
   </nz-sider>
   <nz-layout>
     <nz-header>
@@ -44,9 +41,10 @@
       </div>
     </nz-header>
     <nz-content>
-      <div class="inner-content">
+      <div class="overflow-y-auto h-full px-6 py-3 bg-white">
         <router-outlet/>
       </div>
     </nz-content>
+    <nz-footer class="bg-white text-center">Booking Ticket System {{ date.getFullYear() }}</nz-footer>
   </nz-layout>
 </nz-layout>

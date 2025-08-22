@@ -1,9 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {DashboardComponent} from '@/app/modules/admin/components/dashboard/dashboard';
-import {MovieComponent} from '@/app/modules/admin/components/movie/movie';
-import {OrderComponent} from '@/app/modules/admin/components/order/order';
 import {AdminComponent} from '@/app/modules/admin/admin.component';
+import {DashboardComponent} from '@/app/modules/admin/components/dashboard/dashboard.component';
+import {MovieComponent} from '@/app/modules/admin/components/movie/movie.component';
+import {OrderComponent} from '@/app/modules/admin/components/order/order.component';
+import {ScheduleComponent} from '@/app/modules/admin/components/schedule/schedule.component';
+import {FormMovieAPIComponent} from '@/app/modules/admin/components/movie/form/api/form.component';
 
 const routes: Routes = [
     {
@@ -11,6 +13,7 @@ const routes: Routes = [
         {path: 'dashboard', component: DashboardComponent},
         {path: 'movie', component: MovieComponent},
         {path: 'order', component: OrderComponent},
+        {path: 'schedule', component: OrderComponent},
       ]
     }, {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     {path: '**', redirectTo: 'errors/404'}
