@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {environment} from '@/environments/environment';
-import {HttpClient, HttpContext, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpContext, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {SKIP_AUTH, USE_HEADER} from '@/app/core/constants/context-token.model';
 import {Movie} from '@/app/core/models/movie.model';
@@ -16,8 +16,10 @@ export class MovieService {
   private http = inject(HttpClient);
 
 
-  getMovieLists() {
-    return this.http.get<ApiRes<Movie[]>>(`${environment.apiUrl}/movie`).pipe(
+  getMovieLists(query?: string) {
+    let params = query ? new HttpParams().set('title', query?.toString()) : undefined;
+
+    return this.http.get<ApiRes<Movie[]>>(`${this.URL}`, {params}).pipe(
       map((res) => res.data),
       catchError(this.handleError<Movie[]>('movie'))
     );

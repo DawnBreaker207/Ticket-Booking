@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, effect, inject, OnInit, signal} from '@angular/core';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {MovieService} from '@/app/core/services/movie/movie.service';
 import {NzInputModule} from 'ng-zorro-antd/input';
@@ -10,8 +10,12 @@ import {FormMovieComponent} from '@/app/modules/admin/components/movie/form/movi
 import {displayColumns, headerColumns} from '@/app/core/constants/column';
 import {Movie} from '@/app/core/models/movie.model';
 import {NzTagComponent} from 'ng-zorro-antd/tag';
-import {DatePipe} from '@angular/common';
+import {DatePipe, NgClass} from '@angular/common';
 import {NzSpaceComponent} from 'ng-zorro-antd/space';
+import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
+import {NzListComponent, NzListItemComponent, NzListItemMetaComponent} from 'ng-zorro-antd/list';
+import {debounceTime, map, of, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-movie',
@@ -23,21 +27,49 @@ import {NzSpaceComponent} from 'ng-zorro-antd/space';
     NzIconModule,
     NzTagComponent,
     DatePipe,
-    NzSpaceComponent
+    NzSpaceComponent,
+    NzAvatarComponent,
+    NzListComponent,
+    NzListItemComponent,
+    NzListItemMetaComponent,
+    NgClass,
+    ReactiveFormsModule
   ],
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
   providers: [NzModalService]
 })
 export class MovieComponent implements OnInit {
+  private fb = inject(FormBuilder);
   private modalService = inject(NzModalService);
   private movieService = inject(MovieService);
   headerColumn = headerColumns.movie;
   displayColumn = displayColumns.movie;
   movieList: readonly Movie[] = [];
 
+  searchCtrl = this.fb.control('');
+  searchResults = signal<any | null>(null);
+  selectedMovie = signal<any>(null);
+
   ngOnInit() {
     this.movieService.getMovieLists().subscribe(data => this.movieList = data);
+    this.searchCtrl.valueChanges.pipe(
+      debounceTime(1000),
+      map(v => v?.trim()),
+      switchMap(query => {
+        if (!query) return of([]);
+        return this.movieService.getMovieLists(query)
+      })
+    ).subscribe(res => {
+        console.log(res);
+        this.searchResults.set(res);
+      }
+    )
+  }
+
+  selectMovie(id: number) {
+    this.openMovieModal('view', id);
+    this.searchResults.set(null);
   }
 
   openMovieModal(mode: 'add' | 'edit' | 'view', id?: string | number) {
