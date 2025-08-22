@@ -7,7 +7,7 @@ import {Observable, of} from 'rxjs';
   providedIn: 'root'
 })
 export class OrderService {
-  URL = `${environment.ApiUrl}/order`;
+  URL = `${environment.apiUrl}/order`;
   private http = inject(HttpClient);
 
 

@@ -7,7 +7,7 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class UserService {
-  URL = `${environment.ApiUrl}/user`;
+  URL = `${environment.apiUrl}/user`;
   private http = inject(HttpClient);
 
   private handleError<T>(operation = "operation", result?: T) {

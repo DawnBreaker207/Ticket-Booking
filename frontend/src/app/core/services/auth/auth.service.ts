@@ -11,6 +11,7 @@ import {catchError, map, Observable, of, tap} from 'rxjs';
 })
 export class AuthService {
   private _accessToken: string | null = null;
+  private _refreshToken: string | null = null;
 
   get accessToken(): string | null {
     return this._accessToken;
@@ -20,13 +21,26 @@ export class AuthService {
     this._accessToken = token;
   }
 
-  URL = `${environment.ApiUrl}/auth`;
+  get refreshToken(): string | null {
+    return this._refreshToken;
+  }
+
+  set refreshToken(token: string | null) {
+    this._refreshToken = token;
+  }
+
+  URL = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
 
   login(username: string, password: string) {
     return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, {username, password}).pipe(
       map((res) => res.data),
-      tap(res => this.accessToken = res.token),
+      tap(res => {
+        this.accessToken = res.token;
+        this.refreshToken = res.refreshToken;
+        localStorage.setItem("accessToken", this._accessToken?.toString() ?? '');
+        localStorage.setItem("refreshToken", this._refreshToken?.toString() ?? '');
+      }),
       catchError(this.handleError<Jwt>('login')),
     )
   }
@@ -44,10 +58,10 @@ export class AuthService {
     )
   }
 
-  refreshToken(refreshToken: string) {
+  callRefreshToken(refreshToken: string) {
     return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/refreshToken`, {refreshToken}, {withCredentials: true}).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Jwt>('refreshToken')),
+      catchError(this.handleError<RefreshToken>('refreshToken')),
     )
   }
 
