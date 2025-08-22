@@ -5,9 +5,48 @@
   </button>
 </div>
 <div class="mb-5 flex items-center justify-between">
-  <nz-input-group nzAddOnBeforeIcon="search">
-    <input nz-input placeholder="TÌm kiếm" style="width:500px" type="text">
-  </nz-input-group>
+  <div class="relative">
+
+
+    <nz-input-group nzAddOnBeforeIcon="search">
+      <input nz-input placeholder="Tìm kiếm" style="width:500px" type="text" [formControl]="searchCtrl">
+    </nz-input-group>
+    <!--   Search result list-->
+    @if (searchResults() && searchResults().length > 0) {
+      <div class="absolute z-50 top-full mt-1 w-full bg-white border rounded shadow max-h-72 overflow-y-auto">
+        <nz-list [nzDataSource]="searchResults()" [nzRenderItem]="item" [nzBordered]="true"
+                 class="max-h-52 overflow-y-auto">
+          <ng-template #item let-movie>
+            <nz-list-item (click)="selectMovie(movie.id)" class="cursor-pointer transition p-2 rounded"
+                          [ngClass]="{'bg-blue-100': selectedMovie()?.id === movie.id,'hover:bg-gray-100': selectedMovie()?.id !== movie.id}"
+            >
+              <nz-list-item-meta
+                [nzAvatar]="nzAvatar"
+                [nzTitle]="nzTitle"
+                [nzDescription]="nzDescription">
+              </nz-list-item-meta>
+
+              <ng-template #nzAvatar>
+                <nz-avatar nzShape="square" [nzSize]="64"
+                           [nzSrc]="movie.poster">
+                </nz-avatar>
+              </ng-template>
+
+              <ng-template #nzTitle>
+                <span class="font-semibold">{{ movie.title }}</span>
+              </ng-template>
+
+              <ng-template #nzDescription>
+              <span class="text-xs text-gray-500">
+                {{ movie.release_date | date: 'yyyy' }} — {{ movie.overview }}
+              </span>
+              </ng-template>
+            </nz-list-item>
+          </ng-template>
+        </nz-list>
+      </div>
+    }
+  </div>
   <nz-select class="w-[150px]" nzPlaceHolder="Sắp xếp">
     <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
     <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
