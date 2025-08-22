@@ -19,6 +19,7 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {provideEffects} from '@ngrx/effects';
 import {AuthInterceptor} from './core/interceptor/auth.interceptor';
 import {CredentialInterceptor} from './core/interceptor/credential.interceptor';
+import {ErrorInterceptor} from '@/app/core/interceptor/error.interceptor';
 
 registerLocaleData(en);
 
@@ -26,7 +27,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({eventCoalescing: true}),
-    provideHttpClient(withInterceptors([AuthInterceptor, CredentialInterceptor])),
+    provideHttpClient(withInterceptors([AuthInterceptor, CredentialInterceptor, ErrorInterceptor])),
     provideRouter(routes),
     provideStore(),
     provideNzIcons(icons),
