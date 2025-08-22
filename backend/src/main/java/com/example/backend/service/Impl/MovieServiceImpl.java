@@ -106,7 +106,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie update(Long id, Movie m) {
-        movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match foundd with id " + id));
+        movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
 
         return movieRepository.update(m);
     }

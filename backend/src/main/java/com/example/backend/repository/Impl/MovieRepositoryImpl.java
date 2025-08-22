@@ -174,7 +174,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public Movie update(Movie m) {
-        String sql = "UPDATE movie SET title = ?, overview = ?, imdb_id = ?, duration = ?, poster = ?, release_date = ?, genres = ? WHERE id = ?";
+        String sql = "UPDATE movie SET title = ?, overview = ?, imdb_id = ?, duration = ?, poster = ?, release_date = ?, genres = ?, film_id = ? WHERE id = ?";
         String update = "SELECT * FROM movie WHERE id = ?";
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
             pre.setString(1, m.getTitle());
@@ -184,7 +184,8 @@ public class MovieRepositoryImpl implements MovieRepository {
             pre.setString(5, m.getPoster());
             pre.setDate(6, new java.sql.Date(m.getReleaseDate().getTime()));
             pre.setString(7, String.join(",", m.getGenres()));
-            pre.setLong(8, m.getId());
+            pre.setString(8, m.getFilmId());
+            pre.setLong(9, m.getId());
             pre.executeUpdate();
             try (var select = conn.prepareStatement(update)) {
                 select.setLong(1, m.getId());
@@ -197,10 +198,10 @@ public class MovieRepositoryImpl implements MovieRepository {
                         movie.setTitle(rs.getString("title"));
                         movie.setOverview(rs.getString("overview"));
                         movie.setImdbId(rs.getString("imdb_id"));
+                        movie.setFilmId(rs.getString("film_id"));
                         movie.setDuration(rs.getInt("duration"));
                         movie.setPoster(rs.getString("poster"));
                         movie.setReleaseDate(rs.getDate("release_date"));
-                        movie.setFilmId(rs.getString(rs.getString("film_id")));
                         movie.setGenres(genres);
 
                         return movie;
