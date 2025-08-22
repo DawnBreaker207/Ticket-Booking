@@ -5,7 +5,7 @@ A booking film tickets system
 
 
 ## 🚀 Getting Started
-A detail API endpoints can be found after installation on `http://localhost:8888/api/v1/swagger-ui.html`
+A detail API endpoints can be found after installation on `http://localhost:8888/swagger-ui.html`
 
 ## 🛠  Installation
 
