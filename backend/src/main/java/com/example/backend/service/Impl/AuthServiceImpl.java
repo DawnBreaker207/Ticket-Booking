@@ -15,7 +15,7 @@ import com.example.backend.repository.Impl.RoleRepositoryImpl;
 import com.example.backend.repository.Impl.UserRepositoryImpl;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
-import com.example.backend.util.UserDetailsImpl;
+import com.example.backend.model.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

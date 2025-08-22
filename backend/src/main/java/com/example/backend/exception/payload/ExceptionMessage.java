@@ -26,35 +26,35 @@ public class ExceptionMessage implements Serializable {
     private final String message;
 
     public ExceptionMessage(ZonedDateTime timestamp, HttpStatus httpStatus, String message) {
-	this.timestamp = timestamp;
-	this.httpStatus = httpStatus;
-	this.message = message;
+        this.timestamp = timestamp;
+        this.httpStatus = httpStatus;
+        this.message = message;
     }
 
     public ExceptionMessage(ZonedDateTime timestamp, Throwable throwable, HttpStatus httpStatus, String message) {
-	this.timestamp = timestamp;
-	this.throwable = throwable;
-	this.httpStatus = httpStatus;
-	this.message = message;
+        this.timestamp = timestamp;
+        this.throwable = throwable;
+        this.httpStatus = httpStatus;
+        this.message = message;
     }
 
     public ZonedDateTime getTimestamp() {
-	return timestamp;
+        return timestamp;
     }
 
     public Throwable getThrowable() {
-	return throwable;
+        return throwable;
     }
 
     public void setThrowable(Throwable throwable) {
-	this.throwable = throwable;
+        this.throwable = throwable;
     }
 
     public HttpStatus getHttpStatus() {
-	return httpStatus;
+        return httpStatus;
     }
 
     public String getMessage() {
-	return message;
+        return message;
     }
 }
