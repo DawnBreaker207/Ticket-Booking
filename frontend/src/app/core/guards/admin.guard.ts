@@ -1,5 +1,31 @@
-import { CanActivateFn } from '@angular/router';
+import {CanActivateFn, Router} from '@angular/router';
+import {inject} from '@angular/core';
+import {ToastService} from '@/app/shared/services/toast.service';
+import {AuthService} from '@/app/core/services/auth/auth.service';
+import {delay, of, tap} from 'rxjs';
 
-export const adminGuard: CanActivateFn = (route, state) => {
-  return true;
-};
+export const AdminGuard: CanActivateFn = (route, state) => {
+    const toast = inject(ToastService);
+    const router = inject(Router);
+
+    const user = localStorage.getItem("accessToken");
+    if (!user) {
+      toast.createNotification({
+        type: 'error',
+        title: 'Do not have permission',
+        message: 'You do not have permission to go to this page',
+        position: 'topRight'
+      })
+
+
+      return of(false).pipe(
+        delay(3000),
+        tap(() =>
+          router.navigateByUrl("/home/login")
+        )
+      )
+    }
+
+    return of(true);
+  }
+;
