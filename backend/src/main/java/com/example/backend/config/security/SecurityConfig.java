@@ -98,8 +98,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler((req, res, auth) -> {
                             res.setStatus(HttpServletResponse.SC_NO_CONTENT);
                         })
-                )
-        ;
+                );
 
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 

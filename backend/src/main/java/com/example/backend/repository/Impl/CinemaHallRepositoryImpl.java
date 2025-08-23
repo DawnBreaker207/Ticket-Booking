@@ -3,6 +3,7 @@ package com.example.backend.repository.Impl;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
 import com.example.backend.model.CinemaHall;
+import com.example.backend.model.Movie;
 import com.example.backend.model.Seat;
 import com.example.backend.repository.CinemaHallRepository;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,24 +27,42 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
     @Override
     public List<CinemaHall> findAll() {
-        String sql = "SELECT * " + "FROM cinema_hall " + "INNER JOIN seat ON cinema_hall.id = seat.cinema_hall_id";
+        String sql = """
+                SELECT 
+                ch.id AS hall_id, ch.movie_id AS hall_movie_id, ch.movie_session, ch.created_at, ch.updated_at,
+                s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status, s.price,
+                m.id AS movie_id, m.poster, m.title, m.overview, m.duration, m.genres, m.release_date
+                FROM cinema_hall AS ch 
+                INNER JOIN seat AS s ON ch.id = s.cinema_hall_id
+                INNER JOIN movie AS m ON ch.movie_id = m.id
+                """;
         Map<Long, CinemaHall> halls = new HashMap<>();
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql); var rs = pre.executeQuery()) {
 
             while (rs.next()) {
-                Long hallId = rs.getLong("cinema_hall.id");
-                var hall = halls.get(hallId);
+                Movie movie = new Movie();
+                List<String> genres = Arrays.asList(rs.getString("genres").split(","));
+                movie.setId(rs.getLong("movie_id"));
+                movie.setTitle(rs.getString("title"));
+                movie.setPoster(rs.getString("poster"));
+                movie.setOverview(rs.getString("overview"));
+                movie.setReleaseDate(rs.getDate("release_date"));
+                movie.setGenres(genres);
 
+                Long hallId = rs.getLong("hall_id");
+                var hall = halls.get(hallId);
                 if (hall == null) {
                     hall = new CinemaHall();
                     hall.setId(hallId);
-                    hall.setMovieId(rs.getLong("movie_id"));
-                    hall.setMovieSession(rs.getString("movie_session"));
+                    hall.setMovie(movie);
+                    hall.setMovieSession(rs.getTimestamp("movie_session"));
+                    hall.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    hall.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
                     hall.setSeats(new ArrayList<>());
                     halls.put(hallId, hall);
                 }
                 Seat seat = new Seat();
-                seat.setId(rs.getInt("seat.id"));
+                seat.setId(rs.getInt("seat_id"));
                 seat.setCinemaHallId(rs.getInt("cinema_hall_id"));
                 seat.setPrice(rs.getBigDecimal("price"));
                 seat.setSeatStatus(SeatStatus.valueOf(rs.getString("status")));
@@ -59,8 +79,16 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
     @Override
     public Optional<CinemaHall> findOne(Long id) {
-        String sql = "SELECT ch.id AS hall_id, ch.movie_id, ch.movie_session, s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status , s.price "
-                + "FROM cinema_hall ch " + "INNER JOIN seat s ON ch.id = s.cinema_hall_id " + "WHERE ch.id = ? ";
+        String sql = """
+                SELECT 
+                ch.id AS hall_id, ch.movie_id AS hall_movie_id, ch.movie_session, ch.created_at, ch.updated_at,
+                s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status, s.price,
+                m.id AS movie_id, m.poster, m.title, m.overview, m.duration, m.genres, m.release_date
+                FROM cinema_hall AS ch 
+                INNER JOIN seat s ON ch.id = s.cinema_hall_id 
+                INNER JOIN movie AS m ON ch.movie_id = m.id
+                WHERE ch.id = ? 
+                """;
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql);) {
 
             pre.setLong(1, id);
@@ -70,11 +98,22 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                 List<Seat> seats = new ArrayList<>();
 
                 while (rs.next()) {
+                    Movie movie = new Movie();
+                    List<String> genres = Arrays.asList(rs.getString("genres").split(","));
+                    movie.setId(rs.getLong("movie_id"));
+                    movie.setTitle(rs.getString("title"));
+                    movie.setPoster(rs.getString("poster"));
+                    movie.setOverview(rs.getString("overview"));
+                    movie.setReleaseDate(rs.getDate("release_date"));
+                    movie.setGenres(genres);
+
                     if (hall == null) {
                         hall = new CinemaHall();
                         hall.setId(rs.getLong("hall_id"));
-                        hall.setMovieId(rs.getLong("movie_id"));
-                        hall.setMovieSession(rs.getString("movie_session"));
+                        hall.setMovie(movie);
+                        hall.setMovieSession(rs.getTimestamp("movie_session"));
+                        hall.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                        hall.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
                     }
 
                     int seatId = rs.getInt("seat_id");
@@ -105,16 +144,37 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
     @Override
     public Optional<CinemaHall> findByMovieIdAndMovieSession(Long movieId, String movieSession) {
-        String sql = "SELECT * FROM cinema_hall  WHERE movie_id = ? AND movie_session = ?";
+        String sql = """
+                SELECT 
+                ch.id AS hall_id, ch.movie_id AS hall_movie_id, ch.movie_session, ch.created_at, ch.updated_at,
+                s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status, s.price,
+                m.id AS movie_id, m.poster, m.title, m.overview, m.duration, m.genres, m.release_date    
+                FROM cinema_hall AS ch 
+                INNER JOIN seat s ON ch.id = s.cinema_hall_id 
+                INNER JOIN movie AS m ON ch.movie_id = m.id
+                WHERE hall_movie_id = ? 
+                AND movie_session = ?
+                """;
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
             pre.setLong(1, movieId);
             pre.setString(2, movieSession);
-            try (var result = pre.executeQuery()) {
-                if (result.next()) {
+            try (var rs = pre.executeQuery()) {
+                if (rs.next()) {
+                    Movie movie = new Movie();
+                    List<String> genres = Arrays.asList(rs.getString("genres").split(","));
+                    movie.setId(rs.getLong("movie_id"));
+                    movie.setTitle(rs.getString("title"));
+                    movie.setPoster(rs.getString("poster"));
+                    movie.setOverview(rs.getString("overview"));
+                    movie.setReleaseDate(rs.getDate("release_date"));
+
+                    movie.setGenres(genres);
                     CinemaHall hall = new CinemaHall();
-                    hall.setId(result.getLong("id"));
-                    hall.setMovieId(result.getLong("movie_id"));
-                    hall.setMovieSession(result.getString("movie_session"));
+                    hall.setId(rs.getLong("hall_id"));
+                    hall.setMovie(movie);
+                    hall.setMovieSession(rs.getTimestamp("movie_session"));
+                    hall.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    hall.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
 
                     return Optional.of(hall);
                 }
@@ -130,18 +190,18 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 //    For admin
 
     @Override
-    public CinemaHall save(CinemaHall hall) {
+    public CinemaHall save(CinemaHall cinema) {
         String insertHall = "INSERT INTO cinema_hall (movie_id, movie_session) VALUES (? ,?)";
         String insertSeat = "INSERT INTO  seat (seat_number, status, cinema_hall_id, price) VALUES (? ,'AVAILABLE' , ? , ?)";
         try (var conn = datasource.getConnection();
              var pre = conn.prepareStatement(insertHall, Statement.RETURN_GENERATED_KEYS);) {
 
-            pre.setLong(1, hall.getMovieId());
-            pre.setString(2, hall.getMovieSession());
+            pre.setLong(1, cinema.getMovie().getId());
+            pre.setTimestamp(2, Timestamp.from(cinema.getMovieSession().toInstant()));
             pre.executeUpdate();
             try (var result = pre.getGeneratedKeys()) {
                 if (result.next()) {
-                    hall.setId(result.getLong(1));
+                    cinema.setId(result.getLong(1));
                 } else {
                     throw new SQLException("Can't not get id cinema hall");
                 }
@@ -151,7 +211,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                 for (char row = 'A'; row <= 'E'; row++) {
                     for (int i = 1; i <= 10; i++) {
                         seat.setString(1, row + String.valueOf(i));
-                        seat.setLong(2, hall.getId());
+                        seat.setLong(2, cinema.getId());
                         seat.setBigDecimal(3, BigDecimal.valueOf(50000));
                         seat.addBatch();
                     }
@@ -159,7 +219,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
 
                 seat.executeBatch();
             }
-            return findOne(hall.getId())
+            return findOne(cinema.getId())
                     .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Cinema hall not found after create"));
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -172,8 +232,8 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
         String sql = "UPDATE cinema_hall SET movie_id = ? , movie_session = ? WHERE id = ?";
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
 
-            pre.setLong(1, h.getMovieId());
-            pre.setString(2, h.getMovieSession());
+            pre.setLong(1, h.getMovie().getId());
+            pre.setTimestamp(2, Timestamp.from(h.getMovieSession().toInstant()));
             pre.setLong(3, h.getId());
             int affected = pre.executeUpdate();
 

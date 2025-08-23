@@ -2,25 +2,25 @@ package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Hidden
 public class CinemaHall extends AbstractMappedEntity {
     private Long id;
-    private Long movieId;
-    private String movieSession;
-
+    private Date movieSession;
     private List<Seat> seats;
+    private Movie movie;
 
     public CinemaHall() {
         super();
     }
 
-    public CinemaHall(Long id, Long movieId, String movieSession, List<Seat> seats) {
+    public CinemaHall(Long id, Movie movie, Date movieSession, List<Seat> seats) {
         super();
         this.id = id;
-        this.movieId = movieId;
+        this.movie = movie;
         this.movieSession = movieSession;
         this.seats = seats;
     }
@@ -33,19 +33,15 @@ public class CinemaHall extends AbstractMappedEntity {
         this.id = id;
     }
 
-    public Long getMovieId() {
-        return movieId;
-    }
+    public Movie getMovie() {return movie;}
 
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
+    public void setMovie(Movie movie) {this.movie = movie;}
 
-    public String getMovieSession() {
+    public Date getMovieSession() {
         return movieSession;
     }
 
-    public void setMovieSession(String movieSession) {
+    public void setMovieSession(Date movieSession) {
         this.movieSession = movieSession;
     }
 
@@ -62,7 +58,7 @@ public class CinemaHall extends AbstractMappedEntity {
 
         return "CinemaHall(" +
                 "id=" + id +
-                ", movieId=" + movieId +
+                ", movie=" + movie +
                 ", movieSession='" + movieSession + '\'' +
                 ", seats='" + seats + '\'' +
                 '}';
@@ -76,14 +72,14 @@ public class CinemaHall extends AbstractMappedEntity {
             return false;
         CinemaHall cinemaHall = (CinemaHall) obj;
         return Objects.equals(id, cinemaHall.id)
-                && Objects.equals(movieId, cinemaHall.movieId)
+                && Objects.equals(movie, cinemaHall.movie)
                 && Objects.equals(movieSession, cinemaHall.movieSession)
                 && Objects.equals(seats, cinemaHall.seats);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, movieId, movieSession, seats);
+        return Objects.hash(id, movie, movieSession, seats);
     }
 
 }
