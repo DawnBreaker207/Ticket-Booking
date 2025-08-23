@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {MovieService} from '@/app/core/services/movie/movie.service';
 import {NzInputModule} from 'ng-zorro-antd/input';
