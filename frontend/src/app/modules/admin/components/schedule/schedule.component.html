@@ -1,1 +1,63 @@
-<p>schedule works!</p>
+<div class="mb-5 flex items-center justify-between">
+  <h1 class="text-2xl font-bold mb-4">Quản Lý Suất Chiếu</h1>
+  <button nz-button nzType="primary" nzShape="circle" (click)="openModal('add')">
+    <i nz-icon nzType="plus" nzTheme="outline"></i>
+  </button>
+</div>
+<div class="mb-5 flex items-center justify-between">
+  <nz-input-group nzAddOnBeforeIcon="search">
+    <input nz-input placeholder="Tìm kiếm" style="width:500px" type="text">
+  </nz-input-group>
+  <!--   Search result list-->
+  <nz-select class="w-[150px]" nzPlaceHolder="Sắp xếp">
+    <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
+    <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
+  </nz-select>
+</div>
+<nz-table [nzData]="scheduleList" nzShowPagination nzShowSizeChanger>
+  <thead>
+  <tr>
+    @for (item of headerColumn; track item) {
+      <th>
+        {{ item }}
+      </th>
+    }
+  </tr>
+  </thead>
+  <tbody>
+    @for (item of scheduleList; track item.id) {
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.movie.title }}</td>
+        <td>
+          <img class="object-cover w-24 h-36" [src]="item.movie.poster" [alt]="item.movie.title">
+        </td>
+        <td>{{ item.movieSession |date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <div>
+            <nz-space>
+              <button nz-button nzType="text" nzShape="circle" (click)="openModal('view', item.id)">
+                <i nz-icon nzType="eye" nzTheme="twotone"></i>
+              </button>
+              <button nz-button nzType="text" nzShape="circle" (click)="openModal('edit', item.id)">
+                <i nz-icon nzType="edit" nzTheme="twotone" nzTwotoneColor="#52c41a"></i>
+              </button>
+              <button nz-button nzType="text" nzShape="circle" (click)="onDelete(item.id)">
+                <i nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#e7000b"></i>
+              </button>
+              <!--              <button nz-button nzType="text" nzShape="circle">-->
+              <!--                <i nz-icon nzType="redo" class="!text-orange-600" nzTheme="outline"></i>-->
+              <!--              </button>-->
+              <!--              <button nz-button nzType="text">-->
+              <!--                <i nz-icon nzType="eye-invisible" nzTheme="twotone" nzTwotoneColor="#e7000b"></i>-->
+              <!--              </button>-->
+            </nz-space>
+          </div>
+
+        </td>
+      </tr>
+
+    }
+
+  </tbody>
+</nz-table>

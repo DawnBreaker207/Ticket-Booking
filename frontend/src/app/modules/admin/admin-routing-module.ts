@@ -12,8 +12,8 @@ const routes: Routes = [
       path: '', component: AdminComponent, children: [
         {path: 'dashboard', component: DashboardComponent},
         {path: 'movie', component: MovieComponent},
+        {path: 'schedule', component: ScheduleComponent},
         {path: 'order', component: OrderComponent},
-        {path: 'schedule', component: OrderComponent},
       ]
     }, {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     {path: '**', redirectTo: 'errors/404'}
