@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import {
     Table, Button, Input, Space, Modal, Form,
     InputNumber, Select, DatePicker, Row, Col,
-    Typography, List, Avatar, Popconfirm, Tag
+    Typography, List, Avatar, Popconfirm, Tag, message
 } from 'antd';
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import type { Moment } from 'moment';
 import axios from 'axios';
-
+import { z } from 'zod';
 import type { Movie, ApiMovie } from '../../types/movie';
 
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { addMovie, updateMovie, removeMovie } from '../../features/movies/moviesSlice';
-
 
 
 const { Title } = Typography;
@@ -25,6 +24,17 @@ const apiKey = import.meta.env.VITE_TMDB_API_KEY ?? '';
 
 const apiUrl = 'https://api.themoviedb.org/3';
 const imageUrl = 'https://image.tmdb.org/t/p/original';
+
+const MovieSchema = z.object({
+    id: z.string(),
+    title: z.string().min(1, 'Tên phim không được để trống'),
+    overview: z.string().min(1, 'Mô tả không được để trống'),
+    genre: z.array(z.string()).min(1, 'Phải chọn ít nhất một thể loại'),
+    duration: z.number().positive('Thời lượng phải lớn hơn 0'),
+    language: z.string().min(1, 'Ngôn ngữ không được để trống'),
+    releaseDate: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Ngày khởi chiếu phải có định dạng DD/MM/YYYY'),
+    poster: z.url('Poster phải là URL hợp lệ').optional(),
+});
 
 const MoviePage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -116,12 +126,17 @@ const MoviePage: React.FC = () => {
                 poster: values.poster || undefined,
             };
 
-            if (editingId) {
-                dispatch(updateMovie(moviePayload));
+            const result = MovieSchema.safeParse(moviePayload);
+            if (result.success) {
+                if (editingId) {
+                    dispatch(updateMovie(moviePayload));
+                } else {
+                    dispatch(addMovie(moviePayload));
+                }
+                closeEditModal();
             } else {
-                dispatch(addMovie(moviePayload));
+                message.error(`Lỗi xác thực: ${result.error.issues.map(iss => iss.message).join(', ')}`);
             }
-            closeEditModal();
         });
     };
 
