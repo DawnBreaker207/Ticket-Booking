@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import {
-    VideoCameraOutlined, LogoutOutlined
+    VideoCameraOutlined
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
@@ -9,9 +9,9 @@ const { Sider, Content } = Layout;
 
 const AdminLayout: React.FC = () => {
     const { pathname } = useLocation();
-    const handleLogout = () => {
-        console.log('User logged out');
-    };
+    // const handleLogout = () => {
+    //     console.log('User logged out');
+    // };
 
     return (
         <Layout style={{ minHeight: '100vh' }}>

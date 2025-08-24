@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../app/store';
+import type { AppDispatch } from '../../app/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faEnvelope, faCalendar, faMale, faPhoneSquare } from '@fortawesome/free-solid-svg-icons';
 
