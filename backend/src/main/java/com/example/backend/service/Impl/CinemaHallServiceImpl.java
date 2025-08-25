@@ -35,8 +35,8 @@ public class CinemaHallServiceImpl implements CinemaHallService {
     }
 
     @Override
-    public CinemaHall createMovieSchedule(CinemaHall cinemaHall) {
-        return cinemaHallRepository.save(cinemaHall);
+    public CinemaHall createMovieSchedule(CinemaHall cinema) {
+        return cinemaHallRepository.save(cinema);
     }
 
     @Override

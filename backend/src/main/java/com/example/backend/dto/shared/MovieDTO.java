@@ -1,30 +1,33 @@
 package com.example.backend.dto.shared;
 
+import com.example.backend.model.AbstractMappedEntity;
+
 import java.util.Date;
 import java.util.List;
 
-public class MovieDTO {
+public class MovieDTO extends AbstractMappedEntity {
     private Long id;
     private String title;
     private String poster;
     private String overview;
     private Integer duration;
-    private List<String> genre;
+    private List<String> genres;
     private Date releaseDate;
     private String imdbId;
     private String filmId;
 
     public MovieDTO() {
-
+    super();
     }
 
-    public MovieDTO(Long id, String title, String poster, String overview, Integer duration, List<String> genre, Date releaseDate, String imdbId, String filmId) {
+    public MovieDTO(Long id, String title, String poster, String overview, Integer duration, List<String> genres, Date releaseDate, String imdbId, String filmId) {
+        super();
         this.id = id;
         this.title = title;
         this.poster = poster;
         this.overview = overview;
         this.duration = duration;
-        this.genre = genre;
+        this.genres = genres;
         this.releaseDate = releaseDate;
         this.imdbId = imdbId;
         this.filmId = filmId;
@@ -70,12 +73,12 @@ public class MovieDTO {
         this.duration = duration;
     }
 
-    public List<String> getGenre() {
-        return genre;
+    public List<String> getGenres() {
+        return genres;
     }
 
-    public void setGenre(List<String> genre) {
-        this.genre = genre;
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
     }
 
     public Date getReleaseDate() {

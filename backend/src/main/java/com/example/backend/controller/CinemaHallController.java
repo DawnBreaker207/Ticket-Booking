@@ -1,62 +1,63 @@
 package com.example.backend.controller;
 
+import com.example.backend.config.response.ResponseObject;
 import com.example.backend.dto.shared.CinemaHallDTO;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.service.Impl.CinemaHallServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/cinema")
-@Tag(name = "CinemaHall" , description = "Operations related to cinema hall")
+@Tag(name = "CinemaHall", description = "Operations related to cinema hall")
 public class CinemaHallController {
 
-    private CinemaHallServiceImpl cinemaHallService;
+    private final CinemaHallServiceImpl cinemaHallService;
 
     public CinemaHallController(CinemaHallServiceImpl cinemaHallService) {
         this.cinemaHallService = cinemaHallService;
     }
 
     @GetMapping("")
-    public ResponseEntity<List<CinemaHall>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(cinemaHallService.findAll());
+    public ResponseObject<List<CinemaHall>> findAll() {
+        return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CinemaHall> findOne(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(cinemaHallService.findOne(id));
+    public ResponseObject<CinemaHall> findOne(@PathVariable Long id) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.findOne(id));
     }
 
     @GetMapping("/movie")
-    public ResponseEntity<CinemaHall> findByMovieAndSessionName(@RequestParam(required = false) Long movieId,
+    public ResponseObject<CinemaHall> findByMovieAndSessionName(@RequestParam(required = false) Long movieId,
                                                                 @RequestParam(required = false) String movieSession) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(cinemaHallService.findByMovieAndSession(movieId, movieSession));
+        return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.findByMovieAndSession(movieId, movieSession));
     }
 
     @PostMapping("")
-    public ResponseEntity<CinemaHall> createMovieSchedule(@RequestBody CinemaHall cinemaHall) {
-        return ResponseEntity.status(HttpStatus.OK).body(cinemaHallService.createMovieSchedule(cinemaHall));
+    public ResponseObject<CinemaHall> createMovieSchedule(@RequestBody CinemaHall cinema) {
+        System.out.println(cinema.getMovie().getId());
+        System.out.println(cinema.getMovie());
+        return new ResponseObject<>(HttpStatus.OK,"Success",cinemaHallService.createMovieSchedule(cinema));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CinemaHall> updateMovieSchedule(@PathVariable Long id, @RequestBody CinemaHall cinemaHall) {
-        return ResponseEntity.status(HttpStatus.OK).body(cinemaHallService.updateMovieSchedule(id, cinemaHall));
+    public ResponseObject<CinemaHall> updateMovieSchedule(@PathVariable Long id, @RequestBody CinemaHall cinemaHall) {
+        return new ResponseObject<>(HttpStatus.OK,"Success",cinemaHallService.updateMovieSchedule(id, cinemaHall));
+    }
+
+    @PutMapping("/seat/{hallId}")
+    public void updateSeats(@PathVariable Long hallId, @RequestBody CinemaHallDTO cinemaHall) {
+        cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getSeatStatus());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeMovieSchedule(@PathVariable Long id) {
         cinemaHallService.removeMovieSchedule(id);
-    }
-
-    @PutMapping("/seat/{hallId}")
-    public void updateSeats(@PathVariable Long hallId, @RequestBody CinemaHallDTO cinemaHall) {
-        cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getSeatStatus());
     }
 
 }

@@ -1,6 +1,7 @@
-package com.example.backend.util;
+package com.example.backend.config.security;
 
 import com.example.backend.service.Impl.UserDetailsServiceImpl;
+import com.example.backend.util.JWTUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
@@ -30,7 +30,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if (path.contains("/api/v1/auth")) {
+        if (path.contains("/api/v1")) {
             filterChain.doFilter(request, response);
             return;
         }

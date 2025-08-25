@@ -1,42 +1,43 @@
 package com.example.backend.dto.shared;
 
 import com.example.backend.constant.SeatStatus;
+import com.example.backend.model.AbstractMappedEntity;
+import com.example.backend.model.Movie;
 
+import java.util.Date;
 import java.util.List;
 
-public class CinemaHallDTO {
-    public String movieSession;
-    public String orderTime;
+public class CinemaHallDTO extends AbstractMappedEntity {
+    public Long id;
+    public Date movieSession;
+    public Movie movie;
     private List<String> seatCodes;
     private SeatStatus seatStatus;
 
-    public CinemaHallDTO() {
+    public CinemaHallDTO() {}
 
-    }
 
-    public CinemaHallDTO(String movieSession, String orderTime, List<String> seatCodes, SeatStatus seatStatus) {
+    public CinemaHallDTO(Long id, Date movieSession, Movie movie, List<String> seatCodes, SeatStatus seatStatus) {
+        this.id = id;
         this.movieSession = movieSession;
-        this.orderTime = orderTime;
+        this.movie = movie;
         this.seatCodes = seatCodes;
         this.seatStatus = seatStatus;
     }
 
-    public String getMovieSession() {
-        return movieSession;
+    public Long getId() {return id;}
 
-    }
+    public void setId(Long id) {this.id = id;}
 
-    public void setMovieSession(String movieSession) {
+    public Date getMovieSession() {return movieSession;}
+
+    public void setMovieSession(Date movieSession) {
         this.movieSession = movieSession;
     }
 
-    public String getOrderTime() {
-        return orderTime;
-    }
+    public Movie getMovie() {return movie;}
 
-    public void setOrderTime(String orderTime) {
-        this.orderTime = orderTime;
-    }
+    public void setMovie(Movie movie) {this.movie = movie;}
 
     public List<String> getSeatCodes() {
         return seatCodes;

@@ -58,7 +58,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             try (var rs = pre.executeQuery()) {
                 while (rs.next()) {
                     var movie = new Movie();
-                    List<String> genres = Arrays.asList(rs.getString("genre").split(","));
+                    List<String> genres = Arrays.asList(rs.getString("genres").split(","));
 
                     movie.setId(rs.getLong("id"));
                     movie.setTitle(rs.getString("title"));
@@ -68,7 +68,9 @@ public class MovieRepositoryImpl implements MovieRepository {
                     movie.setDuration(rs.getInt("duration"));
                     movie.setPoster(rs.getString("poster"));
                     movie.setReleaseDate(rs.getDate("release_date"));
-                    movie.setGenre(genres);
+                    movie.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    movie.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
+                    movie.setGenres(genres);
 
                     movies.add(movie);
                 }
@@ -88,7 +90,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             try (var rs = pre.executeQuery()) {
                 if (rs.next()) {
                     Movie movie = new Movie();
-                    List<String> genres = Arrays.asList(rs.getString("genre").split(","));
+                    List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                     movie.setId(rs.getLong("id"));
                     movie.setTitle(rs.getString("title"));
                     movie.setOverview(rs.getString("overview"));
@@ -97,7 +99,9 @@ public class MovieRepositoryImpl implements MovieRepository {
                     movie.setDuration(rs.getInt("duration"));
                     movie.setPoster(rs.getString("poster"));
                     movie.setReleaseDate(rs.getDate("release_date"));
-                    movie.setGenre(genres);
+                    movie.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    movie.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
+                    movie.setGenres(genres);
                     return Optional.of(movie);
                 } else {
                     return Optional.empty();
@@ -118,7 +122,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             try (var rs = pre.executeQuery()) {
                 if (rs.next()) {
                     Movie movie = new Movie();
-                    List<String> genres = Arrays.asList(rs.getString("genre").split(","));
+                    List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                     movie.setId(rs.getLong("id"));
                     movie.setTitle(rs.getString("title"));
                     movie.setOverview(rs.getString("overview"));
@@ -127,7 +131,9 @@ public class MovieRepositoryImpl implements MovieRepository {
                     movie.setDuration(rs.getInt("duration"));
                     movie.setPoster(rs.getString("poster"));
                     movie.setReleaseDate(rs.getDate("release_date"));
-                    movie.setGenre(genres);
+                    movie.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    movie.setUpdatedAt(rs.getTimestamp("updated_at").toInstant());
+                    movie.setGenres(genres);
                     return Optional.of(movie);
                 } else {
                     return Optional.empty();
@@ -142,14 +148,14 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public Movie save(Movie m) {
-        String sql = "INSERT INTO movie (title, poster, overview, duration, genre, release_date, imdb_id, film_id) VALUES (?, ? ,? ,? ,? ,? ,? ,?)";
+        String sql = "INSERT INTO movie (title, poster, overview, duration, genres, release_date, imdb_id, film_id) VALUES (?, ? ,? ,? ,? ,? ,? ,?)";
         try (var conn = datasource.getConnection();
              var pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pre.setString(1, m.getTitle());
             pre.setString(2, m.getPoster());
             pre.setString(3, m.getOverview());
             pre.setInt(4, m.getDuration());
-            pre.setString(5, String.join(",", m.getGenre()));
+            pre.setString(5, String.join(",", m.getGenres()));
             pre.setDate(6, new java.sql.Date(m.getReleaseDate().getTime()));
             pre.setString(7, m.getImdbId());
             pre.setString(8, m.getFilmId());
@@ -168,7 +174,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public Movie update(Movie m) {
-        String sql = "UPDATE movie SET title = ?, overview = ?, imdb_id = ?, duration = ?, poster = ?, release_date = ?, genre = ? WHERE id = ?";
+        String sql = "UPDATE movie SET title = ?, overview = ?, imdb_id = ?, duration = ?, poster = ?, release_date = ?, genres = ?, film_id = ? WHERE id = ?";
         String update = "SELECT * FROM movie WHERE id = ?";
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(sql)) {
             pre.setString(1, m.getTitle());
@@ -177,8 +183,9 @@ public class MovieRepositoryImpl implements MovieRepository {
             pre.setInt(4, m.getDuration());
             pre.setString(5, m.getPoster());
             pre.setDate(6, new java.sql.Date(m.getReleaseDate().getTime()));
-            pre.setString(7, String.join(",", m.getGenre()));
-            pre.setLong(8, m.getId());
+            pre.setString(7, String.join(",", m.getGenres()));
+            pre.setString(8, m.getFilmId());
+            pre.setLong(9, m.getId());
             pre.executeUpdate();
             try (var select = conn.prepareStatement(update)) {
                 select.setLong(1, m.getId());
@@ -186,16 +193,16 @@ public class MovieRepositoryImpl implements MovieRepository {
 
                     if (rs.next()) {
                         Movie movie = new Movie();
-                        List<String> genres = Arrays.asList(rs.getString("genre").split(","));
+                        List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                         movie.setId(rs.getLong("id"));
                         movie.setTitle(rs.getString("title"));
                         movie.setOverview(rs.getString("overview"));
                         movie.setImdbId(rs.getString("imdb_id"));
+                        movie.setFilmId(rs.getString("film_id"));
                         movie.setDuration(rs.getInt("duration"));
                         movie.setPoster(rs.getString("poster"));
                         movie.setReleaseDate(rs.getDate("release_date"));
-                        movie.setFilmId(rs.getString(rs.getString("film_id")));
-                        movie.setGenre(genres);
+                        movie.setGenres(genres);
 
                         return movie;
                     } else {

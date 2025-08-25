@@ -1,6 +1,7 @@
 package com.example.backend.util;
 
 import com.example.backend.model.User;
+import com.example.backend.model.UserDetailsImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
