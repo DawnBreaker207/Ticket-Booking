@@ -1,18 +1,18 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from '@/app/modules/home/home.component';
-import {LoginComponent} from '@/app/modules/home/pages/login/login';
-import {SignUpComponent} from '@/app/modules/home/pages/signup/signup';
+import {Home} from '@/app/modules/home/pages/home/home';
+import {AuthComponent} from '@/app/modules/home/pages/auth/auth';
 
 const routes: Routes = [
   {
     path: '', component: HomeComponent
     , children: [
-      {path: 'login', component: LoginComponent},
-      {path: 'signup', component: SignUpComponent}
+      {path: '', component: Home},
+      {path: 'login', component: AuthComponent},
     ]
   },
-  {path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: '', redirectTo: '', pathMatch: 'full'},
   {path: '**', redirectTo: 'errors/404'}
 ];
 

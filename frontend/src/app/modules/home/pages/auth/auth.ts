@@ -1,12 +1,16 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzFormControlComponent, NzFormDirective, NzFormItemComponent} from 'ng-zorro-antd/form';
-import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
 import {AuthService} from '@/app/core/services/auth/auth.service';
+import {NzButtonComponent} from 'ng-zorro-antd/button';
+import {NzIconDirective} from 'ng-zorro-antd/icon';
+import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
+import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
+import {NgClass} from '@angular/common';
+import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
+import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-auth',
   imports: [
     FormsModule,
     NzButtonComponent,
@@ -15,12 +19,19 @@ import {AuthService} from '@/app/core/services/auth/auth.service';
     NzFormItemComponent,
     NzInputDirective,
     NzInputGroupComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass,
+    NzIconDirective,
+    NzFormLabelComponent,
+    NzDatePickerComponent,
+    NzSelectComponent,
+    NzOptionComponent
   ],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
+  templateUrl: './auth.html',
+  styleUrl: './auth.css'
 })
-export class LoginComponent implements OnInit {
+export class AuthComponent implements OnInit {
+  activeTab = signal<'login' | 'register'>('login');
   form!: FormGroup;
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -31,12 +42,14 @@ export class LoginComponent implements OnInit {
 
   initializeForm() {
     this.form = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ['',],
+      email: ['',],
+      password: ['',]
     })
   }
 
   onSubmit() {
+    console.log(this.form.value);
     if (!this.form.valid) return;
     const username = this.form.get('username')?.value ?? '';
 
