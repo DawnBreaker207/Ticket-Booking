@@ -3,6 +3,7 @@ package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +24,19 @@ public class Movie extends AbstractMappedEntity {
         super();
     }
 
+    public Movie(Movie movie){
+        super();
+        this.id = movie.id;
+        this.title = movie.title;
+        this.poster = movie.poster;
+        this.overview = movie.overview;
+        this.duration = movie.duration;
+        this.genres = new ArrayList<>(movie.genres);
+        this.releaseDate = new Date(movie.releaseDate.getTime());
+        this.imdbId = movie.imdbId;
+        this.filmId = movie.filmId;
+    }
+
     public Movie(Long id, String title, String poster, String overview, int duration, List<String> genres,
                  Date releaseDate, String imdbId, String filmId) {
         super();
@@ -31,8 +45,8 @@ public class Movie extends AbstractMappedEntity {
         this.poster = poster;
         this.overview = overview;
         this.duration = duration;
-        this.genres = genres;
-        this.releaseDate = releaseDate;
+        this.genres = new ArrayList<>(genres);
+        this.releaseDate = new Date(releaseDate.getTime());
         this.imdbId = imdbId;
         this.filmId = filmId;
     }
@@ -77,21 +91,13 @@ public class Movie extends AbstractMappedEntity {
         this.duration = duration;
     }
 
-    public List<String> getGenres() {
-        return genres;
-    }
+    public List<String> getGenres() {return new ArrayList<>(genres);}
 
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
-    }
+    public void setGenres(List<String> genres) {this.genres =  new ArrayList<>(genres);}
 
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
+    public Date getReleaseDate() {return new Date(releaseDate.getTime()) ;}
 
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
+    public void setReleaseDate(Date releaseDate) {this.releaseDate = new Date(releaseDate.getTime()) ;}
 
     public String getImdbId() {
         return imdbId;

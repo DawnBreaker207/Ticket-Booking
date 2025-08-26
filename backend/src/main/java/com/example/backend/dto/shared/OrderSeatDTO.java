@@ -10,6 +10,11 @@ public class OrderSeatDTO {
 
     }
 
+    public OrderSeatDTO(OrderSeatDTO orderSeat) {
+        this.seatId = orderSeat.seatId;
+        this.price = orderSeat.price;
+    }
+
     public OrderSeatDTO(Long seatId, BigDecimal price) {
         this.seatId = seatId;
         this.price = price;

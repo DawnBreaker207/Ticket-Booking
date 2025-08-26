@@ -15,6 +15,15 @@ public class User extends AbstractMappedEntity {
         super();
     }
 
+    public User(User user) {
+        super();
+        this.id = user.id;
+        this.username = user.username;
+        this.email = user.email;
+        this.password = user.password;
+        this.roles = user.roles;
+    }
+
     public User(Long id, String username, String email, String password, Set<Role> roles) {
         super();
         this.id = id;

@@ -4,15 +4,24 @@ import com.example.backend.constant.URole;
 
 import java.util.Objects;
 
+
 public class Role {
     private Integer id;
 
     private URole name;
 
     public Role() {
+        super();
+    }
+
+    public Role(Role role) {
+        super();
+        this.id = role.id;
+        this.name = role.name;
     }
 
     public Role(Integer id, URole name) {
+        super();
         this.id = id;
         this.name = name;
     }
@@ -25,9 +34,7 @@ public class Role {
         this.id = id;
     }
 
-    public URole getName() {
-        return name;
-    }
+    public URole getName() {return name;}
 
     public void setName(URole name) {
         this.name = name;

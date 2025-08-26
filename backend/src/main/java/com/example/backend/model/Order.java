@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,7 +60,7 @@ public class Order extends AbstractMappedEntity {
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
         this.totalAmount = totalAmount;
-        this.seats = seats;
+        this.seats = new ArrayList<>(seats);
         this.expiredAt = expiredAt;
     }
 
@@ -87,9 +88,7 @@ public class Order extends AbstractMappedEntity {
         this.cinemaHallId = cinemaHallId;
     }
 
-    public LocalDateTime getOrderTime() {
-        return orderTime;
-    }
+    public LocalDateTime getOrderTime() {return orderTime;}
 
     public void setOrderTime(LocalDateTime orderTime) {
         this.orderTime = orderTime;
@@ -127,13 +126,9 @@ public class Order extends AbstractMappedEntity {
         this.totalAmount = totalAmount;
     }
 
-    public List<OrderSeat> getSeats() {
-        return seats;
-    }
+    public List<OrderSeat> getSeats() {return new ArrayList<>(seats);}
 
-    public void setSeats(List<OrderSeat> seats) {
-        this.seats = seats;
-    }
+    public void setSeats(List<OrderSeat> seats) {this.seats = new ArrayList<>(seats);}
 
     public LocalDateTime getExpiredAt() {
         return expiredAt;
