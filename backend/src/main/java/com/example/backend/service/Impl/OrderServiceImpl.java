@@ -41,7 +41,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderRepositoryImpl orderRepository, RedisTemplate<String, Object> redisTemplate) {
         this.orderRepository = orderRepository;
         this.redisTemplate = redisTemplate;
-
     }
 
     @Override
@@ -131,11 +130,9 @@ public class OrderServiceImpl implements OrderService {
         Order o = new Order();
         o.setOrderId(orderId);
         o.setUserId(userId);
-        o.setOrderTime(now);
         o.markCreated();
         o.setTotalAmount(dto.getSeats().stream().map(OrderSeatDTO::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
         o.setCinemaHallId(dto.getCinemaHallId());
-        o.setExpiredAt(now.plusMinutes(15));
         o.setOrderStatus(OrderStatus.CONFIRMED);
         o.setPaymentMethod(PaymentMethod.CASH);
         o.setPaymentStatus(PaymentStatus.PAID);
