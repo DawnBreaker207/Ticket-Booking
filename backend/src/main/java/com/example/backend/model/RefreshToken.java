@@ -11,11 +11,13 @@ public class RefreshToken {
 
 
     public RefreshToken() {
+        super();
     }
 
     public RefreshToken(Integer id, User user, String token, Instant expiryDate) {
+        super();
         this.id = id;
-        this.user = user;
+        this.user = new User(user);
         this.token = token;
         this.expiryDate = expiryDate;
     }
@@ -28,13 +30,9 @@ public class RefreshToken {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() {return new User(user);}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setUser(User user) {this.user = new User(user);}
 
     public String getToken() {
         return token;

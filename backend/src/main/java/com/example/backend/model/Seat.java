@@ -15,10 +15,21 @@ public class Seat {
     private SeatStatus status;
 
     public Seat() {
+        super();
+    }
+
+    public Seat(Seat seat) {
+        super();
+        this.id = seat.id;
+        this.cinemaHallId = seat.cinemaHallId;
+        this.seatNumber = seat.seatNumber;
+        this.price = seat.price;
+        this.status = seat.status;
 
     }
 
     public Seat(int id, int cinemaHallId, String seatNumber, BigDecimal price, SeatStatus status) {
+        super();
         this.id = id;
         this.cinemaHallId = cinemaHallId;
         this.seatNumber = seatNumber;

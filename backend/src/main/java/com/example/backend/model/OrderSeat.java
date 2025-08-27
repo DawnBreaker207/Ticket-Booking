@@ -13,7 +13,15 @@ public class OrderSeat {
     private BigDecimal price;
 
     public OrderSeat() {
+        super();
+    }
 
+    public OrderSeat(OrderSeat order) {
+        super();
+        this.id = order.id;
+        this.orderId = order.orderId;
+        this.seatId = order.seatId;
+        this.price = order.price;
     }
 
     public OrderSeat(
@@ -21,6 +29,7 @@ public class OrderSeat {
             String orderId,
             Long seatId,
             BigDecimal price) {
+        super();
         this.id = id;
         this.orderId = orderId;
         this.seatId = seatId;

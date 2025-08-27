@@ -1,5 +1,6 @@
 package com.example.backend.dto.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JwtResponse {
@@ -12,7 +13,7 @@ public class JwtResponse {
     private List<String> roles;
 
     public JwtResponse(String token, Long id, String username, String email, List<String> roles, String refreshToken) {
-        this.roles = roles;
+        this.roles = new ArrayList<>(roles) ;
         this.email = email;
         this.username = username;
         this.id = id;
@@ -29,11 +30,11 @@ public class JwtResponse {
     }
 
     public List<String> getRoles() {
-        return roles;
+        return new ArrayList<>(roles);
     }
 
     public void setRoles(List<String> roles) {
-        this.roles = roles;
+        this.roles = new ArrayList<>(roles);
     }
 
     public String getToken() {

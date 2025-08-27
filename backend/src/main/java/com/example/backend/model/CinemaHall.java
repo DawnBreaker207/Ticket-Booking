@@ -1,10 +1,13 @@
 package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
 
 @Hidden
 public class CinemaHall extends AbstractMappedEntity {
@@ -17,12 +20,20 @@ public class CinemaHall extends AbstractMappedEntity {
         super();
     }
 
+
+    public CinemaHall(CinemaHall cinemaHall) {
+        super();
+        this.id = cinemaHall.id;
+        this.movie = new Movie(cinemaHall.movie);
+        this.movieSession = new Date(cinemaHall.movieSession.getTime());
+        this.seats = new ArrayList<>(cinemaHall.seats);
+    }
     public CinemaHall(Long id, Movie movie, Date movieSession, List<Seat> seats) {
         super();
         this.id = id;
-        this.movie = movie;
-        this.movieSession = movieSession;
-        this.seats = seats;
+        this.movie = new Movie(movie);
+        this.movieSession = new Date(movieSession.getTime());
+        this.seats = new ArrayList<>(seats);
     }
 
     public Long getId() {
@@ -33,24 +44,18 @@ public class CinemaHall extends AbstractMappedEntity {
         this.id = id;
     }
 
-    public Movie getMovie() {return movie;}
+    public Movie getMovie() {return new Movie(movie);}
 
-    public void setMovie(Movie movie) {this.movie = movie;}
+    public void setMovie(Movie movie) {this.movie = new Movie(movie);}
 
-    public Date getMovieSession() {
-        return movieSession;
-    }
+    public Date getMovieSession() {return new Date(movieSession.getTime());}
 
-    public void setMovieSession(Date movieSession) {
-        this.movieSession = movieSession;
-    }
+    public void setMovieSession(Date movieSession) {this.movieSession = new Date(movieSession.getTime()) ;}
 
-    public List<Seat> getSeats() {
-        return seats;
-    }
+    public List<Seat> getSeats() {return new ArrayList<>(seats);}
 
     public void setSeats(List<Seat> seats) {
-        this.seats = seats;
+        this.seats = new ArrayList<>(seats);
     }
 
     @Override

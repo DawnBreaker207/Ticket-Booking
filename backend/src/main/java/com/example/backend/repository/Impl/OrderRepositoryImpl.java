@@ -46,9 +46,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                     order.setPaymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")));
                     order.setPaymentStatus(PaymentStatus.valueOf(rs.getString("payment_status")));
                     order.setTotalAmount(rs.getBigDecimal("total_amount"));
-                    order.setOrderTime(rs.getTimestamp("order_time").toLocalDateTime());
                     order.setCreatedAt(rs.getTimestamp("created_at").toInstant());
-                    order.setExpiredAt(rs.getTimestamp("expired_at").toLocalDateTime());
                     order.setSeats(new ArrayList<>());
                     orders.put(orderId, order);
                 }
@@ -85,9 +83,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                         order.setPaymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")));
                         order.setPaymentStatus(PaymentStatus.valueOf(rs.getString("payment_status")));
                         order.setTotalAmount(rs.getBigDecimal("total_amount"));
-                        order.setOrderTime(rs.getTimestamp("order_time").toLocalDateTime());
                         order.setCreatedAt(rs.getTimestamp("created_at").toInstant());
-                        order.setExpiredAt(rs.getTimestamp("expired_at").toLocalDateTime());
                         order.setSeats(new ArrayList<>());
                     }
                     Long seatOrderId = rs.getLong("os.id");
@@ -123,7 +119,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Order save(Order o) {
-        String insertOrder = "INSERT INTO orders (id,user_id, cinema_hall_id, status, payment_method, payment_status, total_amount, order_time, created_at, expired_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrder = "INSERT INTO orders (id,user_id, cinema_hall_id, status, payment_method, payment_status, total_amount, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String insertSeat = "INSERT INTO order_seat (order_id, seat_id, price) VALUES (?, ?, ?)";
         try (var conn = datasource.getConnection(); var pre = conn.prepareStatement(insertOrder)) {
             conn.setAutoCommit(false);
@@ -137,9 +133,8 @@ public class OrderRepositoryImpl implements OrderRepository {
             pre.setString(5, o.getPaymentMethod().name());
             pre.setString(6, o.getPaymentStatus().name());
             pre.setBigDecimal(7, o.getTotalAmount());
-            pre.setTimestamp(8, Timestamp.valueOf(o.getOrderTime()));
-            pre.setTimestamp(9, Timestamp.from(o.getCreatedAt()));
-            pre.setTimestamp(10, Timestamp.valueOf(o.getExpiredAt()));
+            pre.setTimestamp(8, Timestamp.from(o.getCreatedAt()));
+
             pre.executeUpdate();
 
 //	    Insert seats
