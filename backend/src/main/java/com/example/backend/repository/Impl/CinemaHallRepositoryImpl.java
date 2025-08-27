@@ -44,6 +44,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                 List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                 movie.setId(rs.getLong("movie_id"));
                 movie.setTitle(rs.getString("title"));
+                movie.setDuration(rs.getInt("duration"));
                 movie.setPoster(rs.getString("poster"));
                 movie.setOverview(rs.getString("overview"));
                 movie.setReleaseDate(rs.getDate("release_date"));
@@ -102,6 +103,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                     List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                     movie.setId(rs.getLong("movie_id"));
                     movie.setTitle(rs.getString("title"));
+                    movie.setDuration(rs.getInt("duration"));
                     movie.setPoster(rs.getString("poster"));
                     movie.setOverview(rs.getString("overview"));
                     movie.setReleaseDate(rs.getDate("release_date"));
@@ -164,6 +166,7 @@ public class CinemaHallRepositoryImpl implements CinemaHallRepository {
                     List<String> genres = Arrays.asList(rs.getString("genres").split(","));
                     movie.setId(rs.getLong("movie_id"));
                     movie.setTitle(rs.getString("title"));
+                    movie.setDuration(rs.getInt("duration"));
                     movie.setPoster(rs.getString("poster"));
                     movie.setOverview(rs.getString("overview"));
                     movie.setReleaseDate(rs.getDate("release_date"));
