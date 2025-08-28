@@ -14,7 +14,7 @@ public class Movie extends AbstractMappedEntity {
     private String title;
     private String poster;
     private String overview;
-    private int duration;
+    private Integer duration;
     private List<String> genres;
     private Date releaseDate;
     private String imdbId;
@@ -37,7 +37,7 @@ public class Movie extends AbstractMappedEntity {
         this.filmId = movie.filmId;
     }
 
-    public Movie(Long id, String title, String poster, String overview, int duration, List<String> genres,
+    public Movie(Long id, String title, String poster, String overview, Integer duration, List<String> genres,
                  Date releaseDate, String imdbId, String filmId) {
         super();
         this.id = id;
@@ -83,11 +83,11 @@ public class Movie extends AbstractMappedEntity {
         this.overview = overview;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

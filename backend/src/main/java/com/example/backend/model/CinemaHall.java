@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
 
 import java.util.ArrayList;
 import java.util.Date;

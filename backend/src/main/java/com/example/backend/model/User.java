@@ -3,7 +3,6 @@ package com.example.backend.model;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 public class User extends AbstractMappedEntity {
     private Long id;
     private String username;
