@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS movie
     poster       VARCHAR(255),
     overview     TEXT,
     duration     INT          NOT NULL,
-    genres       VARCHAR(100),
+    genres       JSON,
     release_date DATE,
     imdb_id      VARCHAR(255),
     film_id      VARCHAR(255),
@@ -52,10 +52,8 @@ CREATE TABLE IF NOT EXISTS orders
     payment_method ENUM ('MOMO', 'VNPAY', 'ZALOPAY', 'CASH') DEFAULT 'CASH',
     payment_status ENUM ('PENDING', 'PAID', 'CANCELLED')     DEFAULT 'PENDING',
     total_amount   DECIMAL(10, 2) NOT NULL                   DEFAULT 0.00,
-    order_time     TIMESTAMP                                 DEFAULT CURRENT_TIMESTAMP,
     created_at     DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP,
     updated_at     DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP,
-    expired_at     DATETIME,
     CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_order_hall FOREIGN KEY (cinema_hall_id) REFERENCES cinema_hall (id) ON DELETE CASCADE
 );

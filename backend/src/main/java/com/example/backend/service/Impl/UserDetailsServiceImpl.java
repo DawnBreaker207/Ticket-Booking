@@ -1,8 +1,8 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.model.User;
-import com.example.backend.repository.Impl.UserRepositoryImpl;
 import com.example.backend.model.UserDetailsImpl;
+import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepositoryImpl userRepository;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -2,19 +2,22 @@ package com.example.backend.model;
 
 
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Hidden
+@Alias("Movie")
 public class Movie extends AbstractMappedEntity {
     private Long id;
     private String title;
     private String poster;
     private String overview;
-    private int duration;
-    private List<String> genres;
+    private Integer duration;
+    private List<String> genres = new ArrayList<>();
     private Date releaseDate;
     private String imdbId;
     private String filmId;
@@ -23,7 +26,21 @@ public class Movie extends AbstractMappedEntity {
         super();
     }
 
-    public Movie(Long id, String title, String poster, String overview, int duration, List<String> genres,
+    public Movie(Movie movie) {
+        super();
+        if (movie == null) return;
+        this.id = movie.id;
+        this.title = movie.title;
+        this.poster = movie.poster;
+        this.overview = movie.overview;
+        this.duration = movie.duration;
+        this.genres = new ArrayList<>(movie.genres);
+        this.releaseDate = new Date(movie.releaseDate.getTime());
+        this.imdbId = movie.imdbId;
+        this.filmId = movie.filmId;
+    }
+
+    public Movie(Long id, String title, String poster, String overview, Integer duration, List<String> genres,
                  Date releaseDate, String imdbId, String filmId) {
         super();
         this.id = id;
@@ -31,8 +48,8 @@ public class Movie extends AbstractMappedEntity {
         this.poster = poster;
         this.overview = overview;
         this.duration = duration;
-        this.genres = genres;
-        this.releaseDate = releaseDate;
+        this.genres = new ArrayList<>(genres);
+        this.releaseDate = new Date(releaseDate.getTime());
         this.imdbId = imdbId;
         this.filmId = filmId;
     }
@@ -69,28 +86,28 @@ public class Movie extends AbstractMappedEntity {
         this.overview = overview;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
     public List<String> getGenres() {
-        return genres;
+        return new ArrayList<>(genres);
     }
 
     public void setGenres(List<String> genres) {
-        this.genres = genres;
+        this.genres = new ArrayList<>(genres);
     }
 
     public Date getReleaseDate() {
-        return releaseDate;
+        return new Date(releaseDate.getTime());
     }
 
     public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
+        this.releaseDate = new Date(releaseDate.getTime());
     }
 
     public String getImdbId() {

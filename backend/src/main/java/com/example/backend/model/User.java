@@ -1,9 +1,12 @@
 package com.example.backend.model;
 
+import org.apache.ibatis.type.Alias;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Alias("User")
 public class User extends AbstractMappedEntity {
     private Long id;
     private String username;
@@ -13,6 +16,15 @@ public class User extends AbstractMappedEntity {
 
     public User() {
         super();
+    }
+
+    public User(User user) {
+        super();
+        this.id = user.id;
+        this.username = user.username;
+        this.email = user.email;
+        this.password = user.password;
+        this.roles = user.roles;
     }
 
     public User(Long id, String username, String email, String password, Set<Role> roles) {

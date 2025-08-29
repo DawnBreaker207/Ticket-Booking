@@ -5,6 +5,7 @@ import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDTO {
@@ -22,7 +23,7 @@ public class OrderDTO {
 
     private BigDecimal totalAmount;
 
-    private List<OrderSeatDTO> seats;
+    private List<OrderSeatDTO> seats = new ArrayList<>();
 
     public OrderDTO() {
 
@@ -38,7 +39,7 @@ public class OrderDTO {
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
         this.totalAmount = totalAmount;
-        this.seats = seats;
+        this.seats = new ArrayList<>(seats);
     }
 
     public String getOrderId() {
@@ -98,11 +99,11 @@ public class OrderDTO {
     }
 
     public List<OrderSeatDTO> getSeats() {
-        return seats;
+        return new ArrayList<>(seats);
     }
 
     public void setSeats(List<OrderSeatDTO> seats) {
-        this.seats = seats;
+        this.seats = new ArrayList<>(seats);
     }
 
 }

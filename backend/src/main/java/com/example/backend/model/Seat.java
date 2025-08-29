@@ -2,23 +2,36 @@ package com.example.backend.model;
 
 import com.example.backend.constant.SeatStatus;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Hidden
+@Alias("Seat")
 public class Seat {
-    private int id;
-    private int cinemaHallId;
+    private Long id;
+    private Long cinemaHallId;
     private String seatNumber;
     private BigDecimal price;
     private SeatStatus status;
 
     public Seat() {
+        super();
+    }
+
+    public Seat(Seat seat) {
+        super();
+        this.id = seat.id;
+        this.cinemaHallId = seat.cinemaHallId;
+        this.seatNumber = seat.seatNumber;
+        this.price = seat.price;
+        this.status = seat.status;
 
     }
 
-    public Seat(int id, int cinemaHallId, String seatNumber, BigDecimal price, SeatStatus status) {
+    public Seat(Long id, Long cinemaHallId, String seatNumber, BigDecimal price, SeatStatus status) {
+        super();
         this.id = id;
         this.cinemaHallId = cinemaHallId;
         this.seatNumber = seatNumber;
@@ -26,19 +39,19 @@ public class Seat {
         this.status = status;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getCinemaHallId() {
+    public Long getCinemaHallId() {
         return cinemaHallId;
     }
 
-    public void setCinemaHallId(int cinemaHallId) {
+    public void setCinemaHallId(Long cinemaHallId) {
         this.cinemaHallId = cinemaHallId;
     }
 
@@ -58,11 +71,11 @@ public class Seat {
         this.price = price;
     }
 
-    public SeatStatus getSeatStatus() {
+    public SeatStatus getStatus() {
         return status;
     }
 
-    public void setSeatStatus(SeatStatus status) {
+    public void setStatus(SeatStatus status) {
         this.status = status;
     }
 

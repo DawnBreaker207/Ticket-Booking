@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.repository.MovieRepository">
+    <resultMap id="MovieResultMap" type="Movie">
+        <id property="id" column="id"/>
+        <result column="title" property="title"/>
+        <result column="poster" property="poster"/>
+        <result column="overview" property="overview"/>
+        <result column="duration" property="duration"/>
+        <result column="genres" property="genres" typeHandler="com.example.backend.typeHandler.JsonListTypeHandler"/>
+        <result column="release_date" property="releaseDate"/>
+        <result column="imdb_id" property="imdbId"/>
+        <result column="film_id" property="filmId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+    <select id="findAllWithFilter" parameterType="com.example.backend.dto.shared.MovieDTO" resultMap="MovieResultMap">
+        SELECT * FROM movie
+        <where>
+            <if test="title != null and title != ''">
+                title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="duration != null">
+                duration = #{duration}
+            </if>
+            <if test="releaseDate != null">
+                release_date = #{releaseDate}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+    <select id="findAll" resultMap="MovieResultMap">
+        SELECT *
+        FROM movie
+        ORDER BY id DESC
+    </select>
+    <select id="findById" parameterType="java.lang.Long" resultMap="MovieResultMap">
+        SELECT *
+        FROM movie
+        WHERE id = #{id}
+    </select>
+    <select id="findByMovieId" parameterType="java.lang.String" resultMap="MovieResultMap">
+        SELECT *
+        FROM movie
+        WHERE film_id = #{filmId}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" parameterType="Movie" keyProperty="id">
+        INSERT INTO movie (title, poster,
+                           overview, duration, genres, release_date, imdb_id, film_id)
+        VALUES (#{title}, #{poster}, #{overview}, #{duration}, #{genres}, #{releaseDate}, #{imdbId}, #{filmId})
+    </insert>
+    <update id="update" parameterType="Movie">
+        UPDATE movie
+        SET title        = #{title},
+            poster       = #{poster},
+            overview     = #{overview},
+            duration     = #{duration},
+            genres       = #{genres},
+            release_date = #{releaseDate},
+            imdb_id      = #{imdbId},
+            film_id      = #{filmId},
+            created_at   = #{createdAt},
+            updated_at   = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE
+        FROM movie
+        WHERE id = #{id}
+    </delete>
+</mapper>

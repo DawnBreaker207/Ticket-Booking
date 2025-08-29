@@ -2,6 +2,7 @@ package com.example.backend.dto.shared;
 
 import com.example.backend.model.AbstractMappedEntity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,13 +12,13 @@ public class MovieDTO extends AbstractMappedEntity {
     private String poster;
     private String overview;
     private Integer duration;
-    private List<String> genres;
+    private List<String> genres = new ArrayList<>();
     private Date releaseDate;
     private String imdbId;
     private String filmId;
 
     public MovieDTO() {
-    super();
+        super();
     }
 
     public MovieDTO(Long id, String title, String poster, String overview, Integer duration, List<String> genres, Date releaseDate, String imdbId, String filmId) {
@@ -27,7 +28,7 @@ public class MovieDTO extends AbstractMappedEntity {
         this.poster = poster;
         this.overview = overview;
         this.duration = duration;
-        this.genres = genres;
+        this.genres = new ArrayList<>(genres);
         this.releaseDate = releaseDate;
         this.imdbId = imdbId;
         this.filmId = filmId;
@@ -74,11 +75,11 @@ public class MovieDTO extends AbstractMappedEntity {
     }
 
     public List<String> getGenres() {
-        return genres;
+        return new ArrayList<>(genres);
     }
 
     public void setGenres(List<String> genres) {
-        this.genres = genres;
+        this.genres = new ArrayList<>(genres);
     }
 
     public Date getReleaseDate() {
