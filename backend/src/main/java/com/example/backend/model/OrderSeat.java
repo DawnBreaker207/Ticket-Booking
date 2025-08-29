@@ -11,7 +11,7 @@ import java.util.Objects;
 public class OrderSeat {
     private Long id;
     private String orderId;
-    private Long seatId;
+    private Seat seat;
     private BigDecimal price;
 
     public OrderSeat() {
@@ -22,19 +22,19 @@ public class OrderSeat {
         super();
         this.id = order.id;
         this.orderId = order.orderId;
-        this.seatId = order.seatId;
+        this.seat = order.seat;
         this.price = order.price;
     }
 
     public OrderSeat(
             Long id,
             String orderId,
-            Long seatId,
+            Seat seat,
             BigDecimal price) {
         super();
         this.id = id;
         this.orderId = orderId;
-        this.seatId = seatId;
+        this.seat = seat;
         this.price = price;
     }
 
@@ -54,12 +54,12 @@ public class OrderSeat {
         this.orderId = orderId;
     }
 
-    public Long getSeatId() {
-        return seatId;
+    public Seat getSeat() {
+        return seat;
     }
 
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 
     public BigDecimal getPrice() {
@@ -75,7 +75,7 @@ public class OrderSeat {
         return "Seat{" +
                 "id=" + id +
                 ", orderId=" + orderId + '\'' +
-                ", seatId=" + seatId + '\'' +
+                ", seat=" + seat + '\'' +
                 ", price=" + price + '\'' +
                 "}";
     }
@@ -87,12 +87,12 @@ public class OrderSeat {
         OrderSeat orderSeat = (OrderSeat) obj;
         return Objects.equals(id, orderSeat.id)
                 && Objects.equals(orderId, orderSeat.orderId)
-                && Objects.equals(seatId, orderSeat.seatId)
+                && Objects.equals(seat, orderSeat.seat)
                 && Objects.equals(price, orderSeat.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderId, seatId, price);
+        return Objects.hash(id, orderId, seat, price);
     }
 }

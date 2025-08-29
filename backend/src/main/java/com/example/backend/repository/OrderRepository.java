@@ -3,6 +3,7 @@ package com.example.backend.repository;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,18 +27,12 @@ public interface OrderRepository extends DAO<Order, String> {
     @Override
     int update(Order order);
 
-    default Order save(Order input) {
-        if (input.getOrderId() == null) {
-            insert(input);
-        } else {
-            update(input);
-        }
-        return input;
-    }
-
     @Override
     void delete(String s);
 
+    void insertOrderSeat(List<OrderSeat> seats);
+
+    void updateOrderSeat(@Param("orderId") String orderId, @Param("orderStatus") String status);
 
     Optional<Order> findFirstByCustomerIdOrderByCreatedAtDesc(Long customerId);
 

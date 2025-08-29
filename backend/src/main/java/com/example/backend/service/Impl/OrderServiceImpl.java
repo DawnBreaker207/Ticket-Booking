@@ -3,6 +3,7 @@ package com.example.backend.service.Impl;
 import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
+import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.shared.OrderDTO;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.exception.wrapper.*;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +45,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public List<Order> findAll(Order o) {
+        return orderRepository.findAllWithFilter(o);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderSeat> checkSeats = orderSeats.stream().map(dto -> {
             OrderSeat seat = new OrderSeat();
-            seat.setSeatId(dto.getSeatId());
+            seat.setSeat(dto.getSeat());
             seat.setPrice(dto.getPrice());
             return seat;
         }).collect(Collectors.toList());
@@ -95,11 +95,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         for (OrderSeatDTO seat : orderSeats) {
-
-            Boolean locked = redisTemplate.opsForValue().setIfAbsent(RedisKeyHelper.seatLockKey(seat.getSeatId()),
+            Boolean locked = redisTemplate.opsForValue().setIfAbsent(RedisKeyHelper.seatLockKey(seat.getSeat().getId()),
                     RedisKeyHelper.orderHoldKey(orderId), HOLD_TIMEOUT);
             if (Boolean.FALSE.equals(locked)) {
-                throw new SeatUnavailableException(HttpStatus.NOT_FOUND, "Seat " + seat.getSeatId() + " not avalable");
+                throw new SeatUnavailableException(HttpStatus.NOT_FOUND, "Seat " + seat.getSeat().getId() + " not avalable");
             }
 
         }
@@ -122,13 +121,11 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderSeat> seatEntities = dto.getSeats().stream().map(s -> {
             OrderSeat os = new OrderSeat();
-            os.setSeatId(s.getSeatId());
+            os.setSeat(s.getSeat());
             os.setPrice(s.getPrice());
             os.setOrderId(orderId);
             return os;
         }).toList();
-
-        LocalDateTime now = LocalDateTime.now();
         Order o = new Order();
         o.setOrderId(orderId);
         o.setUserId(userId);
@@ -139,10 +136,11 @@ public class OrderServiceImpl implements OrderService {
         o.setPaymentMethod(PaymentMethod.CASH);
         o.setPaymentStatus(PaymentStatus.PAID);
         o.setSeats(seatEntities);
-        orderRepository.save(o);
-
+        orderRepository.insert(o);
+        orderRepository.insertOrderSeat(o.getSeats());
+        orderRepository.updateOrderSeat(o.getOrderId(), SeatStatus.BOOKED.name());
 //	Delete Redis when save DB
-        dto.getSeats().forEach(seat -> redisTemplate.delete(RedisKeyHelper.seatLockKey(seat.getSeatId())));
+        dto.getSeats().forEach(seat -> redisTemplate.delete(RedisKeyHelper.seatLockKey(seat.getSeat().getId())));
 
         redisTemplate.delete(RedisKeyHelper.orderHoldKey(orderId));
         return o;
@@ -152,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order update(String id, Order o) {
         o.setOrderId(id);
-        orderRepository.save(o);
+        orderRepository.update(o);
         return o;
 
     }

@@ -22,8 +22,8 @@ public class OrderController {
 
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject<List<Order>> getAll() {
-        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findAll());
+    public ResponseObject<List<Order>> getAll(@ModelAttribute Order o) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findAll(o));
     }
 
     @GetMapping("/{id}")

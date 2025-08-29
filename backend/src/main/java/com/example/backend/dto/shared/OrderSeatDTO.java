@@ -1,9 +1,11 @@
 package com.example.backend.dto.shared;
 
+import com.example.backend.model.Seat;
+
 import java.math.BigDecimal;
 
 public class OrderSeatDTO {
-    private Long seatId;
+    private Seat seat;
     private BigDecimal price;
 
     public OrderSeatDTO() {
@@ -11,21 +13,21 @@ public class OrderSeatDTO {
     }
 
     public OrderSeatDTO(OrderSeatDTO orderSeat) {
-        this.seatId = orderSeat.seatId;
+        this.seat = orderSeat.seat;
         this.price = orderSeat.price;
     }
 
-    public OrderSeatDTO(Long seatId, BigDecimal price) {
-        this.seatId = seatId;
+    public OrderSeatDTO(Seat seatId, BigDecimal price) {
+        this.seat = seatId;
         this.price = price;
     }
 
-    public Long getSeatId() {
-        return seatId;
+    public Seat getSeat() {
+        return seat;
     }
 
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
+    public void setSeat(Seat seatId) {
+        this.seat = seatId;
     }
 
     public BigDecimal getPrice() {

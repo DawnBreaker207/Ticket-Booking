@@ -112,11 +112,11 @@ public class Order extends AbstractMappedEntity {
     }
 
     public List<OrderSeat> getSeats() {
-        return new ArrayList<>(seats);
+        return seats;
     }
 
     public void setSeats(List<OrderSeat> seats) {
-        this.seats = new ArrayList<>(seats);
+        this.seats = seats;
     }
 
 
