@@ -3,32 +3,15 @@ package com.example.backend.repository;
 import java.util.List;
 import java.util.Optional;
 
-public interface DAO<T> {
-    default List<T> findAll() {
-        return null;
-    }
+public interface DAO<T, ID> {
+    List<T> findAll();
 
-    default Optional<T> findOne(Long id) {
-        return null;
-    }
+    Optional<T> findById(ID id);
 
-    default Optional<T> findOne(String id) {
-        return null;
-    }
+    int insert(T t);
 
-    default T save(T t) {
-        return null;
-    }
+    int update(T t);
 
-    default T update(T t) {
-        return null;
-    }
+    void delete(ID id);
 
-    default void delete(Long id) {
-        return;
-    }
-
-    default void delete(String id) {
-        return;
-    }
 }

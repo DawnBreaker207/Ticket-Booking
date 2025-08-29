@@ -11,11 +11,11 @@ import com.example.backend.exception.wrapper.UsernameExistedException;
 import com.example.backend.model.RefreshToken;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
-import com.example.backend.repository.Impl.RoleRepositoryImpl;
-import com.example.backend.repository.Impl.UserRepositoryImpl;
+import com.example.backend.model.UserDetailsImpl;
+import com.example.backend.repository.RoleRepository;
+import com.example.backend.repository.UserRepository;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
-import com.example.backend.model.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -35,16 +36,16 @@ import java.util.stream.Collectors;
 public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
-    private final UserRepositoryImpl userRepository;
-    private final RoleRepositoryImpl roleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtils jWTUtils;
     private final RefreshTokenServiceImpl refreshTokenService;
 
     public AuthServiceImpl(
-            UserRepositoryImpl userRepository,
-            RoleRepositoryImpl roleRepository,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
             JWTUtils jWTUtils,
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
+    @Transactional
     public void register(RegisterRequest newUser) {
         userRepository.findByEmail(newUser.getEmail()).ifPresent(u -> {
             throw new UserEmailExistedException("This email already exists" + newUser.getEmail());
@@ -71,6 +73,8 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
+        userRepository.save(user);
+
         Set<Role> roles = newUser
                 .getRole()
                 .stream()
@@ -81,10 +85,13 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toSet());
 
         user.setRoles(roles);
-        userRepository.save(user);
+        if (!roles.isEmpty()) {
+            userRepository.insertUserRoles(user.getId(), roles);
+        }
     }
 
     @Override
+    @Transactional
     public JwtResponse login(LoginRequest user) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -109,6 +116,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public TokenRefreshResponse refreshToken(HttpServletRequest token) {
         String refreshToken = jWTUtils.getJwtRefreshCookie(token);
         if (refreshToken == null || refreshToken.isEmpty()) {

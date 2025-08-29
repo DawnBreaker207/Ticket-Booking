@@ -12,13 +12,13 @@ public class MovieDTO extends AbstractMappedEntity {
     private String poster;
     private String overview;
     private Integer duration;
-    private List<String> genres;
+    private List<String> genres = new ArrayList<>();
     private Date releaseDate;
     private String imdbId;
     private String filmId;
 
     public MovieDTO() {
-    super();
+        super();
     }
 
     public MovieDTO(Long id, String title, String poster, String overview, Integer duration, List<String> genres, Date releaseDate, String imdbId, String filmId) {
@@ -29,7 +29,7 @@ public class MovieDTO extends AbstractMappedEntity {
         this.overview = overview;
         this.duration = duration;
         this.genres = new ArrayList<>(genres);
-        this.releaseDate = new Date(releaseDate.getTime());
+        this.releaseDate = releaseDate;
         this.imdbId = imdbId;
         this.filmId = filmId;
     }
@@ -74,13 +74,21 @@ public class MovieDTO extends AbstractMappedEntity {
         this.duration = duration;
     }
 
-    public List<String> getGenres() {return new ArrayList<>(genres) ;}
+    public List<String> getGenres() {
+        return new ArrayList<>(genres);
+    }
 
-    public void setGenres(List<String> genres) {this.genres = new ArrayList<>(genres) ;}
+    public void setGenres(List<String> genres) {
+        this.genres = new ArrayList<>(genres);
+    }
 
-    public Date getReleaseDate() {return new Date(releaseDate.getTime());}
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
 
-    public void setReleaseDate(Date releaseDate) {this.releaseDate = new Date(releaseDate.getTime()) ;}
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
 
     public String getImdbId() {
         return imdbId;

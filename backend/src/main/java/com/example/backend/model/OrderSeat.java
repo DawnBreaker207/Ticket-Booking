@@ -1,11 +1,13 @@
 package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Hidden
+@Alias("OrderSeat")
 public class OrderSeat {
     private Long id;
     private String orderId;

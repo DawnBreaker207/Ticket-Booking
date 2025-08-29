@@ -4,6 +4,7 @@ import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
+@Alias("Order")
 public class Order extends AbstractMappedEntity {
     private String orderId;
 
@@ -26,7 +28,7 @@ public class Order extends AbstractMappedEntity {
 
     private BigDecimal totalAmount;
 
-    private List<OrderSeat> seats;
+    private List<OrderSeat> seats = new ArrayList<>();
 
     public Order() {
         super();
@@ -109,9 +111,13 @@ public class Order extends AbstractMappedEntity {
         this.totalAmount = totalAmount;
     }
 
-    public List<OrderSeat> getSeats() {return new ArrayList<>(seats);}
+    public List<OrderSeat> getSeats() {
+        return new ArrayList<>(seats);
+    }
 
-    public void setSeats(List<OrderSeat> seats) {this.seats = new ArrayList<>(seats);}
+    public void setSeats(List<OrderSeat> seats) {
+        this.seats = new ArrayList<>(seats);
+    }
 
 
     @Override

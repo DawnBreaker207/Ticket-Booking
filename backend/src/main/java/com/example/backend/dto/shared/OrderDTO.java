@@ -23,7 +23,7 @@ public class OrderDTO {
 
     private BigDecimal totalAmount;
 
-    private List<OrderSeatDTO> seats;
+    private List<OrderSeatDTO> seats = new ArrayList<>();
 
     public OrderDTO() {
 
@@ -98,8 +98,12 @@ public class OrderDTO {
         this.totalAmount = totalAmount;
     }
 
-    public List<OrderSeatDTO> getSeats() {return new ArrayList<>(seats);}
+    public List<OrderSeatDTO> getSeats() {
+        return new ArrayList<>(seats);
+    }
 
-    public void setSeats(List<OrderSeatDTO> seats) {this.seats = new ArrayList<>(seats);}
+    public void setSeats(List<OrderSeatDTO> seats) {
+        this.seats = new ArrayList<>(seats);
+    }
 
 }

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.repository.OrderRepository">
+    <resultMap id="SeatResultMap" type="Seat">
+        <id column="seat_id" property="id"/>
+        <result column="cinema_hall_id" property="cinemaHallId"/>
+        <result column="seat_price" property="price"/>
+        <result column="seat_number" property="seatNumber"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="OrderSeatResultMap" type="OrderSeat">
+        <id column="os_id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="seat_id" property="seatId"/>
+        <result column="price" property="price"/>
+        <association property="seatId" resultMap="SeatResultMap"/>
+    </resultMap>
+    <resultMap id="OrderResultMap" type="Order">
+        <id column="id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="cinema_hall_id" property="cinemaHallId"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <collection property="seats" ofType="OrderSeat" resultMap="OrderSeatResultMap"/>
+    </resultMap>
+    <select id="findAllWithFilter" resultMap="OrderResultMap">
+        SELECT o.id AS id, o.user_id, o.cinema_hall_id, o.status AS order_status,
+        o.payment_method, o.payment_status, o.total_amount, o.created_at, o.updated_at, os.id AS os_id, os.order_id,
+        os.seat_id, os.price, s.id AS seat_id, s.cinema_hall_id, s.seat_number, s.status, s.price AS seat_price FROM
+        orders AS o LEFT JOIN order_seat AS os ON o.id = os.order_id LEFT JOIN seat AS s ON os.seat_id = s.id
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId},
+            </if>
+            <if test="cinemaHallId != null">
+                AND cinema_hall_id = #{cinemaHallId},
+            </if>
+            <if test="orderStatus != null">
+                AND status = #{orderStatus},
+            </if>
+            <if test="paymentMethod != null">
+                AND payment_method = #{paymentMethod},
+            </if>
+            <if test="createdAt != null">
+                AND created_at = #{createdAt},
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+    <select id="findAll" resultMap="OrderResultMap">
+        SELECT o.id     AS id,
+               o.user_id,
+               o.cinema_hall_id,
+               o.status AS order_status,
+               o.payment_method,
+               o.payment_status,
+               o.total_amount,
+               o.created_at,
+               o.updated_at,
+               os.id    AS os_id,
+               os.order_id,
+               os.seat_id,
+               os.price,
+               s.id     AS seat_id,
+               s.cinema_hall_id,
+               s.seat_number,
+               s.status,
+               s.price  AS seat_price
+        FROM orders AS o
+                 LEFT JOIN order_seat AS os ON o.id = os.order_id
+                 LEFT JOIN seat AS s ON os.seat_id = s.id
+        ORDER BY created_at DESC
+    </select>
+    <select id="findById" parameterType="java.lang.Long" resultMap="OrderResultMap">
+        SELECT o.id    AS id,
+               o.user_id,
+               o.cinema_hall_id,
+               o.status AS order_status,
+               o.payment_method,
+               o.payment_status,
+               o.total_amount,
+               o.created_at,
+               o.updated_at,
+               os.id   AS os_id,
+               os.order_id,
+               os.seat_id,
+               os.price,
+               s.id    AS seat_id,
+               s.cinema_hall_id,
+               s.seat_number,
+               s.status,
+               s.price AS seat_price
+        FROM orders AS o
+                 LEFT JOIN order_seat AS os ON o.id = os.order_id
+                 LEFT JOIN seat AS s ON os.seat_id = s.id
+        WHERE o.id = #{id}
+    </select>
+    <select id="findOrderSeatsExisted" resultType="Boolean" parameterType="List">
+        SELECT
+        CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM order_seat os
+        JOIN orders o ON os.order_id = o.id
+        WHERE os.seat_id IN
+        <foreach item="seat" collection="list" open="(" separator="," close=")">
+            #{seat.seatId}
+        </foreach>
+        AND o.status = 'CONFIRMED'
+    </select>
+    <select id="findFirstByCustomerIdOrderByCreatedAtDesc" resultType="Order">
+        SELECT o.id,
+               o.user_id,
+               o.cinema_hall_id,
+               o.status,
+               o.payment_method,
+               o.total_amount,
+               o.created_at,
+               o.updated_at,
+               os.id    AS os_id,
+               os.order_id,
+               os.seat_id,
+               os.price,
+               s.id     AS seat_id,
+               s.cinema_hall_id,
+               s.price  AS seat_price,
+               s.seat_number,
+               s.status AS seat_status
+        FROM orders o
+                 LEFT JOIN order_seat os ON o.id = os.order_id
+                 LEFT JOIN seat s ON os.seat_id = s.id
+        WHERE o.user_id = #{customerId}
+        ORDER BY o.created_at DESC LIMIT 1
+    </select>
+    <insert id="insert" parameterType="Order" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO orders (id, user_id,
+                            cinema_hall_id, status, payment_method, payment_status, total_amount, order_time,
+                            created_at, expired_at)
+        VALUES (#{orderId}, #{userId}, #{cinemaHallId}, #{orderStatus}, #{paymentMethod}, #{paymentStatus}, #{totalAmount},
+                #{orderTime},
+                #{createdAt}, #{updatedAt})
+    </insert>
+    <insert id="saveOrderSeat" parameterType="OrderSeat" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO order_seat
+        (order_id, seat_id, price)
+        <foreach collection="orderSeats" item="seat" separator=",">
+            (#{orderId}, #{seatId},#{price})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="Order">
+        UPDATE orders
+        <set>
+            <if test="orderStatus != null">
+                status = #{orderStatus},
+            </if>
+            <if test="paymentMethod != null">
+                payment_method = #{paymentMethod},
+            </if>
+            <if test="paymentStatus != null">
+                payment_status = #{paymentStatus},
+            </if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{orderId}
+    </update>
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE
+        FROM orders
+        WHERE id = #{orderId}
+    </delete>
+</mapper>

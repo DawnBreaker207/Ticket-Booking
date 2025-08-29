@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,10 +10,11 @@ import java.util.Objects;
 
 
 @Hidden
+@Alias("CinemaHall")
 public class CinemaHall extends AbstractMappedEntity {
     private Long id;
     private Date movieSession;
-    private List<Seat> seats;
+    private List<Seat> seats = new ArrayList<>();
     private Movie movie;
 
     public CinemaHall() {
@@ -27,6 +29,7 @@ public class CinemaHall extends AbstractMappedEntity {
         this.movieSession = new Date(cinemaHall.movieSession.getTime());
         this.seats = new ArrayList<>(cinemaHall.seats);
     }
+
     public CinemaHall(Long id, Movie movie, Date movieSession, List<Seat> seats) {
         super();
         this.id = id;
@@ -43,18 +46,28 @@ public class CinemaHall extends AbstractMappedEntity {
         this.id = id;
     }
 
-    public Movie getMovie() {return new Movie(movie);}
+    public Movie getMovie() {
+        return movie != null ? new Movie(movie) : null;
+    }
 
-    public void setMovie(Movie movie) {this.movie = new Movie(movie);}
+    public void setMovie(Movie movie) {
+        this.movie = movie != null ? new Movie(movie) : null;
+    }
 
-    public Date getMovieSession() {return new Date(movieSession.getTime());}
+    public Date getMovieSession() {
+        return new Date(movieSession.getTime());
+    }
 
-    public void setMovieSession(Date movieSession) {this.movieSession = new Date(movieSession.getTime()) ;}
+    public void setMovieSession(Date movieSession) {
+        this.movieSession = new Date(movieSession.getTime());
+    }
 
-    public List<Seat> getSeats() {return new ArrayList<>(seats);}
+    public List<Seat> getSeats() {
+        return seats;
+    }
 
     public void setSeats(List<Seat> seats) {
-        this.seats = new ArrayList<>(seats);
+        this.seats = seats;
     }
 
     @Override

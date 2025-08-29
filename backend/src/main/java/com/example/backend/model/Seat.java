@@ -2,11 +2,13 @@ package com.example.backend.model;
 
 import com.example.backend.constant.SeatStatus;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Hidden
+@Alias("Seat")
 public class Seat {
     private Long id;
     private Long cinemaHallId;
@@ -69,11 +71,11 @@ public class Seat {
         this.price = price;
     }
 
-    public SeatStatus getSeatStatus() {
+    public SeatStatus getStatus() {
         return status;
     }
 
-    public void setSeatStatus(SeatStatus status) {
+    public void setStatus(SeatStatus status) {
         this.status = status;
     }
 

@@ -1,7 +1,6 @@
 package com.example.backend.service;
 
 import com.example.backend.model.RefreshToken;
-import com.example.backend.model.User;
 
 import java.util.Optional;
 

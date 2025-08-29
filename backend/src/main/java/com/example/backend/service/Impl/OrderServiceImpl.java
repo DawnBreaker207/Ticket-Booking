@@ -9,7 +9,7 @@ import com.example.backend.exception.wrapper.*;
 import com.example.backend.helper.RedisKeyHelper;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
-import com.example.backend.repository.Impl.OrderRepositoryImpl;
+import com.example.backend.repository.OrderRepository;
 import com.example.backend.service.OrderService;
 import com.example.backend.util.OrderUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -33,12 +34,12 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
-    private final OrderRepositoryImpl orderRepository;
+    private final OrderRepository orderRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
     private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
-    public OrderServiceImpl(OrderRepositoryImpl orderRepository, RedisTemplate<String, Object> redisTemplate) {
+    public OrderServiceImpl(OrderRepository orderRepository, RedisTemplate<String, Object> redisTemplate) {
         this.orderRepository = orderRepository;
         this.redisTemplate = redisTemplate;
     }
@@ -50,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findOne(String id) {
-        return orderRepository.findOne(id).orElseThrow(() -> new OrderNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
+        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
     }
 
     @Override
@@ -112,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order confirm(String orderId, Long userId) {
         OrderDTO dto = getFromRedis(orderId);
         if (!dto.getUserId().equals(userId)) {
@@ -147,9 +149,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order update(String id, Order o) {
         o.setOrderId(id);
-        return orderRepository.update(o);
+        orderRepository.save(o);
+        return o;
+
     }
 
     @Override
@@ -172,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setCinemaHallId(Long.parseLong((String) data.get("cinemaHallId")));
         try {
             List<OrderSeatDTO> seats = new ObjectMapper().readValue((String) data.get("seats"),
-                    new TypeReference<List<OrderSeatDTO>>() {
+                    new TypeReference<>() {
                     });
             dto.setSeats(seats);
 
