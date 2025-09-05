@@ -1,13 +1,15 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from '@/app/core/services/auth/auth.service';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
 import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
-import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
+import {NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
 import {NgClass} from '@angular/common';
 import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import {Store} from '@ngrx/store';
+import {AuthActions} from '@/app/core/store/state/actions/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -15,7 +17,6 @@ import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
     FormsModule,
     NzButtonComponent,
     NzFormControlComponent,
-    NzFormDirective,
     NzFormItemComponent,
     NzInputDirective,
     NzInputGroupComponent,
@@ -34,9 +35,10 @@ export class AuthComponent implements OnInit {
   activeTab = signal<'login' | 'register'>('login');
   form!: FormGroup;
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private store = inject(Store);
 
   ngOnInit() {
+
     this.initializeForm();
   }
 
@@ -51,15 +53,14 @@ export class AuthComponent implements OnInit {
   onSubmit() {
     console.log(this.form.value);
     if (!this.form.valid) return;
-    const username = this.form.get('username')?.value ?? '';
+    if (this.activeTab() === 'login') {
+      const {username, password} = this.form.value;
+      this.store.dispatch(AuthActions.loadLogin({username, password}));
 
-    const password = this.form.get('password')?.value ?? '';
-    this.authService.login(
-      username,
-      password
-    ).subscribe((data) => {
-      console.log(data)
-    })
+    } else {
+      const {username, email, password} = this.form.value;
+      this.store.dispatch(AuthActions.loadRegister({username, email, password}));
+    }
   }
 
 }
