@@ -2,8 +2,8 @@ import {Routes} from "@angular/router";
 import {AdminGuard} from '@/app/core/guards/admin.guard';
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
+  {path: '', redirectTo: '', pathMatch: 'full'},
+  {path: '', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
   {
     path: 'admin',
     canActivateChild: [AdminGuard],
