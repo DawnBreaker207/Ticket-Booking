@@ -1,8 +1,8 @@
 import {
   ApplicationConfig,
+  importProvidersFrom,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection,
-  importProvidersFrom
+  provideZoneChangeDetection, isDevMode
 } from '@angular/core';
 import {provideRouter} from '@angular/router';
 
@@ -20,6 +20,9 @@ import {provideEffects} from '@ngrx/effects';
 import {AuthInterceptor} from './core/interceptor/auth.interceptor';
 import {CredentialInterceptor} from './core/interceptor/credential.interceptor';
 import {ErrorInterceptor} from '@/app/core/interceptor/error.interceptor';
+import {authFeatureKey, authReducer} from '@/app/core/store/state/reducers/auth.reducers';
+import {AuthEffects} from '@/app/core/store/state/effects/auth.effects';
+import {provideStoreDevtools} from '@ngrx/store-devtools';
 
 registerLocaleData(en);
 
@@ -29,11 +32,15 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideHttpClient(withInterceptors([AuthInterceptor, CredentialInterceptor, ErrorInterceptor])),
     provideRouter(routes),
-    provideStore(),
+    provideStore({
+      [authFeatureKey]: authReducer
+
+    }),
+    provideEffects([AuthEffects]),
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(FormsModule, ReactiveFormsModule),
     provideAnimationsAsync(),
-    provideEffects()
+    provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()})
   ]
 };

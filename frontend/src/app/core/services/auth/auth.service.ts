@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@/environments/environment';
 import {ApiRes} from '../../models/common.model';
 import {Jwt, RefreshToken} from '../../models/jwt.model';
-import {catchError, map, Observable, of, tap} from 'rxjs';
+import {catchError, map, Observable, of, tap, throwError} from 'rxjs';
 
 
 @Injectable({
@@ -32,6 +32,13 @@ export class AuthService {
   URL = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
 
+  register(username: string, email: string, password: string) {
+    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/register`, {username, email, password}).pipe(
+      map((res) => res.data),
+      catchError(this.handleError<RefreshToken>('register')),
+    )
+  }
+
   login(username: string, password: string) {
     return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, {username, password}).pipe(
       map((res) => res.data),
@@ -45,12 +52,6 @@ export class AuthService {
     )
   }
 
-  register(username: string, email: string, password: string) {
-    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/login`, {username, email, password}).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<Jwt>('register')),
-    )
-  }
 
   logout() {
     return this.http.post<void>(`${this.URL}/logout`, {}).pipe(
@@ -68,7 +69,7 @@ export class AuthService {
   private handleError<T>(operation = "operation", result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
-      return of(result as T);
+      return throwError(() => error);
     }
   }
 }
