@@ -2,7 +2,7 @@ export interface Jwt {
   token: string;
   type: string;
   refreshToken: string;
-  id: number;
+  userId: number;
   username: string;
   email: string;
   roles: string[];

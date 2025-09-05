@@ -2,7 +2,8 @@ import {OrderStatus, PaymentMethod, PaymentStatus} from '@/app/core/constants/en
 
 export interface Order {
   orderId: string;
-  cinemaHallId: string;
+  userId: number;
+  cinemaHallId: number;
   orderStatus: OrderStatus;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;

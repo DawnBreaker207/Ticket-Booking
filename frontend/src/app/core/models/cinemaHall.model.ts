@@ -5,6 +5,13 @@ export interface CinemaHall {
   id: number,
   movie: Movie;
   movieSession: string;
-  seatCodes: string[];
-  seatStatus: SeatStatus;
+  seats: CinemaSeats[]
+}
+
+export interface CinemaSeats {
+  cinemaHallId: number,
+  id: number,
+  price: number
+  seatNumber: string,
+  status: SeatStatus
 }
