@@ -1,0 +1,98 @@
+<div class="p-6">
+  <div class="flex flex-row justify-between mb-10">
+    <nz-image class="!object-cover w-fit" [nzSrc]="filmDetail()?.poster ?? ''"
+              [nzAlt]="filmDetail()?.title ?? ''"
+              [nzDisablePreview]="true"
+    />
+    <h1 class="text-2xl font-extrabold">{{ filmDetail()?.title }}</h1>
+  </div>
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+      <p>
+        <nz-icon nzType="tags"/>
+        Thể loại
+      </p>
+    </div>
+
+    <p>{{ filmDetail()?.genres?.join(', ') }}</p>
+  </div>
+
+  <div class="flex flex-row  justify-between">
+    <div class="flex-1/2">
+
+      <p>
+        <nz-icon nzType="field-time"/>
+        Thời lượng
+      </p>
+    </div>
+    <p>{{ filmDetail()?.duration }} phút</p>
+  </div>
+
+  <hr class="border-dashed my-3">
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+
+      <p>
+        <nz-icon nzType="bank"/>
+        Rạp chiếu
+      </p>
+    </div>
+    <p>{{ cinemaHall()?.id }}</p>
+  </div>
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+      <p>
+        <nz-icon nzType="calendar"/>
+        Ngày chiếu
+      </p>
+    </div>
+    <p>{{ cinemaHall()?.movieSession |date: 'dd/MM/yyyy' }} </p>
+  </div>
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+      <p>
+        <nz-icon nzType="field-time"/>
+        Giờ chiếu
+      </p>
+    </div>
+    <p>{{ cinemaHall()?.movieSession |date: 'HH:MM':'UTC' }}</p>
+  </div>
+
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+      <p>
+        <nz-icon nzType="desktop"/>
+        Phòng chiếu
+      </p>
+    </div>
+    <!--      <p>{{ cinemaHall()?.movieSession |date: 'HH:MM':'UTC' }}</p>-->
+  </div>
+
+  <div class="flex flex-row justify-between">
+    <div class="flex-1/2">
+      <p>
+        <nz-icon nzType="table"/>
+        Ghế ngồi
+      </p>
+    </div>
+    <!--    <p>{{ cinemaHall()?.seats?.join(", ") }}</p>-->
+  </div>
+</div>
+
+<div class="mt-4 flex gap-2 justify-center">
+  @if (index() > 0) {
+    <button nz-button nzType="default" (click)="prevStep()">Trở về</button>
+  }
+  @if (index() < steps().length - 1) {
+    <button nz-button nzType="primary" (click)="nextStep()">Tiếp tục</button>
+  }
+
+  @if (index() === steps().length - 1) {
+    <button nz-button nzType="primary" (click)="saveSeats()">Xác nhận</button>
+  }
+</div>
