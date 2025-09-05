@@ -1,9 +1,7 @@
-<ul class="flex flex-row justify-center">
+<header nz-menu class="flex flex-row justify-around items-center h-full">
   @for (header of headers; track header) {
-    <li class="text-white flex justify-between">
-      <a [routerLink]="header.path">
+      <button nz-button [routerLink]="header.path" class="h-full">
         {{ header.name | uppercase }}
-      </a>
-    </li>
+      </button>
   }
-</ul>
+</header>
