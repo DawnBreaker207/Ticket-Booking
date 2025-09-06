@@ -4,6 +4,9 @@ import {HomeComponent} from '@/app/modules/home/home.component';
 import {AuthComponent} from '@/app/modules/home/pages/auth/auth';
 import {ReservationComponent} from '@/app/modules/home/pages/reservation/reservation';
 import {Home} from '@/app/modules/home/pages/home/home';
+import {
+  PaymentResultComponent
+} from '@/app/modules/home/components/reservation/payment-result/payment-result.component';
 
 const routes: Routes = [
   {
@@ -12,7 +15,8 @@ const routes: Routes = [
     children: [
       {path: 'home', component: Home},
       {path: 'login', component: AuthComponent},
-      {path: 'reservation/:orderId', component: ReservationComponent}
+      {path: 'reservation/:orderId', component: ReservationComponent},
+      {path: 'paymentResult', component: PaymentResultComponent}
     ]
   },
   {path: '', redirectTo: '', pathMatch: 'full'},
