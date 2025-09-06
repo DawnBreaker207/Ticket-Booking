@@ -2,7 +2,7 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection, isDevMode
+  provideZoneChangeDetection, isDevMode, LOCALE_ID
 } from '@angular/core';
 import {provideRouter} from '@angular/router';
 
@@ -11,7 +11,7 @@ import {provideStore} from '@ngrx/store';
 import {icons} from './icons-provider';
 import {provideNzIcons} from 'ng-zorro-antd/icon';
 import {en_US, provideNzI18n} from 'ng-zorro-antd/i18n';
-import {registerLocaleData} from '@angular/common';
+import {CommonModule, registerLocaleData} from '@angular/common';
 import en from '@angular/common/locales/en';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
@@ -23,6 +23,8 @@ import {ErrorInterceptor} from '@/app/core/interceptor/error.interceptor';
 import {authFeatureKey, authReducer} from '@/app/core/store/state/reducers/auth.reducers';
 import {AuthEffects} from '@/app/core/store/state/effects/auth.effects';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
+import {reservationFeatureKey, reservationReducer} from '@/app/core/store/state/reducers/reservation.reducers';
+import {ReservationEffects} from '@/app/core/store/state/effects/reservation.effects';
 
 registerLocaleData(en);
 
@@ -33,13 +35,17 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([AuthInterceptor, CredentialInterceptor, ErrorInterceptor])),
     provideRouter(routes),
     provideStore({
-      [authFeatureKey]: authReducer
+      [authFeatureKey]: authReducer,
+      [reservationFeatureKey]: reservationReducer
 
     }),
-    provideEffects([AuthEffects]),
+    provideEffects([AuthEffects, ReservationEffects]),
     provideNzIcons(icons),
     provideNzI18n(en_US),
-    importProvidersFrom(FormsModule, ReactiveFormsModule),
+    importProvidersFrom(
+      CommonModule,
+      FormsModule,
+      ReactiveFormsModule),
     provideAnimationsAsync(),
     provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()})
   ]
