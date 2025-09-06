@@ -6,10 +6,3 @@ export interface User {
   email: string;
   password: string;
 }
-
-export interface AuthState {
-  jwt: Jwt | null,
-  token: any | null,
-  loading: boolean,
-  error: any
-}
