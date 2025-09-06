@@ -42,7 +42,7 @@ services:
       VNPAY_URL: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
       VNPAY_TMN_CODE: 61CXFDAH
       VNPAY_SECRET_KEY: J81W79Q18JMFS7H71ZB9RQI5CUVZ571U
-      VNPAY_RETURN_URL: http://localhost:8888/api/v1/payment/vnpay-return
+      VNPAY_RETURN_URL: http://localhost:4200/paymentResult
       VNPAY_VERSION: 2.1.0
       VNPAY_COMMAND: pay
       VNPAY_ORDER_TYPE: other
