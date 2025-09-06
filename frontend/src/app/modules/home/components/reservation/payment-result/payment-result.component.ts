@@ -6,9 +6,9 @@ import {NzSpinModule} from 'ng-zorro-antd/spin';
 import {OrderService} from '@/app/core/services/order/order.service';
 import {combineLatest, take} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectedOrder, selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
-import {selectUser} from '@/app/core/store/state/selectors/auth.selectors';
-import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
+import {selectedOrder, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
+import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
+import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 
 @Component({
   selector: 'app-payment-result',
@@ -17,7 +17,6 @@ import {ReservationActions} from '@/app/core/store/state/actions/reservation.act
   styleUrl: './payment-result.component.css'
 })
 export class PaymentResultComponent implements OnInit, OnDestroy {
-  private reservationService = inject(OrderService);
   private store = inject(Store);
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -25,7 +24,8 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
   vnpResponseCode: any;
   vnpAmount: any;
   vnpOrderInfo: any
-
+  status: 'success' | 'error' | 'info' = 'info';
+  errorMessage: string = ''
   countdown = 15;
   private intervalId: any;
 
@@ -43,7 +43,12 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.vnpTxnRef && this.vnpResponseCode === '00') {
       console.log(`This is success`)
+      this.status = 'success';
       this.saveOrder();
+      this.startCountDown();
+    } else {
+      this.status = 'error';
+      this.errorMessage = `Thanh toán thất bại. Mã lỗi: ${this.vnpResponseCode}`;
       this.startCountDown();
     }
   }
