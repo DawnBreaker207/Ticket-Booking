@@ -1,0 +1,12 @@
+<div class="flex h-screen w-screen justify-center items-center">
+  <nz-result nzStatus="success" nzTitle="Đơn đã thanh toán thành công"
+             nzSubTitle="Mã đơn {{vnpTxnRef}} đã được thanh toán thành công "
+  >
+    <div nz-result-extra>
+      <button nz-button nzType="primary" (click)="goHome()">Về trang chủ</button>
+      <div class="mt-4 flex justify-center items-center gap-2">
+        <p>Tự động về trang chủ trong {{ countdown }}s... </p>
+      </div>
+    </div>
+  </nz-result>
+</div>

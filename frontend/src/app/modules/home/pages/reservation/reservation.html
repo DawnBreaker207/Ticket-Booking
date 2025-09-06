@@ -14,7 +14,9 @@
     <nz-content class="mt-4 max-w-[1200px] mx-auto ">
       @switch (index()) {
         @case (0) {
-          <app-seat [seats]="schedule.seats"/>
+          @if (schedule?.seats) {
+          <app-seat [seats]="schedule!.seats"/>
+          }
         }
         @case (1) {
           <app-summary [user]="user$ | async"/>

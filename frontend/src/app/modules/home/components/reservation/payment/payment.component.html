@@ -2,7 +2,7 @@
   <div class="w-max ml-auto text-right font-bold">
     <div class="grid grid-cols-2 gap-x-4 ">
       <p>Tổng tiền</p>
-      <span class="text-orange-600">135.000 vnđ</span>
+      <span class="text-orange-600">{{ totalPrice$ |async | currency: 'VND' :'symbol' }} </span>
     </div>
     <div class="grid grid-cols-2 gap-x-4 ">
       <p>Số tiền được giảm</p>
@@ -10,7 +10,7 @@
     </div>
     <div class="grid grid-cols-2 gap-x-4 ">
       <p>Số tiền cần thanh toán</p>
-      <span class="text-orange-600">135.000 vnđ</span>
+      <span class="text-orange-600">{{ totalPrice$ | async | currency: 'VND' :'symbol' }} </span>
     </div>
   </div>
   <div class="flex flex-row justify-between">

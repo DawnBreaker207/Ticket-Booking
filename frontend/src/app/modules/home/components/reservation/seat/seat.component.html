@@ -10,7 +10,7 @@
     <div class="mb-2 text-sm text-gray-600 font-semibold">Màn hình chiếu</div>
 
     <!-- Ghế -->
-    @for (row of groupedSeats; track $index) {
+    @for (row of groupedSeats(); track $index) {
 
       <div class="flex gap-2 justify-center">
         @for (seat of row; track $index) {
@@ -52,7 +52,7 @@
       </div>
 
       <div class="mt-6">
-        {{ selectedSeats.length }}x{{ selectedSeats[0]?.price | number }} VND
+        {{ (selectedSeats$ | async)?.length }} x {{ (selectedSeats$ |async)?.[0]?.price | currency: 'VND' }}
       </div>
     </div>
 
@@ -61,7 +61,7 @@
         Tổng tiền
       </h3>
       <p class="self-end">
-        {{ totalPrice | number }} VNĐ
+        {{ totalPrice$ | async | currency: 'VND' }}
       </p>
     </div>
     <app-countdown/>

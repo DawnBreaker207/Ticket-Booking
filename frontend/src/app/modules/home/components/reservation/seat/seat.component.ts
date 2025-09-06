@@ -1,7 +1,11 @@
-import {Component, input, OnInit} from '@angular/core';
+import {Component, computed, inject, input, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CountdownComponent} from '@/app/modules/home/components/reservation/countdown/countdown.component';
 import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
+import {Store} from '@ngrx/store';
+import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
+import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
+import {SeatStatus} from '@/app/core/constants/enum';
 
 @Component({
   selector: 'app-seat',
@@ -11,36 +15,44 @@ import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
 })
 export class SeatComponent implements OnInit {
   seats = input<CinemaSeats[]>([]);
-  groupedSeats: CinemaSeats[][] = []
+  localSeats = signal<CinemaSeats[]>([]);
+  store = inject(Store);
+  // groupedSeats: CinemaSeats[][] = []
+  totalPrice$ = this.store.select(selectedTotalPrice);
+  selectedSeats$ = this.store.select(selectedSeats);
 
   ngOnInit(): void {
-    console.log(this.seats())
-    this.groupSeats();
+    this.localSeats.set(this.seats());
   }
 
-  private groupSeats() {
+
+  groupedSeats = computed(() => {
     const groups: { [row: string]: CinemaSeats[] } = {};
-    for (const seat of this.seats()) {
-      const row = seat.seatNumber.charAt(0); // "A1" -> "A"
+    for (const seat of this.localSeats()) {
+      const row = seat.seatNumber.charAt(0);
       if (!groups[row]) groups[row] = [];
       groups[row].push(seat);
     }
 
-    // sắp xếp ghế theo số
     Object.keys(groups).forEach(row => {
-      groups[row].sort((a, b) => {
-        const numA = parseInt(a.seatNumber.slice(1), 10);
-        const numB = parseInt(b.seatNumber.slice(1), 10);
-        return numA - numB;
-      });
+      groups[row].sort((a, b) => parseInt(a.seatNumber.slice(1)) - parseInt(b.seatNumber.slice(1)));
     });
 
-    this.groupedSeats = Object.values(groups);
-  }
+    return Object.values(groups);
+  });
 
   toggleSeat(seat: CinemaSeats) {
     if (seat.status === "BOOKED") return;
-    seat.status = seat.status === "SELECTED" ? "AVAILABLE" : "SELECTED";
+    const updatedSeat: CinemaSeats = {
+      ...seat,
+      status: seat.status === 'SELECTED' ? 'AVAILABLE' : 'SELECTED'
+    };
+
+    // update local signal để UI phản hồi ngay
+    this.localSeats.set(
+      this.localSeats().map(s => s.id === seat.id ? updatedSeat : s)
+    );
+    this.store.dispatch(ReservationActions.toggleSeats({seat}));
   }
 
   getSeatClass(seat: CinemaSeats): string {
