@@ -1,5 +1,5 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {reservationFeatureKey, ReservationState} from '@/app/core/store/state/reducers/reservation.reducers';
+import {reservationFeatureKey, ReservationState} from '@/app/core/store/state/reservation/reservation.reducers';
 
 export const selectReservationState = createFeatureSelector<ReservationState>(reservationFeatureKey);
 

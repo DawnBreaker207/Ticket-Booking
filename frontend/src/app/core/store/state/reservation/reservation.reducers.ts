@@ -1,8 +1,7 @@
 import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
 import {createReducer, on} from '@ngrx/store';
-import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
+import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 import {OrderStatus, PaymentMethod, PaymentStatus, SeatStatus} from '@/app/core/constants/enum';
-import {AuthActions} from '@/app/core/store/state/actions/auth.actions';
 
 
 export const reservationFeatureKey = 'reservationKey';
@@ -16,7 +15,6 @@ export interface ReservationState {
   selectedSeats: CinemaSeats[],
   cinemaHallId: number
   totalPrice: number
-
 }
 
 export const initialState: ReservationState = {

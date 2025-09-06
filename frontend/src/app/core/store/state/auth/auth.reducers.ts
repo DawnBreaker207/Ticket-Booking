@@ -1,5 +1,5 @@
 import {createReducer, on} from '@ngrx/store';
-import {AuthActions} from '@/app/core/store/state/actions/auth.actions';
+import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
 import {Jwt} from '@/app/core/models/jwt.model';
 
 export const authFeatureKey = 'authKey';

@@ -1,9 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {OrderService} from '@/app/core/services/order/order.service';
-import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
+import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 import {catchError, map, of, switchMap} from 'rxjs';
-import {AuthActions} from '@/app/core/store/state/actions/auth.actions';
 
 @Injectable()
 export class ReservationEffects {
