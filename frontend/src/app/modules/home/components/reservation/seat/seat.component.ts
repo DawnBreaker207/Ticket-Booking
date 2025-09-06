@@ -3,8 +3,8 @@ import {CommonModule} from '@angular/common';
 import {CountdownComponent} from '@/app/modules/home/components/reservation/countdown/countdown.component';
 import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
 import {Store} from '@ngrx/store';
-import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
-import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
+import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
+import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
 import {SeatStatus} from '@/app/core/constants/enum';
 
 @Component({

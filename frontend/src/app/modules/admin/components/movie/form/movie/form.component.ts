@@ -89,7 +89,6 @@ export class FormMovieComponent implements OnInit, OnDestroy {
 
   submit() {
     if (this.movieForm.valid) {
-      console.log(this.mode);
       console.log(this.movieForm.controls['id'].value);
       const submit = this.mode === 'add' ? this.movieService.saveMovie(this.movieForm.value) : this.movieService.updateMovie(this.movieForm.value);
       submit.subscribe((data) => {

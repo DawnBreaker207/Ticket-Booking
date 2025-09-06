@@ -1,7 +1,7 @@
 import {Component, inject, input} from '@angular/core';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {Store} from '@ngrx/store';
-import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
+import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
 import {AsyncPipe, CurrencyPipe} from '@angular/common';
 
 @Component({

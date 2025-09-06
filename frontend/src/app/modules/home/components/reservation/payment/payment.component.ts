@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {CountdownComponent} from '@/app/modules/home/components/reservation/countdown/countdown.component';
 import {NzImageViewComponent} from 'ng-zorro-antd/experimental/image';
 import {Store} from '@ngrx/store';
-import {selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
+import {selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
 import {AsyncPipe, CurrencyPipe} from '@angular/common';
 
 @Component({

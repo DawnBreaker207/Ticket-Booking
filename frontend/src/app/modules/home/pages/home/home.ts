@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
 import {on, Store} from '@ngrx/store';
 import {CinemaHall} from '@/app/core/models/cinemaHall.model';
 import {OrderService} from '@/app/core/services/order/order.service';
-import {selectUser} from '@/app/core/store/state/selectors/auth.selectors';
+import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {filter, switchMap, take} from 'rxjs';
 import {Jwt} from '@/app/core/models/jwt.model';
 

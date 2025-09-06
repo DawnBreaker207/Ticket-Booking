@@ -9,7 +9,7 @@ import {NgClass} from '@angular/common';
 import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
 import {Store} from '@ngrx/store';
-import {AuthActions} from '@/app/core/store/state/actions/auth.actions';
+import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -51,7 +51,6 @@ export class AuthComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (!this.form.valid) return;
     if (this.activeTab() === 'login') {
       const {username, password} = this.form.value;

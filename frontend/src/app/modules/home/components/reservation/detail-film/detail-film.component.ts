@@ -8,7 +8,7 @@ import {AsyncPipe, DatePipe} from '@angular/common';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
 import {Store} from '@ngrx/store';
-import {selectedSeats} from '@/app/core/store/state/selectors/reservation.selectors';
+import {selectedSeats} from '@/app/core/store/state/reservation/reservation.selectors';
 import {map} from 'rxjs';
 
 @Component({
