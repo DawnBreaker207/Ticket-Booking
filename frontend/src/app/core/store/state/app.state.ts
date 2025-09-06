@@ -1,5 +1,6 @@
-import {AuthState} from '@/app/core/models/user.model';
+import {AuthState} from '@/app/core/store/state/reducers/auth.reducers';
 
 export interface AppState {
   auth: AuthState
+
 }
