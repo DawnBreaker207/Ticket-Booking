@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,19 +30,24 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+
     private final OrderRepository orderRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-
+    private final SimpMessagingTemplate messagingTemplate;
     private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
-    public OrderServiceImpl(OrderRepository orderRepository, RedisTemplate<String, Object> redisTemplate) {
+
+    public OrderServiceImpl(OrderRepository orderRepository, SimpMessagingTemplate messagingTemplate,
+                            RedisTemplate<String, Object> redisTemplate) {
         this.orderRepository = orderRepository;
+        this.messagingTemplate = messagingTemplate;
         this.redisTemplate = redisTemplate;
     }
 
@@ -54,6 +61,28 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
     }
 
+    @Scheduled(fixedRate = 5000)
+    public void getCountdown() {
+        log.info("Running getCountdown schedule task");
+        Set<String> keys = redisTemplate.keys("orderId:*");
+        log.info("Getting countdown keys {}", keys);
+        if (keys.isEmpty()) return;
+
+        for (String redisKey : keys) {
+            Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
+            log.info("Getting count down task for {}", redisKey);
+            if (ttl > 0) {
+                String orderId = redisKey.substring(redisKey.lastIndexOf(":") + 1);
+                messagingTemplate.convertAndSend("/topic/order/" + orderId, Map.of(
+                        "event", "TTL_SYNC",
+                        "orderId", orderId,
+                        "ttl", ttl
+                ));
+                log.info("Sending TTL_SYNC for order {} with TTL {}", orderId, ttl);
+            }
+        }
+    }
+
     @Override
     public String initOrder(OrderDTO o) {
         String orderId = OrderUtils.generateOrderIds();
@@ -61,11 +90,22 @@ public class OrderServiceImpl implements OrderService {
         o.setOrderStatus(OrderStatus.CREATED);
         o.setOrderId(orderId);
         o.setSeats(new ArrayList<>());
-        Map<String, String> orderData = Map.of("userId", o.getUserId().toString(), "status", o.getOrderStatus().name(),
-                "cinemaHallId", o.getCinemaHallId().toString(), "seats", "[]");
+        Map<String, String> orderData = Map.of(
+                "userId", o.getUserId().toString(),
+                "status", o.getOrderStatus().name(),
+                "cinemaHallId", o.getCinemaHallId().toString(),
+                "seats", "[]");
 
         redisTemplate.opsForHash().putAll(redisKey, orderData);
         redisTemplate.expire(redisKey, HOLD_TIMEOUT);
+
+        messagingTemplate.convertAndSend("/topic/order/" + orderId, Map.of(
+                        "event", "TTL_SYNC",
+                        "orderId", orderId,
+                        "ttl", HOLD_TIMEOUT.toSeconds()
+                )
+        );
+        log.info("Sending TTL_SYNC for order {} with TTL {}", orderId, HOLD_TIMEOUT.toSeconds());
         return orderId;
     }
 
