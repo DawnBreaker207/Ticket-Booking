@@ -1,8 +1,9 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
+  isDevMode,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection, isDevMode, LOCALE_ID
+  provideZoneChangeDetection
 } from '@angular/core';
 import {provideRouter} from '@angular/router';
 
@@ -20,11 +21,12 @@ import {provideEffects} from '@ngrx/effects';
 import {AuthInterceptor} from './core/interceptor/auth.interceptor';
 import {CredentialInterceptor} from './core/interceptor/credential.interceptor';
 import {ErrorInterceptor} from '@/app/core/interceptor/error.interceptor';
-import {authFeatureKey, authReducer} from '@/app/core/store/state/reducers/auth.reducers';
-import {AuthEffects} from '@/app/core/store/state/effects/auth.effects';
+import {authFeatureKey, authReducer} from '@/app/core/store/state/auth/auth.reducers';
+import {AuthEffects} from '@/app/core/store/state/auth/auth.effects';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
-import {reservationFeatureKey, reservationReducer} from '@/app/core/store/state/reducers/reservation.reducers';
-import {ReservationEffects} from '@/app/core/store/state/effects/reservation.effects';
+import {reservationFeatureKey, reservationReducer} from '@/app/core/store/state/reservation/reservation.reducers';
+import {ReservationEffects} from '@/app/core/store/state/reservation/reservation.effects';
+import {countdownFeatureKey, countdownReducer} from '@/app/core/store/state/countdown/countdown.reducers';
 
 registerLocaleData(en);
 
@@ -36,7 +38,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore({
       [authFeatureKey]: authReducer,
-      [reservationFeatureKey]: reservationReducer
+      [reservationFeatureKey]: reservationReducer,
+      [countdownFeatureKey]: countdownReducer
 
     }),
     provideEffects([AuthEffects, ReservationEffects]),
@@ -45,7 +48,8 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       CommonModule,
       FormsModule,
-      ReactiveFormsModule),
+      ReactiveFormsModule
+    ),
     provideAnimationsAsync(),
     provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()})
   ]

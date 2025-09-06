@@ -11,14 +11,14 @@ import {SummaryComponent} from '@/app/modules/home/components/reservation/summar
 import {PaymentComponent} from '@/app/modules/home/components/reservation/payment/payment.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {selectUser} from '@/app/core/store/state/selectors/auth.selectors';
+import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {Order} from '@/app/core/models/order.model';
 import {OrderService} from '@/app/core/services/order/order.service';
-import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/selectors/reservation.selectors';
+import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
 import {map} from 'rxjs';
 import {PaymentService} from '@/app/core/services/payment/payment.service';
-import {ReservationActions} from '@/app/core/store/state/actions/reservation.actions';
+import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 
 
 @Component({
@@ -66,7 +66,9 @@ export class ReservationComponent implements OnInit {
   }
 
   onStepChange(newIndex: number) {
-    if (newIndex == 1) {
+    console.log(newIndex, this.index());
+    if (newIndex === 1 && this.index() === 0) {
+      console.log("Hold seat")
       let payload: any;
       this.selectedSeats$.pipe(
         map((seats) => seats.map(seat => ({
@@ -94,17 +96,17 @@ export class ReservationComponent implements OnInit {
       console.log(this.index())
       console.log(newIndex)
       return
-    } else if (newIndex == 2) {
-      console.log(this.index())
-      console.log(newIndex)
-      this.index.set(newIndex)
-    } else {
+    }
+    if (newIndex === 3 && this.index() === 2) {
+      console.log("Payment")
       this.totalPrice$.subscribe(data => this.totalPrice = data);
       this.paymentService.createPayment({orderId: this.orderId, totalPrice: this.totalPrice}).subscribe(res => {
         console.log(res)
         window.open(res.paymentUrl, '_self');
         this.index.set(newIndex);
       })
+    } else {
+      this.index.set(newIndex);
     }
   }
 
