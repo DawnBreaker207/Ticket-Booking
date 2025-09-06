@@ -2,7 +2,7 @@ import {Routes} from "@angular/router";
 import {AdminGuard} from '@/app/core/guards/admin.guard';
 
 export const routes: Routes = [
-  {path: '', redirectTo: '', pathMatch: 'full'},
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: '', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
   {
     path: 'admin',
