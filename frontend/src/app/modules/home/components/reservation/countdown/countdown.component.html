@@ -1,4 +1,4 @@
 <div class="px-4 h-full border-l-3 border-l-gray-200">
   <h3 class="text-lg font-bold">Thời gian còn lại</h3>
-  <p class="font-bold text-5xl justify-self-end">{{ remainingTime }}</p>
+  <p class="font-bold text-5xl justify-self-end">{{ remainingTime$ |async |formattedCountdown }}</p>
 </div>
