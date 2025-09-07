@@ -14,8 +14,8 @@
     <nz-content class="mt-4 max-w-[1200px] mx-auto ">
       @switch (index()) {
         @case (0) {
-          @if (schedule?.seats) {
-          <app-seat [seats]="schedule!.seats"/>
+          @if ((schedule$ |async)?.seats) {
+            <app-seat/>
           }
         }
         @case (1) {
@@ -27,10 +27,9 @@
       }
     </nz-content>
     <nz-sider nzWidth="350px" nzTheme="light" class="!bg-transparent">
-      @if (schedule) {
-        <app-detail-film [filmDetail]="schedule.movie" [cinemaHall]="schedule" [index]="index()"
+      @if (schedule$ | async) {
+        <app-detail-film [filmDetail]="(schedule$ | async)?.movie" [cinemaHall]="schedule$ | async" [index]="index()"
                          (stepChange)="onStepChange($event)" [steps]="steps()"/>
-
       }
     </nz-sider>
   </nz-layout>

@@ -3,10 +3,9 @@ import {NzResultModule} from 'ng-zorro-antd/result'
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzSpinModule} from 'ng-zorro-antd/spin';
-import {OrderService} from '@/app/core/services/order/order.service';
 import {combineLatest, take} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectedOrder, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
+import {selectedOrder} from '@/app/core/store/state/reservation/reservation.selectors';
 import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 
@@ -26,7 +25,7 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
   vnpOrderInfo: any
   status: 'success' | 'error' | 'info' = 'info';
   errorMessage: string = ''
-  countdown = 15;
+  countdown = 10;
   private intervalId: any;
 
 

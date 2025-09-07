@@ -8,8 +8,8 @@ import {AsyncPipe, DatePipe} from '@angular/common';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
 import {Store} from '@ngrx/store';
-import {selectedSeats} from '@/app/core/store/state/reservation/reservation.selectors';
 import {map} from 'rxjs';
+import {selectedSeats} from '@/app/core/store/state/schedule/schedule.selectors';
 
 @Component({
   selector: 'app-detail-film',
@@ -18,8 +18,8 @@ import {map} from 'rxjs';
   styleUrl: './detail-film.component.css'
 })
 export class DetailFilmComponent {
-  filmDetail = input<Movie | null>(null);
-  cinemaHall = input<CinemaHall | null>(null);
+  filmDetail = input<Movie | null | undefined>(null);
+  cinemaHall = input<CinemaHall | null | undefined>(null);
   index = input<number>(0);
   steps = input<number[]>([]);
   store = inject(Store);

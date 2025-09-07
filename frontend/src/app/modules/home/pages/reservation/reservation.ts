@@ -3,8 +3,6 @@ import {NzStepsModule} from 'ng-zorro-antd/steps';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {DetailFilmComponent} from '@/app/modules/home/components/reservation/detail-film/detail-film.component';
-import {ScheduleService} from '@/app/core/services/schedule/schedule.service';
-import {CinemaHall} from '@/app/core/models/cinemaHall.model';
 import {SeatComponent} from '@/app/modules/home/components/reservation/seat/seat.component';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {SummaryComponent} from '@/app/modules/home/components/reservation/summary/summary.component';
@@ -15,10 +13,11 @@ import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {Order} from '@/app/core/models/order.model';
 import {OrderService} from '@/app/core/services/order/order.service';
-import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/reservation/reservation.selectors';
-import {map} from 'rxjs';
+import {combineLatest, map, take} from 'rxjs';
 import {PaymentService} from '@/app/core/services/payment/payment.service';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
+import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions';
+import {selectedSchedule, selectedSeats, selectedTotalPrice} from '@/app/core/store/state/schedule/schedule.selectors';
 
 
 @Component({
@@ -28,7 +27,6 @@ import {ReservationActions} from '@/app/core/store/state/reservation/reservation
   styleUrl: './reservation.css'
 })
 export class ReservationComponent implements OnInit {
-  scheduleService = inject(ScheduleService);
   reservationService = inject(OrderService);
   paymentService = inject(PaymentService);
   private store = inject(Store);
@@ -37,7 +35,7 @@ export class ReservationComponent implements OnInit {
   selectedSeats$ = this.store.select(selectedSeats);
   totalPrice$ = this.store.select(selectedTotalPrice);
   totalPrice: number = 0;
-  schedule: CinemaHall | null = null;
+  schedule$ = this.store.select(selectedSchedule);
   orderId!: string
   order!: Order
 
@@ -59,10 +57,7 @@ export class ReservationComponent implements OnInit {
         }
       }))
     })
-    this.scheduleService.getSchedule(7).subscribe(data => {
-        this.schedule = data
-      }
-    );
+    this.store.dispatch(ScheduleActions.loadSchedule({scheduleId: 7}))
   }
 
   onStepChange(newIndex: number) {
@@ -70,23 +65,30 @@ export class ReservationComponent implements OnInit {
     if (newIndex === 1 && this.index() === 0) {
       console.log("Hold seat")
       let payload: any;
-      this.selectedSeats$.pipe(
-        map((seats) => seats.map(seat => ({
-          ...seat,
-          seat: {
-            id: seat.id
-          },
-          price: seat.price
-        })))
-      ).subscribe(data => {
+      combineLatest([this.selectedSeats$, this.schedule$]).pipe(
+        take(1),
+        map(([seats, schedule]) =>
+          ({
+            schedule: schedule,
+            seats: seats.map(seat => ({
+              ...seat,
+              seat: {
+                id: seat.id
+              },
+              price: seat.price
+            }))
+          })
+        )).subscribe(({schedule, seats}) => {
+          if (!schedule) return;
+
           payload = {
             orderId: this.orderId,
             userId: 8,
-            cinemaHallId: this.schedule?.id,
-            seats: data
+            cinemaHallId: schedule.id,
+            seats: seats
           }
-          console.log(payload)
 
+          console.log(payload)
         }
       )
       this.reservationService.holdSeat(payload).subscribe(res => {
