@@ -27,6 +27,8 @@ import {provideStoreDevtools} from '@ngrx/store-devtools';
 import {reservationFeatureKey, reservationReducer} from '@/app/core/store/state/reservation/reservation.reducers';
 import {ReservationEffects} from '@/app/core/store/state/reservation/reservation.effects';
 import {countdownFeatureKey, countdownReducer} from '@/app/core/store/state/countdown/countdown.reducers';
+import {scheduleFeatureKey, scheduleReducer} from '@/app/core/store/state/schedule/schedule.reducers';
+import {ScheduleEffects} from '@/app/core/store/state/schedule/schedule.effects';
 
 registerLocaleData(en);
 
@@ -39,10 +41,11 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       [authFeatureKey]: authReducer,
       [reservationFeatureKey]: reservationReducer,
-      [countdownFeatureKey]: countdownReducer
+      [countdownFeatureKey]: countdownReducer,
+      [scheduleFeatureKey]: scheduleReducer,
 
     }),
-    provideEffects([AuthEffects, ReservationEffects]),
+    provideEffects([AuthEffects, ReservationEffects, ScheduleEffects]),
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(
