@@ -7,14 +7,11 @@ import {OrderStatus, PaymentMethod, PaymentStatus, SeatStatus} from '@/app/core/
 export const reservationFeatureKey = 'reservationKey';
 
 export interface ReservationState {
-  seats: CinemaSeats[],
   orderId: string,
   orderStatus: OrderStatus,
   paymentMethod: PaymentMethod,
   paymentStatus: PaymentStatus,
-  selectedSeats: CinemaSeats[],
   cinemaHallId: number
-  totalPrice: number
 }
 
 export const initialState: ReservationState = {
@@ -23,36 +20,15 @@ export const initialState: ReservationState = {
   paymentMethod: JSON.parse(localStorage.getItem('paymentMethod') || 'null') || 'CASH',
   paymentStatus: JSON.parse(localStorage.getItem('paymentStatus') || 'null') || 'PENDING',
   cinemaHallId: JSON.parse(localStorage.getItem('cinemaHallId') || 'null') || 7,
-  seats: [],
-  selectedSeats: [],
-  totalPrice: 0
 }
 
 export const reservationReducer = createReducer(
   initialState,
-  on(ReservationActions.toggleSeats, (state, {seat}) => {
-    const exists = state.selectedSeats.find(s => s.id === seat.id);
-    const newSelected = exists ?
-      state.selectedSeats.filter(s => s.id !== seat.id) :
-      [...state.selectedSeats, {
-        ...seat,
-        status: 'SELECTED' as SeatStatus
-      }];
-    return {
-      ...state,
-      selectedSeats: newSelected,
-      totalPrice: newSelected.reduce((sum, s) => sum + s.price, 0)
-    }
-  }),
   on(ReservationActions.loadOrder, (state, {order}) => {
     return {...state, order}
   }),
 
   on(ReservationActions.createOrder, (state, {order}) => {
-    localStorage.setItem('cinemaHallId', JSON.stringify(order.cinemaHallId));
-    localStorage.setItem('orderStatus', JSON.stringify(order.orderStatus));
-    localStorage.setItem('paymentMethod', JSON.stringify(order.paymentMethod));
-    localStorage.setItem('paymentStatus', JSON.stringify(order.paymentStatus));
     return {
       ...state,
       orderId: order.orderId ?? state.orderId,
