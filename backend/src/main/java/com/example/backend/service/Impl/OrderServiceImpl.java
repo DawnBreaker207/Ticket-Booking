@@ -85,8 +85,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String initOrder(OrderDTO o) {
-        String orderId = OrderUtils.generateOrderIds();
-        String redisKey = RedisKeyHelper.orderHoldKey(orderId);
+        String orderId = o.getOrderId();
+        String redisKey;
+        if (orderId != null && redisTemplate.hasKey(RedisKeyHelper.orderHoldKey(orderId))) {
+            redisKey = RedisKeyHelper.orderHoldKey(orderId);
+            redisTemplate.expire(redisKey, HOLD_TIMEOUT);
+
+            messagingTemplate.convertAndSend("/topic/order/" + orderId, Map.of(
+                            "event", "TTL_SYNC",
+                            "orderId", orderId,
+                            "ttl", HOLD_TIMEOUT.toSeconds()
+                    )
+            );
+            log.info("Sending TTL_SYNC for order {} with TTL {}", orderId, HOLD_TIMEOUT.toSeconds());
+            return orderId;
+        }
+
+        orderId = OrderUtils.generateOrderIds();
+        redisKey = RedisKeyHelper.orderHoldKey(orderId);
         o.setOrderStatus(OrderStatus.CREATED);
         o.setOrderId(orderId);
         o.setSeats(new ArrayList<>());
@@ -135,11 +151,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         for (OrderSeatDTO seat : orderSeats) {
-            Boolean locked = redisTemplate.opsForValue().setIfAbsent(RedisKeyHelper.seatLockKey(seat.getSeat().getId()),
-                    RedisKeyHelper.orderHoldKey(orderId), HOLD_TIMEOUT);
-            if (Boolean.FALSE.equals(locked)) {
+            String lockKey = RedisKeyHelper.seatLockKey(seat.getSeat().getId());
+            String existingLock =(String) redisTemplate.opsForValue().get(lockKey);
+            if (existingLock != null && !existingLock.equals(redisKey)) {
                 throw new SeatUnavailableException(HttpStatus.NOT_FOUND, "Seat " + seat.getSeat().getId() + " not avalable");
             }
+
+            redisTemplate.opsForValue().set(lockKey, redisKey,HOLD_TIMEOUT);
 
         }
         try {
