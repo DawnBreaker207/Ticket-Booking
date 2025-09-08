@@ -1,8 +1,8 @@
 import React from "react";
 import type { FC } from "react";
-import { Layout, Menu, Button, Divider, Typography } from "antd";
+import { Layout, Button, Divider, Typography } from "antd";
 import Logo from "../assets/logo.png";
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 const topStripStyle: React.CSSProperties = {
     background: "#000",

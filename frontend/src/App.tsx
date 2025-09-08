@@ -1,5 +1,5 @@
 
-import AppRoutes from './routes'; // sẽ load routes/index.ts
+import AppRoutes from './routes';
 
 const App = () => {
   return (
