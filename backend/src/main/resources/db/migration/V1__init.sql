@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS movie
     poster       VARCHAR(255),
     overview     TEXT,
     duration     INT          NOT NULL,
-    genres       VARCHAR(100),
+    genres       JSON,
     release_date DATE,
     imdb_id      VARCHAR(255),
     film_id      VARCHAR(255),

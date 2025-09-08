@@ -1,12 +1,13 @@
 package com.example.backend.model;
 
 import com.example.backend.constant.URole;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Objects;
 
-
-public class Role {
-    private Integer id;
+@Alias("Role")
+public class Role extends AbstractMappedEntity {
+    private Long id;
 
     private URole name;
 
@@ -20,21 +21,23 @@ public class Role {
         this.name = role.name;
     }
 
-    public Role(Integer id, URole name) {
+    public Role(Long id, URole name) {
         super();
         this.id = id;
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public URole getName() {return name;}
+    public URole getName() {
+        return name;
+    }
 
     public void setName(URole name) {
         this.name = name;

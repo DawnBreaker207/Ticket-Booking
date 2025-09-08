@@ -1,10 +1,13 @@
 package com.example.backend.model;
 
+import org.apache.ibatis.type.Alias;
+
 import java.time.Instant;
 import java.util.Objects;
 
-public class RefreshToken {
-    private Integer id;
+@Alias("RefreshToken")
+public class RefreshToken extends AbstractMappedEntity {
+    private Long id;
     private User user;
     private String token;
     private Instant expiryDate;
@@ -14,7 +17,7 @@ public class RefreshToken {
         super();
     }
 
-    public RefreshToken(Integer id, User user, String token, Instant expiryDate) {
+    public RefreshToken(Long id, User user, String token, Instant expiryDate) {
         super();
         this.id = id;
         this.user = new User(user);
@@ -22,17 +25,21 @@ public class RefreshToken {
         this.expiryDate = expiryDate;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public User getUser() {return new User(user);}
+    public User getUser() {
+        return new User(user);
+    }
 
-    public void setUser(User user) {this.user = new User(user);}
+    public void setUser(User user) {
+        this.user = new User(user);
+    }
 
     public String getToken() {
         return token;

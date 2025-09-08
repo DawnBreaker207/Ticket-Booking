@@ -1,9 +1,9 @@
 package com.example.backend.service;
 
-import java.util.List;
-
 import com.example.backend.dto.shared.MovieDTO;
 import com.example.backend.model.Movie;
+
+import java.util.List;
 
 public interface MovieService {
 
