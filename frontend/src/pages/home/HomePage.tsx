@@ -1,112 +1,175 @@
-// MovieGrid.tsx
-import React from 'react';
-import { Row, Col, Card, Button, Typography, Image, Layout } from 'antd';
-import Navbar from '../../components/Navbar';
+import React, { useEffect, useMemo } from "react";
+import { Row, Card, Button, Typography, Image, Layout, message } from "antd";
+import Navbar from "../../components/Navbar";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { setCinemaHalls } from "../../features/cinemaHalls/cinemaHallsSlice";
+import { cinemaHallService } from "../../services/cinemaHallService";
 const { Title, Text } = Typography;
-import type { Movie as MovieType } from '../../types/movie';
-
+import type { Movie as MovieType } from "../../types/Movie";
+import type { CinemaHall } from "../../types/CinemaHall";
 const { Content } = Layout;
 
-const movies: MovieType[] = [
-    {
-        id: '1',
-        poster: 'https://motchilllo.net/wp-content/uploads/2025/08/thanh-guom-diet-quy-vo-han-thanh-19930-thumb.webp',
-        title: 'Thanh gươm diệt quỷ: Vô hạn thanh',
-        genre: ['Action', 'Adventure'],
-        duration: 120,
-    },
-    {
-        id: '2',
-        poster: 'https://files.betacorp.vn/media%2fimages%2f2025%2f07%2f10%2fscreenshot%2D2025%2D07%2D10%2D120703%2D130606%2D100725%2D11.png',
-        title: 'connan',
-        genre: ['Comedy', 'Drama'],
-        duration: 90,
-    },
-    {
-        id: '3',
-        poster: 'https://files.betacorp.vn/media%2fimages%2f2025%2f07%2f21%2f400x633%2D1%2D160944%2D210725%2D16.jpg',
-        title: 'Mang mẹ đi bỏ',
-        genre: ['Sci-Fi', 'Thriller'],
-        duration: 150,
-    },
-    {
-        id: '4',
-        poster: 'https://files.betacorp.vn/media%2fimages%2f2025%2f07%2f21%2f400x633%2D1%2D160944%2D210725%2D16.jpg',
-        title: 'Movie Title 4',
-        genre: ['Horror'],
-        duration: 110,
-    },
-    {
-        id: '5',
-        poster: 'https://files.betacorp.vn/media%2fimages%2f2025%2f07%2f21%2f400x633%2D1%2D160944%2D210725%2D16.jpg',
-        title: 'Movie Title 4',
-        genre: ['Horror'],
-        duration: 110,
-    },
-];
+const CARD_WIDTH = 227;
+const CARD_HEIGHT = 570;
+const IMAGE_HEIGHT = 360;
 
 const HomePage: React.FC = () => {
-    return (
-        <Layout style={{ minHeight: "100vh" }}>
-            <Navbar />
-            <Content style={{ maxWidth: '1200px', marginRight: 'auto', marginLeft: 'auto', paddingTop: '30px' }}>
-                <Title level={2} style={{ textAlign: 'center', margin: '24px 0' }}>
-                    PHIM ĐANG CHIẾU
-                </Title>
-                <Row gutter={[16, 16]}>
-                    {movies.map((movie) => (
-                        <Col xs={24} sm={12} md={9} lg={6} key={movie.id} style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Card
-                                cover={
-                                    <Image
-                                        alt={movie.title}
-                                        src={movie.poster}
-                                        preview={false}
-                                        style={{ width: '100%', height: 360, objectFit: 'cover', display: 'block', borderRadius: 8 }}
-                                    />
-                                }
-                                style={{
-                                    width: 227,
-                                    height: 570,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    overflow: 'hidden',
-                                    border: 'none',
-                                    boxShadow: 'none',
-                                    background: 'transparent',
-                                }}
-                                styles={{
-                                    body: {
-                                        padding: 12,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        flex: 1,
-                                    },
-                                }}
-                            >
-                                <div>
-                                    <Title level={4} style={{ margin: 0, padding: 0, lineHeight: 1.2 }}>
-                                        {movie.title}
-                                    </Title>
-                                    <Text style={{ display: 'block', marginTop: 6 }}>
-                                        <b>Thể loại:</b> {movie.genre.join(', ')}
-                                    </Text>
-                                    <Text style={{ display: 'block', marginTop: 4 }}>
-                                        <b>Thời lượng:</b> {movie.duration}
-                                    </Text>
-                                </div>
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Button type="primary" style={{ width: '100%', padding: '6px 12px', marginTop: 8 }}>
-                                        MUA VÉ
-                                    </Button>
-                                </div>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            </Content>
-        </Layout>
-    );
+  const dispatch = useAppDispatch();
+  const cinemaHalls = useAppSelector(
+    (s) => s.cinemaHalls.items
+  ) as CinemaHall[];
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await cinemaHallService.getAll();
+        if (!mounted) return;
+        dispatch(setCinemaHalls(res));
+      } catch (err: any) {
+        console.error("Load cinema halls failed", err);
+        message.error(
+          err?.response?.data?.message ?? "Không thể tải suất chiếu"
+        );
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch]);
+
+  const moviesFromHalls: MovieType[] = useMemo(() => {
+    const map = new Map<number | string, MovieType>();
+    if (!Array.isArray(cinemaHalls)) return [];
+
+    for (const h of cinemaHalls) {
+      const m = (h as any)?.movie as MovieType | undefined;
+      if (!m) continue;
+      const key = (m.id ?? m.title) as number | string;
+
+      if (!map.has(key)) {
+        const normalized: MovieType = {
+          ...(m as any),
+          id: Number(m.id ?? key),
+          poster: m.poster,
+          title: m.title,
+          genres: (m as any).genres,
+          duration: (m as any).duration,
+        };
+        map.set(key, normalized);
+      }
+    }
+
+    return Array.from(map.values());
+  }, [cinemaHalls]);
+
+  const movies = moviesFromHalls;
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Navbar />
+      <Content
+        style={{
+          maxWidth: "1200px",
+          marginRight: "auto",
+          marginLeft: "auto",
+          paddingTop: 30,
+        }}
+      >
+        <Title level={2} style={{ textAlign: "center", margin: "24px 0" }}>
+          PHIM ĐANG CHIẾU
+        </Title>
+        <Row
+          gutter={[16, 16]}
+          justify="center"
+          style={{
+            paddingBottom: 30,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: `60px`,
+          }}
+        >
+          {movies.map((movie, idx) => (
+            <div
+              key={movie.id ?? `movie-${idx}`}
+              style={{
+                flex: `0 0 ${CARD_WIDTH}px`,
+                maxWidth: CARD_WIDTH,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Card
+                cover={
+                  <Image
+                    alt={movie.title}
+                    src={movie.poster}
+                    preview={false}
+                    style={{
+                      width: "100%",
+                      height: IMAGE_HEIGHT,
+                      objectFit: "cover",
+                      display: "block",
+                      borderRadius: 8,
+                    }}
+                  />
+                }
+                style={{
+                  width: CARD_WIDTH,
+                  height: CARD_HEIGHT,
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
+                  border: "none",
+                  boxShadow: "none",
+                  background: "transparent",
+                }}
+                styles={{
+                  body: {
+                    padding: 12,
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1,
+                  },
+                }}
+              >
+                <div>
+                  <Title
+                    level={4}
+                    style={{ margin: 0, padding: 0, lineHeight: 1.2 }}
+                  >
+                    {movie.title}
+                  </Title>
+                  <Text style={{ display: "block", marginTop: 6 }}>
+                    <b>Thể loại:</b> {movie.genres.join(", ")}
+                  </Text>
+                  <Text style={{ display: "block", marginTop: 4 }}>
+                    <b>Thời lượng:</b> {movie.duration} phút
+                  </Text>
+                </div>
+
+                <div style={{ marginTop: "auto" }}>
+                  <Button
+                    type="primary"
+                    style={{
+                      width: "100%",
+                      padding: "6px 12px",
+                      marginTop: 8,
+                      fontWeight: "bold",
+                      background: "#1D81C3",
+                    }}
+                  >
+                    MUA VÉ
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          ))}
+        </Row>
+      </Content>
+    </Layout>
+  );
 };
 
 export default HomePage;
