@@ -99,6 +99,7 @@ export class FormScheduleComponent implements OnInit, OnDestroy {
         poster: movie.poster,
         duration: movie.duration,
         overview: movie.overview,
+        releaseDate: movie.releaseDate
       }
     })
     console.log(this.form.value)
@@ -114,7 +115,8 @@ export class FormScheduleComponent implements OnInit, OnDestroy {
         title: [''],
         poster: [''],
         duration: [''],
-        overview: ['']
+        overview: [''],
+        releaseDate: ['']
       }),
       movieSession: [''],
     })
