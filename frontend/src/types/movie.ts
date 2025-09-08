@@ -1,12 +1,14 @@
 export interface Movie {
-    id: string;
+    id: number;
     title: string;
     overview?: string;
-    genre: string[];
+    genres: string[];
     duration: number;
     language?: string;
     releaseDate?: string;
     poster?: string;
+    imdbId?: string;
+    filmId?: string;
 }
 
 export interface ApiMovie {
