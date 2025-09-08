@@ -4,11 +4,12 @@ import com.example.backend.dto.shared.MovieDTO;
 import com.example.backend.exception.wrapper.MovieExistedException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.model.Movie;
-import com.example.backend.repository.Impl.MovieRepositoryImpl;
+import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -21,9 +22,9 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
     public static final String MOVIE_CACHE = "movie";
     private final RestTemplate restTemplate;
-    private final MovieRepositoryImpl movieRepository;
+    private final MovieRepository movieRepository;
 
-    public MovieServiceImpl(RestTemplate restTemplate, MovieRepositoryImpl movieRepository) {
+    public MovieServiceImpl(RestTemplate restTemplate, MovieRepository movieRepository) {
         this.restTemplate = restTemplate;
         this.movieRepository = movieRepository;
     }
@@ -31,13 +32,13 @@ public class MovieServiceImpl implements MovieService {
     //    @Cacheable(MOVIE_CACHE)
     @Override
     public List<Movie> findAll(MovieDTO m) {
-        return movieRepository.findAll(m);
+        return movieRepository.findAllWithFilter(m);
     }
 
     @Override
 //    @Cacheable(MOVIE_CACHE)
     public Movie findOne(Long id) {
-        return movieRepository.findOne(id)
+        return movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
@@ -49,6 +50,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public Movie createWithId(Long id) {
         String apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjgxYTVkNmVhYTVmZWViZjEzNWM5MTJjNzQ1YmI0MSIsIm5iZiI6MTc1MzcwMTQ4OC4zNzksInN1YiI6IjY4ODc1YzcwZTA4OGQ1NzhjNzhhNzRhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zCqZxPPYPUxf-b_MJPIyb4tgaN6F_TM_n3Jn9nK8pM8";
         String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
@@ -84,8 +86,9 @@ public class MovieServiceImpl implements MovieService {
 
 
     @Override
+    @Transactional
     public Movie create(MovieDTO m) {
-       movieRepository.findByMovieId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
+        movieRepository.findByMovieId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
         });
 
@@ -105,10 +108,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public Movie update(Long id, Movie m) {
-        movieRepository.findOne(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+        movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+        movieRepository.save(m);
+        return m;
 
-        return movieRepository.update(m);
     }
 
     @Override

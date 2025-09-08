@@ -3,5 +3,5 @@ VALUES ('USER'),
        ('MODERATOR'),
        ('ADMIN');
 
-INSERT IGNORE INTO user (username, password)
+INSERT IGNORE INTO users (username, password)
 VALUES ('admin','admin')

@@ -7,7 +7,7 @@ import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.Order;
 
 public interface OrderService {
-    List<Order> findAll();
+    List<Order> findAll(Order o);
 
     Order findOne(String id);
 

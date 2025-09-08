@@ -1,9 +1,11 @@
 package com.example.backend.model;
 
 import com.example.backend.constant.URole;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Objects;
 
+@Alias("Role")
 public class Role extends AbstractMappedEntity {
     private Long id;
 
@@ -33,7 +35,9 @@ public class Role extends AbstractMappedEntity {
         this.id = id;
     }
 
-    public URole getName() {return name;}
+    public URole getName() {
+        return name;
+    }
 
     public void setName(URole name) {
         this.name = name;

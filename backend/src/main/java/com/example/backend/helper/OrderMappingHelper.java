@@ -43,17 +43,17 @@ public interface OrderMappingHelper {
     }
 
     static OrderSeatDTO map(OrderSeat seat) {
-	return new OrderSeatDTO(seat.getSeatId() != null ? seat.getSeatId() : null, seat.getPrice());
+	return new OrderSeatDTO(seat.getSeat() != null ? seat.getSeat() : null, seat.getPrice());
     }
 
     static OrderSeat map(OrderSeatDTO seatDto) {
 	OrderSeat seat = new OrderSeat();
-	if (seatDto.getSeatId() != null) {
+	if (seatDto.getSeat() != null) {
 	    try {
-		seat.setSeatId(seatDto.getSeatId());
+		seat.setSeat(seatDto.getSeat());
 		seat.setPrice(seatDto.getPrice());
 	    } catch (NumberFormatException ex) {
-		seat.setSeatId(null);
+		seat.setSeat(null);
 	    }
 	}
 

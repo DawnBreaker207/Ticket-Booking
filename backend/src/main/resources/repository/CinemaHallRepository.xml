@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.repository.CinemaHallRepository">
+    <resultMap id="MovieResultMap" type="Movie">
+        <id column="movie_id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="poster" property="poster"/>
+        <result column="overview" property="overview"/>
+        <result column="duration" property="duration"/>
+        <result column="genres" property="genres" typeHandler="com.example.backend.typeHandler.JsonListTypeHandler"/>
+        <result column="release_date" property="releaseDate"/>
+    </resultMap>
+    <resultMap id="SeatResultMap" type="Seat">
+        <id column="id" property="id"/>
+        <result column="cinema_hall_id" property="cinemaHallId"/>
+        <result column="price" property="price"/>
+        <result column="seat_number" property="seatNumber"/>
+        <result column="status" property="status" typeHandler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.example.backend.constant.SeatStatus"/>
+    </resultMap>
+    <resultMap id="CinemaHallResultMap" type="CinemaHall">
+        <id column="hall_id" property="id"/>
+        <result column="movie_session" property="movieSession" jdbcType="TIMESTAMP"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <association property="movie" javaType="Movie" resultMap="MovieResultMap"/>
+        <collection property="seats" javaType="java.util.ArrayList" ofType="Seat" resultMap="SeatResultMap" columnPrefix="s_"/>
+    </resultMap>
+    <select id="findAll" resultMap="CinemaHallResultMap">
+        SELECT ch.id            AS hall_id,
+               ch.movie_session,
+               ch.created_at,
+               ch.updated_at,
+               s.id             AS s_id,
+               s.cinema_hall_id AS s_cinema_hall_id,
+               s.seat_number    AS s_seat_number,
+               s.status         AS s_status,
+               s.price          AS s_price,
+               m.id             AS movie_id,
+               m.poster,
+               m.title,
+               m.overview,
+               m.duration,
+               m.genres,
+               m.release_date
+        FROM cinema_hall AS ch
+                 LEFT JOIN seat AS s ON ch.id = s.cinema_hall_id
+                 LEFT JOIN movie AS m ON ch.movie_id = m.id
+    </select>
+    <select id="findById" parameterType="java.lang.Long" resultMap="CinemaHallResultMap">
+        SELECT ch.id            AS hall_id,
+               ch.movie_session,
+               ch.created_at,
+               ch.updated_at,
+               s.id             AS s_id,
+               s.cinema_hall_id AS s_cinema_hall_id,
+               s.seat_number    AS s_seat_number,
+               s.status         AS s_status,
+               s.price          AS s_price,
+               m.id             AS movie_id,
+               m.poster,
+               m.title,
+               m.overview,
+               m.duration,
+               m.genres,
+               m.release_date
+        FROM cinema_hall AS ch
+                 LEFT JOIN seat AS s ON ch.id = s.cinema_hall_id
+                 LEFT JOIN movie AS m ON ch.movie_id = m.id
+        WHERE ch.id = #{id}
+    </select>
+    <select id="findByMovieIdAndMovieSession" resultMap="CinemaHallResultMap">
+        SELECT ch.id            AS hall_id,
+               ch.movie_session,
+               ch.created_at,
+               ch.updated_at,
+               s.id             AS s_id,
+               s.cinema_hall_id AS s_cinema_hall_id,
+               s.seat_number    AS s_seat_number,
+               s.status         AS s_status,
+               s.price          AS s_price,
+               m.id             AS movie_id,
+               m.poster,
+               m.title,
+               m.overview,
+               m.duration,
+               m.genres,
+               m.release_date
+        FROM cinema_hall AS ch
+                 LEFT JOIN seat AS s ON ch.id = s.cinema_hall_id
+                 LEFT JOIN movie AS m ON ch.movie_id = m.id
+        WHERE hall_movie_id = #{movieId}
+          AND movie_session = #{movieSession}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="CinemaHall">
+        INSERT INTO cinema_hall (movie_id, movie_session)
+        VALUES (#{movie.id}, #{movieSession})
+    </insert>
+    <insert id="insertSeats" parameterType="java.util.List">
+        INSERT INTO seat (seat_number, status, cinema_hall_id, price)
+        VALUES
+        <foreach collection="list" item="seat" separator=",">
+            (#{seat.seatNumber} ,#{seat.status} , #{seat.cinemaHallId} ,#{seat.price})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="CinemaHall" >
+        UPDATE cinema_hall
+        <set>
+            <if test="movieId != null">movie_id = #{movieId},</if>
+            <if test="releaseDate != null">release_date = #{releaseDate},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateSeatStatus" parameterType="map">
+        UPDATE seat
+        SET status = #{seatStatus}
+        WHERE seat_number IN
+        <foreach collection="seatIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE
+        FROM cinema_hall ch
+        WHERE ch.id = #{id}
+    </delete>
+</mapper>

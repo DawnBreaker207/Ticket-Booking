@@ -41,17 +41,17 @@ public class CinemaHallController {
     public ResponseObject<CinemaHall> createMovieSchedule(@RequestBody CinemaHall cinema) {
         System.out.println(cinema.getMovie().getId());
         System.out.println(cinema.getMovie());
-        return new ResponseObject<>(HttpStatus.OK,"Success",cinemaHallService.createMovieSchedule(cinema));
+        return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.createMovieSchedule(cinema));
     }
 
     @PutMapping("/{id}")
     public ResponseObject<CinemaHall> updateMovieSchedule(@PathVariable Long id, @RequestBody CinemaHall cinemaHall) {
-        return new ResponseObject<>(HttpStatus.OK,"Success",cinemaHallService.updateMovieSchedule(id, cinemaHall));
+        return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.updateMovieSchedule(id, cinemaHall));
     }
 
     @PutMapping("/seat/{hallId}")
     public void updateSeats(@PathVariable Long hallId, @RequestBody CinemaHallDTO cinemaHall) {
-        cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getSeatStatus());
+        cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getStatus());
     }
 
     @DeleteMapping("/{id}")
