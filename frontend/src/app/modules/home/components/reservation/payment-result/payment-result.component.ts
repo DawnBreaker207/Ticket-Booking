@@ -8,6 +8,7 @@ import {Store} from '@ngrx/store';
 import {selectedOrder} from '@/app/core/store/state/reservation/reservation.selectors';
 import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
+import {OrderStatus, PaymentStatus} from '@/app/core/constants/enum';
 
 @Component({
   selector: 'app-payment-result',
@@ -43,17 +44,17 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
     if (this.vnpTxnRef && this.vnpResponseCode === '00') {
       console.log(`This is success`)
       this.status = 'success';
-      this.saveOrder();
-      this.startCountDown();
+      this.saveOrder('CONFIRMED', 'PAID');
     } else {
       this.status = 'error';
+      this.saveOrder('CANCELLED', 'CANCELLED')
       this.errorMessage = `Thanh toán thất bại. Mã lỗi: ${this.vnpResponseCode}`;
-      this.startCountDown();
     }
+    this.startCountDown();
   }
 
 
-  saveOrder() {
+  saveOrder(orderStatus: OrderStatus, paymentStatus: PaymentStatus) {
     combineLatest([
       this.store.select(selectedOrder),
       this.store.select(selectUser),
@@ -65,7 +66,9 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
             ...order,
             orderId: this.vnpTxnRef,
             userId: user?.userId,
-            totalAmount: this.vnpAmount
+            totalAmount: this.vnpAmount,
+            orderStatus: orderStatus,
+            paymentStatus: paymentStatus
           }
         }))
       })
