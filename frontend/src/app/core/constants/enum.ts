@@ -1,8 +1,8 @@
-export type OrderStatus = 'CREATED' | 'CONFIRMED' | 'CANCELED'
+export type OrderStatus = 'CREATED' | 'CONFIRMED' | 'CANCELLED'
 
 export type PaymentMethod = 'CASH' | 'MOMO' | 'VNPAY' | 'ZALOPAY'
 
-export type PaymentStatus = 'PENDING' | 'PAID' | 'CANCELED'
+export type PaymentStatus = 'PENDING' | 'PAID' | 'CANCELLED'
 
 
 export type SeatStatus = 'AVAILABLE' | 'BOOKED' | 'SELECTED'
