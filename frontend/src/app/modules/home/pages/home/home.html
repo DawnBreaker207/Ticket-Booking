@@ -3,7 +3,7 @@
     <h2 nz-typography class="text-center mb-8">Phim Đang Chiếu</h2>
 
     <div nz-row [nzGutter]="[40, 40]">
-      @for (movie of movies(); track movie.id) {
+      @for (item of schedules$ | async; track item.movie.id) {
         <div
           nz-col
           [nzXs]="24"
@@ -19,8 +19,8 @@
 
                 <nz-image
                   [nzDisablePreview]="true"
-                  [nzSrc]="movie.poster"
-                  [nzAlt]="movie.title"
+                  [nzSrc]="item.movie.poster"
+                  [nzAlt]="item.movie.title"
                   class="!object-cover w-full h-full"
 
                 />
@@ -28,19 +28,19 @@
             </ng-template>
 
 
-            <h4 nz-typography class="m-0 p-0 leading-tight">{{ movie.title }}</h4>
+            <h4 nz-typography class="m-0 p-0 leading-tight">{{ item.movie.title }}</h4>
             <span nz-typography class="block mt-1.5">
-              <b>Thể loại:</b> {{ movie.genres.join(', ') }}
+              <b>Thể loại:</b> {{ item.movie.genres.join(', ') }}
             </span>
             <span nz-typography class="block mt-1">
-              <b>Thời lượng:</b> {{ movie.duration }} phút
+              <b>Thời lượng:</b> {{ item.movie.duration }} phút
             </span>
             <div class="mt-10">
 
               <button
                 nz-button
                 nzType="primary"
-                (click)="onSelect()"
+                (click)="onSelect(item.cinemaHallId)"
                 class="w-full px-3 py-1.5 mt-2">
                 Mua Vé
               </button>

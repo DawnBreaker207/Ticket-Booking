@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {NzTypographyComponent} from 'ng-zorro-antd/typography';
 import {NzColDirective, NzGridModule, NzRowDirective} from 'ng-zorro-antd/grid';
@@ -6,15 +6,15 @@ import {NzCardComponent, NzCardModule} from 'ng-zorro-antd/card';
 import {NzImageViewComponent} from 'ng-zorro-antd/experimental/image';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzImageService} from 'ng-zorro-antd/image';
-import {ScheduleService} from '@/app/core/services/schedule/schedule.service';
-import {Movie} from '@/app/core/models/movie.model';
 import {Router} from '@angular/router';
 import {on, Store} from '@ngrx/store';
-import {CinemaHall} from '@/app/core/models/cinemaHall.model';
 import {OrderService} from '@/app/core/services/order/order.service';
 import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {filter, switchMap, take} from 'rxjs';
 import {Jwt} from '@/app/core/models/jwt.model';
+import {AsyncPipe} from '@angular/common';
+import {selectedSchedules} from '@/app/core/store/state/schedule/schedule.selectors';
+import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions';
 
 @Component({
   selector: 'app-home',
@@ -27,29 +27,25 @@ import {Jwt} from '@/app/core/models/jwt.model';
     NzImageViewComponent,
     NzButtonComponent,
     NzCardModule,
-    NzGridModule
+    NzGridModule,
+    AsyncPipe
   ],
   providers: [NzImageService],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home implements OnInit {
-  private scheduleService = inject(ScheduleService);
   private orderService = inject(OrderService);
   private store = inject(Store);
   router = inject(Router);
-  movies = signal<Movie[]>([]);
-  schedules = signal<CinemaHall[]>([]);
+  schedules$ = this.store.select(selectedSchedules);
   user$ = this.store.select(selectUser);
 
   // modalService = inject(NzModalService);
 
 
   ngOnInit() {
-    this.scheduleService.getSchedules().subscribe(data => {
-      this.movies.set(data.map(hall => hall.movie));
-      this.schedules.set(data);
-    })
+    this.store.dispatch(ScheduleActions.loadSchedules());
   }
 
   // onShowSchedule() {
@@ -59,11 +55,12 @@ export class Home implements OnInit {
   //   })
   // }
 
-  onSelect() {
+  onSelect(cinemaHallId: number) {
+    this.store.dispatch(ScheduleActions.loadSchedule({scheduleId: cinemaHallId}))
     this.user$.pipe(
       take(1),
       filter((jwt): jwt is Jwt => jwt !== undefined),
-      switchMap(jwt => this.orderService.initOrder({orderStatus: 'CREATED', userId: jwt.userId, cinemaHallId: 7})))
+      switchMap(jwt => this.orderService.initOrder({orderStatus: 'CREATED', userId: jwt.userId, cinemaHallId: cinemaHallId})))
       .subscribe((res) => {
         this.router.navigateByUrl(`/reservation/${res}`);
       })
