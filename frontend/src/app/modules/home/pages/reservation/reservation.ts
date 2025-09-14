@@ -13,11 +13,12 @@ import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {Order} from '@/app/core/models/order.model';
 import {OrderService} from '@/app/core/services/order/order.service';
-import {combineLatest, map, take} from 'rxjs';
+import {combineLatest, filter, map, take, tap} from 'rxjs';
 import {PaymentService} from '@/app/core/services/payment/payment.service';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions';
 import {selectedSchedule, selectedSeats, selectedTotalPrice} from '@/app/core/store/state/schedule/schedule.selectors';
+import {CinemaHall} from '@/app/core/models/cinemaHall.model';
+import {OrderStatus, PaymentMethod, PaymentStatus} from '@/app/core/constants/enum';
 
 
 @Component({
@@ -45,19 +46,32 @@ export class ReservationComponent implements OnInit {
   steps = signal([0, 1, 2]);
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.orderId = params.get('orderId')!;
+    combineLatest([
+      this.route.paramMap.pipe(
+        map(params => params.get('orderId') as string),
+        tap(orderId => this.orderId = orderId)
+      ),
+      this.user$.pipe(
+        take(1)),
+      this.schedule$.pipe(
+        filter((s): s is CinemaHall => s != undefined),
+        take(1)
+      )
+    ]).subscribe(([orderId, user, schedule]) => {
+      console.log(orderId, user, schedule)
       this.store.dispatch(ReservationActions.createOrder({
-        order: {
-          orderId: this.orderId,
-          cinemaHallId: 7,
-          orderStatus: 'CREATED',
-          paymentMethod: 'CASH',
-          paymentStatus: 'PENDING'
-        }
-      }))
+          order: {
+            orderId: orderId,
+            userId: user?.userId,
+            cinemaHallId: schedule.id,
+            orderStatus: 'CREATED' as OrderStatus,
+            paymentMethod: 'CASH' as PaymentMethod,
+            paymentStatus: 'PENDING' as PaymentStatus
+          }
+        })
+      )
+      // this.store.dispatch(ScheduleActions.loadSchedule({scheduleId: schedule.id}))
     })
-    this.store.dispatch(ScheduleActions.loadSchedule({scheduleId: 7}))
   }
 
   onStepChange(newIndex: number) {
@@ -71,7 +85,6 @@ export class ReservationComponent implements OnInit {
           ({
             schedule: schedule,
             seats: seats.map(seat => ({
-              ...seat,
               seat: {
                 id: seat.id
               },

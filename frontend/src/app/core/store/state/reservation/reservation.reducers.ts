@@ -49,11 +49,21 @@ export const reservationReducer = createReducer(
       cinemaHallId: order.cinemaHallId ?? state.cinemaHallId
     }
   }),
-  on(ReservationActions.confirmOrderSuccess, () => {
+  on(ReservationActions.confirmOrderSuccess, (state) => {
+
     localStorage.removeItem('cinemaHallId');
     localStorage.removeItem('orderStatus');
     localStorage.removeItem('paymentMethod');
     localStorage.removeItem('paymentStatus');
-    return initialState;
-  })
+    return {
+      ...state,
+      initialState
+    };
+  }),
+
+  on(ReservationActions.confirmOrderFailure, (state, {error}) => ({
+    ...state,
+    orderStatus: 'CANCELED' as OrderStatus,
+    paymentStatus: 'CANCELED' as PaymentStatus,
+  }))
 )

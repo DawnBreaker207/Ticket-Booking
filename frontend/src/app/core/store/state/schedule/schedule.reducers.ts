@@ -1,4 +1,4 @@
-import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
+import {CinemaHall, CinemaSeats} from '@/app/core/models/cinemaHall.model';
 import {createReducer, on} from '@ngrx/store';
 import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions';
 import {Movie} from '@/app/core/models/movie.model';
@@ -8,35 +8,39 @@ import {SeatStatus} from '@/app/core/constants/enum';
 export const scheduleFeatureKey = 'scheduleKey';
 
 export interface ScheduleState {
-  cinemaHallId: number,
-  seats: CinemaSeats[],
-  movie: Movie | null
-  movieSession: string
+  schedules: CinemaHall[]
+  selectedSchedule: CinemaHall | null
 }
 
 export const initialState: ScheduleState = {
-  seats: [],
-  cinemaHallId: 0,
-  movie: null,
-  movieSession: ''
+  schedules: [],
+  selectedSchedule: null
 }
 
 export const scheduleReducer = createReducer(
   initialState,
+  on(ScheduleActions.loadSchedulesSuccess, (state, {schedules}) => {
+    return {
+      ...state,
+      schedules
+    }
+  }),
   on(ScheduleActions.loadScheduleSuccess, (state, {schedule}) => {
     return {
       ...state,
-      cinemaHallId: schedule.id,
-      movie: schedule.movie,
-      seats: schedule.seats,
-      movieSession: schedule.movieSession
+      selectedSchedule: schedule
     }
   }),
 
   on(ReservationActions.toggleSeats, (state, {seat}) => {
-
-    const newSeats = state.seats.map(s =>
+    if (!state.selectedSchedule) return state;
+    const newSeats = state.selectedSchedule.seats.map(s =>
       s.id === seat.id ? {...s, status: s.status === 'SELECTED' ? 'AVAILABLE' as SeatStatus : 'SELECTED'} : s);
-    return {...state, seats: newSeats};
+    return {
+      ...state, selectedSchedule: {
+        ...state.selectedSchedule,
+        seats: newSeats
+      }
+    };
   })
 )
