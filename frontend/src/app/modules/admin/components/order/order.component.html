@@ -1,1 +1,92 @@
-<p>order works!</p>
+<div class="mb-5 flex items-center justify-between">
+  <h1 class="text-2xl font-bold mb-4">Quản lý đơn đặt</h1>
+</div>
+<form [formGroup]="form" (submit)="onSubmit()" class="mb-5 flex items-center justify-between gap-3">
+  <nz-input-group nzAddOnBeforeIcon="search" class="!w-fit">
+    <input formControlName="query" nz-input placeholder="Tìm kiếm" type="text" class="!w-[500px]"/>
+  </nz-input-group>
+
+  <nz-select formControlName="orderStatus" class="w-[150px]" nzPlaceHolder="Trạng thái">
+    @for (s of orderStatus; track s) {
+      <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
+    }
+  </nz-select>
+
+  <nz-select formControlName="paymentMethod" class="w-[150px]" nzPlaceHolder="Phương thức thanh toán">
+    @for (p of paymentMethod; track p) {
+      <nz-option [nzLabel]="p" [nzValue]="p"></nz-option>
+    }
+  </nz-select>
+
+  <nz-select formControlName="paymentStatus" class="w-[150px]" nzPlaceHolder="Trạng thái thanh toán">
+    @for (s of paymentStatus; track s) {
+      <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
+    }
+  </nz-select>
+
+  <nz-range-picker formControlName="dateRange"></nz-range-picker>
+
+  <nz-input-group nzAddOnBeforeIcon="dollar" class="!w-fit">
+    <input formControlName="totalAmount" nz-input placeholder="Giá" type="number" class="!w-[100px]"/>
+  </nz-input-group>
+
+  <nz-select formControlName="sortBy" class="w-[150px]" nzPlaceHolder="Sắp xếp">
+    <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
+    <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
+  </nz-select>
+
+  <button nz-button nzType="primary" type="submit">Apply</button>
+  <button nz-button nzType="primary" (click)="clearFilter()">Clear</button>
+
+</form>
+<nz-table [nzData]="reservationList" nzShowPagination nzShowSizeChanger>
+
+  <thead>
+  <tr>
+    @for (item of headerColumn; track item) {
+      <th>
+        {{ item }}
+      </th>
+    }
+  </tr>
+  </thead>
+  <tbody>
+    @for (item of reservationList; track item.orderId) {
+      <tr>
+        <td>{{ item.orderId }}</td>
+        <td>
+          <nz-tag [nzColor]="(item.orderStatus | tags).color">
+            {{ (item.orderStatus |tags).status }}
+          </nz-tag>
+        </td>
+        <td>
+          <nz-tag [nzColor]="(item.paymentMethod | tags).color">
+            {{ (item.paymentMethod |tags).status }}
+          </nz-tag>
+        </td>
+        <td>
+          <nz-tag [nzColor]="(item.paymentStatus | tags).color">
+            {{ (item.paymentStatus|tags).status }}
+          </nz-tag>
+        </td>
+        <td>{{ item.totalAmount | currency :'VND' }}</td>
+        <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <div>
+            <nz-space>
+              <button nz-button nzType="text" nzShape="circle">
+                <nz-icon nzType="eye" nzTheme="twotone"></nz-icon>
+              </button>
+              <!--              <button nz-button nzType="text" nzShape="circle">-->
+              <!--                <nz-icon nzType="edit" nzTheme="twotone" nzTwotoneColor="#52c41a"></nz-icon>-->
+              <!--              </button>-->
+              <button nz-button nzType="text" nzShape="circle">
+                <nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#e7000b"></nz-icon>
+              </button>
+            </nz-space>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
