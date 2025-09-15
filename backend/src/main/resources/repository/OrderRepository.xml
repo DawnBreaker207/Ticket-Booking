@@ -50,6 +50,9 @@
         JOIN order_seat AS os ON o.id = os.order_id
         JOIN seat AS s ON os.seat_id = s.id
         <where>
+            <if test="query != null">
+                AND order_id LIKE CONCAT('%', #{query}, '%')
+            </if>
             <if test="userId != null">
                 AND o.user_id = #{userId}
             </if>
@@ -59,14 +62,28 @@
             <if test="orderStatus != null">
                 AND o.status = #{orderStatus}
             </if>
+            <if test="startDate != null and endDate != null">
+                AND o.created_at BETWEEN #{startDate} AND #{endDate}
+            </if>
             <if test="paymentMethod != null">
                 AND o.payment_method = #{paymentMethod}
             </if>
-            <if test="createdAt != null">
-                AND o.created_at = #{createdAt}
+            <if test="totalAmount != null">
+                AND o.total_amount = #{totalAmount}
             </if>
         </where>
-        ORDER BY o.created_at DESC
+        <choose>
+            <when test="sortBy == 'newest'">
+                ORDER BY o.created_at DESC
+            </when>
+            <when test="sortBy == 'oldest'">
+                ORDER BY o.created_at ASC
+            </when>
+            <otherwise>
+                ORDER BY o.created_at DESC
+            </otherwise>
+        </choose>
+
     </select>
     <select id="findAll" resultMap="OrderResultMap">
         SELECT o.id             AS order_id,

@@ -1,5 +1,7 @@
 package com.example.backend.repository;
 
+import com.example.backend.dto.request.OrderFilterDTO;
+import com.example.backend.dto.shared.OrderDTO;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends DAO<Order, String> {
 
-    List<Order> findAllWithFilter(Order order);
+    List<OrderDTO> findAllWithFilter(OrderFilterDTO order);
 
     @Override
     List<Order> findAll();
