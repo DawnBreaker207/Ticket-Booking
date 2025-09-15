@@ -2,12 +2,13 @@ package com.example.backend.service;
 
 import java.util.List;
 
+import com.example.backend.dto.request.OrderFilterDTO;
 import com.example.backend.dto.shared.OrderDTO;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.Order;
 
 public interface OrderService {
-    List<Order> findAll(Order o);
+    List<OrderDTO> findAll(OrderFilterDTO o);
 
     Order findOne(String id);
 
@@ -15,7 +16,7 @@ public interface OrderService {
 
     void holdSeats(String orderId, List<OrderSeatDTO> seatsId, Long userId);
 
-    Order confirm(String orderId, Long userId);
+    Order confirm(OrderDTO order);
 
     Order update(String id, Order o);
 
