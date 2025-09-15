@@ -118,8 +118,6 @@ export class MovieComponent implements OnInit {
 
 
     });
-
-
   }
 
   onDelete(id: number) {

@@ -15,17 +15,21 @@ import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {NzTagModule} from 'ng-zorro-antd/tag';
 import {StatusTagsPipe} from '@/app/core/pipes/status-tags.pipe';
 import {formatTime} from '@/app/shared/utils/formatDate';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {FormOrderComponent} from '@/app/modules/admin/components/order/form/form.component';
 
 @Component({
   selector: 'app-order',
   imports: [NzTableModule, NzButtonModule, NzInputModule, NzSelectModule, NzSpaceModule, NzIconModule, CommonModule, NzDatePickerModule, ReactiveFormsModule, NzTagModule, StatusTagsPipe],
   templateUrl: './order.component.html',
-  styleUrl: './order.component.css'
+  styleUrl: './order.component.css',
+  providers: [NzModalService]
 })
 export class OrderComponent implements OnInit {
   form!: FormGroup;
   private fb = inject(FormBuilder);
   private reservationService = inject(OrderService);
+  private modalService = inject(NzModalService);
   headerColumn = headerColumns.order;
   reservationList: readonly Order[] = []
   orderStatus: OrderStatus[] = ['CREATED', 'CONFIRMED', 'CANCELLED']
@@ -52,6 +56,20 @@ export class OrderComponent implements OnInit {
       totalAmount: [0],
       sortBy: ['newest']
     });
+  }
+
+  openModal(orderId: string) {
+    this.modalService.create({
+      nzContent: FormOrderComponent,
+      nzTitle: undefined,
+      nzClosable: true,
+      nzData: {
+        orderId: orderId
+      },
+      nzWidth: 900,
+      nzKeyboard: true,
+      nzFooter: null
+    })
   }
 
   clearFilter() {
