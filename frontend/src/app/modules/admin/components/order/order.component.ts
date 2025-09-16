@@ -17,6 +17,8 @@ import {StatusTagsPipe} from '@/app/core/pipes/status-tags.pipe';
 import {formatTime} from '@/app/shared/utils/formatDate';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {FormOrderComponent} from '@/app/modules/admin/components/order/form/form.component';
+import {ReportService} from '@/app/core/services/report/report.service';
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'app-order',
@@ -30,6 +32,7 @@ export class OrderComponent implements OnInit {
   private fb = inject(FormBuilder);
   private reservationService = inject(OrderService);
   private modalService = inject(NzModalService);
+  private reportService = inject(ReportService);
   headerColumn = headerColumns.order;
   reservationList: readonly Order[] = []
   orderStatus: OrderStatus[] = ['CREATED', 'CONFIRMED', 'CANCELLED']
@@ -69,6 +72,12 @@ export class OrderComponent implements OnInit {
       nzWidth: 900,
       nzKeyboard: true,
       nzFooter: null
+    })
+  }
+
+  exportReport() {
+    this.reportService.downloadReport().subscribe(res => {
+      saveAs(res, 'report.pdf');
     })
   }
 
