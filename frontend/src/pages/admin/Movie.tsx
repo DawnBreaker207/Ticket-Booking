@@ -31,7 +31,7 @@ import moment from "moment";
 import type { Moment } from "moment";
 import axios from "axios";
 import { z } from "zod";
-import type { Movie, ApiMovie } from "../../types/Movie";
+import type { Movie, ApiMovie } from "../../types/movie";
 
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -41,7 +41,7 @@ import {
   updateMovie,
   removeMovie,
 } from "../../features/movies/moviesSlice";
-import movieService from "../../services/Movie";
+import movieService from "../../services/movie";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -82,6 +82,14 @@ const MoviePage: React.FC = () => {
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+
+  const normalizeGenre = (g?: string) => {
+    if (!g || typeof g !== "string") return "";
+    // remove leading 'phim' (case-insensitive) and common separators like space, colon, hyphen, dash
+    return String(g)
+      .replace(/^\s*\bphim\b[\s:–—-]*/i, "")
+      .trim();
+  };
 
   const filtered = movies.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
@@ -167,10 +175,16 @@ const MoviePage: React.FC = () => {
       const values = await form.validateFields();
       const release: Moment = values.releaseDate;
       const releaseIso = release.startOf("day").toDate().toISOString();
+
+      // sanitize genres by removing any leading 'phim' prefix before saving
+      const sanitizedGenres: string[] = (values.genres || []).map((g: any) =>
+        normalizeGenre(String(g))
+      );
+
       const payload: Omit<Movie, "id"> = {
         title: values.title,
         overview: values.overview,
-        genres: values.genres || [],
+        genres: sanitizedGenres,
         duration: values.duration,
         language: values.language,
         releaseDate: releaseIso,
@@ -271,7 +285,7 @@ const MoviePage: React.FC = () => {
       else if (originalLang === "zh") langLabel = "Tiếng Trung";
 
       const genreNames: string[] = (details.genres || [])
-        .map((g: any) => g.name)
+        .map((g: any) => normalizeGenre(g.name))
         .slice(0, 3);
       const imdbFromTmdb = details.imdb_id ?? undefined;
       const filmIdFromTmdb = details.id ? String(details.id) : undefined;

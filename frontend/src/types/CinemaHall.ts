@@ -1,5 +1,5 @@
 // src/types/CinemaHall.ts
-import type { Movie } from './Movie';
+import type { Movie } from './movie';
 
 export interface CinemaHall {
   id: number;

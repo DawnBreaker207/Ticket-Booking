@@ -29,8 +29,8 @@ import type { ColumnsType } from "antd/es/table";
 import moment from "moment";
 import type { Moment } from "moment";
 import { z } from "zod";
-import type { Movie } from "../../types/Movie";
-import movieService from "../../services/Movie";
+import type { Movie } from "../../types/movie";
+import movieService from "../../services/movie";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import {
@@ -70,6 +70,26 @@ const parseSession = (s?: string) => {
     time: m.format("HH:mm"),
     iso: m.toISOString(),
   };
+};
+
+// New helper: parse and format a movie.releaseDate which may be in DD/MM/YYYY or ISO or other parseable format
+const parseReleaseDate = (rd?: string | null) => {
+  if (!rd) return { display: "-", iso: undefined };
+  const ddmmyyyy = /^\d{2}\/\d{2}\/\d{4}$/;
+  if (ddmmyyyy.test(rd)) {
+    const m = moment(rd, "DD/MM/YYYY");
+    if (m.isValid())
+      return {
+        display: m.format("DD/MM/YYYY"),
+        iso: m.startOf("day").toISOString(),
+      };
+    return { display: rd, iso: undefined };
+  }
+  // try parsing with moment (handles ISO and other formats)
+  const m = moment(rd);
+  if (m.isValid())
+    return { display: m.format("DD/MM/YYYY"), iso: m.toISOString() };
+  return { display: rd, iso: undefined };
 };
 
 const CinemaHallPage: React.FC = () => {
@@ -574,16 +594,18 @@ const CinemaHallPage: React.FC = () => {
                   <List.Item.Meta
                     avatar={
                       m.poster ? (
-                        <Avatar shape="square" size={64} src={m.poster} />
+                        <Avatar shape="square" size={100} src={m.poster} />
                       ) : (
-                        <Avatar shape="square" size={64}>
+                        <Avatar shape="square" size={100}>
                           {m.title?.[0]}
                         </Avatar>
                       )
                     }
                     title={<div style={{ fontWeight: 600 }}>{m.title}</div>}
                     description={
-                      <div style={{ fontSize: 12 }}>{m.releaseDate}</div>
+                      <div style={{ fontSize: 12 }}>
+                        {parseReleaseDate(m.releaseDate).display}
+                      </div>
                     }
                   />
                 </List.Item>
@@ -664,7 +686,10 @@ const CinemaHallPage: React.FC = () => {
 
               <div style={{ fontSize: 16, marginBottom: 12 }}>
                 {viewing.movie.releaseDate ? (
-                  <div>Ngày: {viewing.movie.releaseDate}</div>
+                  <div>
+                    Ngày phát hành:{" "}
+                    {parseReleaseDate(viewing.movie.releaseDate).display}
+                  </div>
                 ) : null}
                 {viewing.movie.duration ? (
                   <div>Thời lượng: {viewing.movie.duration} phút</div>

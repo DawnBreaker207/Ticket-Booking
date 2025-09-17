@@ -6,8 +6,9 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { setCinemaHalls } from "../../features/cinemaHalls/cinemaHallsSlice";
 import { cinemaHallService } from "../../services/cinemaHallService";
 const { Title, Text } = Typography;
-import type { Movie as MovieType } from "../../types/Movie";
+import type { Movie as MovieType } from "../../types/movie";
 import type { CinemaHall } from "../../types/CinemaHall";
+import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 
 const CARD_WIDTH = 227;
@@ -16,6 +17,7 @@ const IMAGE_HEIGHT = 360;
 
 const HomePage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const cinemaHalls = useAppSelector(
     (s) => s.cinemaHalls.items
   ) as CinemaHall[];
@@ -39,6 +41,27 @@ const HomePage: React.FC = () => {
       mounted = false;
     };
   }, [dispatch]);
+
+  const movieIdToHallId = useMemo(() => {
+    const map = new Map<number | string, number>();
+    for (const h of cinemaHalls) {
+      const m = (h as any)?.movie;
+      if (!m) continue;
+      const mid = m.id ?? m.title;
+      if (!map.has(mid)) map.set(mid, h.id);
+    }
+    return map;
+  }, [cinemaHalls]);
+
+  const handleBuy = (movie: MovieType) => {
+    const key = movie.id ?? movie.title;
+    const hallId = movieIdToHallId.get(key);
+    if (!hallId) {
+      message.error("Không tìm thấy suất chiếu cho phim này");
+      return;
+    }
+    navigate(`/seat/${encodeURIComponent(String(hallId))}`);
+  };
 
   const moviesFromHalls: MovieType[] = useMemo(() => {
     const map = new Map<number | string, MovieType>();
@@ -159,6 +182,7 @@ const HomePage: React.FC = () => {
                       fontWeight: "bold",
                       background: "#1D81C3",
                     }}
+                    onClick={() => handleBuy(movie)}
                   >
                     MUA VÉ
                   </Button>
