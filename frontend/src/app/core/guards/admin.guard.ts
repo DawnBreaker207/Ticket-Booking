@@ -1,7 +1,6 @@
 import {CanActivateFn, Router} from '@angular/router';
 import {inject} from '@angular/core';
-import {ToastService} from '@/app/shared/services/toast.service';
-import {AuthService} from '@/app/core/services/auth/auth.service';
+import {ToastService} from '@/app/shared/services/toast/toast.service';
 import {delay, of, tap} from 'rxjs';
 
 export const AdminGuard: CanActivateFn = (route, state) => {

@@ -20,6 +20,8 @@ import {FormOrderComponent} from '@/app/modules/admin/components/order/form/form
 import {ReportService} from '@/app/core/services/report/report.service';
 import {saveAs} from 'file-saver';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {LoadingComponent} from '@/app/shared/components/loading/loading.component';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-order',
@@ -35,7 +37,8 @@ import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
     ReactiveFormsModule,
     NzTagModule,
     StatusTagsPipe,
-    NzDropDownModule
+    NzDropDownModule,
+    LoadingComponent
   ],
   templateUrl: './order.component.html',
   styleUrl: './order.component.css',
@@ -52,6 +55,7 @@ export class OrderComponent implements OnInit {
   orderStatus: OrderStatus[] = ['CREATED', 'CONFIRMED', 'CANCELLED']
   paymentMethod: PaymentMethod[] = ['CASH', 'MOMO', 'VNPAY', 'ZALOPAY']
   paymentStatus: PaymentStatus[] = ['PENDING', 'PAID', 'CANCELLED']
+  reservation$!: Observable<Order[]>;
 
   ngOnInit() {
     this.loadData()
@@ -60,7 +64,11 @@ export class OrderComponent implements OnInit {
   }
 
   loadData() {
-    this.reservationService.getOrders().subscribe(data => this.reservationList = data);
+    this.reservation$ = this.reservationService.getOrders()
+    this.reservationService.getOrders().subscribe(
+      (data) => {
+        this.reservationList = data
+      });
   }
 
   initialForm() {
@@ -115,8 +123,10 @@ export class OrderComponent implements OnInit {
       sortBy: formValue.sortBy,
     }
 
-    this.reservationService.getOrders(filter).subscribe(data => {
-      this.reservationList = data;
-    })
+    this.reservation$ = this.reservationService.getOrders(filter)
+    this.reservationService.getOrders(filter).subscribe(
+      (data) => {
+        this.reservationList = data
+      })
   }
 }

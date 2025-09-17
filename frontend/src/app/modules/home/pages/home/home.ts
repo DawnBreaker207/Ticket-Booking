@@ -28,7 +28,7 @@ import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions'
     NzButtonComponent,
     NzCardModule,
     NzGridModule,
-    AsyncPipe
+    AsyncPipe,
   ],
   providers: [NzImageService],
   templateUrl: './home.html',
@@ -40,7 +40,6 @@ export class Home implements OnInit {
   router = inject(Router);
   schedules$ = this.store.select(selectedSchedules);
   user$ = this.store.select(selectUser);
-
   // modalService = inject(NzModalService);
 
 
