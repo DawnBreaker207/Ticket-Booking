@@ -19,10 +19,24 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {FormOrderComponent} from '@/app/modules/admin/components/order/form/form.component';
 import {ReportService} from '@/app/core/services/report/report.service';
 import {saveAs} from 'file-saver';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-order',
-  imports: [NzTableModule, NzButtonModule, NzInputModule, NzSelectModule, NzSpaceModule, NzIconModule, CommonModule, NzDatePickerModule, ReactiveFormsModule, NzTagModule, StatusTagsPipe],
+  imports: [
+    NzTableModule,
+    NzButtonModule,
+    NzInputModule,
+    NzSelectModule,
+    NzSpaceModule,
+    NzIconModule,
+    CommonModule,
+    NzDatePickerModule,
+    ReactiveFormsModule,
+    NzTagModule,
+    StatusTagsPipe,
+    NzDropDownModule
+  ],
   templateUrl: './order.component.html',
   styleUrl: './order.component.css',
   providers: [NzModalService]
@@ -75,9 +89,10 @@ export class OrderComponent implements OnInit {
     })
   }
 
-  exportReport() {
-    this.reportService.downloadReport().subscribe(res => {
-      saveAs(res, 'report.pdf');
+  exportReport(type: string) {
+    this.reportService.downloadReport(type).subscribe(res => {
+      const ext = type === 'excel' ? 'xlsx' : type;
+      saveAs(res, `report.${ext}`);
     })
   }
 

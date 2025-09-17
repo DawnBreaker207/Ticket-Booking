@@ -9,8 +9,8 @@ export class ReportService {
   URL = `${environment.apiUrl}/export`;
   private http = inject(HttpClient);
 
-  downloadReport() {
-    return this.http.get(`${this.URL}/report/pdf`, {responseType: "blob"})
+  downloadReport(type: string) {
+    return this.http.get(`${this.URL}/report/${type}`, {responseType: "blob"})
 
   }
 }
