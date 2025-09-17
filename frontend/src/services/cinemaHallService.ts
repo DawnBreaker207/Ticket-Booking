@@ -14,24 +14,28 @@ function normalizeItem(raw: any): CinemaHall {
   let movie = raw.movie ?? raw.movieInfo ?? raw.film ?? null;
 
   if (typeof movie === 'string') {
-    try {
-      movie = JSON.parse(movie);
-    } catch {
-      // keep string if cannot parse
-      movie = { id: undefined, title: String(movie) } as any;
-    }
+    try { movie = JSON.parse(movie); } catch { movie = { id: undefined, title: String(movie) } as any; }
   }
-
-  // make sure movie is at least an object with id and title
   if (!movie || typeof movie !== 'object') {
     movie = { id: undefined, title: String(movie ?? '') } as any;
   }
+
+  // normalize seats if present
+  let seats = Array.isArray(raw.seats) ? raw.seats.map((s: any) => ({
+    id: s.id,
+    cinemaHallId: s.cinemaHallId ?? s.cinema_hall_id ?? id,
+    seatNumber: s.seatNumber ?? s.seat_number ?? s.seat ?? '',
+    price: typeof s.price === 'number' ? s.price : Number(s.price ?? 0),
+    status: s.status ?? 'UNKNOWN',
+  })) : [];
 
   return {
     id,
     movieSession: String(movieSession),
     movie,
-  };
+    seats,
+    // other fields if you want: createdAt/updatedAt etc.
+  } as any;
 }
 
 function unwrapResponse<T = any>(res: any): T {
@@ -55,6 +59,17 @@ export const cinemaHallService = {
     if (!Array.isArray(list)) return [];
     return list.map(normalizeItem);
   },
+
+    /**
+   * GET /cinema/:id
+   */
+  async getById(id: number): Promise<CinemaHall> {
+    const res = await instance.get(`/cinema/${encodeURIComponent(String(id))}`);
+    const payload = unwrapResponse(res.data ?? res);
+    const item = payload?.data ?? payload;
+    return normalizeItem(item);
+  },
+
 
   /**
    * POST /cinema
