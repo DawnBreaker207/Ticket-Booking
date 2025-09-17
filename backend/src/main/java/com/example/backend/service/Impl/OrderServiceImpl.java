@@ -66,7 +66,6 @@ public class OrderServiceImpl implements OrderService {
         Set<String> keys = redisTemplate.keys("orderId:*");
         log.info("Getting countdown keys {}", keys);
         if (keys.isEmpty()) return;
-
         for (String redisKey : keys) {
             Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
             log.info("Getting count down task for {}", redisKey);
