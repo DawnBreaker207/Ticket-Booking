@@ -6,8 +6,11 @@ import com.example.backend.repository.OrderRepository;
 import com.example.backend.service.ReportService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +68,27 @@ public class ReportServiceImpl implements ReportService {
                 reportBytes = JasperExportManager.exportReportToPdf(jasperPrint);
                 filename = "report.pdf";
                 contentType = "application/pdf";
+            } else if ("excel".equalsIgnoreCase(reportFormat)) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                JRXlsxExporter exporter = new JRXlsxExporter();
+                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
+
+                SimpleXlsxReportConfiguration config = new SimpleXlsxReportConfiguration();
+                config.setOnePagePerSheet(false);
+                config.setDetectCellType(true);
+                config.setCollapseRowSpan(false);
+                exporter.setConfiguration(config);
+
+                exporter.exportReport();
+                exporter.reset();
+
+                reportBytes = out.toByteArray();
+                filename = "report.xlsx";
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                out.close();
             } else {
                 throw new IllegalArgumentException("Unsupported report format: " + reportFormat);
             }

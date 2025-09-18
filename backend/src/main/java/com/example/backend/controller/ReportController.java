@@ -23,7 +23,7 @@ public class ReportController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getFilename())
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(MediaType.parseMediaType(report.getContentType()))
                 .body(report.getData());
     }
 }
