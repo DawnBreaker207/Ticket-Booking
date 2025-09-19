@@ -6,11 +6,9 @@
               name="Report" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535"
               leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
               uuid="d4a1d5eb-82dd-412f-a620-202e4bdf9dba">
-
     <property name="template.engine" value="tabular_template"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-
     <style name="Table">
         <box>
             <pen lineWidth="1.0" lineColor="#000000"/>
@@ -141,12 +139,12 @@
                         <dataSourceExpression>
                             <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{REPORT_DATA})]]></dataSourceExpression>
                     </datasetRun>
-                    <jr:column width="150" uuid="a14c425c-22d2-4778-a497-36ab45c26925">
+                    <jr:column width="170" uuid="a14c425c-22d2-4778-a497-36ab45c26925">
                         <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
                         <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
                         <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
                             <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="150" height="30"
+                                <reportElement mode="Transparent" x="0" y="0" width="170" height="30"
                                                forecolor="#006699" backcolor="#E6E6E6"
                                                uuid="96f95f89-e13b-4957-9df8-204c15f38860"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -158,7 +156,7 @@
                         <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
                         <jr:detailCell style="Table_TD" height="30">
                             <textField>
-                                <reportElement key="" x="0" y="0" width="150" height="30"
+                                <reportElement key="" x="0" y="0" width="170" height="30"
                                                uuid="94ef6b3f-2a85-403d-8e02-a4e54f5824a1"/>
                                 <box leftPadding="2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -168,12 +166,12 @@
                             </textField>
                         </jr:detailCell>
                     </jr:column>
-                    <jr:column width="120" uuid="6fc77de8-8048-46e4-8c89-f9121a36a16f">
+                    <jr:column width="110" uuid="6fc77de8-8048-46e4-8c89-f9121a36a16f">
                         <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
                         <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
                         <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
                             <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="120" height="30"
+                                <reportElement mode="Transparent" x="0" y="0" width="110" height="30"
                                                forecolor="#006699" backcolor="#E6E6E6"
                                                uuid="7ca719cb-ab95-45eb-a445-114db351e467"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -185,7 +183,7 @@
                         <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
                         <jr:detailCell style="Table_TD" height="30">
                             <textField>
-                                <reportElement key="" x="0" y="0" width="120" height="30"
+                                <reportElement key="" x="0" y="0" width="110" height="30"
                                                uuid="3d3dbb84-419e-4136-914c-f72978393011"/>
                                 <box leftPadding="2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -222,12 +220,12 @@
                             </textField>
                         </jr:detailCell>
                     </jr:column>
-                    <jr:column width="80" uuid="d29d2974-3c21-4168-823e-e91a545e74a9">
+                    <jr:column width="70" uuid="d29d2974-3c21-4168-823e-e91a545e74a9">
                         <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
                         <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
                         <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
                             <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="80" height="30" forecolor="#006699"
+                                <reportElement mode="Transparent" x="0" y="0" width="70" height="30" forecolor="#006699"
                                                backcolor="#E6E6E6" uuid="a24c0a7b-ea77-4fdb-872c-31b361279d92"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
                                     <font size="14" isBold="true"/>
@@ -238,7 +236,7 @@
                         <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
                         <jr:detailCell style="Table_TD" height="30">
                             <textField>
-                                <reportElement key="" x="0" y="0" width="80" height="30"
+                                <reportElement key="" x="0" y="0" width="70" height="30"
                                                uuid="51ee4fa9-e5a3-4f43-a6f0-b783c538d17f"/>
                                 <box leftPadding="2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -274,9 +272,9 @@
                                 </textElement>
                                 <textFieldExpression>
                                     <![CDATA[
-                          $F{createdAt}.atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDate()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                                $F{createdAt}.atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                                .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                     ]]>
                                 </textFieldExpression>
                             </textField>
