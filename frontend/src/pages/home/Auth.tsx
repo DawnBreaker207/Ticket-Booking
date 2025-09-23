@@ -63,10 +63,7 @@ const Login: React.FC = () => {
       console.log("resultAction (full)", resultAction);
       console.log("resultAction.payload", resultAction.payload);
 
-      // nếu thunk fulfilled
       if (loginUser.fulfilled.match(resultAction)) {
-        // thunk của bạn bây giờ trả trực tiếp AuthData (token/email...), nhưng
-        // để an toàn ta vẫn try lấy payload.data nếu payload là wrapper {code,...,data}
         const payloadData =
           (resultAction.payload as any) ?? (resultAction as any).data ?? null;
 
@@ -151,7 +148,6 @@ const Login: React.FC = () => {
         style={{ minHeight: "calc(100vh - 103px)" }}
       >
         <div className="w-[530px] bg-white">
-          {/* Tabs Header */}
           <div className="flex sticky top-0 bg-white z-10">
             <button
               onClick={() => setActiveTab("login")}
@@ -175,7 +171,6 @@ const Login: React.FC = () => {
             </button>
           </div>
 
-          {/* Form Container */}
           <div className="p-4">
             {activeTab === "login" ? (
               <form onSubmit={handleLoginSubmit} className="space-y-4">

@@ -121,14 +121,12 @@ export default function SeatSelector({
   const [loading, setLoading] = useState<boolean>(false);
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
-  // NEW: whether we are in checkout (payment) state
   const [checkoutMode, setCheckoutMode] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
 
-  // NEW: detailed seat info from API
   const [seatInfos, setSeatInfos] = useState<SeatInfo[]>([]);
   const [holding, setHolding] = useState<boolean>(false);
-  // seats list used for rendering: prefer seatInfos if available, fallback to generated list
+
   const seatInfoMap = useMemo(() => {
     const m = new Map<string, SeatInfo>();
     for (const s of seatInfos) {
@@ -137,7 +135,6 @@ export default function SeatSelector({
     return m;
   }, [seatInfos]);
 
-  // Tự động suy số cột tối đa từ API (nếu API trả A1..A12), fallback về prop cols
   const maxCol = useMemo(() => {
     if (!seatInfos || seatInfos.length === 0) return cols;
     let max = cols;
@@ -152,8 +149,6 @@ export default function SeatSelector({
     return max;
   }, [seatInfos, cols]);
 
-  // Tạo danh sách ghế theo ROW-MAJOR: hàng letters (A,B,...) -> cột numbers (1..maxCol)
-  // => A1, A2, A3, ... , B1, B2, B3, ...
   const seats = useMemo(() => {
     const out: string[] = [];
     for (const letter of rows) {
@@ -161,15 +156,9 @@ export default function SeatSelector({
         out.push(`${letter}${num}`);
       }
     }
-
-    // Nếu bạn chỉ muốn hiển thị những ghế API trả (API có thể trả subset),
-    // bỏ comment dòng dưới:
-    // return out.filter((id) => seatInfoMap.has(id));
-
     return out;
   }, [rows, maxCol, seatInfoMap]);
 
-  // reserved set derived from seatInfos where status is not AVAILABLE
   const seatStatusMap = useMemo(() => {
     const m = new Map<string, string>();
     for (const s of seatInfos) {
@@ -179,7 +168,6 @@ export default function SeatSelector({
     return m;
   }, [seatInfos]);
 
-  // reserved set derived from seatInfos where status is not AVAILABLE
   const reservedFromApi = useMemo(() => {
     const set = new Set<string>();
     for (const [seat, status] of seatStatusMap.entries()) {
@@ -263,7 +251,6 @@ export default function SeatSelector({
         };
         setRemoteMovie(movieInfo);
 
-        // NEW: map seats from API into seatInfos state
         const apiSeats = Array.isArray(hall?.seats) ? hall.seats : [];
         const mapped: SeatInfo[] = apiSeats.map((s: any) => ({
           id: s.id,
@@ -287,7 +274,6 @@ export default function SeatSelector({
   }, [id, authenticated]);
 
   function toggleSeat(seatId: string) {
-    // if seat exists in seatInfos and is not available, block
     const info = seatInfos.find((s) => s.seatNumber === seatId);
     console.log("Seat clicked:", {
       id: info?.id ?? null,
@@ -297,7 +283,7 @@ export default function SeatSelector({
     });
     if (info && info.status && info.status.toUpperCase() !== "AVAILABLE")
       return;
-    // also block if reserved prop includes it
+
     if (
       reserved.includes(seatId) ||
       reservedFromApi.has(seatId) ||
@@ -352,7 +338,6 @@ export default function SeatSelector({
       return;
     }
 
-    // build seats payload (dùng id từ seatInfos)
     const seatsPayload = selected.map((sid) => {
       const si = seatInfos.find((s) => s.seatNumber === sid);
       return { seat: { id: si?.id }, price: String(si?.price ?? 0) };
@@ -367,13 +352,11 @@ export default function SeatSelector({
 
     setHolding(true);
     try {
-      // 1) initOrder
       const initResp = await orderService.initOrder({
         userId: userId ?? 0,
         cinemaHallId: cinemaHallIdNum,
       });
 
-      // extract orderId (thử nhiều dạng)
       let orderId: string | undefined;
       if (initResp) {
         if (typeof (initResp as any).data === "string")
@@ -387,7 +370,6 @@ export default function SeatSelector({
       }
       if (!orderId) throw new Error("Không tạo được orderId từ initOrder");
 
-      // 2) seatHold
       const holdResp = await orderService.seatHold({
         orderId,
         userId,
@@ -414,28 +396,22 @@ export default function SeatSelector({
 
       message.success("Giữ ghế thành công — chuyển tới cổng thanh toán...");
 
-      // 3) gọi vnpay để lấy link -> redirect
-      // CHÚ Ý: kiểm tra backend cần amount units nào. Nếu cần nhân 100 thì sửa bên dưới.
-      const amountToSend = total; // hoặc total * 100 nếu backend yêu cầu
-      // mapping paymentMethod -> bankCode nếu có
+      const amountToSend = total;
       const bankCode = undefined;
       const { raw, paymentUrl } = await orderService.vnpay(
         amountToSend,
         bankCode,
-        orderId // <-- truyền orderId vào vnp_TxnRef
+        orderId
       );
 
       if (paymentUrl) {
-        // redirect người dùng sang đường dẫn paymentUrl
         window.location.href = paymentUrl;
-        return; // dừng flow — user sẽ bị điều hướng
+        return;
       }
 
-      // fallback nếu không có paymentUrl
       console.warn("VNPAY no paymentUrl:", raw);
       message.warning("Không lấy được link thanh toán. Vui lòng thử lại.");
 
-      // (tuỳ ý) chuyển tới confirmation / trang khác nếu cần
       const selectedSeatDetails = selected.map((sid) => {
         const si = seatInfos.find((s) => s.seatNumber === sid);
         return (
@@ -498,7 +474,6 @@ export default function SeatSelector({
                 alignItems: "flex-start",
               }}
             >
-              {/* LEFT: either seat grid (default) or payment panel (checkoutMode) */}
               <div style={{ flex: 1 }}>
                 <div style={{ marginBottom: 12 }}>
                   <Breadcrumb>
@@ -572,8 +547,6 @@ export default function SeatSelector({
                         />
                       </div>
                     </div>
-
-                    {/* Seats grid */}
                     <Card
                       style={{ boxShadow: "none", background: "transparent" }}
                     >
@@ -587,13 +560,11 @@ export default function SeatSelector({
                       >
                         {seats.map((seatId) => {
                           const status = seatStatusMap.get(seatId) ?? "UNKNOWN";
-                          const isBooked = status === "BOOKED"; // theo yêu cầu: BOOKED = đỏ
+                          const isBooked = status === "BOOKED";
                           const isSelected = selected.includes(seatId);
                           const isReservedProp = reserved.includes(seatId);
                           const disabled =
                             isBooked || isReservedProp || checkoutMode;
-
-                          // màu: BOOKED -> đỏ (#ff4d4f), SELECTED -> #2f54eb, ngược lại trắng
                           const background = isBooked
                             ? "#ff4d4f"
                             : isSelected
@@ -622,7 +593,6 @@ export default function SeatSelector({
                                 color,
                                 borderColor,
                               }}
-                              // dùng 'default' để không ghi đè style nền custom; màu chọn đã set bằng inline style
                               type="default"
                               size="small"
                             >
@@ -633,7 +603,6 @@ export default function SeatSelector({
                       </div>
                     </Card>
 
-                    {/* Bottom summary */}
                     <Card size="small">
                       <div
                         style={{
@@ -672,7 +641,6 @@ export default function SeatSelector({
                     </Card>
                   </>
                 ) : (
-                  // show payment panel instead of seats
                   <PaymentPanel
                     selected={selected}
                     remaining={remaining}
@@ -683,7 +651,6 @@ export default function SeatSelector({
                 )}
               </div>
 
-              {/* RIGHT: always MovieInfoCard */}
               <div style={{ width: 360, flexShrink: 0 }}>
                 <MovieInfoCard
                   movie={movieToShow}

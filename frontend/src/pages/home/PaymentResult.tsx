@@ -1,5 +1,5 @@
 // src/pages/PaymentResult.tsx
-import React, { useMemo, useEffect, useState, useRef, type JSX } from "react";
+import { useMemo, useEffect, useState, useRef, type JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Result, Button, message, Typography } from "antd";
 import { orderService } from "../../services/orderService";
@@ -9,7 +9,7 @@ const { Text } = Typography;
 export default function PaymentResult(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
-  const didConfirmRef = useRef(false); // guard để tránh gọi 2 lần
+  const didConfirmRef = useRef(false);
   const [secondsLeft, setSecondsLeft] = useState<number>(60);
 
   const qp = useMemo(() => {
@@ -49,7 +49,6 @@ export default function PaymentResult(): JSX.Element {
 
   const success = qp.responseCode === "00";
 
-  // confirmOrder effect (giữ nguyên logic) - chỉ gọi 1 lần (didConfirmRef)
   useEffect(() => {
     if (!success) return;
 
@@ -118,7 +117,6 @@ export default function PaymentResult(): JSX.Element {
             key,
             duration: 3,
           });
-          // xóa sessionStorage sau khi confirm thành công
           try {
             sessionStorage.removeItem("cinemaHallId");
             sessionStorage.removeItem("orderId");
@@ -146,10 +144,8 @@ export default function PaymentResult(): JSX.Element {
     return () => {
       mounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success, qp.txnRef, qp.amountNum]);
 
-  // countdown effect -> redirect về trang chủ khi hết thời gian
   useEffect(() => {
     if (secondsLeft <= 0) {
       navigate("/");
@@ -160,7 +156,6 @@ export default function PaymentResult(): JSX.Element {
     }, 1000);
 
     return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secondsLeft]);
 
   return (

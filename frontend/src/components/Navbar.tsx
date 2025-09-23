@@ -57,20 +57,12 @@ const Navbar: FC = () => {
 
   const handleLogout = () => {
     try {
-      // xóa tất cả thứ cần thiết (authService.logout đã xóa token/email/user và setAuthToken(null))
       authLogout();
-
-      // cập nhật state local để UI navbar cập nhật ngay lập tức
       setUser(null);
-
-      // phát sự kiện toàn cục để component khác kịp xử lý (ví dụ SeatSelector)
       window.dispatchEvent(new Event("auth:logout"));
-
-      // điều hướng tới màn hình đăng nhập (tuỳ bạn muốn về home hay login)
       navigate("/login?tab=login");
     } catch (err) {
       console.warn("Logout error", err);
-      // fallback: vẫn xóa user local
       sessionStorage.removeItem("user");
       setUser(null);
       window.dispatchEvent(new Event("auth:logout"));

@@ -1,5 +1,4 @@
 // src/components/PaymentPanel.tsx
-import React from "react";
 import { Card, Image, Typography, Radio, Space } from "antd";
 import type { FC } from "react";
 import infoPaymentImg from "../../assets/ic-inforpayment.png";

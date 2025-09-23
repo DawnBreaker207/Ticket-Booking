@@ -29,8 +29,8 @@ import type { ColumnsType } from "antd/es/table";
 import moment from "moment";
 import type { Moment } from "moment";
 import { z } from "zod";
-import type { Movie } from "../../types/movie";
-import movieService from "../../services/movie";
+import type { Movie } from "../../types/Movie";
+import movieService from "../../services/Movie";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import {

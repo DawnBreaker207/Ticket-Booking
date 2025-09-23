@@ -19,7 +19,6 @@ const slice = createSlice({
       state.items = action.payload;
     },
     addCinemaHall(state, action: PayloadAction<CinemaHall>) {
-      // thêm lên đầu (giữ nguyên hành vi trước)
       state.items.unshift(action.payload);
     },
     updateCinemaHall(state, action: PayloadAction<CinemaHall>) {

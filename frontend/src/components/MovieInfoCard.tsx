@@ -1,5 +1,4 @@
 // src/components/MovieInfoCard.tsx
-import React from "react";
 import { Card, Image, Typography, Button } from "antd";
 
 const { Title, Text } = Typography;
@@ -21,13 +20,12 @@ interface MovieInfoCardProps {
   selectedSeats?: string[];
   totalFormatted?: string;
   remainingFormatted?: string;
-  onConfirm?: () => void; // for "Tiếp tục" when selecting seats
-  // NEW: checkout actions
+  onConfirm?: () => void;
   showCheckoutActions?: boolean;
-  onBack?: () => void; // quay lại (exit checkout)
-  onPay?: () => void; // thực hiện thanh toán
-  confirmLoading?: boolean; // giữ nguyên nếu cần (dùng cho Tiếp tục trước đây)
-  payLoading?: boolean; // NEW: loading cho nút Thanh toán
+  onBack?: () => void;
+  onPay?: () => void;
+  confirmLoading?: boolean;
+  payLoading?: boolean;
 }
 
 export default function MovieInfoCard({
@@ -108,9 +106,6 @@ export default function MovieInfoCard({
         <div style={{ marginTop: 6, marginBottom: 12 }}>
           <Text>{selectedSeats.join(", ")}</Text>
         </div>
-
-        {/* If we're in checkout mode, show Back + Pay here.
-            Otherwise show the original "Tiếp tục" button. */}
         {showCheckoutActions ? (
           <div style={{ display: "flex", gap: 8 }}>
             <Button block onClick={onBack}>

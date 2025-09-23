@@ -62,7 +62,6 @@ const HomePage: React.FC = () => {
       return;
     }
     sessionStorage.setItem("cinemaHallId", String(hallId));
-    // Kiểm tra đăng nhập: tìm token/user/email/userId trong sessionStorage
     let isLoggedIn = false;
     let userId: number | null = null;
     try {
@@ -104,7 +103,6 @@ const HomePage: React.FC = () => {
       return;
     }
 
-    // Nếu userId chưa có nhưng đã login bằng token, mình vẫn cố gọi (backend thường lấy user từ token)
     try {
       message.loading({
         content: "Đang khởi tạo đơn đặt...",
@@ -112,7 +110,7 @@ const HomePage: React.FC = () => {
       });
 
       const payload = {
-        userId: Number(userId), // nếu backend không cần userId khi có token thì ok; nếu cần bắt buộc, hãy đảm bảo có userId
+        userId: Number(userId),
         cinemaHallId: Number(hallId),
         orderStatus: "CREATED",
       };
@@ -125,11 +123,8 @@ const HomePage: React.FC = () => {
         duration: 1.2,
       });
 
-      const orderId =
-        resp?.data ?? // preferred: string like "ORD-..."
-        null;
+      const orderId = resp?.data ?? null;
       if (orderId) {
-        // lưu tạm vào sessionStorage để SeatSelector/flow tiếp theo dùng
         sessionStorage.setItem("orderId", String(orderId));
       }
 
@@ -141,7 +136,6 @@ const HomePage: React.FC = () => {
       console.error("Init order failed", err);
       message.error(err?.response?.data?.message ?? "Không thể tạo đơn đặt vé");
 
-      // nếu token hết hạn => bắt login
       if (err?.response?.status === 401) {
         const next = `/seat/${encodeURIComponent(String(hallId))}`;
         navigate(`/login?next=${encodeURIComponent(next)}`);

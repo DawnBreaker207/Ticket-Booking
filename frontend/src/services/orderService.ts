@@ -55,10 +55,10 @@ export interface ConfirmOrderPayload {
   orderId: string;
   userId?: number;
   cinemaHallId?: number;
-  orderStatus?: string; // e.g. "CONFIRMED"
-  paymentMethod?: string; // e.g. "CASH" | "CARD" | ...
-  paymentStatus?: string; // e.g. "PENDING" | "PAID"
-  totalAmount?: string | number; // backend example uses string
+  orderStatus?: string;
+  paymentMethod?: string; 
+  paymentStatus?: string; 
+  totalAmount?: string | number; 
   [k: string]: any;
 }
 
@@ -82,8 +82,8 @@ export const orderService = {
 
     /**
    *
-   * @param amount số (ví dụ 100000)
-   * @param bankCode tùy chọn (ví dụ 'NCB')
+   * @param amount 
+   * @param bankCode
    * @param txnRef
    */
 vnpay: async (
