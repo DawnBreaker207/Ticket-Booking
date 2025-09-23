@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import type { FC } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout, Button, Divider, Typography } from "antd";
-import { logout } from "../services/authService";
+import { logout as authLogout } from "../services/authService";
 import Logo from "../assets/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const { Header } = Layout;
 
@@ -35,7 +37,7 @@ const Navbar: FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem("user");
+    const raw = sessionStorage.getItem("user");
     if (raw) {
       try {
         setUser(JSON.parse(raw));
@@ -43,7 +45,6 @@ const Navbar: FC = () => {
         setUser(null);
       }
     }
-    // cập nhật khi thay đổi localStorage ở tab khác
     const handler = (e: StorageEvent) => {
       if (e.key === "user") {
         if (e.newValue) setUser(JSON.parse(e.newValue));
@@ -55,8 +56,18 @@ const Navbar: FC = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    try {
+      authLogout();
+      setUser(null);
+      window.dispatchEvent(new Event("auth:logout"));
+      navigate("/login?tab=login");
+    } catch (err) {
+      console.warn("Logout error", err);
+      sessionStorage.removeItem("user");
+      setUser(null);
+      window.dispatchEvent(new Event("auth:logout"));
+      navigate("/login?tab=login");
+    }
   };
 
   return (
@@ -83,6 +94,7 @@ const Navbar: FC = () => {
               <Button
                 type="text"
                 size="small"
+                icon={<FontAwesomeIcon icon={faSignOutAlt} />}
                 style={{
                   color: "#fff",
                   padding: "0 8px",
@@ -142,26 +154,37 @@ const Navbar: FC = () => {
         >
           <Link
             to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}
             style={{
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
               gap: 20,
               textDecoration: "none",
               color: "inherit",
               cursor: "pointer",
+              padding: "8px 12px",
+              borderRadius: 8,
+              position: "relative",
+              zIndex: 9999,
+              pointerEvents: "auto",
+              background: "transparent",
             }}
             aria-label="Go to homepage"
           >
             <img
               src={Logo}
               alt="Logo"
-              style={{ height: 48, objectFit: "contain" }}
+              style={{
+                height: 130,
+                objectFit: "contain",
+                display: "block",
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
             />
-            <Typography.Text
-              style={{ fontSize: 20, fontWeight: 700, marginRight: 24 }}
-            >
-              Alpha Cinema
-            </Typography.Text>
           </Link>
         </div>
       </div>

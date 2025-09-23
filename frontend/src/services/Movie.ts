@@ -1,6 +1,6 @@
 // src/services/movie.ts
 import instance from '../config/axios';
-import type { Movie } from '../types/movie';
+import type { Movie } from '../types/Movie';
 import moment from 'moment';
 
 function normalizeGenres(m: any): string[] {

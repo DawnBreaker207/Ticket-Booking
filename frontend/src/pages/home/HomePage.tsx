@@ -6,9 +6,10 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { setCinemaHalls } from "../../features/cinemaHalls/cinemaHallsSlice";
 import { cinemaHallService } from "../../services/cinemaHallService";
 const { Title, Text } = Typography;
-import type { Movie as MovieType } from "../../types/movie";
+import type { Movie as MovieType } from "../../types/Movie";
 import type { CinemaHall } from "../../types/CinemaHall";
 import { useNavigate } from "react-router-dom";
+import { orderService } from "../../services/orderService";
 const { Content } = Layout;
 
 const CARD_WIDTH = 227;
@@ -53,14 +54,93 @@ const HomePage: React.FC = () => {
     return map;
   }, [cinemaHalls]);
 
-  const handleBuy = (movie: MovieType) => {
+  const handleBuy = async (movie: MovieType) => {
     const key = movie.id ?? movie.title;
     const hallId = movieIdToHallId.get(key);
     if (!hallId) {
       message.error("Không tìm thấy suất chiếu cho phim này");
       return;
     }
-    navigate(`/seat/${encodeURIComponent(String(hallId))}`);
+    sessionStorage.setItem("cinemaHallId", String(hallId));
+    let isLoggedIn = false;
+    let userId: number | null = null;
+    try {
+      const token = sessionStorage.getItem("token");
+      if (token) isLoggedIn = true;
+
+      if (!isLoggedIn) {
+        const userStr = sessionStorage.getItem("user");
+        if (userStr) {
+          try {
+            const u = JSON.parse(userStr);
+            if (u && (u.token || u.email || u.username || u.userId || u.id)) {
+              isLoggedIn = true;
+              userId = u.userId ?? u.id ?? null;
+            }
+          } catch {
+            // ignore
+          }
+        }
+      }
+
+      if (!isLoggedIn) {
+        const email = sessionStorage.getItem("email");
+        const userIdRaw = sessionStorage.getItem("userId");
+        if (email || userIdRaw) isLoggedIn = true;
+        if (userIdRaw) {
+          const n = Number(userIdRaw);
+          if (!Number.isNaN(n)) userId = n;
+        }
+      }
+    } catch (e) {
+      console.warn("Không thể đọc sessionStorage", e);
+    }
+
+    if (!isLoggedIn) {
+      message.info("Bạn cần đăng nhập để mua vé");
+      const next = `/seat/${encodeURIComponent(String(hallId))}`;
+      navigate(`/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+
+    try {
+      message.loading({
+        content: "Đang khởi tạo đơn đặt...",
+        key: "initOrder",
+      });
+
+      const payload = {
+        userId: Number(userId),
+        cinemaHallId: Number(hallId),
+        orderStatus: "CREATED",
+      };
+
+      const resp = await orderService.initOrder(payload);
+
+      message.success({
+        content: "Tạo đơn đặt vé thành công",
+        key: "initOrder",
+        duration: 1.2,
+      });
+
+      const orderId = resp?.data ?? null;
+      if (orderId) {
+        sessionStorage.setItem("orderId", String(orderId));
+      }
+
+      const base = `/seat/${encodeURIComponent(String(hallId))}`;
+      const path = `${base}?orderId=${encodeURIComponent(String(orderId))}`;
+
+      navigate(path);
+    } catch (err: any) {
+      console.error("Init order failed", err);
+      message.error(err?.response?.data?.message ?? "Không thể tạo đơn đặt vé");
+
+      if (err?.response?.status === 401) {
+        const next = `/seat/${encodeURIComponent(String(hallId))}`;
+        navigate(`/login?next=${encodeURIComponent(next)}`);
+      }
+    }
   };
 
   const moviesFromHalls: MovieType[] = useMemo(() => {

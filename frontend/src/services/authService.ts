@@ -1,8 +1,7 @@
-// src/services/authService.ts
 import instance from '../config/axios';
 
 export interface LoginPayload {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -16,12 +15,22 @@ export interface RegisterPayload {
   phone?: string;
 }
 
-export interface AuthResponse {
+export interface AuthData {
   token?: string;
-  user?: any;
-  message?: string;
+  refreshToken?: string;
+  email?: string;
+  roles?: string[];
+  username?: string;
+  userId?: number;
+  type?: string; 
 }
 
+
+export interface AuthResponse {
+  code?: number;
+  message?: string;
+  data?: AuthData;
+}
 
 export const setAuthToken = (token?: string | null) => {
   if (token) {
@@ -31,17 +40,12 @@ export const setAuthToken = (token?: string | null) => {
   }
 };
 
-// hàm đăng nhập
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
   const { data } = await instance.post<AuthResponse>('/auth/login', payload);
-  if (data?.token) {
-    localStorage.setItem('token', data.token);
-    setAuthToken(data.token);
-  }
   return data;
 };
 
-// hàm đăng ký
+
 export const register = async (
   payload: RegisterPayload
 ): Promise<AuthResponse> => {
@@ -50,6 +54,11 @@ export const register = async (
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
+  try {
+
+    sessionStorage.removeItem('user');
+  } catch (err) {
+    console.warn('Lỗi khi clear sessionStorage', err);
+  }
   setAuthToken(null);
 };
