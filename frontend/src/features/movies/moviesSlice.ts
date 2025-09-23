@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Movie } from '../../types/movie';
+import type { Movie } from '../../types/Movie';
 
 interface MoviesState {
     items: Movie[];

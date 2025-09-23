@@ -2,12 +2,6 @@
 import instance from '../config/axios'; // your axios instance (with baseURL http://localhost:8888/api/v1)
 import type { CinemaHall } from '../types/CinemaHall';
 
-/**
- * Normalize server item to client CinemaHall shape.
- * - ensures id is number
- * - ensures movieSession is string
- * - ensures movie is object (if server sends JSON string, try parse)
- */
 function normalizeItem(raw: any): CinemaHall {
   const id = typeof raw.id === 'number' ? raw.id : Number(raw.id);
   const movieSession = raw.movieSession ?? raw.movie_session ?? raw.session ?? '';

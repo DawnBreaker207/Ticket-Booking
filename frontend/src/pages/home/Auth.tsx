@@ -17,22 +17,7 @@ import { loginUser, registerUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 import { Layout } from "antd";
-
-interface LoginForm {
-  username: string;
-  password: string;
-}
-
-interface RegisterForm {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  dob: string;
-  gender: string;
-  phone: string;
-  roles: string[];
-}
+import type { LoginForm, RegisterForm } from "../../types/Auth";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,37 +52,53 @@ const Login: React.FC = () => {
 
   const handleLoginSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      const payload = {
-        username: loginForm.username,
-        password: loginForm.password,
-      };
-      const resultAction = await dispatch(loginUser(payload as any));
-      // nếu thunk fulfilled
-      // @ts-ignore
-      if (loginUser.fulfilled.match(resultAction)) {
-        // resultAction.payload có thể chứa token hoặc user info tùy backend
-        const payloadData =
-          resultAction.payload ?? (resultAction as any).data ?? null;
 
-        // lưu vào localStorage: tối thiểu lưu username và token nếu có
-        const userToStore: { username?: string; token?: string | null } = {
-          username: loginForm.username,
+    const payload = {
+      username: loginForm.username,
+      password: loginForm.password,
+    };
+
+    try {
+      const resultAction = await dispatch(loginUser(payload as any));
+      console.log("resultAction (full)", resultAction);
+      console.log("resultAction.payload", resultAction.payload);
+
+      // nếu thunk fulfilled
+      if (loginUser.fulfilled.match(resultAction)) {
+        // thunk của bạn bây giờ trả trực tiếp AuthData (token/email...), nhưng
+        // để an toàn ta vẫn try lấy payload.data nếu payload là wrapper {code,...,data}
+        const payloadData =
+          (resultAction.payload as any) ?? (resultAction as any).data ?? null;
+
+        const userToStore: {
+          username?: string | null;
+          email?: string | null;
+          token?: string | null;
+          userId: number | null;
+          roles?: string[] | null;
+          refreshToken?: string | null;
+        } = {
+          username: payloadData?.username ?? loginForm.username,
+          email: payloadData?.email ?? null,
           token: payloadData?.token ?? null,
+          userId: payloadData?.userId ?? null,
+          roles: payloadData?.roles ?? null,
+          refreshToken: payloadData?.refreshToken ?? null,
         };
+
         try {
-          localStorage.setItem("user", JSON.stringify(userToStore));
+          sessionStorage.setItem("user", JSON.stringify(userToStore));
         } catch (err) {
-          // ignore storage error
-          console.warn("Không thể lưu vào localStorage", err);
+          console.warn("Không thể lưu vào sessionStorage", err);
         }
 
         message.success("Đăng nhập thành công");
         navigate("/", { replace: true });
       } else {
+        // lấy lỗi nếu có
         // @ts-ignore
         const err = resultAction.payload ?? resultAction.error?.message;
-        message.error("Đăng nhập thất bại");
+        message.error(err ?? "Đăng nhập thất bại");
       }
     } catch (err) {
       message.error("Lỗi khi gọi API");
