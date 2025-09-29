@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
+import com.example.backend.dto.request.OrderFilterDTO;
 import com.example.backend.dto.shared.OrderDTO;
 import com.example.backend.model.Order;
 import com.example.backend.service.Impl.OrderServiceImpl;
@@ -22,7 +23,7 @@ public class OrderController {
 
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject<List<Order>> getAll(@ModelAttribute Order o) {
+    public ResponseObject<List<OrderDTO>> getAll(@ModelAttribute OrderFilterDTO o) {
         return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findAll(o));
     }
 
@@ -44,7 +45,7 @@ public class OrderController {
 
     @PostMapping("/confirm")
     public ResponseObject<Order> confirm(@RequestBody OrderDTO o) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.confirm(o.getOrderId(), o.getUserId()));
+        return new ResponseObject<>(HttpStatus.OK, "Success", orderService.confirm(o));
 
     }
 

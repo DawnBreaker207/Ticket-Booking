@@ -1,9 +1,8 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.constant.OrderStatus;
-import com.example.backend.constant.PaymentMethod;
-import com.example.backend.constant.PaymentStatus;
 import com.example.backend.constant.SeatStatus;
+import com.example.backend.dto.request.OrderFilterDTO;
 import com.example.backend.dto.shared.OrderDTO;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.exception.wrapper.*;
@@ -52,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAll(Order o) {
+    public List<OrderDTO> findAll(OrderFilterDTO o) {
         return orderRepository.findAllWithFilter(o);
     }
 
@@ -67,7 +66,6 @@ public class OrderServiceImpl implements OrderService {
         Set<String> keys = redisTemplate.keys("orderId:*");
         log.info("Getting countdown keys {}", keys);
         if (keys.isEmpty()) return;
-
         for (String redisKey : keys) {
             Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
             log.info("Getting count down task for {}", redisKey);
@@ -171,9 +169,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order confirm(String orderId, Long userId) {
-        OrderDTO dto = getFromRedis(orderId);
-        if (!dto.getUserId().equals(userId)) {
+    public Order confirm(OrderDTO order) {
+        OrderDTO dto = getFromRedis(order.getOrderId());
+        if (!dto.getUserId().equals(order.getUserId())) {
             throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission");
         }
 
@@ -181,18 +179,18 @@ public class OrderServiceImpl implements OrderService {
             OrderSeat os = new OrderSeat();
             os.setSeat(s.getSeat());
             os.setPrice(s.getPrice());
-            os.setOrderId(orderId);
+            os.setOrderId(order.getOrderId());
             return os;
         }).toList();
         Order o = new Order();
-        o.setOrderId(orderId);
-        o.setUserId(userId);
+        o.setOrderId(order.getOrderId());
+        o.setUserId(order.getUserId());
         o.markCreated();
         o.setTotalAmount(dto.getSeats().stream().map(OrderSeatDTO::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
         o.setCinemaHallId(dto.getCinemaHallId());
-        o.setOrderStatus(OrderStatus.CONFIRMED);
-        o.setPaymentMethod(PaymentMethod.CASH);
-        o.setPaymentStatus(PaymentStatus.PAID);
+        o.setOrderStatus(order.getOrderStatus());
+        o.setPaymentMethod(order.getPaymentMethod());
+        o.setPaymentStatus(order.getPaymentStatus());
         o.setSeats(seatEntities);
         orderRepository.insert(o);
         orderRepository.insertOrderSeat(o.getSeats());
@@ -200,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
 //	Delete Redis when save DB
         dto.getSeats().forEach(seat -> redisTemplate.delete(RedisKeyHelper.seatLockKey(seat.getSeat().getId())));
 
-        redisTemplate.delete(RedisKeyHelper.orderHoldKey(orderId));
+        redisTemplate.delete(RedisKeyHelper.orderHoldKey(order.getOrderId()));
         return o;
     }
 
