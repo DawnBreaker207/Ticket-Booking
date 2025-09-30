@@ -28,7 +28,6 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import moment from "moment";
 import type { Moment } from "moment";
-import { z } from "zod";
 import type { Movie } from "../../types/Movie";
 import movieService from "../../services/Movie";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
@@ -44,25 +43,13 @@ import { cinemaHallService } from "../../services/cinemaHallService";
 
 const { Title } = Typography;
 
-/* Zod schema: minimal movie validation */
-const CinemaHallSchema = z.object({
-  id: z.number(),
-  movieSession: z.string().min(1, "Vui lòng chọn thời gian chiếu"),
-  movie: z.object({
-    id: z.number(),
-    title: z.string().min(1),
-  }),
-});
 const parseSession = (s?: string) => {
   if (!s) return { date: "-", time: "-", iso: "" };
-  // try ISO / any parseable format first
   let m = moment(s);
   if (!m.isValid()) {
-    // try "DD/MM/YYYY HH:mm" fallback
     m = moment(s, "DD/MM/YYYY HH:mm");
   }
   if (!m.isValid()) {
-    // unknown format: return raw string as date (no time)
     return { date: s, time: "-", iso: "" };
   }
   return {
@@ -72,7 +59,6 @@ const parseSession = (s?: string) => {
   };
 };
 
-// New helper: parse and format a movie.releaseDate which may be in DD/MM/YYYY or ISO or other parseable format
 const parseReleaseDate = (rd?: string | null) => {
   if (!rd) return { display: "-", iso: undefined };
   const ddmmyyyy = /^\d{2}\/\d{2}\/\d{4}$/;
@@ -85,7 +71,7 @@ const parseReleaseDate = (rd?: string | null) => {
       };
     return { display: rd, iso: undefined };
   }
-  // try parsing with moment (handles ISO and other formats)
+
   const m = moment(rd);
   if (m.isValid())
     return { display: m.format("DD/MM/YYYY"), iso: m.toISOString() };
@@ -109,7 +95,6 @@ const CinemaHallPage: React.FC = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [viewing, setViewing] = useState<CinemaHall | null>(null);
 
-  // form keeps movieId and movieTitle (movie object saved on submit from movieOptions)
   const [form] = Form.useForm<{
     movieId?: number;
     movieTitle?: string;
@@ -122,7 +107,7 @@ const CinemaHallPage: React.FC = () => {
     const load = async () => {
       try {
         setLoadingMovies(true);
-        const res = await cinemaHallService.getAll(); // giả sử trả về CinemaHall[]
+        const res = await cinemaHallService.getAll();
         if (!mounted) return;
         dispatch(setCinemaHalls(res));
       } catch (err: any) {
@@ -161,7 +146,6 @@ const CinemaHallPage: React.FC = () => {
       movieSession: moment(record.movieSession),
     });
 
-    // Nếu record.movie tồn tại thì add vào movieOptions (nếu chưa có)
     if (record.movie) {
       setMovieOptions((prev) => {
         const exists = prev.find((m) => m.id === record.movie!.id);
@@ -190,7 +174,6 @@ const CinemaHallPage: React.FC = () => {
     setViewModalOpen(false);
   };
 
-  // open the movie search modal
   const openSearchMovieModal = () => {
     setSearchMovieModalOpen(true);
   };
@@ -199,14 +182,13 @@ const CinemaHallPage: React.FC = () => {
     setSearchMovieModalOpen(false);
   };
 
-  // debounced server search for movies (no fallback to sample)
   const handleMovieSearch = (q: string) => {
     if (searchTimer.current) {
       window.clearTimeout(searchTimer.current);
       searchTimer.current = null;
     }
     if (!q || q.trim().length < 1) {
-      setMovieOptions([]); // clear options when query empty
+      setMovieOptions([]);
       return;
     }
     setLoadingMovies(true);
@@ -224,7 +206,6 @@ const CinemaHallPage: React.FC = () => {
     }, 400);
   };
 
-  // when user selects a movie from search modal
   const handleSelectMovieFromSearch = (m: Movie) => {
     form.setFieldsValue({ movieId: m.id, movieTitle: m.title });
     closeSearchMovieModal();
@@ -246,26 +227,20 @@ const CinemaHallPage: React.FC = () => {
         return;
       }
 
-      // --- convert movieSession to ISO ---
       const movieSessionIso = mSession.toDate().toISOString();
 
-      // --- normalize movie.releaseDate to ISO if needed ---
       const normalizeReleaseDate = (
         rd?: string | undefined
       ): string | undefined => {
         if (!rd) return undefined;
-        // if looks like DD/MM/YYYY -> parse with that format
         const ddmmyyyy = /^\d{2}\/\d{2}\/\d{4}$/;
         if (ddmmyyyy.test(rd)) {
-          // startOf('day') to get midnight UTC of that day then toISOString
           return moment(rd, "DD/MM/YYYY").startOf("day").toISOString();
         }
-        // if already an ISO-like or other parseable format, try Date
         const parsed = new Date(rd);
         if (!isNaN(parsed.getTime())) {
           return parsed.toISOString();
         }
-        // fallback: return original string (server may handle)
         return rd;
       };
 
@@ -283,7 +258,6 @@ const CinemaHallPage: React.FC = () => {
 
       if (editingId) {
         const updated = await cinemaHallService.update(editingId, payload);
-        // update redux store (sync action) - assumes add/update actions accept CinemaHall
         dispatch(updateCinemaHall(updated));
         message.success("Cập nhật suất chiếu thành công");
       } else {
@@ -308,8 +282,8 @@ const CinemaHallPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await cinemaHallService.remove(id); // gọi API delete
-      dispatch(removeCinemaHall(id)); // cập nhật redux
+      await cinemaHallService.remove(id);
+      dispatch(removeCinemaHall(id));
       message.success("Đã xóa suất chiếu");
     } catch (err: any) {
       console.error("Delete error", err);
@@ -365,7 +339,6 @@ const CinemaHallPage: React.FC = () => {
         );
       },
       sorter: (a, b) =>
-        // sort theo thời điểm (moment handles ISO and many formats)
         moment(a.movieSession).valueOf() - moment(b.movieSession).valueOf(),
     },
     {
