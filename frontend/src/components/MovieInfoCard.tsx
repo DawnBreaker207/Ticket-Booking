@@ -19,7 +19,6 @@ interface MovieInfoCardProps {
   showTime?: string;
   selectedSeats?: string[];
   totalFormatted?: string;
-  remainingFormatted?: string;
   onConfirm?: () => void;
   showCheckoutActions?: boolean;
   onBack?: () => void;

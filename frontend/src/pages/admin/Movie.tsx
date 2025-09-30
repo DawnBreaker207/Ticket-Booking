@@ -85,7 +85,6 @@ const MoviePage: React.FC = () => {
 
   const normalizeGenre = (g?: string) => {
     if (!g || typeof g !== "string") return "";
-    // remove leading 'phim' (case-insensitive) and common separators like space, colon, hyphen, dash
     return String(g)
       .replace(/^\s*\bphim\b[\s:–—-]*/i, "")
       .trim();
@@ -222,7 +221,6 @@ const MoviePage: React.FC = () => {
     }
   };
 
-  // sửa handleDelete để gọi API trước rồi dispatch
   const handleDelete = async (id: number) => {
     try {
       await movieService.deleteMovie(id);

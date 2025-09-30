@@ -5,15 +5,15 @@ import infoPaymentImg from "../../assets/ic-inforpayment.png";
 import paymentIcon from "../../assets/ic-payment.png";
 import cardImg from "../../assets/ic-card-vn.png";
 import ewalletImg from "../../assets/0oxhzjmxbksr1686814746087.png";
+import Countdown from "../../components/Countdown";
+
 const { Title, Text } = Typography;
 
 export interface PaymentPanelProps {
   selected: string[];
-  remaining: number;
   paymentMethod: string;
   setPaymentMethod: (v: string) => void;
   paymentIcon?: string;
-  // pass seatInfos from parent so we can read per-seat price
   seatInfos?: { seatNumber: string; price: number; id?: number }[];
 }
 
@@ -24,17 +24,8 @@ function formatVND(value: number) {
   }).format(value);
 }
 
-function formatTime(seconds: number) {
-  const mm = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, "0");
-  const ss = (seconds % 60).toString().padStart(2, "0");
-  return `${mm}:${ss}`;
-}
-
 const PaymentPanel: FC<PaymentPanelProps> = ({
   selected,
-  remaining,
   paymentMethod,
   setPaymentMethod,
   seatInfos = [],
@@ -54,7 +45,6 @@ const PaymentPanel: FC<PaymentPanelProps> = ({
       ? sessionStorage.getItem("username") || username
       : username;
 
-  // build selected seat details with price from seatInfos (fallback price = 0)
   const seatDetails = selected.map((seatNumber) => {
     const info = seatInfos.find((s) => s.seatNumber === seatNumber);
     return {
@@ -65,7 +55,6 @@ const PaymentPanel: FC<PaymentPanelProps> = ({
 
   const total = seatDetails.reduce((acc, s) => acc + (s.price ?? 0), 0);
 
-  // determine unitPrice if all selected seats have same price
   const unitPrice =
     seatDetails.length > 0 &&
     seatDetails.every((s) => s.price === seatDetails[0].price)
@@ -76,7 +65,6 @@ const PaymentPanel: FC<PaymentPanelProps> = ({
   const unitPriceDisplay =
     unitPrice !== undefined ? formatVND(unitPrice) : "Nhiều mức giá";
   const lineTotal = total;
-
   return (
     <>
       <Card size="small" style={{ position: "sticky", top: 16 }}>
@@ -111,7 +99,6 @@ const PaymentPanel: FC<PaymentPanelProps> = ({
           </div>
         </div>
 
-        {/* --- Thay phần chi tiết ghế bằng giao diện bạn yêu cầu --- */}
         <div
           style={{
             display: "flex",
@@ -199,11 +186,9 @@ const PaymentPanel: FC<PaymentPanelProps> = ({
         size="small"
         style={{ marginTop: 12, display: "flex", justifyContent: "end" }}
       >
-        <Text strong>Thời gian còn lại</Text>
+        <Text strong>Thời gian còn lại:</Text>
         <div style={{ marginTop: 8 }}>
-          <Title level={4} style={{ margin: 0 }}>
-            {formatTime(remaining)}
-          </Title>
+          <Countdown />
         </div>
       </Card>
     </>

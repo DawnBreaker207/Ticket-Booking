@@ -1,9 +1,5 @@
-import React from "react";
-
 type Props = {
-  /** URL trang chủ (mặc định '/') */
   homeUrl?: string;
-  /** Nhãn nút */
   label?: string;
 };
 

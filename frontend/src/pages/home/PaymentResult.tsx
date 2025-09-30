@@ -10,7 +10,7 @@ export default function PaymentResult(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
   const didConfirmRef = useRef(false);
-  const [secondsLeft, setSecondsLeft] = useState<number>(60);
+  const [secondsLeft, setSecondsLeft] = useState<number>(30);
 
   const qp = useMemo(() => {
     const p = new URLSearchParams(location.search);

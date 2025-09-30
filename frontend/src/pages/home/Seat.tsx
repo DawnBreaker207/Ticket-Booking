@@ -15,11 +15,13 @@ import type { CSSProperties } from "react";
 import screenImg from "../../assets/ic-screen.png";
 import Navbar from "../../components/Navbar";
 import { Content } from "antd/es/layout/layout";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { cinemaHallService } from "../../services/cinemaHallService";
 import MovieInfoCard from "../../components/MovieInfoCard";
 import PaymentPanel from "./PaymentPanel";
 import { orderService } from "../../services/orderService";
+
+import Countdown from "../../components/Countdown";
 
 const { Title, Text } = Typography;
 
@@ -35,7 +37,7 @@ export interface MovieInfo {
 export interface SeatSelectorProps {
   rows?: string[];
   cols?: number;
-  reserved?: string[]; // prop-based reserved (optional)
+  reserved?: string[];
   initialSelected?: string[];
   maxSelectable?: number;
   onConfirm?: (selected: string[]) => void;
@@ -60,14 +62,6 @@ function formatVND(value: number) {
     style: "currency",
     currency: "VND",
   }).format(value);
-}
-
-function formatTime(seconds: number) {
-  const mm = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, "0");
-  const ss = (seconds % 60).toString().padStart(2, "0");
-  return `${mm}:${ss}`;
 }
 
 function parseShowtime(showtime?: string) {
@@ -110,12 +104,10 @@ export default function SeatSelector({
   initialSelected = [],
   maxSelectable = 8,
   movie,
-  reserveSeconds = 900,
 }: SeatSelectorProps) {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>(initialSelected);
-  const [remaining, setRemaining] = useState<number>(reserveSeconds);
 
   const [remoteMovie, setRemoteMovie] = useState<MovieInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -210,28 +202,6 @@ export default function SeatSelector({
   }, [id]);
 
   useEffect(() => {
-    setRemaining(reserveSeconds);
-  }, [reserveSeconds]);
-
-  useEffect(() => {
-    const onAuthLogout = () => {
-      message.info("Bạn đã đăng xuất");
-      const next = `/seat/${id ?? ""}`;
-      navigate(`/login?next=${encodeURIComponent(next)}`);
-    };
-    window.addEventListener("auth:logout", onAuthLogout);
-    return () => window.removeEventListener("auth:logout", onAuthLogout);
-  }, [id, navigate]);
-
-  useEffect(() => {
-    if (remaining <= 0) return;
-    const idInterval = setInterval(() => {
-      setRemaining((s) => Math.max(0, s - 1));
-    }, 1000);
-    return () => clearInterval(idInterval);
-  }, [remaining]);
-
-  useEffect(() => {
     let mounted = true;
     if (!id) return;
     if (authenticated === false) return;
@@ -275,12 +245,6 @@ export default function SeatSelector({
 
   function toggleSeat(seatId: string) {
     const info = seatInfos.find((s) => s.seatNumber === seatId);
-    console.log("Seat clicked:", {
-      id: info?.id ?? null,
-      seatNumber: seatId,
-      price: info?.price ?? 0,
-      status: info?.status ?? "UNKNOWN",
-    });
     if (info && info.status && info.status.toUpperCase() !== "AVAILABLE")
       return;
 
@@ -369,6 +333,11 @@ export default function SeatSelector({
         else orderId = (initResp as any).orderId ?? undefined;
       }
       if (!orderId) throw new Error("Không tạo được orderId từ initOrder");
+      try {
+        sessionStorage.setItem("orderid", orderId);
+      } catch (e) {
+        // ignore
+      }
 
       const holdResp = await orderService.seatHold({
         orderId,
@@ -476,17 +445,22 @@ export default function SeatSelector({
             >
               <div style={{ flex: 1 }}>
                 <div style={{ marginBottom: 12 }}>
-                  <Breadcrumb>
-                    <Breadcrumb.Item>
-                      <Link to="/">Trang chủ</Link>
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>Đặt vé</Breadcrumb.Item>
-                  </Breadcrumb>
+                  <Breadcrumb
+                    separator=">"
+                    items={[
+                      {
+                        title: "Trang chủ",
+                        href: "/",
+                      },
+                      {
+                        title: "Đặt vé",
+                      },
+                    ]}
+                  />
                 </div>
 
                 {!checkoutMode ? (
                   <>
-                    {/* Legend */}
                     <Card size="small" style={{ marginBottom: 12 }}>
                       <Space>
                         <Space>
@@ -629,12 +603,7 @@ export default function SeatSelector({
                             Thời gian còn lại
                           </Text>
                           <div>
-                            <Title
-                              level={4}
-                              style={{ margin: 0, fontSize: 20 }}
-                            >
-                              {formatTime(remaining)}
-                            </Title>
+                            <Countdown />
                           </div>
                         </div>
                       </div>
@@ -643,7 +612,6 @@ export default function SeatSelector({
                 ) : (
                   <PaymentPanel
                     selected={selected}
-                    remaining={remaining}
                     paymentMethod={paymentMethod}
                     setPaymentMethod={setPaymentMethod}
                     seatInfos={seatInfos}
@@ -659,7 +627,6 @@ export default function SeatSelector({
                   showTime={showTime}
                   selectedSeats={selected}
                   totalFormatted={formatVND(total)}
-                  remainingFormatted={formatTime(remaining)}
                   onConfirm={() => {
                     if (selected.length === 0) {
                       message.warning("Vui lòng chọn ghế trước khi tiếp tục.");
