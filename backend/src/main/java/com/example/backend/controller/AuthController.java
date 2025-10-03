@@ -1,10 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
-import com.example.backend.dto.request.LoginRequest;
-import com.example.backend.dto.request.RegisterRequest;
-import com.example.backend.dto.response.JwtResponse;
-import com.example.backend.dto.response.TokenRefreshResponse;
+import com.example.backend.dto.request.LoginRequestDTO;
+import com.example.backend.dto.request.RegisterRequestDTO;
+import com.example.backend.dto.response.JwtResponseDTO;
+import com.example.backend.dto.response.TokenRefreshResponseDTO;
 import com.example.backend.service.Impl.AuthServiceImpl;
 import com.example.backend.util.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,13 +27,13 @@ public class AuthController {
     private JWTUtils jWTUtils;
 
     @PostMapping("/register")
-    public ResponseObject<String> register(@RequestBody RegisterRequest newUser) {
+    public ResponseObject<String> register(@RequestBody RegisterRequestDTO newUser) {
         authService.register(newUser);
         return new ResponseObject<>(HttpStatus.OK, "Success", "");
     }
 
     @PostMapping("/login")
-    public ResponseObject<JwtResponse> login(@RequestBody LoginRequest user) {
+    public ResponseObject<JwtResponseDTO> login(@RequestBody LoginRequestDTO user) {
         var jwt = authService.login(user);
         var refreshCookie = jWTUtils.generateJwtRefreshCookie(jwt.getRefreshToken());
         HttpHeaders header = new HttpHeaders();
@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseObject<TokenRefreshResponse> refreshToken(HttpServletRequest request) {
+    public ResponseObject<TokenRefreshResponseDTO> refreshToken(HttpServletRequest request) {
         return new ResponseObject<>(HttpStatus.OK, "Success", authService.refreshToken(request));
     }
 }

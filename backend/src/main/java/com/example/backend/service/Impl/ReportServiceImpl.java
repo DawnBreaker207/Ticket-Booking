@@ -1,6 +1,6 @@
 package com.example.backend.service.Impl;
 
-import com.example.backend.dto.response.ReportDTO;
+import com.example.backend.dto.response.ReportResponseDTO;
 import com.example.backend.model.Order;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.service.ReportService;
@@ -32,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
     private OrderRepository orderRepository;
 
     @Override
-    public ReportDTO exportReport(String reportFormat) {
+    public ReportResponseDTO exportReport(String reportFormat) {
         try {
             List<Order> orders = orderRepository.findAll();
             if (orders.isEmpty()) {
@@ -93,7 +93,7 @@ public class ReportServiceImpl implements ReportService {
                 throw new IllegalArgumentException("Unsupported report format: " + reportFormat);
             }
 
-            return new ReportDTO(reportBytes, filename, contentType);
+            return new ReportResponseDTO(reportBytes, filename, contentType);
         } catch (JRException ex) {
             throw new RuntimeException(ex);
         } catch (IOException e) {

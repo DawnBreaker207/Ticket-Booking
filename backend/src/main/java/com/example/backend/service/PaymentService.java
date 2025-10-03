@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.config.payment.VNPayConfig;
-import com.example.backend.dto.shared.PaymentDTO;
+import com.example.backend.dto.response.PaymentResponseDTO;
 import com.example.backend.util.VNPayUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class PaymentService {
         this.VNPayConfig = VNPayConfig;
     }
 
-    public PaymentDTO.VNPayResponse createVNPayPayment(HttpServletRequest req) {
+    public PaymentResponseDTO.VNPayResponse createVNPayPayment(HttpServletRequest req) {
         Map<String, String> vnpParamsMap = VNPayConfig.getVNPayConfig();
         long amount = Integer.parseInt(req.getParameter("amount")) * 100L;
         String bankCode = req.getParameter("bankCode");
@@ -35,6 +35,6 @@ public class PaymentService {
         String vnpSecureHash = VNPayUtils.hmacSHA512(VNPayConfig.getVnp_secretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = VNPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-        return new PaymentDTO.VNPayResponse("ok", "success", paymentUrl);
+        return new PaymentResponseDTO.VNPayResponse("ok", "success", paymentUrl);
     }
 }

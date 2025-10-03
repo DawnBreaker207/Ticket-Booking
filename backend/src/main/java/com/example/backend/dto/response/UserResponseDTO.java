@@ -1,17 +1,20 @@
-package com.example.backend.dto.shared;
+package com.example.backend.dto.response;
 
-public class UserDTO {
+import com.example.backend.model.AbstractMappedEntity;
+
+public class UserResponseDTO extends AbstractMappedEntity {
 
     private Long userId;
     private String username;
     private String email;
     private String password;
 
-    public UserDTO() {
-
+    public UserResponseDTO() {
+        super();
     }
 
-    public UserDTO(String username, Long userId, String email, String password) {
+    public UserResponseDTO(String username, Long userId, String email, String password) {
+        super();
         this.username = username;
         this.userId = userId;
         this.email = email;

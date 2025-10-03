@@ -1,11 +1,11 @@
 package com.example.backend.helper;
 
-import com.example.backend.dto.shared.UserDTO;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.model.User;
 
 public interface UserMappingHelper {
-    static UserDTO map(final User u) {
-        UserDTO user = new UserDTO();
+    static UserResponseDTO map(final User u) {
+        UserResponseDTO user = new UserResponseDTO();
         user.setUserId(u.getId());
         user.setUsername(u.getUsername());
         user.setEmail(u.getEmail());
@@ -13,7 +13,7 @@ public interface UserMappingHelper {
         return user;
     }
 
-    static User map(final UserDTO u) {
+    static User map(final UserResponseDTO u) {
         User user = new User();
         user.setId(u.getUserId());
         user.setUsername(u.getUsername());

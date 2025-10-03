@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.response.ReportDTO;
+import com.example.backend.dto.response.ReportResponseDTO;
 import com.example.backend.service.Impl.ReportServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ public class ReportController {
 
     @GetMapping("/report/{format}")
     public ResponseEntity<byte[]> generateReport(@PathVariable String format) {
-        ReportDTO report = reportService.exportReport(format);
+        ReportResponseDTO report = reportService.exportReport(format);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getFilename())

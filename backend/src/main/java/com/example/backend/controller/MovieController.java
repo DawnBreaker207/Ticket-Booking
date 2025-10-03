@@ -1,7 +1,8 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
-import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.dto.request.MovieRequestDTO;
+import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.model.Movie;
 import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +23,7 @@ public class MovieController {
     }
 
     @GetMapping("")
-    public ResponseObject<List<Movie>> findAll(@ModelAttribute MovieDTO m) {
+    public ResponseObject<List<Movie>> findAll(@ModelAttribute MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m));
     }
 
@@ -38,7 +39,7 @@ public class MovieController {
 
     @PostMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<Movie> create(@RequestBody MovieDTO m) {
+    public ResponseObject<Movie> create(@RequestBody MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }
 

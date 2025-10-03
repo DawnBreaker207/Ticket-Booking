@@ -1,6 +1,6 @@
-package com.example.backend.dto.shared;
+package com.example.backend.dto.response;
 
-public class PaymentDTO {
+public class PaymentResponseDTO {
 
     public static class VNPayResponse {
 
