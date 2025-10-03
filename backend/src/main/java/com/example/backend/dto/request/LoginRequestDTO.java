@@ -1,10 +1,17 @@
 package com.example.backend.dto.request;
 
-public class LoginRequest {
+import jakarta.validation.constraints.*;
+
+public class LoginRequestDTO {
+    @NotBlank(message = "Username is not mandatory")
+    @Size(min = 1, max = 100)
     private String username;
+
+    @NotBlank(message = "Password is not mandatory")
+    @Min(value = 6,message = "Password is required 8 characters above")
     private String password;
 
-    public LoginRequest(String password, String username) {
+    public LoginRequestDTO(String password, String username) {
         this.password = password;
         this.username = username;
     }

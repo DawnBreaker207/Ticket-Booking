@@ -3,7 +3,7 @@ package com.example.backend.dto.response;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JwtResponse {
+public class JwtResponseDTO {
     private String token;
     private String type = "Bearer";
     private String refreshToken;
@@ -12,7 +12,7 @@ public class JwtResponse {
     private String email;
     private List<String> roles;
 
-    public JwtResponse(String token, Long userId, String username, String email, List<String> roles, String refreshToken) {
+    public JwtResponseDTO(String token, Long userId, String username, String email, List<String> roles, String refreshToken) {
         this.roles = new ArrayList<>(roles) ;
         this.email = email;
         this.username = username;

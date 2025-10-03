@@ -16,7 +16,7 @@
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
-    <select id="findAllWithFilter" parameterType="com.example.backend.dto.shared.MovieDTO" resultMap="MovieResultMap">
+    <select id="findAllWithFilter" parameterType="com.example.backend.dto.response.MovieResponseDTO" resultMap="MovieResultMap">
         SELECT * FROM movie
         <where>
             <if test="title != null and title != ''">

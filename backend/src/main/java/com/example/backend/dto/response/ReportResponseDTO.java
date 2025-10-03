@@ -1,11 +1,11 @@
 package com.example.backend.dto.response;
 
-public class ReportDTO {
+public class ReportResponseDTO {
     private byte[] data;
     private String filename;
     private String contentType;
 
-    public ReportDTO(byte[] data, String filename, String contentType) {
+    public ReportResponseDTO(byte[] data, String filename, String contentType) {
         this.data = data;
         this.filename = filename;
         this.contentType = contentType;

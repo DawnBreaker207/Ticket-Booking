@@ -1,6 +1,7 @@
 package com.example.backend.service.Impl;
 
-import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.dto.request.MovieRequestDTO;
+import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.exception.wrapper.MovieExistedException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.model.Movie;
@@ -31,7 +32,7 @@ public class MovieServiceImpl implements MovieService {
 
     //    @Cacheable(MOVIE_CACHE)
     @Override
-    public List<Movie> findAll(MovieDTO m) {
+    public List<Movie> findAll(MovieRequestDTO m) {
         return movieRepository.findAllWithFilter(m);
     }
 
@@ -87,7 +88,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public Movie create(MovieDTO m) {
+    public Movie create(MovieRequestDTO m) {
         movieRepository.findByMovieId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
         });

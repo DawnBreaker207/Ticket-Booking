@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.response.ReportDTO;
+import com.example.backend.dto.response.ReportResponseDTO;
 
 public interface ReportService {
-    ReportDTO exportReport(String reportFormat);
+    ReportResponseDTO exportReport(String reportFormat);
 }

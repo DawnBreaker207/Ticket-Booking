@@ -1,11 +1,11 @@
 package com.example.backend.dto.response;
 
-public class TokenRefreshResponse {
+public class TokenRefreshResponseDTO {
     private String accessToken;
     private String refreshToken;
     private String token = "Bearer ";
 
-    public TokenRefreshResponse(String accessToken, String refreshToken) {
+    public TokenRefreshResponseDTO(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

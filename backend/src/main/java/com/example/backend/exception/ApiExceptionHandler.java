@@ -2,10 +2,12 @@ package com.example.backend.exception;
 
 import com.example.backend.exception.payload.ExceptionMessage;
 import com.example.backend.exception.wrapper.*;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -39,5 +41,26 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), status,
                 "#### " + e.getMessage() + "! ####"), status);
 
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionMessage> handlerValidationException(MethodArgumentNotValidException ex) {
+        String errorMsg = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .findFirst()
+                .orElse("Invalid request");
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ExceptionMessage> handlerConstraintViolationException(ConstraintViolationException ex) {
+        String errorMsg = ex.getConstraintViolations()
+                .stream()
+                .map(err -> err.getPropertyPath() + ": " + err.getMessage())
+                .findFirst()
+                .orElse("Invalid parameter");
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
     }
 }

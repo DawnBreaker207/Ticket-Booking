@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
-import com.example.backend.dto.shared.PaymentDTO;
+import com.example.backend.dto.response.PaymentResponseDTO;
 import com.example.backend.service.PaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,15 +21,15 @@ public class PaymentController {
     }
 
     @GetMapping("/vnpay")
-    public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest req) {
+    public ResponseObject<PaymentResponseDTO.VNPayResponse> pay(HttpServletRequest req) {
         return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVNPayPayment(req));
     }
 
     @GetMapping("/vnpay-return")
-    public ResponseObject<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest req) {
+    public ResponseObject<PaymentResponseDTO.VNPayResponse> payCallbackHandler(HttpServletRequest req) {
         String status = req.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
-            return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO.VNPayResponse("00", "Success", ""));
+            return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentResponseDTO.VNPayResponse("00", "Success", ""));
         } else {
             return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
         }

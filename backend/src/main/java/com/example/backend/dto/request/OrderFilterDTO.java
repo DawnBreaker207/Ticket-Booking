@@ -4,6 +4,7 @@ import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.AssertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +33,20 @@ public class OrderFilterDTO {
     private String sortBy;
 
     private String sortDirection;
+
+
+    @AssertTrue(message = "Start date must be before or equal to end date")
+    public boolean isValidDateRange() {
+        if (startDate == null || endDate == null) {
+            return true;
+        }
+        return !startDate.isAfter(endDate);
+    }
+
+    @AssertTrue(message = "Sort direction must be 'asc' or 'desc'")
+    public boolean isSortDirectionValid() {
+        return sortDirection == null || sortDirection.equalsIgnoreCase("asc") || sortDirection.equalsIgnoreCase("desc");
+    }
 
     public OrderFilterDTO(
             String query,

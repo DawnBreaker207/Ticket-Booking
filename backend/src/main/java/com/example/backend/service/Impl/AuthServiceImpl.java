@@ -1,9 +1,9 @@
 package com.example.backend.service.Impl;
 
-import com.example.backend.dto.request.LoginRequest;
-import com.example.backend.dto.request.RegisterRequest;
-import com.example.backend.dto.response.JwtResponse;
-import com.example.backend.dto.response.TokenRefreshResponse;
+import com.example.backend.dto.request.LoginRequestDTO;
+import com.example.backend.dto.request.RegisterRequestDTO;
+import com.example.backend.dto.response.JwtResponseDTO;
+import com.example.backend.dto.response.TokenRefreshResponseDTO;
 import com.example.backend.exception.wrapper.RefreshTokenExpiredException;
 import com.example.backend.exception.wrapper.RefreshTokenNotFoundException;
 import com.example.backend.exception.wrapper.UserEmailExistedException;
@@ -61,12 +61,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegisterRequest newUser) {
+    public void register(RegisterRequestDTO newUser) {
         userRepository.findByEmail(newUser.getEmail()).ifPresent(u -> {
-            throw new UserEmailExistedException("This email already exists" + newUser.getEmail());
+            throw new UserEmailExistedException("This email already exists " + newUser.getEmail());
         });
         userRepository.findByUsername(newUser.getUsername()).ifPresent((u) -> {
-            throw new UsernameExistedException("This username already exists" + newUser.getUsername());
+            throw new UsernameExistedException("This username already exists " + newUser.getUsername());
         });
         var user = new User();
         user.setUsername(newUser.getUsername());
@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public JwtResponse login(LoginRequest user) {
+    public JwtResponseDTO login(LoginRequestDTO user) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jWTUtils.generateToken(authentication);
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, refreshToken.getToken());
+        return new JwtResponseDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, refreshToken.getToken());
     }
 
     @Override
@@ -117,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public TokenRefreshResponse refreshToken(HttpServletRequest token) {
+    public TokenRefreshResponseDTO refreshToken(HttpServletRequest token) {
         String refreshToken = jWTUtils.getJwtRefreshCookie(token);
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new RefreshTokenExpiredException("Refresh token not existed");
@@ -127,7 +127,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String jwtCookie = jWTUtils.generateToken(user.getUsername());
-                    return new TokenRefreshResponse(jwtCookie, refreshToken);
+                    return new TokenRefreshResponseDTO(jwtCookie, refreshToken);
                 })
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found " + token));
     }

@@ -1,19 +1,19 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.request.LoginRequest;
-import com.example.backend.dto.request.RegisterRequest;
-import com.example.backend.dto.response.JwtResponse;
-import com.example.backend.dto.response.TokenRefreshResponse;
+import com.example.backend.dto.request.LoginRequestDTO;
+import com.example.backend.dto.request.RegisterRequestDTO;
+import com.example.backend.dto.response.JwtResponseDTO;
+import com.example.backend.dto.response.TokenRefreshResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 
 
-    void register(RegisterRequest newUser);
+    void register(RegisterRequestDTO newUser);
 
-    JwtResponse login(LoginRequest user);
+    JwtResponseDTO login(LoginRequestDTO user);
 
     void logout();
 
-    TokenRefreshResponse refreshToken(HttpServletRequest req);
+    TokenRefreshResponseDTO refreshToken(HttpServletRequest req);
 }
