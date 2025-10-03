@@ -1,5 +1,6 @@
 package com.example.backend.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,5 +19,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix("/api/v1", HandlerTypePredicate.forAnnotation(RestController.class));
+    }
+
+    @Bean
+    public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegister() {
+        FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new RateLimitFilter());
+        registrationBean.addUrlPatterns("/api/v1/**");
+        return registrationBean;
     }
 }
