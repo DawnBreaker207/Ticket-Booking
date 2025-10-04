@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +17,10 @@ import java.io.Serializable;
 import java.time.Instant;
 
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Data
 @EntityListeners(AuditingEntityListener.class)
 public class AbstractMappedEntity implements Serializable {
     @Serial
@@ -28,36 +36,4 @@ public class AbstractMappedEntity implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public AbstractMappedEntity() {
-    }
-
-    public AbstractMappedEntity(Instant createdAt, Instant updatedAt) {
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void markCreated() {
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
-    public void markUpdated() {
-        this.updatedAt = Instant.now();
-    }
 }

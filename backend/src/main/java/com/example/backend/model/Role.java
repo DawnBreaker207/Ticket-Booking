@@ -2,11 +2,18 @@ package com.example.backend.model;
 
 import com.example.backend.constant.URole;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class Role extends AbstractMappedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,56 +23,4 @@ public class Role extends AbstractMappedEntity {
     @Column(name = "name")
     @Enumerated(EnumType.STRING)
     private URole name;
-
-    public Role() {
-        super();
-    }
-
-    public Role(Role role) {
-        super();
-        this.id = role.id;
-        this.name = role.name;
-    }
-
-    public Role(Long id, URole name) {
-        super();
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public URole getName() {
-        return name;
-    }
-
-    public void setName(URole name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name=" + name +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(id, role.id) && name == role.name;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
 }
