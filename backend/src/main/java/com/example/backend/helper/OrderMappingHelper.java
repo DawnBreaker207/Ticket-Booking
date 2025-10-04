@@ -10,53 +10,62 @@ import java.util.stream.Collectors;
 
 public interface OrderMappingHelper {
     static OrderResponseDTO map(final Order o) {
-	OrderResponseDTO order = new OrderResponseDTO();
-	order.setUserId(o.getUserId());
-	order.setCinemaHall(o.getCinemaHall());
-	order.setTotalAmount(o.getTotalAmount());
-	order.setOrderStatus(o.getOrderStatus());
-	order.setPaymentMethod(o.getPaymentMethod());
-	order.setPaymentStatus(o.getPaymentStatus());
-
-	if (o.getSeats() != null) {
-	    List<OrderSeatDTO> seats = o.getSeats().stream().map(OrderMappingHelper::map).collect(Collectors.toList());
-	    order.setSeats(seats);
-	}
-	return order;
+        OrderResponseDTO order =
+                OrderResponseDTO
+                        .builder()
+                        .orderId(o.getOrderId())
+                        .userId(o.getUserId())
+                        .cinemaHall(o.getCinemaHall())
+                        .totalAmount(o.getTotalAmount())
+                        .orderStatus(o.getOrderStatus())
+                        .paymentMethod(o.getPaymentMethod())
+                        .paymentStatus(o.getPaymentStatus())
+                        .createdAt(o.getCreatedAt())
+                        .updatedAt(o.getUpdatedAt())
+                        .build();
+        if (o.getSeats() != null) {
+            List<OrderSeatDTO> seats = o.getSeats().stream().map(OrderMappingHelper::map).collect(Collectors.toList());
+            order.setSeats(seats);
+        }
+        return order;
     }
 
     static Order map(final OrderResponseDTO o) {
-	Order order = new Order();
-	order.setUserId(o.getUserId());
-	order.setCinemaHall(o.getCinemaHall());
-	order.setTotalAmount(o.getTotalAmount());
-	order.setOrderStatus(o.getOrderStatus());
-	order.setPaymentMethod(o.getPaymentMethod());
-	order.setPaymentStatus(o.getPaymentStatus());
+        Order order = Order
+                .builder()
+                .orderId(o.getOrderId())
+                .userId(o.getUserId())
+                .cinemaHall(o.getCinemaHall())
+                .totalAmount(o.getTotalAmount())
+                .orderStatus(o.getOrderStatus())
+                .paymentMethod(o.getPaymentMethod())
+                .paymentStatus(o.getPaymentStatus())
+                .createdAt(o.getCreatedAt())
+                .updatedAt(o.getUpdatedAt())
+                .build();
+        if (o.getSeats() != null) {
+            List<OrderSeat> seats = o.getSeats().stream().map(OrderMappingHelper::map).collect(Collectors.toList());
+            order.setSeats(seats);
 
-	if (o.getSeats() != null) {
-	    List<OrderSeat> seats = o.getSeats().stream().map(OrderMappingHelper::map).collect(Collectors.toList());
-	    order.setSeats(seats);
-
-	}
-	return order;
+        }
+        return order;
     }
 
     static OrderSeatDTO map(OrderSeat seat) {
-	return new OrderSeatDTO(seat.getSeat() != null ? seat.getSeat() : null, seat.getPrice());
+        return new OrderSeatDTO(seat.getSeat() != null ? seat.getSeat() : null, seat.getPrice());
     }
 
     static OrderSeat map(OrderSeatDTO seatDto) {
-	OrderSeat seat = new OrderSeat();
-	if (seatDto.getSeat() != null) {
-	    try {
-		seat.setSeat(seatDto.getSeat());
-		seat.setPrice(seatDto.getPrice());
-	    } catch (NumberFormatException ex) {
-		seat.setSeat(null);
-	    }
-	}
+        OrderSeat seat = new OrderSeat();
+        if (seatDto.getSeat() != null) {
+            try {
+                seat.setSeat(seatDto.getSeat());
+                seat.setPrice(seatDto.getPrice());
+            } catch (NumberFormatException ex) {
+                seat.setSeat(null);
+            }
+        }
 
-	return seat;
+        return seat;
     }
 }

@@ -9,7 +9,8 @@ public interface UserMappingHelper {
         return UserResponseDTO.builder()
                 .userId(u.getId())
                 .email(u.getEmail())
-                .password(u.getPassword())
+                .createdAt(u.getCreatedAt())
+                .updatedAt(u.getUpdatedAt())
                 .build();
     }
 
@@ -17,7 +18,8 @@ public interface UserMappingHelper {
         return User.builder()
                 .id(u.getUserId())
                 .email(u.getEmail())
-                .password(u.getPassword())
+                .createdAt(u.getCreatedAt())
+                .updatedAt(u.getUpdatedAt())
                 .build();
     }
 }
