@@ -4,6 +4,7 @@ import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.exception.wrapper.MovieExistedException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
+import com.example.backend.helper.MovieMappingHelper;
 import com.example.backend.model.Movie;
 import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
@@ -30,8 +31,9 @@ public class MovieServiceImpl implements MovieService {
 
     //    @Cacheable(MOVIE_CACHE)
     @Override
-    public List<Movie> findAll(MovieRequestDTO m) {
-        return movieRepository.findAllWithFilter(m);
+    public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
+        var movies = movieRepository.findAllWithFilter(m);
+        return movies.stream().map(MovieMappingHelper::map).toList();
     }
 
     @Override

@@ -7,9 +7,7 @@ import com.example.backend.model.Movie;
 import java.util.List;
 
 public interface MovieService {
-
-
-    List<Movie> findAll(MovieRequestDTO m);
+    List<MovieResponseDTO> findAll(MovieRequestDTO m);
 
     Movie findOne(Long id);
 

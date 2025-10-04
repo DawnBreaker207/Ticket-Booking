@@ -1,13 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
-import com.example.backend.dto.shared.MovieDTO;
+import com.example.backend.dto.request.MovieRequestDTO;
+import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.model.Movie;
 import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MovieController {
     private final MovieServiceImpl movieService;
 
     @GetMapping("")
-    public ResponseObject<List<Movie>> findAll(@ModelAttribute MovieRequestDTO m) {
+    public ResponseObject<List<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m));
     }
 
