@@ -14,7 +14,6 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +30,7 @@ public class ReportServiceImpl implements ReportService {
 
     private static final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public ReportResponseDTO exportReport(String reportFormat) {
@@ -97,10 +95,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             return new ReportResponseDTO(reportBytes, filename, contentType);
-        } catch (JRException ex) {
+        } catch (JRException | IOException ex) {
             throw new RuntimeException(ex);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
-
     private final OrderRepository orderRepository;
 
     private final RedisTemplate<String, Object> redisTemplate;

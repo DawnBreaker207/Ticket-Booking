@@ -36,4 +36,12 @@ public class AbstractMappedEntity implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    public void markCreated() {
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    public void markUpdated() {
+        this.updatedAt = Instant.now();
+    }
 }

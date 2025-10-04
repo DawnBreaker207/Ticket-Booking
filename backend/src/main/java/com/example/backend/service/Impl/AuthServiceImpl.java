@@ -88,7 +88,15 @@ public class AuthServiceImpl implements AuthService {
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-        return new JwtResponseDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, refreshToken.getToken());
+        return JwtResponseDTO
+                .builder()
+                .token(jwt)
+                .userId(userDetails.getId())
+                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .roles(roles)
+                .refreshToken(refreshToken.getToken())
+                .build();
     }
 
     @Override
@@ -114,7 +122,11 @@ public class AuthServiceImpl implements AuthService {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String jwtCookie = jWTUtils.generateToken(user.getUsername());
-                    return new TokenRefreshResponseDTO(jwtCookie, refreshToken);
+                    return TokenRefreshResponseDTO
+                            .builder()
+                            .accessToken(jwtCookie)
+                            .refreshToken(refreshToken)
+                            .build();
                 })
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found " + token));
     }

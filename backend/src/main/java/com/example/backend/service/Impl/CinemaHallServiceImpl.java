@@ -22,7 +22,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CinemaHallServiceImpl implements CinemaHallService {
-    @Autowired
     private final CinemaHallRepository cinemaHallRepository;
 
     @Override
