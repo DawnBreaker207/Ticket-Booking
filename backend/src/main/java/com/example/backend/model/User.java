@@ -12,7 +12,6 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class User extends AbstractMappedEntity {

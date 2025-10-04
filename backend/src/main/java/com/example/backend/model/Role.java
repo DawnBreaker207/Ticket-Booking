@@ -11,7 +11,6 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class Role extends AbstractMappedEntity {

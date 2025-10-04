@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class CinemaHall extends AbstractMappedEntity {

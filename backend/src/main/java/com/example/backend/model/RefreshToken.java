@@ -12,7 +12,6 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 public class RefreshToken {
     @Id

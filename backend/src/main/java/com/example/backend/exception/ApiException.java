@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = true)

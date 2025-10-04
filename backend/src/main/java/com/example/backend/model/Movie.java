@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class Movie extends AbstractMappedEntity {
