@@ -48,13 +48,13 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<Movie> update(@PathVariable Long id, @RequestBody Movie m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.update(id, m));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         movieService.delete(id);

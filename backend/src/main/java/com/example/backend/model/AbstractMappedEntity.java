@@ -1,13 +1,17 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +23,7 @@ import java.time.Instant;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class AbstractMappedEntity implements Serializable {
@@ -27,12 +32,13 @@ public class AbstractMappedEntity implements Serializable {
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, insertable = false)
     private Instant createdAt;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", insertable = false)
+
     private Instant updatedAt;
 
     public void markCreated() {

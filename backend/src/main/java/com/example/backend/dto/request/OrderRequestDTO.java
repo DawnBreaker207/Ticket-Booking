@@ -6,7 +6,11 @@ import com.example.backend.constant.PaymentStatus;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.AbstractMappedEntity;
 import com.example.backend.model.CinemaHall;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,7 +19,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class OrderRequestDTO extends AbstractMappedEntity {
     private String orderId;
