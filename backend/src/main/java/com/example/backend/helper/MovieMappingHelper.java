@@ -6,29 +6,29 @@ import com.example.backend.model.Movie;
 
 public interface MovieMappingHelper {
     static Movie map(final MovieRequestDTO m) {
-        return new Movie(
-                m.getTitle(),
-                m.getPoster(),
-                m.getOverview(),
-                m.getDuration(),
-                m.getGenres(),
-                m.getReleaseDate(),
-                m.getImdbId(),
-                m.getFilmId()
-        );
+        return Movie.builder()
+                .title(m.getTitle())
+                .poster(m.getPoster())
+                .overview(m.getOverview())
+                .duration(m.getDuration())
+                .genres(m.getGenres())
+                .releaseDate(m.getReleaseDate())
+                .imdbId(m.getImdbId())
+                .filmId(m.getFilmId())
+                .build();
     }
 
     static MovieResponseDTO map(final Movie m) {
-        return new MovieResponseDTO(
-                m.getId(),
-                m.getTitle(),
-                m.getPoster(),
-                m.getOverview(),
-                m.getDuration(),
-                m.getGenres(),
-                m.getReleaseDate(),
-                m.getImdbId(),
-                m.getFilmId()
-        );
+        return MovieResponseDTO.builder()
+                .id(m.getId())
+                .title(m.getTitle())
+                .poster(m.getPoster())
+                .overview(m.getOverview())
+                .duration(m.getDuration())
+                .genres(m.getGenres())
+                .releaseDate(m.getReleaseDate())
+                .imdbId(m.getImdbId())
+                .filmId(m.getFilmId())
+                .build();
     }
 }
