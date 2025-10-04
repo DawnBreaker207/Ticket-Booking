@@ -1,6 +1,8 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.exception.wrapper.UserNotFoundException;
+import com.example.backend.helper.UserMappingHelper;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.UserService;
@@ -18,8 +20,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> findAll() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserMappingHelper::map).toList();
     }
 
     @Override

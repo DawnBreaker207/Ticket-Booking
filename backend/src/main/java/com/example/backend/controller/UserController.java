@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.model.User;
 import com.example.backend.service.Impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +26,8 @@ public class UserController {
 
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<List<User>> getAll() {
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    public ResponseObject<List<UserResponseDTO>> getAll() {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findAll());
     }
 
