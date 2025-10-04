@@ -5,6 +5,7 @@ import com.example.backend.service.Impl.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final UserDetailsServiceImpl userDetailsService;
 
     private final AuthEntryPointJwt unauthorizedHandler;
@@ -36,10 +38,7 @@ public class SecurityConfig {
 
     private final SignOutHandler signOutHandler;
 
-    @Bean
-    public AuthTokenFilter authenticationTokenFilter() {
-        return new AuthTokenFilter();
-    }
+    private final AuthTokenFilter authTokenFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -102,7 +101,7 @@ public class SecurityConfig {
                         })
                 );
 
-        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

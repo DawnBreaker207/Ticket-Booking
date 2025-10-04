@@ -48,23 +48,23 @@ logging:
             jdbc: debug
 
   #VNPay
-  payment:
-    VNPay:
-      url: ${VNPAY_URL}
-      tmnCode: ${VNPAY_TMN_CODE}
-      secretKey: ${VNPAY_SECRET_KEY}
-      returnUrl: ${VNPAY_RETURN_URL}
-      version: ${VNPAY_VERSION}
-      command: ${VNPAY_COMMAND}
-      orderType: ${VNPAY_ORDER_TYPE}
+payment:
+  VNPay:
+    url: ${VNPAY_URL}
+    tmnCode: ${VNPAY_TMN_CODE}
+    secretKey: ${VNPAY_SECRET_KEY}
+    returnUrl: ${VNPAY_RETURN_URL}
+    version: ${VNPAY_VERSION}
+    command: ${VNPAY_COMMAND}
+    orderType: ${VNPAY_ORDER_TYPE}
   #JWT
-  dawn:
-    app:
-      jwtCookieName: dawn-jwt
-      jwtRefreshCookieName: dawn-jwt-refresh
-      jwtSecret: =====================DawnBreaker===========================
-      #      jwtExpirationsMs: 86400000
-      #      jwtRefreshExpirationsMs: 86400000
-      ## For test
-      jwtExpirationsMs: 60000
-      jwtRefreshExpirationsMs: 120000
+dawn:
+  app:
+    jwtCookieName: dawn-jwt
+    jwtRefreshCookieName: dawn-jwt-refresh
+    jwtSecret: =====================DawnBreaker===========================
+    #      jwtExpirationsMs: 86400000
+    #      jwtRefreshExpirationsMs: 86400000
+    ## For test
+    jwtExpirationsMs: 60000
+    jwtRefreshExpirationsMs: 120000
