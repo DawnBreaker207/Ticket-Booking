@@ -1,14 +1,20 @@
 package com.example.backend.model;
 
 import com.example.backend.constant.URole;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
-@Alias("Role")
+@Entity
+@Table(name = "roles")
 public class Role extends AbstractMappedEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
+    @Enumerated(EnumType.STRING)
     private URole name;
 
     public Role() {

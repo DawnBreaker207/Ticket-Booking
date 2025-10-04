@@ -1,15 +1,27 @@
 package com.example.backend.model;
 
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.Objects;
 
-@Alias("RefreshToken")
-public class RefreshToken extends AbstractMappedEntity {
+
+@Entity
+@Table(name = "refresh_token")
+public class RefreshToken {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "token")
     private String token;
+
+    @Column(name = "expiry_date")
     private Instant expiryDate;
 
 

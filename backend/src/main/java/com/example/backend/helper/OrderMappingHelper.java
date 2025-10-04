@@ -1,6 +1,6 @@
 package com.example.backend.helper;
 
-import com.example.backend.dto.shared.OrderDTO;
+import com.example.backend.dto.response.OrderResponseDTO;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface OrderMappingHelper {
-    static OrderDTO map(final Order o) {
-	OrderDTO order = new OrderDTO();
+    static OrderResponseDTO map(final Order o) {
+	OrderResponseDTO order = new OrderResponseDTO();
 	order.setUserId(o.getUserId());
-	order.setCinemaHallId(o.getCinemaHallId());
+	order.setCinemaHall(o.getCinemaHall());
 	order.setTotalAmount(o.getTotalAmount());
 	order.setOrderStatus(o.getOrderStatus());
 	order.setPaymentMethod(o.getPaymentMethod());
@@ -25,10 +25,10 @@ public interface OrderMappingHelper {
 	return order;
     }
 
-    static Order map(final OrderDTO o) {
+    static Order map(final OrderResponseDTO o) {
 	Order order = new Order();
 	order.setUserId(o.getUserId());
-	order.setCinemaHallId(o.getCinemaHallId());
+	order.setCinemaHall(o.getCinemaHall());
 	order.setTotalAmount(o.getTotalAmount());
 	order.setOrderStatus(o.getOrderStatus());
 	order.setPaymentMethod(o.getPaymentMethod());

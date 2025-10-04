@@ -1,8 +1,11 @@
 package com.example.backend.model;
 
 
+import com.example.backend.typeHandler.StringListConverter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,16 +13,40 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
-@Alias("Movie")
+@Entity
+@Table(name = "movie")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Movie extends AbstractMappedEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "poster")
     private String poster;
+
+    @Column(name = "overview")
     private String overview;
+
+    @Column(name = "duration")
     private Integer duration;
+
+    @Column(name = "genres", columnDefinition = "JSON")
+    @Convert(converter = StringListConverter.class)
     private List<String> genres = new ArrayList<>();
+
+    @Column(name = "release_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date releaseDate;
+
+    @Column(name = "imdb_id")
     private String imdbId;
+
+    @Column(name = "film_id")
     private String filmId;
 
     public Movie() {
@@ -44,6 +71,19 @@ public class Movie extends AbstractMappedEntity {
                  Date releaseDate, String imdbId, String filmId) {
         super();
         this.id = id;
+        this.title = title;
+        this.poster = poster;
+        this.overview = overview;
+        this.duration = duration;
+        this.genres = new ArrayList<>(genres);
+        this.releaseDate = new Date(releaseDate.getTime());
+        this.imdbId = imdbId;
+        this.filmId = filmId;
+    }
+
+    public Movie(String title, String poster, String overview, Integer duration, List<String> genres,
+                 Date releaseDate, String imdbId, String filmId) {
+        super();
         this.title = title;
         this.poster = poster;
         this.overview = overview;
@@ -86,9 +126,7 @@ public class Movie extends AbstractMappedEntity {
         this.overview = overview;
     }
 
-    public Integer getDuration() {
-        return duration;
-    }
+    public Integer getDuration() {return duration;}
 
     public void setDuration(Integer duration) {
         this.duration = duration;

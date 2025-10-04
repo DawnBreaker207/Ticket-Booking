@@ -1,7 +1,9 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,12 +12,28 @@ import java.util.Objects;
 
 
 @Hidden
-@Alias("CinemaHall")
+@Entity
+@Table(name = "cinema_hall")
 public class CinemaHall extends AbstractMappedEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "movie_session")
     private Date movieSession;
-    private List<Seat> seats = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
+
+    @OneToMany(
+            mappedBy = "cinemaHall",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("cinemaHall")
+    private List<Seat> seats = new ArrayList<>();
 
     public CinemaHall() {
         super();
@@ -30,9 +48,18 @@ public class CinemaHall extends AbstractMappedEntity {
         this.seats = new ArrayList<>(cinemaHall.seats);
     }
 
+
+
     public CinemaHall(Long id, Movie movie, Date movieSession, List<Seat> seats) {
         super();
         this.id = id;
+        this.movie = new Movie(movie);
+        this.movieSession = new Date(movieSession.getTime());
+        this.seats = new ArrayList<>(seats);
+    }
+
+    public CinemaHall( Movie movie, Date movieSession, List<Seat> seats) {
+        super();
         this.movie = new Movie(movie);
         this.movieSession = new Date(movieSession.getTime());
         this.seats = new ArrayList<>(seats);

@@ -2,47 +2,32 @@ package com.example.backend.repository;
 
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
-import org.apache.ibatis.annotations.Mapper;
+import jakarta.transaction.Transactional;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Mapper
 @Repository
-public interface UserRepository extends DAO<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Override
-    List<User> findAll();
-
-    @Override
-    Optional<User> findById(Long aLong);
-
-    @Override
-    int insert(User user);
-
-    @Override
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE users u SET u.username = :#{#user.username}, u.email = :#{#user.email}, u.password = :#{#user.password} ", nativeQuery = true)
     int update(User user);
 
-    default User save(User input) {
-        if (input.getId() == null) {
-            insert(input);
-        } else {
-            update(input);
-        }
-        return input;
-    }
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO user_role (user_id, role_id) VALUES (:userId, :roleId})", nativeQuery = true)
+    void insertUserRoles( Long userId, Long roleId);
 
-    @Override
-    void delete(Long aLong);
+    Optional<User> findByEmail(String email);
 
-    void insertUserRoles(@Param("userId") Long userId, @Param("roles") Set<Role> roles);
-
-
-    Optional<User> findByEmail(@Param("email") String email);
-
-    Optional<User> findByUsername(@Param("username") String username);
+    Optional<User> findByUsername(String username);
 
 }

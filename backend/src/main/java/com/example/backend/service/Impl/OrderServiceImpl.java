@@ -3,10 +3,12 @@ package com.example.backend.service.Impl;
 import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.request.OrderFilterDTO;
-import com.example.backend.dto.shared.OrderDTO;
+import com.example.backend.dto.response.OrderResponseDTO;
 import com.example.backend.dto.shared.OrderSeatDTO;
 import com.example.backend.exception.wrapper.*;
+import com.example.backend.helper.OrderMappingHelper;
 import com.example.backend.helper.RedisKeyHelper;
+import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Order;
 import com.example.backend.model.OrderSeat;
 import com.example.backend.repository.OrderRepository;
@@ -15,6 +17,8 @@ import com.example.backend.util.OrderUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,6 +46,8 @@ public class OrderServiceImpl implements OrderService {
     private final SimpMessagingTemplate messagingTemplate;
     private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public OrderServiceImpl(OrderRepository orderRepository, SimpMessagingTemplate messagingTemplate,
                             RedisTemplate<String, Object> redisTemplate) {
@@ -51,8 +57,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> findAll(OrderFilterDTO o) {
-        return orderRepository.findAllWithFilter(o);
+    public List<OrderResponseDTO> findAll(OrderFilterDTO o) {
+        List<Order> orders = orderRepository.findAllWithFilter(o);
+        return orders.stream().map(OrderMappingHelper::map).toList();
     }
 
     @Override
@@ -82,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String initOrder(OrderDTO o) {
+    public String initOrder(OrderResponseDTO o) {
         String orderId = o.getOrderId();
         String redisKey;
         if (orderId != null && redisTemplate.hasKey(RedisKeyHelper.orderHoldKey(orderId))) {
@@ -107,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
         Map<String, String> orderData = Map.of(
                 "userId", o.getUserId().toString(),
                 "status", o.getOrderStatus().name(),
-                "cinemaHallId", o.getCinemaHallId().toString(),
+                "cinemaHallId", o.getCinemaHall().getId().toString(),
                 "seats", "[]");
 
         redisTemplate.opsForHash().putAll(redisKey, orderData);
@@ -141,21 +148,21 @@ public class OrderServiceImpl implements OrderService {
             seat.setSeat(dto.getSeat());
             seat.setPrice(dto.getPrice());
             return seat;
-        }).collect(Collectors.toList());
+        }).toList();
 
-        boolean isBooked = orderRepository.findOrderSeatsExisted(checkSeats);
+        boolean isBooked = orderRepository.findOrderSeatsExisted(checkSeats.stream().map(OrderSeat::getId).toList());
         if (isBooked) {
             throw new SeatUnavailableException(HttpStatus.GONE, "Some seat you choose has been booked");
         }
 
         for (OrderSeatDTO seat : orderSeats) {
             String lockKey = RedisKeyHelper.seatLockKey(seat.getSeat().getId());
-            String existingLock =(String) redisTemplate.opsForValue().get(lockKey);
+            String existingLock = (String) redisTemplate.opsForValue().get(lockKey);
             if (existingLock != null && !existingLock.equals(redisKey)) {
                 throw new SeatUnavailableException(HttpStatus.NOT_FOUND, "Seat " + seat.getSeat().getId() + " not avalable");
             }
 
-            redisTemplate.opsForValue().set(lockKey, redisKey,HOLD_TIMEOUT);
+            redisTemplate.opsForValue().set(lockKey, redisKey, HOLD_TIMEOUT);
 
         }
         try {
@@ -169,8 +176,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order confirm(OrderDTO order) {
-        OrderDTO dto = getFromRedis(order.getOrderId());
+    public Order confirm(OrderResponseDTO order) {
+        OrderResponseDTO dto = getFromRedis(order.getOrderId());
         if (!dto.getUserId().equals(order.getUserId())) {
             throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission");
         }
@@ -179,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
             OrderSeat os = new OrderSeat();
             os.setSeat(s.getSeat());
             os.setPrice(s.getPrice());
-            os.setOrderId(order.getOrderId());
+            os.setOrder(OrderMappingHelper.map(order));
             return os;
         }).toList();
         Order o = new Order();
@@ -187,13 +194,13 @@ public class OrderServiceImpl implements OrderService {
         o.setUserId(order.getUserId());
         o.markCreated();
         o.setTotalAmount(dto.getSeats().stream().map(OrderSeatDTO::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
-        o.setCinemaHallId(dto.getCinemaHallId());
+        o.setCinemaHall(dto.getCinemaHall());
         o.setOrderStatus(order.getOrderStatus());
         o.setPaymentMethod(order.getPaymentMethod());
         o.setPaymentStatus(order.getPaymentStatus());
         o.setSeats(seatEntities);
-        orderRepository.insert(o);
-        orderRepository.insertOrderSeat(o.getSeats());
+        orderRepository.save(o);
+        o.getSeats().forEach(orderRepository::insertOrderSeat);
         orderRepository.updateOrderSeat(o.getOrderId(), SeatStatus.BOOKED.name());
 //	Delete Redis when save DB
         dto.getSeats().forEach(seat -> redisTemplate.delete(RedisKeyHelper.seatLockKey(seat.getSeat().getId())));
@@ -206,7 +213,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order update(String id, Order o) {
         o.setOrderId(id);
-        orderRepository.update(o);
+        orderRepository.save(o);
         return o;
 
     }
@@ -217,18 +224,18 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private OrderDTO getFromRedis(String orderId) {
+    private OrderResponseDTO getFromRedis(String orderId) {
         String key = RedisKeyHelper.orderHoldKey(orderId);
         Map<Object, Object> data = redisTemplate.opsForHash().entries(key);
         if (data.isEmpty()) {
             throw new OrderExpiredException(HttpStatus.NOT_FOUND, "Order expired or not existed");
         }
 
-        OrderDTO dto = new OrderDTO();
+        OrderResponseDTO dto = new OrderResponseDTO();
         dto.setOrderId(orderId);
         dto.setUserId(Long.parseLong((String) data.get("userId")));
         dto.setOrderStatus(OrderStatus.valueOf((String) data.get("status")));
-        dto.setCinemaHallId(Long.parseLong((String) data.get("cinemaHallId")));
+        dto.setCinemaHall(entityManager.getReference(CinemaHall.class, Long.parseLong((String) data.get("cinemaHallId"))));
         try {
             List<OrderSeatDTO> seats = new ObjectMapper().readValue((String) data.get("seats"),
                     new TypeReference<>() {

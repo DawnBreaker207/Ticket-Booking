@@ -1,19 +1,38 @@
 package com.example.backend.model;
 
 import com.example.backend.constant.SeatStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Hidden
-@Alias("Seat")
+@Entity
+@Table(name = "seat")
 public class Seat {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private Long cinemaHallId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cinema_hall_id", nullable = false)
+    @JsonIgnore
+    private CinemaHall cinemaHall;
+
+    @Column(name = "seat_number")
     private String seatNumber;
+
+    @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private SeatStatus status;
 
     public Seat() {
@@ -23,17 +42,17 @@ public class Seat {
     public Seat(Seat seat) {
         super();
         this.id = seat.id;
-        this.cinemaHallId = seat.cinemaHallId;
+        this.cinemaHall = seat.cinemaHall;
         this.seatNumber = seat.seatNumber;
         this.price = seat.price;
         this.status = seat.status;
 
     }
 
-    public Seat(Long id, Long cinemaHallId, String seatNumber, BigDecimal price, SeatStatus status) {
+    public Seat(Long id, CinemaHall cinemaHall, String seatNumber, BigDecimal price, SeatStatus status) {
         super();
         this.id = id;
-        this.cinemaHallId = cinemaHallId;
+        this.cinemaHall = cinemaHall;
         this.seatNumber = seatNumber;
         this.price = price;
         this.status = status;
@@ -47,12 +66,12 @@ public class Seat {
         this.id = id;
     }
 
-    public Long getCinemaHallId() {
-        return cinemaHallId;
+    public CinemaHall getCinemaHall() {
+        return cinemaHall;
     }
 
-    public void setCinemaHallId(Long cinemaHallId) {
-        this.cinemaHallId = cinemaHallId;
+    public void setCinemaHall(CinemaHall cinemaHall) {
+        this.cinemaHall = cinemaHall;
     }
 
     public String getSeatNumber() {
@@ -83,7 +102,7 @@ public class Seat {
     public String toString() {
         return "Seat{" +
                 "id=" + id +
-                ", cinemaHallId=" + cinemaHallId + '\'' +
+                ", cinemaHall=" + cinemaHall + '\'' +
                 ", seatNumber=" + seatNumber + '\'' +
                 ", price=" + price + '\'' +
                 ", status=" + status + '\'' + "}";
@@ -97,7 +116,7 @@ public class Seat {
             return false;
         Seat seat = (Seat) obj;
         return Objects.equals(id, seat.id)
-                && Objects.equals(cinemaHallId, seat.cinemaHallId)
+                && Objects.equals(cinemaHall, seat.cinemaHall)
                 && Objects.equals(seatNumber, seat.seatNumber)
                 && Objects.equals(price, seat.price)
                 && Objects.equals(status, seat.status);
@@ -105,6 +124,6 @@ public class Seat {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cinemaHallId, seatNumber, price, status);
+        return Objects.hash(id, cinemaHall, seatNumber, price, status);
     }
 }

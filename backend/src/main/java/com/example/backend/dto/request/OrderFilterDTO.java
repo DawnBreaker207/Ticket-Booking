@@ -30,9 +30,9 @@ public class OrderFilterDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private String sortBy;
+    private String sortBy = "newest";
 
-    private String sortDirection;
+    private String sortDirection = "asc";
 
 
     @AssertTrue(message = "Start date must be before or equal to end date")

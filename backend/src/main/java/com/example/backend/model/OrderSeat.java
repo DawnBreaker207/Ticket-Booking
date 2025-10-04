@@ -1,17 +1,31 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Hidden
-@Alias("OrderSeat")
+@Entity
+@Table(name = "order_seat")
 public class OrderSeat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private String orderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id",nullable = false)
+    @JsonIgnoreProperties("cinemaHall")
     private Seat seat;
+
+    @Column(name = "price")
     private BigDecimal price;
 
     public OrderSeat() {
@@ -21,19 +35,19 @@ public class OrderSeat {
     public OrderSeat(OrderSeat order) {
         super();
         this.id = order.id;
-        this.orderId = order.orderId;
+        this.order = order.order;
         this.seat = order.seat;
         this.price = order.price;
     }
 
     public OrderSeat(
             Long id,
-            String orderId,
+            Order order,
             Seat seat,
             BigDecimal price) {
         super();
         this.id = id;
-        this.orderId = orderId;
+        this.order = order;
         this.seat = seat;
         this.price = price;
     }
@@ -46,12 +60,12 @@ public class OrderSeat {
         this.id = id;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Seat getSeat() {
@@ -74,7 +88,7 @@ public class OrderSeat {
     public String toString() {
         return "Seat{" +
                 "id=" + id +
-                ", orderId=" + orderId + '\'' +
+                ", order=" + order + '\'' +
                 ", seat=" + seat + '\'' +
                 ", price=" + price + '\'' +
                 "}";
@@ -86,13 +100,13 @@ public class OrderSeat {
         if (obj == null || getClass() != obj.getClass()) return false;
         OrderSeat orderSeat = (OrderSeat) obj;
         return Objects.equals(id, orderSeat.id)
-                && Objects.equals(orderId, orderSeat.orderId)
+                && Objects.equals(order, orderSeat.order)
                 && Objects.equals(seat, orderSeat.seat)
                 && Objects.equals(price, orderSeat.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderId, seat, price);
+        return Objects.hash(id, order, seat, price);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.constant.SeatStatus;
+import com.example.backend.dto.response.CinemaHallResponseDTO;
 import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.helper.CinemaHallMappingHelper;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Seat;
 import com.example.backend.repository.CinemaHallRepository;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,8 +26,9 @@ public class CinemaHallServiceImpl implements CinemaHallService {
     }
 
     @Override
-    public List<CinemaHall> findAll() {
-        return cinemaHallRepository.findAll();
+    public List<CinemaHallResponseDTO> findAll() {
+        var orders = cinemaHallRepository.getAll();
+        return orders.stream().map(CinemaHallMappingHelper::map).toList();
     }
 
     @Override
@@ -33,7 +37,7 @@ public class CinemaHallServiceImpl implements CinemaHallService {
     }
 
     @Override
-    public CinemaHall findByMovieAndSession(Long movieId, String movieSession) {
+    public CinemaHall findByMovieAndSession(Long movieId, Date movieSession) {
         return cinemaHallRepository.findByMovieIdAndMovieSession(movieId, movieSession)
                 .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + movieId));
     }
@@ -62,13 +66,6 @@ public class CinemaHallServiceImpl implements CinemaHallService {
         cinemaHallRepository.delete(id);
     }
 
-    @Override
-    @Transactional
-    public void updateSeats(Long hallId, List<String> seatCodes, SeatStatus seatStatus) {
-        cinemaHallRepository.findById(hallId).orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Can not find with id " + hallId));
-        cinemaHallRepository.updateSeatStatus(seatCodes, seatStatus);
-
-    }
 
     private void insertSeats(CinemaHall cinemaHall) {
         List<Seat> seats = new ArrayList<>();
@@ -76,13 +73,13 @@ public class CinemaHallServiceImpl implements CinemaHallService {
             for (int i = 1; i <= 10; i++) {
                 Seat seat = new Seat();
                 seat.setSeatNumber(row + String.valueOf(i));
-                seat.setCinemaHallId(cinemaHall.getId());
+                seat.setCinemaHall(cinemaHall);
                 seat.setStatus(SeatStatus.AVAILABLE);
                 seat.setPrice(BigDecimal.valueOf(50000));
                 seats.add(seat);
             }
         }
-        cinemaHallRepository.insertSeats(seats);
+        seats.forEach(cinemaHallRepository::insertSeats);
     }
 
 }

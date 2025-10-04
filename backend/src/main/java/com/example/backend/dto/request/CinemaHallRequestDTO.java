@@ -1,4 +1,4 @@
-package com.example.backend.dto.shared;
+package com.example.backend.dto.request;
 
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.model.AbstractMappedEntity;
@@ -8,18 +8,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CinemaHallDTO extends AbstractMappedEntity {
+public class CinemaHallRequestDTO extends AbstractMappedEntity {
     public Long id;
     public Date movieSession;
     public Movie movie;
     private List<String> seatCodes = new ArrayList<>();
     private SeatStatus seatStatus;
 
-    public CinemaHallDTO() {
+    public CinemaHallRequestDTO() {
+        super();
     }
 
 
-    public CinemaHallDTO(Long id, Date movieSession, Movie movie, List<String> seatCodes, SeatStatus seatStatus) {
+    public CinemaHallRequestDTO(Long id, Date movieSession, Movie movie, List<String> seatCodes, SeatStatus seatStatus) {
+        super();
         this.id = id;
         this.movieSession = movieSession;
         this.movie = movie;

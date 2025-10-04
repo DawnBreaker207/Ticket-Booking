@@ -1,42 +1,34 @@
 package com.example.backend.repository;
 
 import com.example.backend.dto.request.MovieRequestDTO;
-import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.model.Movie;
-import org.apache.ibatis.annotations.Mapper;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 
-@Mapper
 @Repository
-public interface MovieRepository extends DAO<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+    @Query(value = """
+            SELECT *
+            FROM movie AS m
+            WHERE 
+                (:#{#movie.getTitle()} IS NULL OR m.title LIKE CONCAT ('%',:#{#movie.getTitle()},'%'))
+                AND (:#{#movie.getDuration()} IS NULL OR m.duration  = :#{#movie.getDuration()})
+                AND (:#{#movie.getReleaseDate()} IS NULL OR m.release_date = :#{#movie.getReleaseDate()})
+            ORDER BY id DESC
+            """, nativeQuery = true)
     List<Movie> findAllWithFilter(MovieRequestDTO movie);
 
-    @Override
-    List<Movie> findAll();
+    Optional<Movie> findByFilmId(String filmId);
 
-    @Override
-    Optional<Movie> findById(Long id);
-
-    Optional<Movie> findByMovieId(String filmId);
-
-
-    int insert(MovieRequestDTO movie);
-
-    default Movie save(Movie input) {
-        if (input.getId() == null) {
-            insert(input);
-        } else {
-            update(input);
-        }
-        return input;
-    }
-    
-    int update(MovieRequestDTO movie);
-
-    @Override
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM movie WHERE id = :id", nativeQuery = true)
     void delete(Long id);
 }

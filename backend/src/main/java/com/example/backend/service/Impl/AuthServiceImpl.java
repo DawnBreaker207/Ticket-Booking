@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setRoles(roles);
         if (!roles.isEmpty()) {
-            userRepository.insertUserRoles(user.getId(), roles);
+            roles.forEach(role -> userRepository.insertUserRoles(user.getId(), role.getId()));
         }
     }
 

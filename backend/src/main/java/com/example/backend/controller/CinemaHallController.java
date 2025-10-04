@@ -1,13 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
-import com.example.backend.dto.shared.CinemaHallDTO;
+import com.example.backend.dto.response.CinemaHallResponseDTO;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.service.Impl.CinemaHallServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class CinemaHallController {
     }
 
     @GetMapping("")
-    public ResponseObject<List<CinemaHall>> findAll() {
+    public ResponseObject<List<CinemaHallResponseDTO>> findAll() {
         return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.findAll());
     }
 
@@ -33,7 +34,7 @@ public class CinemaHallController {
 
     @GetMapping("/movie")
     public ResponseObject<CinemaHall> findByMovieAndSessionName(@RequestParam(required = false) Long movieId,
-                                                                @RequestParam(required = false) String movieSession) {
+                                                                @RequestParam(required = false) Date movieSession) {
         return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.findByMovieAndSession(movieId, movieSession));
     }
 
@@ -47,11 +48,6 @@ public class CinemaHallController {
     @PutMapping("/{id}")
     public ResponseObject<CinemaHall> updateMovieSchedule(@PathVariable Long id, @RequestBody CinemaHall cinemaHall) {
         return new ResponseObject<>(HttpStatus.OK, "Success", cinemaHallService.updateMovieSchedule(id, cinemaHall));
-    }
-
-    @PutMapping("/seat/{hallId}")
-    public void updateSeats(@PathVariable Long hallId, @RequestBody CinemaHallDTO cinemaHall) {
-        cinemaHallService.updateSeats(hallId, cinemaHall.getSeatCodes(), cinemaHall.getStatus());
     }
 
     @DeleteMapping("/{id}")

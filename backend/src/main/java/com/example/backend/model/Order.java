@@ -4,7 +4,7 @@ import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.ibatis.type.Alias;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,22 +12,36 @@ import java.util.List;
 import java.util.Objects;
 
 @Hidden
-@Alias("Order")
+@Entity
+@Table(name = "orders")
 public class Order extends AbstractMappedEntity {
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
     private String orderId;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    private Long cinemaHallId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cinema_hall_id", nullable = false)
+    private CinemaHall cinemaHall;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Column(name = "payment_method", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
+    @Column(name = "payment_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderSeat> seats = new ArrayList<>();
 
     public Order() {
@@ -37,7 +51,7 @@ public class Order extends AbstractMappedEntity {
     public Order(
             String orderId,
             Long userId,
-            Long cinemaHallId,
+            CinemaHall cinemaHall,
             OrderStatus orderStatus,
             PaymentMethod paymentMethod,
             PaymentStatus paymentStatus,
@@ -46,7 +60,7 @@ public class Order extends AbstractMappedEntity {
         super();
         this.orderId = orderId;
         this.userId = userId;
-        this.cinemaHallId = cinemaHallId;
+        this.cinemaHall = cinemaHall;
         this.orderStatus = orderStatus;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
@@ -71,12 +85,12 @@ public class Order extends AbstractMappedEntity {
         this.userId = userId;
     }
 
-    public Long getCinemaHallId() {
-        return cinemaHallId;
+    public CinemaHall getCinemaHall() {
+        return cinemaHall;
     }
 
-    public void setCinemaHallId(Long cinemaHallId) {
-        this.cinemaHallId = cinemaHallId;
+    public void setCinemaHall(CinemaHall cinemaHall) {
+        this.cinemaHall = cinemaHall;
     }
 
     public OrderStatus getOrderStatus() {
@@ -126,7 +140,7 @@ public class Order extends AbstractMappedEntity {
         return "Order{" +
                 "orderId=" + orderId +
                 ", userId=" + userId +
-                ", cinemaHallId='" + cinemaHallId + '\'' +
+                ", cinemaHall='" + cinemaHall + '\'' +
                 ", orderStatus='" + orderStatus + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", paymentStatus='" + paymentStatus + '\'' +
@@ -144,7 +158,7 @@ public class Order extends AbstractMappedEntity {
         Order order = (Order) obj;
         return Objects.equals(orderId, order.orderId)
                 && Objects.equals(userId, order.userId)
-                && Objects.equals(cinemaHallId, order.cinemaHallId)
+                && Objects.equals(cinemaHall, order.cinemaHall)
                 && Objects.equals(orderStatus, order.orderStatus)
                 && Objects.equals(paymentMethod, order.paymentMethod)
                 && Objects.equals(paymentStatus, order.paymentStatus)
@@ -154,7 +168,7 @@ public class Order extends AbstractMappedEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderId, userId, cinemaHallId, orderStatus, paymentMethod, paymentStatus, totalAmount, seats);
+        return Objects.hash(orderId, userId, cinemaHall, orderStatus, paymentMethod, paymentStatus, totalAmount, seats);
     }
 
 }

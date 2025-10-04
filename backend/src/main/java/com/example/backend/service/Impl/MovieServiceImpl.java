@@ -46,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
 //    @Cacheable(MOVIE_CACHE)
     public Movie findByMovieId(String id) {
-        return movieRepository.findByMovieId(id)
+        return movieRepository.findByFilmId(id)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
@@ -56,7 +56,7 @@ public class MovieServiceImpl implements MovieService {
         String apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjgxYTVkNmVhYTVmZWViZjEzNWM5MTJjNzQ1YmI0MSIsIm5iZiI6MTc1MzcwMTQ4OC4zNzksInN1YiI6IjY4ODc1YzcwZTA4OGQ1NzhjNzhhNzRhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zCqZxPPYPUxf-b_MJPIyb4tgaN6F_TM_n3Jn9nK8pM8";
         String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
 
-        movieRepository.findByMovieId(String.valueOf(id)).ifPresent((movie) -> {
+        movieRepository.findByFilmId(String.valueOf(id)).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
         });
 
@@ -89,7 +89,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     public Movie create(MovieRequestDTO m) {
-        movieRepository.findByMovieId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
+        movieRepository.findByFilmId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
         });
 

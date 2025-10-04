@@ -1,19 +1,22 @@
-package com.example.backend.dto.shared;
+package com.example.backend.dto.response;
 
 import com.example.backend.constant.OrderStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
+import com.example.backend.dto.shared.OrderSeatDTO;
+import com.example.backend.model.AbstractMappedEntity;
+import com.example.backend.model.CinemaHall;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDTO {
+public class OrderResponseDTO extends AbstractMappedEntity {
     private String orderId;
 
     private Long userId;
 
-    private Long cinemaHallId;
+    private CinemaHall cinemaHall;
 
     private OrderStatus orderStatus;
 
@@ -25,16 +28,17 @@ public class OrderDTO {
 
     private List<OrderSeatDTO> seats = new ArrayList<>();
 
-    public OrderDTO() {
-
+    public OrderResponseDTO() {
+        super();
     }
 
-    public OrderDTO(String orderId, Long userId, Long cinemaHallId, OrderStatus orderStatus,
-                    PaymentMethod paymentMethod, PaymentStatus paymentStatus, BigDecimal totalAmount,
-                    List<OrderSeatDTO> seats) {
+    public OrderResponseDTO(String orderId, Long userId, CinemaHall cinemaHall, OrderStatus orderStatus,
+                            PaymentMethod paymentMethod, PaymentStatus paymentStatus, BigDecimal totalAmount,
+                            List<OrderSeatDTO> seats) {
+        super();
         this.orderId = orderId;
         this.userId = userId;
-        this.cinemaHallId = cinemaHallId;
+        this.cinemaHall = cinemaHall;
         this.orderStatus = orderStatus;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
@@ -58,12 +62,12 @@ public class OrderDTO {
         this.userId = userId;
     }
 
-    public Long getCinemaHallId() {
-        return cinemaHallId;
+    public CinemaHall getCinemaHall() {
+        return cinemaHall;
     }
 
-    public void setCinemaHallId(Long cinemaHallId) {
-        this.cinemaHallId = cinemaHallId;
+    public void setCinemaHall(CinemaHall cinemaHall) {
+        this.cinemaHall = cinemaHall;
     }
 
     public OrderStatus getOrderStatus() {
