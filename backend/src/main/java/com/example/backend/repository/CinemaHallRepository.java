@@ -1,11 +1,8 @@
 package com.example.backend.repository;
 
-import com.example.backend.constant.SeatStatus;
-import com.example.backend.dto.response.CinemaHallResponseDTO;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Seat;
 import jakarta.transaction.Transactional;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -40,6 +37,6 @@ public interface CinemaHallRepository extends JpaRepository<CinemaHall, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO seat (seat_number, status, cinema_hall_id, price) VALUES (:#{#seat.seatNumber} ,:#{#seat.status} , :#{#seat.cinemaHallId} ,:#{#seat.price})", nativeQuery = true)
+    @Query(value = "INSERT INTO seat (seat_number, status, cinema_hall_id, price) VALUES (:#{#seat.seatNumber} ,:#{#seat.status} , :#{#seat.cinemaHall} ,:#{#seat.price})", nativeQuery = true)
     void insertSeats(Seat seat);
 }

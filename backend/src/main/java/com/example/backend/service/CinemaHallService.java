@@ -1,11 +1,10 @@
 package com.example.backend.service;
 
-import java.util.Date;
-import java.util.List;
-
-import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.response.CinemaHallResponseDTO;
 import com.example.backend.model.CinemaHall;
+
+import java.util.Date;
+import java.util.List;
 
 public interface CinemaHallService {
 

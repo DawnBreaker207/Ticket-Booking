@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 
