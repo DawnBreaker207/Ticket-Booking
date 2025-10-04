@@ -61,7 +61,6 @@ public class SecurityConfig {
             "http://localhost:4200",
             "http://localhost:5173"};
 
-
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();

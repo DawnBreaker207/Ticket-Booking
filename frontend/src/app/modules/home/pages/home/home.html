@@ -1,0 +1,57 @@
+<nz-layout class="min-h-screen">
+  <nz-content class="max-w-[1200px] mx-auto pt-8">
+    <h2 nz-typography class="text-center mb-8">Phim Đang Chiếu</h2>
+
+    <div nz-row [nzGutter]="[40, 40]">
+        @for (item of schedules$ | async; track item.movie.id) {
+          <div
+            nz-col
+            [nzXs]="24"
+            [nzSm]="12"
+            [nzMd]="9"
+            [nzLg]="6"
+          >
+            <nz-card [nzCover]="cover" class="!bg-transparent ">
+              <ng-template #cover>
+                <div
+                  class=" overflow-hidden rounded-lg"
+                >
+
+                  <nz-image
+                    [nzDisablePreview]="true"
+                    [nzSrc]="item.movie.poster"
+                    [nzAlt]="item.movie.title"
+                    class="!object-cover w-full h-full"
+
+                  />
+                </div>
+              </ng-template>
+
+
+              <h4 nz-typography class="m-0 p-0 leading-tight">{{ item.movie.title }}</h4>
+              <span nz-typography class="block mt-1.5">
+              <b>Thể loại:</b> {{ item.movie.genres.join(', ') }}
+            </span>
+              <span nz-typography class="block mt-1">
+              <b>Thời lượng:</b> {{ item.movie.duration }} phút
+            </span>
+              <div class="mt-10">
+
+                <button
+                  nz-button
+                  nzType="primary"
+                  (click)="onSelect(item.cinemaHallId)"
+                  class="w-full px-3 py-1.5 mt-2">
+                  Mua Vé
+                </button>
+              </div>
+
+            </nz-card>
+          </div>
+        }
+    </div>
+
+  </nz-content>
+</nz-layout>
+
+

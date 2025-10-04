@@ -1,0 +1,154 @@
+<div class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="w-[530px] bg-white">
+    <!-- Tabs Header -->
+    <div class="flex sticky top-0 bg-white z-10">
+      <button nz-button nzType="text"
+              (click)="activeTab.set('login')"
+              [ngClass]="activeTab() === 'login' ? 'flex-1 py-3 font-medium !bg-[#03599d] !text-white' : 'flex-1 py-3 !text-gray-700 !border'"
+      >
+        ĐĂNG NHẬP
+      </button>
+      <button nz-button nzType="text"
+              (click)="activeTab.set('register')"
+              [ngClass]="activeTab() === 'register' ? 'flex-1 py-3 font-medium !bg-[#03599d] !text-white' : 'flex-1 py-3 !text-gray-700 !border'"
+      >
+        ĐĂNG KÝ
+      </button>
+    </div>
+
+    <!-- Form Container -->
+    <div class="p-4 min-h-[480px] relative">
+      <!-- Login Form -->
+      <div class="absolute inset-0  p-4 ">
+        @if (activeTab() === 'login') {
+
+
+          <form class="space-y-4" [formGroup]="form" (click)="onSubmit()">
+            <!--            <nz-form-item>-->
+            <!--              <nz-form-label class="block text-sm font-medium mb-1">Email</nz-form-label>-->
+            <!--              <div class="relative">-->
+            <!--                <nz-form-control [nzErrorTip]="'Enter email'">-->
+            <!--                  <nz-input-group nzAddOnBeforeIcon="user">-->
+            <!--                    <input nz-input type="email" name="email"-->
+            <!--                           required placeholder="Nhập email">-->
+            <!--                  </nz-input-group>-->
+            <!--                </nz-form-control>-->
+            <!--              </div>-->
+            <!--            </nz-form-item>-->
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium">Username</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzAddOnBeforeIcon="user">
+                  <input nz-input type="text" formControlName="username"
+                         required placeholder="Nhập username">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium">Email</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter email'">
+                <nz-input-group nzAddOnBeforeIcon="lock">
+                  <input nz-input type="password" formControlName="password"
+                         required placeholder="Nhập mật khẩu">
+                </nz-input-group>
+              </nz-form-control>
+
+            </nz-form-item>
+
+            <div class="flex justify-center mt-8">
+              <button nz-button type="submit"
+                      class="w-[60%] px-8 py-2 text-white text-sm rounded-lg transition cursor-pointer hover:opacity-90 bg-gradient-to-r from-[#0a64a7] via-[#258dcf] to-[#3db1f3]">
+                ĐĂNG NHẬP
+              </button>
+            </div>
+          </form>
+        }
+        <!-- Register Form -->
+        @if (activeTab() === 'register') {
+          <form class="grid grid-cols-2 gap-4" [formGroup]="form" (click)="onSubmit()">
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium" nzRequired>Họ tên</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzPrefixIcon="user">
+                  <input nz-input type="text" formControlName="username"
+                         required placeholder="Họ tên">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium" nzRequired>Email</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzPrefixIcon="mail">
+                  <input nz-input type="text" formControlName="email"
+                         required placeholder="Email">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium" nzRequired>Mật khẩu</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzPrefixIcon="lock">
+                  <input nz-input type="text" formControlName="password"
+                         required placeholder="Mật khẩu">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium" nzRequired>Xác nhận lại mật khẩu</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzPrefixIcon="lock">
+                  <input nz-input type="text" name="confirmPassword"
+                         required placeholder="Xác nhận mật khẩu">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium " nzRequired>Ngày sinh</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-date-picker class="w-full"  ></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium">Giới tính</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                  <nz-select nzPlaceHolder="Giới tính">
+                    <nz-option nzValue="male" nzLabel="Nam"></nz-option>
+                    <nz-option nzValue="female" nzLabel="Nữ"></nz-option>
+                    <nz-option nzValue="other" nzLabel="Khác"></nz-option>
+                  </nz-select>
+                <ng-template #prefixTpl>
+                  <span nz-icon nzType="team"></span>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label class="text-sm font-medium" nzRequired>Số điện thoại</nz-form-label>
+              <nz-form-control [nzErrorTip]="'Enter username'">
+                <nz-input-group nzPrefixIcon="phone">
+                  <input nz-input type="text" name="phone"
+                         required placeholder="Số điện thoại">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div class="col-span-2 flex justify-center">
+              <button nz-button type="submit"
+                      class="w-[60%] px-8 py-2 text-white text-sm rounded-lg transition cursor-pointer hover:opacity-90 bg-gradient-to-r from-[#0a64a7] via-[#258dcf] to-[#3db1f3]">
+                ĐĂNG KÝ
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>

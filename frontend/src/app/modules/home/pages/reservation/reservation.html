@@ -1,0 +1,36 @@
+<nz-layout class="min-h-screen">
+  <nz-steps nzType="navigation" nzSize="small" [nzCurrent]="index()">
+    <nz-step nzTitle="Chọn ghế" nzIcon="table">
+      <p>Step 1</p>
+    </nz-step>
+    <nz-step nzTitle="Xác nhận thông tin" nzIcon="solution">
+      <p>Step 2</p>
+    </nz-step>
+    <nz-step nzTitle="Chọn phương thức" nzIcon="pay-circle">
+      <p>Step 3</p>
+    </nz-step>
+  </nz-steps>
+  <nz-layout class="w-full px-8">
+    <nz-content class="mt-4 max-w-[1200px] mx-auto ">
+      @switch (index()) {
+        @case (0) {
+          @if ((schedule$ |async)?.seats) {
+            <app-seat/>
+          }
+        }
+        @case (1) {
+          <app-summary [user]="user$ | async"/>
+        }
+        @case (2) {
+          <app-payment/>
+        }
+      }
+    </nz-content>
+    <nz-sider nzWidth="350px" nzTheme="light" class="!bg-transparent">
+      @if (schedule$ | async) {
+        <app-detail-film [filmDetail]="(schedule$ | async)?.movie" [cinemaHall]="schedule$ | async" [index]="index()"
+                         (stepChange)="onStepChange($event)" [steps]="steps()"/>
+      }
+    </nz-sider>
+  </nz-layout>
+</nz-layout>

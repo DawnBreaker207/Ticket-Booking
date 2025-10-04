@@ -1,0 +1,132 @@
+import {Component, inject, OnInit} from '@angular/core';
+import {NzTableModule} from 'ng-zorro-antd/table';
+import {NzButtonModule} from 'ng-zorro-antd/button';
+import {NzInputModule} from 'ng-zorro-antd/input';
+import {NzSelectModule} from 'ng-zorro-antd/select';
+import {OrderService} from '@/app/core/services/order/order.service';
+import {headerColumns} from '@/app/core/constants/column';
+import {Order} from '@/app/core/models/order.model';
+import {NzSpaceModule} from 'ng-zorro-antd/space';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {CommonModule} from '@angular/common';
+import {OrderStatus, PaymentMethod, PaymentStatus} from '@/app/core/constants/enum';
+import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {NzTagModule} from 'ng-zorro-antd/tag';
+import {StatusTagsPipe} from '@/app/core/pipes/status-tags.pipe';
+import {formatTime} from '@/app/shared/utils/formatDate';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {FormOrderComponent} from '@/app/modules/admin/components/order/form/form.component';
+import {ReportService} from '@/app/core/services/report/report.service';
+import {saveAs} from 'file-saver';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {LoadingComponent} from '@/app/shared/components/loading/loading.component';
+import {Observable} from 'rxjs';
+
+@Component({
+  selector: 'app-order',
+  imports: [
+    NzTableModule,
+    NzButtonModule,
+    NzInputModule,
+    NzSelectModule,
+    NzSpaceModule,
+    NzIconModule,
+    CommonModule,
+    NzDatePickerModule,
+    ReactiveFormsModule,
+    NzTagModule,
+    StatusTagsPipe,
+    NzDropDownModule,
+    LoadingComponent
+  ],
+  templateUrl: './order.component.html',
+  styleUrl: './order.component.css',
+  providers: [NzModalService]
+})
+export class OrderComponent implements OnInit {
+  form!: FormGroup;
+  private fb = inject(FormBuilder);
+  private reservationService = inject(OrderService);
+  private modalService = inject(NzModalService);
+  private reportService = inject(ReportService);
+  headerColumn = headerColumns.order;
+  reservationList: readonly Order[] = []
+  orderStatus: OrderStatus[] = ['CREATED', 'CONFIRMED', 'CANCELLED']
+  paymentMethod: PaymentMethod[] = ['CASH', 'MOMO', 'VNPAY', 'ZALOPAY']
+  paymentStatus: PaymentStatus[] = ['PENDING', 'PAID', 'CANCELLED']
+  reservation$!: Observable<Order[]>;
+
+  ngOnInit() {
+    this.loadData()
+    this.initialForm();
+
+  }
+
+  loadData() {
+    this.reservation$ = this.reservationService.getOrders()
+    this.reservationService.getOrders().subscribe(
+      (data) => {
+        this.reservationList = data
+      });
+  }
+
+  initialForm() {
+    this.form = this.fb.group({
+      query: [''],
+      orderStatus: [null],
+      paymentMethod: [null],
+      paymentStatus: [null],
+      dateRange: [null],
+      totalAmount: [0],
+      sortBy: ['newest']
+    });
+  }
+
+  openModal(orderId: string) {
+    this.modalService.create({
+      nzContent: FormOrderComponent,
+      nzTitle: undefined,
+      nzClosable: true,
+      nzData: {
+        orderId: orderId
+      },
+      nzWidth: 900,
+      nzKeyboard: true,
+      nzFooter: null
+    })
+  }
+
+  exportReport(type: string) {
+    this.reportService.downloadReport(type).subscribe(res => {
+      const ext = type === 'excel' ? 'xlsx' : type;
+      saveAs(res, `report.${ext}`);
+    })
+  }
+
+  clearFilter() {
+    this.form.reset();
+    this.loadData();
+  }
+
+  onSubmit() {
+    // if (!this.form.invalid) return;
+    const formValue = this.form.value;
+    const filter = {
+      query: formValue.query,
+      orderStatus: formValue.orderStatus,
+      paymentMethod: formValue.paymentMethod,
+      paymentStatus: formValue.paymentStatus,
+      startDate: formValue.dateRange ? formatTime(formValue.dateRange[0]) : null,
+      endDate: formValue.dateRange ? formatTime(formValue.dateRange[1]) : null,
+      totalAmount: formValue.totalAmount,
+      sortBy: formValue.sortBy,
+    }
+
+    this.reservation$ = this.reservationService.getOrders(filter)
+    this.reservationService.getOrders(filter).subscribe(
+      (data) => {
+        this.reservationList = data
+      })
+  }
+}
