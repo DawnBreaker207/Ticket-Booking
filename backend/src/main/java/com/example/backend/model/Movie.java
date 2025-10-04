@@ -44,6 +44,9 @@ public class Movie extends AbstractMappedEntity {
     @Column(name = "duration")
     private Integer duration;
 
+    @Column(name = "language")
+    private String language;
+
     @Column(name = "genres", columnDefinition = "JSON")
     @Convert(converter = StringListConverter.class)
     private List<String> genres = new ArrayList<>();
