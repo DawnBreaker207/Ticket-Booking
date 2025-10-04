@@ -17,6 +17,7 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
@@ -42,21 +44,6 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTUtils jWTUtils;
     private final RefreshTokenServiceImpl refreshTokenService;
-
-    public AuthServiceImpl(
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager,
-            JWTUtils jWTUtils,
-            RefreshTokenServiceImpl refreshTokenService) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jWTUtils = jWTUtils;
-        this.refreshTokenService = refreshTokenService;
-    }
 
 
     @Override

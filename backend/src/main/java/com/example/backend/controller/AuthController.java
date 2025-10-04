@@ -9,6 +9,7 @@ import com.example.backend.service.Impl.AuthServiceImpl;
 import com.example.backend.util.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Operations related to auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private AuthServiceImpl authService;
-    @Autowired
-    private JWTUtils jWTUtils;
+
+    private final AuthServiceImpl authService;
+
+    private final JWTUtils jWTUtils;
 
     @PostMapping("/register")
     public ResponseObject<String> register(@RequestBody RegisterRequestDTO newUser) {

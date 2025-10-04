@@ -4,6 +4,7 @@ import com.example.backend.config.response.ResponseObject;
 import com.example.backend.model.User;
 import com.example.backend.service.Impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,13 +18,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @Tag(name = "User", description = "Operations related to user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserServiceImpl userService;
 
-    public UserController(UserServiceImpl userService) {
-        this.userService = userService;
-    }
+    private final UserServiceImpl userService;
+
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")

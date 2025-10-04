@@ -5,6 +5,7 @@ import com.example.backend.dto.response.CinemaHallResponseDTO;
 import com.example.backend.model.CinemaHall;
 import com.example.backend.service.Impl.CinemaHallServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/cinema")
 @Tag(name = "CinemaHall", description = "Operations related to cinema hall")
+@RequiredArgsConstructor
 public class CinemaHallController {
 
     private final CinemaHallServiceImpl cinemaHallService;
-
-    public CinemaHallController(CinemaHallServiceImpl cinemaHallService) {
-        this.cinemaHallService = cinemaHallService;
-    }
 
     @GetMapping("")
     public ResponseObject<List<CinemaHallResponseDTO>> findAll() {

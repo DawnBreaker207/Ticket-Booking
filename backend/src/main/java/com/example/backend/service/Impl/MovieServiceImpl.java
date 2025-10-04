@@ -8,6 +8,7 @@ import com.example.backend.model.Movie;
 import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
     public static final String MOVIE_CACHE = "movie";
     private final RestTemplate restTemplate;
     private final MovieRepository movieRepository;
 
-    public MovieServiceImpl(RestTemplate restTemplate, MovieRepository movieRepository) {
-        this.restTemplate = restTemplate;
-        this.movieRepository = movieRepository;
-    }
 
     //    @Cacheable(MOVIE_CACHE)
     @Override

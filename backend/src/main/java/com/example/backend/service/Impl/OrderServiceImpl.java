@@ -19,8 +19,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -38,23 +40,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
+
     private final OrderRepository orderRepository;
+
     private final RedisTemplate<String, Object> redisTemplate;
+
     private final SimpMessagingTemplate messagingTemplate;
+
     private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public OrderServiceImpl(OrderRepository orderRepository, SimpMessagingTemplate messagingTemplate,
-                            RedisTemplate<String, Object> redisTemplate) {
-        this.orderRepository = orderRepository;
-        this.messagingTemplate = messagingTemplate;
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     public List<OrderResponseDTO> findAll(OrderFilterDTO o) {

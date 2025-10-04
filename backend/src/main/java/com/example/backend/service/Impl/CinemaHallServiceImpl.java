@@ -8,6 +8,8 @@ import com.example.backend.model.CinemaHall;
 import com.example.backend.model.Seat;
 import com.example.backend.repository.CinemaHallRepository;
 import com.example.backend.service.CinemaHallService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +20,10 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CinemaHallServiceImpl implements CinemaHallService {
+    @Autowired
     private final CinemaHallRepository cinemaHallRepository;
-
-    public CinemaHallServiceImpl(CinemaHallRepository cinemaHallRepository) {
-        this.cinemaHallRepository = cinemaHallRepository;
-    }
 
     @Override
     public List<CinemaHallResponseDTO> findAll() {

@@ -1,15 +1,14 @@
 package com.example.backend.dto.response;
 
 import com.example.backend.model.AbstractMappedEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class UserResponseDTO extends AbstractMappedEntity {
 
     private Long userId;

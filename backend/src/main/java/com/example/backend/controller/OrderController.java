@@ -6,6 +6,8 @@ import com.example.backend.dto.response.OrderResponseDTO;
 import com.example.backend.model.Order;
 import com.example.backend.service.Impl.OrderServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 @Tag(name = "Order", description = "Operations related to order")
+@RequiredArgsConstructor
 public class OrderController {
-    private final OrderServiceImpl orderService;
 
-    public OrderController(OrderServiceImpl orderService) {
-        this.orderService = orderService;
-    }
+    private final OrderServiceImpl orderService;
 
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")

@@ -5,6 +5,8 @@ import com.example.backend.dto.shared.MovieDTO;
 import com.example.backend.model.Movie;
 import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/movie")
 @Tag(name = "Movie", description = "Operations related to movie")
+@RequiredArgsConstructor
 public class MovieController {
 
-    public final MovieServiceImpl movieService;
-
-    public MovieController(MovieServiceImpl movieService) {
-        this.movieService = movieService;
-    }
+    private final MovieServiceImpl movieService;
 
     @GetMapping("")
     public ResponseObject<List<Movie>> findAll(@ModelAttribute MovieRequestDTO m) {

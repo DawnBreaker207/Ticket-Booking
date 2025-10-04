@@ -4,6 +4,7 @@ import com.example.backend.dto.response.ReportResponseDTO;
 import com.example.backend.model.Order;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.service.ReportService;
+import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
@@ -25,9 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
     private static final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
+
     @Autowired
     private OrderRepository orderRepository;
 

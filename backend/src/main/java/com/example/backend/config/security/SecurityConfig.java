@@ -4,7 +4,7 @@ import com.example.backend.config.response.SignOutHandler;
 import com.example.backend.service.Impl.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,18 +26,15 @@ import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
-    @Autowired
-    private RoleAccessHandler roleAccessHandler;
+    private final RoleAccessHandler roleAccessHandler;
 
-    @Autowired
-    private SignOutHandler signOutHandler;
+    private final SignOutHandler signOutHandler;
 
     @Bean
     public AuthTokenFilter authenticationTokenFilter() {

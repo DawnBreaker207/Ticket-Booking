@@ -1,14 +1,14 @@
 package com.example.backend.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
+
 
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ApiException extends RuntimeException {
     private final HttpStatus status;
 
@@ -22,7 +22,4 @@ public class ApiException extends RuntimeException {
         this.status = status;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
 }
