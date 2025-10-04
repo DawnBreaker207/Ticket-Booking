@@ -34,6 +34,9 @@ public class SecurityConfig {
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Autowired
+    private RoleAccessHandler roleAccessHandler;
+
+    @Autowired
     private SignOutHandler signOutHandler;
 
     @Bean
@@ -85,7 +88,9 @@ public class SecurityConfig {
         http
                 .csrf(CsrfConfigurer::disable)
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler))
+                        .authenticationEntryPoint(unauthorizedHandler)
+                        .accessDeniedHandler(roleAccessHandler)
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

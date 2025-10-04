@@ -7,6 +7,7 @@ import com.example.backend.model.Order;
 import com.example.backend.service.Impl.OrderServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class OrderController {
     }
 
     @GetMapping("")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<List<OrderDTO>> getAll(@ModelAttribute OrderFilterDTO o) {
         return new ResponseObject<>(HttpStatus.OK, "Success", orderService.findAll(o));
     }

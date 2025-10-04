@@ -2,11 +2,11 @@ package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
 import com.example.backend.dto.request.MovieRequestDTO;
-import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.model.Movie;
 import com.example.backend.service.Impl.MovieServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class MovieController {
     }
 
     @PostMapping("")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<Movie> create(@RequestBody MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }
@@ -49,11 +49,13 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<Movie> update(@PathVariable Long id, @RequestBody Movie m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.update(id, m));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         movieService.delete(id);
