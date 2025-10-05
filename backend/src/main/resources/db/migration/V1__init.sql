@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS order_seat
     order_id VARCHAR(50)    NOT NULL,
     seat_id  INT            NOT NULL,
     price    DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT fk_order_seat_order FOREIGN KEY (order_id) REFERENCES reservations (id) ON DELETE CASCADE,
+    CONSTRAINT fk_order_seat_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
     CONSTRAINT fk_order_seat FOREIGN KEY (seat_id) REFERENCES seat (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS payment
     status            ENUM ('PENDING', 'PAID','CANCELED') DEFAULT 'USER',
     created_at        DATETIME       NOT NULL             DEFAULT CURRENT_TIMESTAMP,
     updated_at        DATETIME       NOT NULL             DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_payment FOREIGN KEY (reservation_id) REFERENCES reservations (id) ON DELETE CASCADE
+    CONSTRAINT fk_payment FOREIGN KEY (reservation_id) REFERENCES orders (id) ON DELETE CASCADE
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
