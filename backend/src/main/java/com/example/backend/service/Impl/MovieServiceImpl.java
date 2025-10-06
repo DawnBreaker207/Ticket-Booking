@@ -38,21 +38,23 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
 //    @Cacheable(MOVIE_CACHE)
-    public Movie findOne(Long id) {
+    public MovieResponseDTO findOne(Long id) {
         return movieRepository.findById(id)
+                .map(MovieMappingHelper::map)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
     @Override
 //    @Cacheable(MOVIE_CACHE)
-    public Movie findByMovieId(String id) {
+    public MovieResponseDTO findByMovieId(String id) {
         return movieRepository.findByFilmId(id)
+                .map(MovieMappingHelper::map)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
 
     @Override
     @Transactional
-    public Movie createWithId(Long id) {
+    public MovieResponseDTO createWithId(Long id) {
         String apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjgxYTVkNmVhYTVmZWViZjEzNWM5MTJjNzQ1YmI0MSIsIm5iZiI6MTc1MzcwMTQ4OC4zNzksInN1YiI6IjY4ODc1YzcwZTA4OGQ1NzhjNzhhNzRhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zCqZxPPYPUxf-b_MJPIyb4tgaN6F_TM_n3Jn9nK8pM8";
         String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
 
@@ -82,45 +84,45 @@ public class MovieServiceImpl implements MovieService {
         }
         movie.setGenres(genres);
         movieRepository.save(movie);
-        return movie;
+        return MovieMappingHelper.map(movie);
     }
 
 
     @Override
     @Transactional
-    public Movie create(MovieRequestDTO m) {
+    public MovieResponseDTO create(MovieRequestDTO m) {
         movieRepository.findByFilmId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
             throw new MovieExistedException("This movie is existed");
         });
 
-        Movie movie = new Movie();
-        movie.setTitle(m.getTitle());
-        movie.setDuration(m.getDuration());
-        movie.setOverview(m.getOverview());
-        movie.setImdbId(m.getImdbId());
-        movie.setFilmId(m.getFilmId());
-        movie.setPoster(m.getPoster());
-        movie.setReleaseDate(m.getReleaseDate());
+        Movie movie = Movie.builder()
+                .title(m.getTitle())
+                .duration(m.getDuration())
+                .overview(m.getOverview())
+                .imdbId(m.getImdbId())
+                .filmId(m.getFilmId())
+                .poster(m.getPoster())
+                .language(m.getLanguage())
+                .releaseDate(m.getReleaseDate())
+                .genres(m.getGenres())
+                .build();
         m.markCreated();
-        List<String> genres = new ArrayList<>(m.getGenres());
-        movie.setGenres(genres);
         movieRepository.save(movie);
-        return movie;
+        return MovieMappingHelper.map(movie);
     }
 
     @Override
     @Transactional
-    public Movie update(Long id, Movie m) {
+    public MovieResponseDTO update(Long id, Movie movie) {
         movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
-        movieRepository.save(m);
-        return m;
+        movieRepository.save(movie);
+        return MovieMappingHelper.map(movie);
 
     }
 
     @Override
     public void delete(Long id) {
-        movieRepository.delete(id);
-
+        movieRepository.deleteById(id);
     }
 
 }

@@ -9,15 +9,15 @@ import java.util.List;
 public interface MovieService {
     List<MovieResponseDTO> findAll(MovieRequestDTO m);
 
-    Movie findOne(Long id);
+    MovieResponseDTO findOne(Long id);
 
-    Movie findByMovieId(String id);
+    MovieResponseDTO findByMovieId(String id);
 
-    Movie create(MovieRequestDTO id);
+    MovieResponseDTO create(MovieRequestDTO id);
 
-    Movie createWithId(Long id);
+    MovieResponseDTO createWithId(Long id);
 
-    Movie update(Long id, Movie m);
+    MovieResponseDTO update(Long id, Movie m);
 
     void delete(Long id);
 }

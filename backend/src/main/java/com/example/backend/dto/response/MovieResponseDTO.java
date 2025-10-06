@@ -18,14 +18,22 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class MovieResponseDTO extends AbstractMappedEntity {
     private Long id;
+
     private String title;
+
     private String poster;
+
     private String overview;
+
     private Integer duration;
+
     private List<String> genres = new ArrayList<>();
+
     private Date releaseDate;
+
+    private String language;
+
     private String imdbId;
+
     private String filmId;
-
-
 }

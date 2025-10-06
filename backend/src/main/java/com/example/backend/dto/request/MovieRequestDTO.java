@@ -44,6 +44,7 @@ public class MovieRequestDTO extends AbstractMappedEntity {
     @Past(message = "Release Date must be in the past")
     private Date releaseDate;
 
+    private String language;
 
     @NotBlank(message = "Imdb ID is not mandatory")
     private String imdbId;

@@ -27,29 +27,29 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseObject<Movie> findById(@PathVariable Long id) {
+    public ResponseObject<MovieResponseDTO> findById(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findOne(id));
     }
 
     @GetMapping("/filmId/{id}")
-    public ResponseObject<Movie> findByMovieId(@PathVariable String id) {
+    public ResponseObject<MovieResponseDTO> findByMovieId(@PathVariable String id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findByMovieId(id));
     }
 
     @PostMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<Movie> create(@RequestBody MovieRequestDTO m) {
+    public ResponseObject<MovieResponseDTO> create(@RequestBody MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }
 
     @PostMapping("/filmId/{id}")
-    public ResponseObject<Movie> createWithId(@PathVariable Long id) {
+    public ResponseObject<MovieResponseDTO> createWithId(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.createWithId(id));
     }
 
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<Movie> update(@PathVariable Long id, @RequestBody Movie m) {
+    public ResponseObject<MovieResponseDTO> update(@PathVariable Long id, @RequestBody Movie m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.update(id, m));
     }
 

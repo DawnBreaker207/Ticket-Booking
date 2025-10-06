@@ -27,8 +27,4 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Optional<Movie> findByFilmId(String filmId);
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM movie WHERE id = :id", nativeQuery = true)
-    void delete(Long id);
 }
