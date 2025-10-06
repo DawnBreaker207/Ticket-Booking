@@ -32,14 +32,18 @@ public class MovieServiceImpl implements MovieService {
     //    @Cacheable(MOVIE_CACHE)
     @Override
     public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
-        var movies = movieRepository.findAllWithFilter(m);
-        return movies.stream().map(MovieMappingHelper::map).toList();
+        return movieRepository
+                .findAllWithFilter(m)
+                .stream()
+                .map(MovieMappingHelper::map)
+                .toList();
     }
 
     @Override
 //    @Cacheable(MOVIE_CACHE)
     public MovieResponseDTO findOne(Long id) {
-        return movieRepository.findById(id)
+        return movieRepository
+                .findById(id)
                 .map(MovieMappingHelper::map)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
@@ -47,7 +51,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
 //    @Cacheable(MOVIE_CACHE)
     public MovieResponseDTO findByMovieId(String id) {
-        return movieRepository.findByFilmId(id)
+        return movieRepository
+                .findByFilmId(id)
                 .map(MovieMappingHelper::map)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
     }
@@ -91,11 +96,13 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     public MovieResponseDTO create(MovieRequestDTO m) {
-        movieRepository.findByFilmId(String.valueOf(m.getFilmId())).ifPresent((movie) -> {
-            throw new MovieExistedException("This movie is existed");
-        });
-
-        Movie movie = Movie.builder()
+        movieRepository
+                .findByFilmId(String.valueOf(m.getFilmId()))
+                .ifPresent((movie) -> {
+                    throw new MovieExistedException("This movie is existed");
+                });
+        Movie movie = Movie
+                .builder()
                 .title(m.getTitle())
                 .duration(m.getDuration())
                 .overview(m.getOverview())
@@ -107,21 +114,25 @@ public class MovieServiceImpl implements MovieService {
                 .genres(m.getGenres())
                 .build();
         m.markCreated();
-        movieRepository.save(movie);
-        return MovieMappingHelper.map(movie);
+        return MovieMappingHelper.map(movieRepository.save(movie));
     }
 
     @Override
     @Transactional
     public MovieResponseDTO update(Long id, Movie movie) {
-        movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
-        movieRepository.save(movie);
-        return MovieMappingHelper.map(movie);
+        movieRepository
+                .findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+        return MovieMappingHelper.map(movieRepository.save(movie));
 
     }
 
     @Override
     public void delete(Long id) {
+        movieRepository
+                .findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+
         movieRepository.deleteById(id);
     }
 
