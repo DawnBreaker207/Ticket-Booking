@@ -24,8 +24,8 @@ public class Payment extends AbstractMappedEntity {
     private Long id;
 
     @OneToOne
-    @Column(name = "reservation", nullable = false)
-    private Order reservation;
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
 
     @Column(name = "payment_intient_Id", nullable = false)
     private String paymentIntentId;
