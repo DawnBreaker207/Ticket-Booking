@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 public class UserResponseDTO extends AbstractMappedEntity {
 
     private Long userId;
+
     private String username;
+
     private String email;
 }

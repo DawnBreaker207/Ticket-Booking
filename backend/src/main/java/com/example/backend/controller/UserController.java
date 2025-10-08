@@ -40,6 +40,4 @@ public class UserController {
     public ResponseObject<User> getEmail(@PathVariable String email) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
-
-
 }

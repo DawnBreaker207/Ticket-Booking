@@ -6,7 +6,8 @@ import com.example.backend.model.User;
 
 public interface UserMappingHelper {
     static UserResponseDTO map(final User u) {
-        return UserResponseDTO.builder()
+        return UserResponseDTO
+                .builder()
                 .userId(u.getId())
                 .email(u.getEmail())
                 .createdAt(u.getCreatedAt())
@@ -15,7 +16,8 @@ public interface UserMappingHelper {
     }
 
     static User map(final UserResponseDTO u) {
-        return User.builder()
+        return User
+                .builder()
                 .id(u.getUserId())
                 .email(u.getEmail())
                 .createdAt(u.getCreatedAt())

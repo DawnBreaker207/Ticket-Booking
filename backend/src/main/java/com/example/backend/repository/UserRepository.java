@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO user_role (user_id, role_id) VALUES (:userId, :roleId})", nativeQuery = true)
+    @Query(value = "INSERT INTO user_role (user_id, role_id) VALUES (:userId, :roleId)", nativeQuery = true)
     void insertUserRoles( Long userId, Long roleId);
 
     Optional<User> findByEmail(String email);

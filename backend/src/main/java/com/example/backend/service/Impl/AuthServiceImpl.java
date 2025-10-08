@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.URole;
 import com.example.backend.dto.request.LoginRequestDTO;
 import com.example.backend.dto.request.RegisterRequestDTO;
 import com.example.backend.dto.response.JwtResponseDTO;
@@ -60,21 +61,17 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-        userRepository.save(user);
 
         Set<Role> roles = newUser
                 .getRole()
                 .stream()
                 .map(roleName -> roleRepository
-                        .findByName(roleName
-                                .toUpperCase())
+                        .findByName(URole.valueOf(roleName.toUpperCase()))
                         .orElseThrow(() -> new IllegalArgumentException("Role not found " + roleName)))
                 .collect(Collectors.toSet());
 
         user.setRoles(roles);
-        if (!roles.isEmpty()) {
-            roles.forEach(role -> userRepository.insertUserRoles(user.getId(), role.getId()));
-        }
+        userRepository.save(user);
     }
 
     @Override

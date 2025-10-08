@@ -11,8 +11,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class TokenRefreshResponseDTO {
     private String accessToken;
-    private String refreshToken;
-    private String token = "Bearer ";
 
+    private String refreshToken;
+
+    private String token = "Bearer ";
 
 }
