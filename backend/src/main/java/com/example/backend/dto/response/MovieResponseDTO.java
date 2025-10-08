@@ -36,4 +36,6 @@ public class MovieResponseDTO extends AbstractMappedEntity {
     private String imdbId;
 
     private String filmId;
+
+    private Boolean isDeleted;
 }

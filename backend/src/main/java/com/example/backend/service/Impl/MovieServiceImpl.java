@@ -10,6 +10,7 @@ import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-//    @Cacheable(MOVIE_CACHE)
+    @Cacheable(value = MOVIE_CACHE, key = "#id")
     public MovieResponseDTO findOne(Long id) {
         return movieRepository
                 .findById(id)
@@ -49,7 +50,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-//    @Cacheable(MOVIE_CACHE)
+    @Cacheable(value = MOVIE_CACHE, key = "#id")
     public MovieResponseDTO findByMovieId(String id) {
         return movieRepository
                 .findByFilmId(id)
@@ -113,7 +114,7 @@ public class MovieServiceImpl implements MovieService {
                 .releaseDate(m.getReleaseDate())
                 .genres(m.getGenres())
                 .build();
-        m.markCreated();
+        movie.markCreated();
         return MovieMappingHelper.map(movieRepository.save(movie));
     }
 

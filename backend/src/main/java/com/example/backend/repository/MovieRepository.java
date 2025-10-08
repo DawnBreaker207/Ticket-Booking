@@ -2,10 +2,9 @@ package com.example.backend.repository;
 
 import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.model.Movie;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,13 +16,14 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query(value = """
             SELECT *
             FROM movie AS m
-            WHERE 
-                (:#{#movie.getTitle()} IS NULL OR m.title LIKE CONCAT ('%',:#{#movie.getTitle()},'%'))
-                AND (:#{#movie.getDuration()} IS NULL OR m.duration  = :#{#movie.getDuration()})
-                AND (:#{#movie.getReleaseDate()} IS NULL OR m.release_date = :#{#movie.getReleaseDate()})
+            WHERE
+                (:#{#movie.title} IS NULL OR m.title LIKE CONCAT ('%' , :#{#movie.title}, '%'))
+                AND (:#{#movie.duration} IS NULL OR m.duration  = :#{#movie.duration})
+                AND (:#{#movie.releaseDate} IS NULL OR m.release_date = :#{#movie.releaseDate})
+                AND ( m.is_deleted = false OR m.is_deleted IS NULL)
             ORDER BY id DESC
             """, nativeQuery = true)
-    List<Movie> findAllWithFilter(MovieRequestDTO movie);
+    List<Movie> findAllWithFilter(@Param("movie") MovieRequestDTO movie);
 
     Optional<Movie> findByFilmId(String filmId);
 

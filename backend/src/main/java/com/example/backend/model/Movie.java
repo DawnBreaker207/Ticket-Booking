@@ -61,6 +61,6 @@ public class Movie extends AbstractMappedEntity {
     @Column(name = "film_id")
     private String filmId;
 
-    @Column(name = "is_delete")
-    private Boolean is_deleted;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 }

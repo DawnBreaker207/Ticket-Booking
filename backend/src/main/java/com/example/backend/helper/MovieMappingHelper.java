@@ -15,6 +15,7 @@ public interface MovieMappingHelper {
                 .releaseDate(m.getReleaseDate())
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
+                .language(m.getLanguage())
                 .build();
     }
 
@@ -29,6 +30,10 @@ public interface MovieMappingHelper {
                 .releaseDate(m.getReleaseDate())
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
+                .language(m.getLanguage())
+                .createdAt(m.getCreatedAt())
+                .updatedAt(m.getUpdatedAt())
+                .isDeleted(m.getIsDeleted())
                 .build();
     }
 }

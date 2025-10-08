@@ -19,8 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class MovieRequestDTO extends AbstractMappedEntity {
+public class MovieRequestDTO{
     @NotBlank(message = "Title is not mandatory")
     @Size(min = 1, max = 100, message = "Required characters")
     private String title;
@@ -36,7 +35,6 @@ public class MovieRequestDTO extends AbstractMappedEntity {
     @Min(value = 0, message = "Duration required longer than 0")
     private Integer duration;
 
-
     @NotBlank(message = "Genres is not mandatory")
     private List<String> genres = new ArrayList<>();
 
@@ -51,6 +49,5 @@ public class MovieRequestDTO extends AbstractMappedEntity {
 
     @NotBlank(message = "Film ID is not mandatory")
     private String filmId;
-
 
 }
