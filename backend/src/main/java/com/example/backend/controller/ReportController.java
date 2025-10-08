@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("export")
+@RequestMapping("report")
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportServiceImpl reportService;
 
-    @GetMapping("/report/{format}")
+    @GetMapping("/export/{format}")
     public ResponseEntity<byte[]> generateReport(@PathVariable String format) {
         ReportResponseDTO report = reportService.exportReport(format);
         return ResponseEntity
