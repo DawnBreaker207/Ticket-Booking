@@ -12,12 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 public class JwtResponseDTO {
-    private String token;
-    private String type = "Bearer";
-    private String refreshToken;
-    private Long userId;
-    private String username;
-    private String email;
-    private List<String> roles;
+    private String accessToken;
 
+    private String refreshToken;
+
+    private String username;
+
+    private String email;
+
+    private List<String> roles;
 }

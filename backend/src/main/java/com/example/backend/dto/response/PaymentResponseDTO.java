@@ -13,7 +13,6 @@ public class PaymentResponseDTO {
     @AllArgsConstructor
     @SuperBuilder
     public static class VNPayResponse {
-
         public String code;
 
         public String message;
