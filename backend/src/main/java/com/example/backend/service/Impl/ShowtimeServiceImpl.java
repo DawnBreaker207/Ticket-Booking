@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.request.ShowtimeRequestDTO;
 import com.example.backend.dto.response.ShowtimeResponseDTO;
 import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
@@ -120,6 +121,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             Seat seat = new Seat();
             seat.setShowtime(savedShowtime);
             seat.setSeatNumber(String.format("%c%d", ((i - 1) / 10), ((i - 1) % 10) + 1));
+            seat.setStatus(SeatStatus.AVAILABLE);
             seats.add(seat);
         }
 
