@@ -14,7 +14,7 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     //    Find seats by IDs with pessimistic write lock
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT s FROM Seat s WHERE s.id = :seatIds")
+    @Query("SELECT s FROM Seat s WHERE s.id IN :seatIds")
     List<Seat> findByIdWithLock(List<Long> seatIds);
 
     List<Seat> findByShowtime(Showtime showtime);

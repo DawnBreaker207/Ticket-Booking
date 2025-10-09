@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 import com.example.backend.constant.SeatStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,6 @@ public class Seat extends AbstractMappedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "showtime_id", nullable = false)
-    @JsonIgnore
     private Showtime showtime;
 
     @Column(name = "seat_number")
