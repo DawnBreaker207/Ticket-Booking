@@ -16,6 +16,7 @@ import com.example.backend.model.UserDetailsImpl;
 import com.example.backend.repository.RoleRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.AuthService;
+import com.example.backend.service.RefreshTokenService;
 import com.example.backend.util.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtils jWTUtils;
-    private final RefreshTokenServiceImpl refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
 
 
     @Override
@@ -87,8 +88,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return JwtResponseDTO
                 .builder()
-                .token(jwt)
-                .userId(userDetails.getId())
+                .accessToken(jwt)
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
                 .roles(roles)
