@@ -1,6 +1,6 @@
 package com.example.backend.dto.request;
 
-import com.example.backend.constant.OrderStatus;
+import com.example.backend.constant.ReservationStatus;
 import com.example.backend.constant.PaymentMethod;
 import com.example.backend.constant.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,18 +17,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class OrderFilterDTO {
+public class ReservationFilterDTO {
     private String query;
 
     private Long userId;
 
-    private Long cinemaHallId;
-
-    private OrderStatus orderStatus;
-
-    private PaymentMethod paymentMethod;
-
-    private PaymentStatus paymentStatus;
+    private ReservationStatus reservationStatus;
 
     private BigDecimal totalAmount;
 
