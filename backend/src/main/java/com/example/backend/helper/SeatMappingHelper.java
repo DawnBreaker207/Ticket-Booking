@@ -21,6 +21,7 @@ public interface SeatMappingHelper {
                 .id(seat.getId())
                 .seatNumber(seat.getSeatNumber())
                 .status(seat.getStatus())
+                .showtimeId(seat.getShowtime().getId())
                 .createdAt(seat.getCreatedAt())
                 .updatedAt(seat.getUpdatedAt())
                 .build();
