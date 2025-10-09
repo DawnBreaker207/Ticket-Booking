@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.response.ReportResponseDTO;
 import com.example.backend.service.Impl.ReportServiceImpl;
+import com.example.backend.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("report")
 @RequiredArgsConstructor
 public class ReportController {
-    private final ReportServiceImpl reportService;
+    private final ReportService reportService;
 
     @GetMapping("/export/{format}")
     public ResponseEntity<byte[]> generateReport(@PathVariable String format) {

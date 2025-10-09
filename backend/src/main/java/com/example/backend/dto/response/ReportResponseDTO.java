@@ -11,8 +11,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ReportResponseDTO {
     private byte[] data;
+
     private String filename;
+
     private String contentType;
-
-
 }

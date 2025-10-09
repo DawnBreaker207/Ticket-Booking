@@ -1,10 +1,11 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.dto.response.ReportResponseDTO;
-import com.example.backend.model.Order;
-import com.example.backend.repository.OrderRepository;
+import com.example.backend.model.Reservation;
+import com.example.backend.repository.ReservationRepository;
 import com.example.backend.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
@@ -26,17 +27,16 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReportServiceImpl implements ReportService {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
-
-    private final OrderRepository orderRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
     public ReportResponseDTO exportReport(String reportFormat) {
         try {
-            List<Order> orders = orderRepository.findAll();
-            if (orders.isEmpty()) {
+            List<Reservation> reservations = reservationRepository.findAll();
+            if (reservations.isEmpty()) {
                 return null;
             }
 
@@ -46,7 +46,7 @@ public class ReportServiceImpl implements ReportService {
             JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("createdBy", "Java Techie");
-            parameters.put("REPORT_DATA", orders);
+            parameters.put("REPORT_DATA", reservations);
 
 //            Fill data
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters);
