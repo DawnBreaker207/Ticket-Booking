@@ -1,8 +1,6 @@
 package com.example.backend.dto.request;
 
 import com.example.backend.constant.ReservationStatus;
-import com.example.backend.constant.PaymentMethod;
-import com.example.backend.constant.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
