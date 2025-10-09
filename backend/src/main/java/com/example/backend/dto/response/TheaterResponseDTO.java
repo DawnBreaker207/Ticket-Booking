@@ -3,6 +3,7 @@ package com.example.backend.dto.response;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.model.AbstractMappedEntity;
 import com.example.backend.model.Movie;
+import com.example.backend.model.Showtime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,12 +19,16 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class CinemaHallResponseDTO extends AbstractMappedEntity {
-    public Long id;
-    public Date movieSession;
-    public Movie movie;
-    private List<String> seatCodes = new ArrayList<>();
-    private SeatStatus seatStatus;
+public class TheaterResponseDTO extends AbstractMappedEntity {
+    private Long id;
 
+    private String name;
 
+    private String location;
+
+    private Integer capacity;
+
+    private Boolean isDeleted;
+
+    private List<Showtime> showtime = new ArrayList<>();
 }
