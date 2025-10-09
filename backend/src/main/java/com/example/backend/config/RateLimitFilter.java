@@ -14,13 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RateLimitFilter implements Filter {
     private final Map<String, AtomicInteger> requestCountsPerIpAddress = new ConcurrentHashMap<>();
 
-    private static final int MAX_REQUESTS_PER_MINUTE= 50;
+    private static final int MAX_REQUESTS_PER_MINUTE = 50;
     private static final int TOO_MANY_REQUESTS = 429;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req  = (HttpServletRequest) request;
-        HttpServletResponse res  = (HttpServletResponse) response;
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
 
         String clientIpAddress = req.getRemoteAddr();
 
@@ -29,10 +29,10 @@ public class RateLimitFilter implements Filter {
         AtomicInteger requestCount = requestCountsPerIpAddress.get(clientIpAddress);
 
 //        Increment the request count
-        int requests= requestCount.incrementAndGet();
+        int requests = requestCount.incrementAndGet();
 
 //        Check if the request limit has been exceeded
-        if(requests > MAX_REQUESTS_PER_MINUTE){
+        if (requests > MAX_REQUESTS_PER_MINUTE) {
             res.setStatus(TOO_MANY_REQUESTS);
             res.getWriter().write("Too many requests. Please try again later.");
             return;
