@@ -3,7 +3,6 @@ package com.example.backend.controller;
 import com.example.backend.config.response.ResponseObject;
 import com.example.backend.dto.request.ShowtimeRequestDTO;
 import com.example.backend.dto.response.ShowtimeResponseDTO;
-import com.example.backend.model.Showtime;
 import com.example.backend.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

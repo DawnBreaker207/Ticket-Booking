@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.dto.request.ShowtimeRequestDTO;
 import com.example.backend.dto.response.ShowtimeResponseDTO;
-import com.example.backend.model.Showtime;
 
 import java.time.LocalDate;
 import java.util.List;

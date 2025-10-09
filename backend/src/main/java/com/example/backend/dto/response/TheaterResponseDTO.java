@@ -1,8 +1,6 @@
 package com.example.backend.dto.response;
 
-import com.example.backend.constant.SeatStatus;
 import com.example.backend.model.AbstractMappedEntity;
-import com.example.backend.model.Movie;
 import com.example.backend.model.Showtime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data

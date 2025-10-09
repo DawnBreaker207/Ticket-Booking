@@ -1,6 +1,5 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.request.SeatRequestDTO;
 import com.example.backend.dto.response.SeatResponseDTO;
 import com.example.backend.model.Seat;
 import com.example.backend.model.Showtime;

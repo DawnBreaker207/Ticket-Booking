@@ -2,7 +2,6 @@ package com.example.backend.helper;
 
 import com.example.backend.dto.request.SeatRequestDTO;
 import com.example.backend.dto.response.SeatResponseDTO;
-import com.example.backend.model.Reservation;
 import com.example.backend.model.Seat;
 
 public interface SeatMappingHelper {

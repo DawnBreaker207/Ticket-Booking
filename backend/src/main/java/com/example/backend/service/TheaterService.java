@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.dto.request.TheaterRequestDTO;
 import com.example.backend.dto.response.TheaterResponseDTO;
-import com.example.backend.model.Theater;
 
 import java.util.List;
 

@@ -3,14 +3,11 @@ package com.example.backend.repository;
 import com.example.backend.model.Movie;
 import com.example.backend.model.Showtime;
 import com.example.backend.model.Theater;
-import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     //    Find showtime by date
