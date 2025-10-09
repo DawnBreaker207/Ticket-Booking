@@ -4,11 +4,10 @@ import com.example.backend.config.response.ResponseObject;
 import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.model.Movie;
-import com.example.backend.service.Impl.MovieServiceImpl;
+import com.example.backend.service.MovieService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MovieController {
 
-    private final MovieServiceImpl movieService;
+    private final MovieService movieService;
 
     @GetMapping("")
     public ResponseObject<List<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m) {

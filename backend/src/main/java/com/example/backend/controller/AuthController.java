@@ -5,12 +5,11 @@ import com.example.backend.dto.request.LoginRequestDTO;
 import com.example.backend.dto.request.RegisterRequestDTO;
 import com.example.backend.dto.response.JwtResponseDTO;
 import com.example.backend.dto.response.TokenRefreshResponseDTO;
-import com.example.backend.service.Impl.AuthServiceImpl;
+import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     private final JWTUtils jWTUtils;
 
