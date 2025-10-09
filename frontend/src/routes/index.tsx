@@ -8,6 +8,7 @@ import CinemaHallPage from "../pages/admin/CinemaHallPage.tsx";
 import SeatSelectionPage from "../pages/home/Seat.tsx";
 import NotFoundPage from "../pages/error/error_404.tsx";
 import PaymentResult from "../pages/home/PaymentResult.tsx";
+import OrderList from "../pages/admin/OrderList";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/admin" element={<AdminLayout />}>
         <Route path="movie" element={<MoviePage />} />
         <Route path="cinemahall" element={<CinemaHallPage />} />
+        <Route path="order" element={<OrderList />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

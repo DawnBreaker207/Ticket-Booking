@@ -68,7 +68,21 @@ export interface ConfirmOrderResponse {
   data?: any;
   [k: string]: any;
 }
-
+export interface GetOrderParams {
+  userId?: number;
+  cinemaHallId?: number;
+  orderId?: string | number; // optional if backend expects query id
+  status?: string;
+  page?: number;
+  limit?: number;
+  [k: string]: any;
+}
+export interface GetOrderResponse {
+  code?: number;
+  message?: string;
+  data?: any;
+  [k: string]: any;
+}
 export const orderService = {
   initOrder: async (payload: InitOrderPayload): Promise<InitOrderResponse> => {
     const res = await instance.post("/order/init", payload);
@@ -115,6 +129,10 @@ vnpay: async (
     payload: ConfirmOrderPayload
   ): Promise<ConfirmOrderResponse> => {
     const res = await instance.post("/order/confirm", payload);
+    return res.data;
+  },
+  getOrders: async (params?: GetOrderParams): Promise<GetOrderResponse> => {
+    const res = await instance.get("/order", { params });
     return res.data;
   },
 };

@@ -49,7 +49,7 @@ function formatReleaseForApi(release?: string): string | undefined {
 export const movieService = {
     async getMovies(title?: string): Promise<Movie[]> {
         const params = title ? { title } : undefined;
-        const res = await instance.get('/movie', { params });
+        const res = await instance.get('/movie', { params },);
         const list = res.data && res.data.data ? res.data.data : [];
         return list.map(toMovie);
     },
