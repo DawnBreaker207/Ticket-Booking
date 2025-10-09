@@ -1,6 +1,6 @@
 server:
   port: 8888
-# Open API
+# Swagger config
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -9,7 +9,7 @@ springdoc:
 spring:
   application:
     name: ticket-booking
-  # DB config
+  # Database config
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -31,7 +31,7 @@ spring:
     locations: classpath:db/migration
     validate-on-migrate: false
     baseline-on-migrate: true
-  # Redis
+  # Config Redis
   data:
     redis:
       host: redis
@@ -47,7 +47,7 @@ logging:
           autoconfigure:
             jdbc: debug
 
-  #VNPay
+  #Config VNPay
 payment:
   VNPay:
     url: ${VNPAY_URL}
@@ -57,7 +57,7 @@ payment:
     version: ${VNPAY_VERSION}
     command: ${VNPAY_COMMAND}
     orderType: ${VNPAY_ORDER_TYPE}
-  #JWT
+  #Config JWT
 dawn:
   app:
     jwtCookieName: dawn-jwt
