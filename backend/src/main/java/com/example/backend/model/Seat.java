@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
 
 @Hidden
 @Entity
@@ -18,7 +18,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Seat {
+@EqualsAndHashCode(callSuper = true)
+public class Seat extends AbstractMappedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +27,18 @@ public class Seat {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cinema_hall_id", nullable = false)
+    @JoinColumn(name = "showtime_id", nullable = false)
     @JsonIgnore
-    private CinemaHall cinemaHall;
+    private Showtime showtime;
 
     @Column(name = "seat_number")
     private String seatNumber;
 
-    @Column(name = "price")
-    private BigDecimal price;
-
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private SeatStatus status;
+    private SeatStatus status = SeatStatus.AVAILABLE;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 }

@@ -1,0 +1,142 @@
+package com.example.backend.service.Impl;
+
+import com.example.backend.constant.SeatStatus;
+import com.example.backend.dto.response.SeatResponseDTO;
+import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.helper.SeatMappingHelper;
+import com.example.backend.model.Seat;
+import com.example.backend.model.Showtime;
+import com.example.backend.repository.SeatRepository;
+import com.example.backend.repository.ShowtimeRepository;
+import com.example.backend.service.SeatService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class SeatServiceImpl implements SeatService {
+
+    private final SeatRepository seatRepository;
+
+    private final ShowtimeRepository showtimeRepository;
+
+    @Override
+    public List<SeatResponseDTO> getByShowtime(Long showtimeId) {
+        log.info("Fetching seats for showtime id: {}", showtimeId);
+        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + showtimeId));
+
+        log.info("Found showtime: {} for movie: {} at theater: {}",
+                showtimeId,
+                showtime.getMovie() != null ? showtime.getMovie().getTitle() : "unknown",
+                showtime.getTheater() != null ? showtime.getTheater().getName() : "unknown");
+
+        List<Seat> seats = seatRepository.findByShowtime(showtime);
+
+        if (seats.isEmpty()) {
+            log.warn("No seats found for showtime id: {}. Creating seats automatically.", showtimeId);
+            try {
+                seats = create(showtime);
+                log.info("Successfully created {} seats for showtime id: {}", seats.size(), showtime);
+            } catch (Exception e) {
+                log.error("Failed to create seats for showtime id: {}, Error: {}", showtimeId, e.getMessage(), e);
+                throw new RuntimeException("Failed to create seats for showtime: " + e.getMessage(), e);
+            }
+        } else {
+            log.info("Found {} existing seats for showtime id: {}", seats.size(), showtimeId);
+        }
+
+        return seats.stream().map(SeatMappingHelper::map).toList();
+
+    }
+
+    @Override
+    public List<SeatResponseDTO> getAvailableSeatByShowtime(Long showtimeId) {
+        log.info("Fetching available seats for showtime id: {}", showtimeId);
+
+        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + showtimeId));
+
+        List<Seat> allSeats = seatRepository.findByShowtime(showtime);
+        if (allSeats.isEmpty()) {
+            log.warn("No seats found for showtime id: {}. Creating seats before fetching available ones.", showtimeId);
+            try {
+                create(showtime);
+            } catch (Exception e) {
+                log.error("Failed to create seats for showtime id: {}, Error: {}", showtimeId, e.getMessage(), e);
+                throw new RuntimeException("Failed to create seats for showtime: " + e.getMessage(), e);
+            }
+        }
+
+        return seatRepository.findByShowtimeAndStatus(showtime, SeatStatus.AVAILABLE).stream().map(SeatMappingHelper::map).toList();
+    }
+
+    @Override
+    public List<Seat> create(Showtime showtime) {
+        if (showtime == null) {
+            throw new IllegalArgumentException("Showtime cannot be null");
+        }
+
+        if (showtime.getTheater() == null) {
+            throw new IllegalArgumentException("Showtime must have an associated theater");
+        }
+
+        Long theaterId = showtime.getTheater().getId();
+        Integer capacity = showtime.getTheater().getCapacity();
+
+        log.info("Creating seats for showtime id: {} in theater id: {} with capacity: {}", showtime.getId(), theaterId, capacity);
+
+        List<Seat> seats = new ArrayList<>();
+
+        if (theaterId == 1) {
+            log.info("Creating seats for theater layout (15 rows x 20 seats)");
+            for (char row = 'A'; row <= '0'; row++) {
+                for (int seatNum = 1; seatNum <= 10; seatNum++) {
+                    Seat seat = new Seat();
+                    seat.setShowtime(showtime);
+                    seat.setSeatNumber(row + String.valueOf(seatNum));
+                    seat.setStatus(SeatStatus.AVAILABLE);
+                    seats.add(seat);
+                }
+            }
+        } else if (theaterId == 2) {
+            log.info("Creating seats for theater layout (10 rows x 20 seats)");
+            for (char row = 'A'; row <= 'J'; row++) {
+                for (char seatNum = 'A'; seatNum <= '0'; seatNum++) {
+                    Seat seat = new Seat();
+                    seat.setShowtime(showtime);
+                    seat.setSeatNumber(row + String.valueOf(seatNum));
+                    seat.setStatus(SeatStatus.AVAILABLE);
+                    seats.add(seat);
+                }
+            }
+        } else {
+            int rows = (int) Math.ceil(Math.sqrt(capacity));
+            int seatsPerRow = (int) Math.ceil((double) capacity / rows);
+            log.info("Creating seats for theater id: {} with dynamic layout ({} rows x {} seats)", theaterId, rows, seatsPerRow);
+
+            for (int rowIdx = 0; rowIdx < rows; rowIdx++) {
+                char row = (char) ('A' + rowIdx);
+                for (int seatNum = 1; seatNum <= seatsPerRow && seats.size() < capacity; seatNum++) {
+                    Seat seat = new Seat();
+                    seat.setShowtime(showtime);
+                    seat.setSeatNumber(row + String.valueOf(seatNum));
+                    seat.setStatus(SeatStatus.AVAILABLE);
+                    seats.add(seat);
+                }
+            }
+        }
+
+        if (seats.size() != showtime.getTotalSeats()) {
+            log.warn("Created {} seats but showtime has {} total seats. Updating showtime.", seats.size(), showtime.getTotalSeats());
+            showtime.setTotalSeats(seats.size());
+            showtime.setAvailableSeats(seats.size());
+            showtimeRepository.save(showtime);
+        }
+        log.info("Created {} seats for showtime id: {}, saving to database...", seats.size(), showtime.getId());
+        return seatRepository.saveAll(seats);
+    }
+}
