@@ -10,6 +10,7 @@ public interface UserMappingHelper {
                 .builder()
                 .userId(u.getId())
                 .email(u.getEmail())
+                .username(u.getUsername())
                 .createdAt(u.getCreatedAt())
                 .updatedAt(u.getUpdatedAt())
                 .build();
@@ -20,6 +21,7 @@ public interface UserMappingHelper {
                 .builder()
                 .id(u.getUserId())
                 .email(u.getEmail())
+                .username(u.getUsername())
                 .createdAt(u.getCreatedAt())
                 .updatedAt(u.getUpdatedAt())
                 .build();

@@ -41,6 +41,6 @@ public class User extends AbstractMappedEntity {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 }
