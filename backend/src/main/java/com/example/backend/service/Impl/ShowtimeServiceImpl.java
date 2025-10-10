@@ -80,10 +80,19 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     public ShowtimeResponseDTO add(ShowtimeRequestDTO showtimeRequest) {
         log.info("Adding new showtime for movie id: {} at theater id: {}", showtimeRequest.getMovieId(), showtimeRequest.getTheaterId());
 
-        Movie movie = movieRepository.findById(showtimeRequest.getMovieId()).orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + showtimeRequest.getMovieId()));
+        Movie movie = movieRepository
+                .findById(showtimeRequest.getMovieId())
+                .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + showtimeRequest.getMovieId()));
 
-        Theater theater = theaterRepository.findById(showtimeRequest.getTheaterId()).orElseThrow(() -> new CinemaHallNotFoundException("Theater not found with id: " + showtimeRequest.getTheaterId()));
+        Theater theater = theaterRepository
+                .findById(showtimeRequest.getTheaterId())
+                .orElseThrow(() -> new CinemaHallNotFoundException("Theater not found with id: " + showtimeRequest.getTheaterId()));
 
+        if (showtimeRequest.getTotalSeats() > theater.getCapacity()) {
+            throw new IllegalArgumentException("Total seats cannot be greater than capacity of " + theater.getCapacity());
+        }
+
+        //        All seat available at first
         Showtime showtime = Showtime
                 .builder()
                 .movie(movie)
@@ -91,46 +100,21 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                 .showDate(showtimeRequest.getShowDate())
                 .showTime(showtimeRequest.getShowTime())
                 .totalSeats(showtimeRequest.getTotalSeats())
+                .availableSeats(showtimeRequest.getTotalSeats())
                 .price(showtimeRequest.getPrice())
                 .build();
 
-        if (showtime.getMovie() == null || showtime.getMovie().getId() == null) {
-            throw new IllegalArgumentException("Movie is required for showtime");
-        }
 
-        if (showtime.getTheater() == null || showtime.getTheater().getId() == null) {
-            throw new IllegalArgumentException("Theater is required for showtime");
-        }
-
-        showtime.setMovie(movie);
-        showtime.setTheater(theater);
-
-
-        if (showtime.getTotalSeats() > theater.getCapacity()) {
-            throw new IllegalArgumentException("Total seats cannot be greater than capacity of " + theater.getCapacity());
-        }
-
-//        All seat available at first
-        showtime.setAvailableSeats(showtime.getTotalSeats());
         Showtime savedShowtime = showtimeRepository.save(showtime);
-
         log.info("Saved showtime with ID: {}", savedShowtime.getPrice());
 
-        List<Seat> seats = new ArrayList<>();
-        for (int i = 1; i <= showtime.getTotalSeats(); i++) {
-            Seat seat = new Seat();
-            seat.setShowtime(savedShowtime);
-            seat.setSeatNumber(String.format("%c%d", ((i - 1) / 10), ((i - 1) % 10) + 1));
-            seat.setStatus(SeatStatus.AVAILABLE);
-            seats.add(seat);
-        }
-
+//        Create and saved seats
+        List<Seat> seats = createSeats(savedShowtime);
         seatRepository.saveAll(seats);
 
 
         log.info("Created {} seats for showtime ID: {}", seats.size(), savedShowtime.getId());
         return ShowtimeMappingHelper.map(savedShowtime);
-
     }
 
     @Override
@@ -199,19 +183,23 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
 
-//    private void insertSeats(List<Integer> input) {
-//        List<Seat> seats = new ArrayList<>();
-//        for (char row = 'A'; row <= 'E'; row++) {
-//            for (int i = 1; i <= 10; i++) {
-//                Seat seat = new Seat();
-//                seat.setSeatNumber(row + String.valueOf(i));
-//                seat.setCinemaHall(cinemaHall);
-//                seat.setStatus(SeatStatus.AVAILABLE);
-//                seat.setPrice(BigDecimal.valueOf(50000));
-//                seats.add(seat);
-//            }
-//        }
-//        seats.forEach(theaterRepository::insertSeats);
-//    }
+    private List<Seat> createSeats(Showtime showtime) {
+        List<Seat> seats = new ArrayList<>();
+        int totalSeats = showtime.getTotalSeats();
+        int seatPerRow = 10;
+
+        for (int i = 1; i <= totalSeats; i++) {
+            char row = (char) ('A' + (i - 1) / seatPerRow);
+            int seatNum = (i - 1) % seatPerRow + 1;
+
+            Seat seat = new Seat();
+            seat.setShowtime(showtime);
+            seat.setSeatNumber(String.format("%c%d", row, seatNum));
+            seat.setStatus(SeatStatus.AVAILABLE);
+            seats.add(seat);
+        }
+
+        return seats;
+    }
 
 }
