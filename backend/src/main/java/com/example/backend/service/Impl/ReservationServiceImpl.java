@@ -384,6 +384,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .reservationStatus(ReservationStatus.CONFIRMED)
                 .seats(seatEntities)
                 .totalAmount(total)
+                .isDeleted(false)
                 .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
