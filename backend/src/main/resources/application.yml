@@ -39,6 +39,12 @@ spring:
       timeout: 60000
   cache:
     type: redis
+  # Mail Properties
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: d44afe38e75431
+    password: 004bd628e2ec80
 logging:
   level:
     org:

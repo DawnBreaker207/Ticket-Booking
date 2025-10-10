@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:remove="all">Title</title>
+</head>
+<body>
+<h2>Hello, <span th:text="${name}">User</span>!</h2>
+<p>Your reservation has been placed successfully.</p>
+<img th:src="'data:image/png;base64,' + ${barcode}" alt="Barcode"/>
+</body>
+</html>
