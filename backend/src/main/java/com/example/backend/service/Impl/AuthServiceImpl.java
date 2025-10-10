@@ -54,17 +54,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void register(RegisterRequestDTO newUser) {
-        userRepository.findByEmail(newUser.getEmail()).ifPresent(u -> {
-            throw new UserEmailExistedException("This email already exists " + newUser.getEmail());
-        });
-        userRepository.findByUsername(newUser.getUsername()).ifPresent((u) -> {
-            throw new UsernameExistedException("This username already exists " + newUser.getUsername());
-        });
-        var user = new User();
-        user.setUsername(newUser.getUsername());
-        user.setEmail(newUser.getEmail());
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-
+        userRepository
+                .findByEmail(newUser.getEmail())
+                .ifPresent(u -> {
+                    throw new UserEmailExistedException("This email already exists " + newUser.getEmail());
+                });
+        userRepository
+                .findByUsername(newUser.getUsername())
+                .ifPresent((u) -> {
+                    throw new UsernameExistedException("This username already exists " + newUser.getUsername());
+                });
+        User user = User
+                .builder()
+                .username(newUser.getUsername())
+                .email(newUser.getEmail())
+                .password(passwordEncoder.encode(newUser.getPassword()))
+                .build();
 
         Set<Role> roles = newUser
                 .getRole()
@@ -73,7 +78,6 @@ public class AuthServiceImpl implements AuthService {
                         .findByName(URole.valueOf(roleName.toUpperCase()))
                         .orElseThrow(() -> new IllegalArgumentException("Role not found " + roleName)))
                 .collect(Collectors.toSet());
-
         user.setRoles(roles);
         userRepository.save(user);
     }
@@ -86,7 +90,11 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jWTUtils.generateToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        List<String> roles = userDetails
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return JwtResponseDTO
@@ -101,7 +109,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout() {
-        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principle = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
         if (principle instanceof UserDetailsImpl user) {
             Long userId = user.getId();
             refreshTokenService.deleteByUserId(userId);

@@ -63,7 +63,6 @@ public class TheaterServiceImpl implements TheaterService {
         Theater theater = theaterRepository
                 .findById(id)
                 .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
-
         theater.setName(theaterDetails.getName());
         theater.setLocation(theaterDetails.getLocation());
         theater.setCapacity(theaterDetails.getCapacity());

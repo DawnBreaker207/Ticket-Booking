@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ShowtimeController {
+
     private final ShowtimeService showtimeService;
 
     @GetMapping()

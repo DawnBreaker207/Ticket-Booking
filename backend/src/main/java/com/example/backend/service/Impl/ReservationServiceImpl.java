@@ -71,7 +71,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation findOne(String id) {
-        return reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, "Reservation not found"));
+        return reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, "Reservation not found"));
     }
 
 //    @Scheduled(fixedRate = 5000)
@@ -116,7 +118,13 @@ public class ReservationServiceImpl implements ReservationService {
 
 
 //        Create essential value to save on redis
-        Map<String, String> reservationData = Map.of("reservationId", reservationId, "userId", o.getUserId().toString(), "showtimeId", o.getShowtimeId().toString(), "theaterId", o.getTheaterId().toString(), "status", ReservationStatus.CREATED.toString(), "seats", "[]");
+        Map<String, String> reservationData = Map.of(
+                "reservationId", reservationId,
+                "userId", o.getUserId().toString(),
+                "showtimeId", o.getShowtimeId().toString(),
+                "theaterId", o.getTheaterId().toString(),
+                "status", ReservationStatus.CREATED.toString(),
+                "seats", "[]");
 
         redisTemplate.opsForHash().putAll(redisKey, reservationData);
 //        Create expired time on redis key
@@ -160,13 +168,19 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
 //        Check user existed
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+        userRepository
+                .findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
 //        Validate showtime
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
+        Showtime showtime = showtimeRepository
+                .findById(showtimeId)
+                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
 
 //      Check showtime is in the past
-        if (showtime.getShowDate().isBefore((LocalDate.now())) || (showtime.getShowDate().isEqual(LocalDate.now()) && showtime.getShowTime().isBefore(LocalTime.now()))) {
+        if (showtime.getShowDate().isBefore((LocalDate.now())) ||
+                (showtime.getShowDate().isEqual(LocalDate.now()) &&
+                        showtime.getShowTime().isBefore(LocalTime.now()))) {
             throw new IllegalStateException("Cannot reserve seats for past showtime");
         }
 
@@ -216,7 +230,10 @@ public class ReservationServiceImpl implements ReservationService {
 
             rollbackLock(successfulLocks, redisKey);
 
-            String failedSeatMessage = lockFailures.stream().map(f -> f.seatNumber + " (held by " + f.ownerReservationId + ")").collect(Collectors.joining((", ")));
+            String failedSeatMessage = lockFailures
+                    .stream()
+                    .map(f -> f.seatNumber + " (held by " + f.ownerReservationId + ")")
+                    .collect(Collectors.joining((", ")));
             throw new SeatUnavailableException(HttpStatus.CONFLICT, "Cannot hold seats. The following seats are currently held by other users: " + failedSeatMessage);
         }
 
@@ -252,7 +269,11 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
 //      Load seats from DB
-        List<Long> seatIds = dto.getSeats().stream().map(Seat::getId).toList();
+        List<Long> seatIds = dto
+                .getSeats()
+                .stream()
+                .map(Seat::getId)
+                .toList();
         if (seatIds.isEmpty()) {
             throw new IllegalStateException("No seats selected in this reservation");
         }
@@ -295,8 +316,12 @@ public class ReservationServiceImpl implements ReservationService {
 //        Take seat from request
         List<Seat> seatEntities = seatRepository.findByIdWithLock(seatIds);
         //        Create reservation to save
-        Showtime showtime = showtimeRepository.findById(request.getShowtimeId()).orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new UserNotFoundException("User now found with id :" + request.getUserId()));
+        Showtime showtime = showtimeRepository
+                .findById(request.getShowtimeId())
+                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
+        User user = userRepository
+                .findById(request.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User now found with id :" + request.getUserId()));
         if (seatEntities.size() != seatIds.size()) {
             log.error("Expected {} seats but found {} for reservation {}", seatIds.size(), seatEntities.size(), reservationId);
             throw new IllegalStateException("Some seats not found in database");
@@ -310,7 +335,16 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
 
 
-        Reservation reservation = Reservation.builder().id(request.getReservationId()).user(user).showtime(showtime).reservationStatus(ReservationStatus.CONFIRMED).seats(seatEntities).totalAmount(total).isDeleted(false).build();
+        Reservation reservation = Reservation
+                .builder()
+                .id(request.getReservationId())
+                .user(user)
+                .showtime(showtime)
+                .reservationStatus(ReservationStatus.CONFIRMED)
+                .seats(seatEntities)
+                .totalAmount(total)
+                .isDeleted(false)
+                .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -358,12 +392,16 @@ public class ReservationServiceImpl implements ReservationService {
         dto.setId(reservationId);
 
         Long userId = safeParseLong((String) data.get("userId"), "userId");
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 
         dto.setUser(user);
         dto.setReservationStatus(ReservationStatus.valueOf((String) data.get("status")));
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id " + showtimeId));
+        Showtime showtime = showtimeRepository
+                .findById(showtimeId)
+                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id " + showtimeId));
         dto.setShowtime(showtime);
 
         try {
@@ -449,7 +487,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void sendTtlSyncMessage(String reservationId, Long userId, Long showtimeId, Long theaterId, long ttlSeconds) {
-        messagingTemplate.convertAndSend("/topic/reservation/" + reservationId, Map.of("event", "TTL_SYNC", "reservationId", reservationId, "userId", userId.toString(), "showtimeId", showtimeId.toString(), "theaterId", theaterId.toString(), "ttl", ttlSeconds));
+        messagingTemplate.convertAndSend("/topic/reservation/" + reservationId, Map.of(
+                "event", "TTL_SYNC",
+                "reservationId", reservationId,
+                "userId", userId.toString(),
+                "showtimeId", showtimeId.toString(),
+                "theaterId", theaterId.toString(),
+                "ttl", ttlSeconds));
         log.info("Sending TTL_SYNC for reservation {} with TTL {}", reservationId, ttlSeconds);
     }
 
@@ -464,8 +508,14 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void validateSeatsForReservation(List<Seat> seats, Long showtimeId, List<Long> seatIds) {
         if (seats.size() != seatIds.size()) {
-            List<Long> foundSeatIds = seats.stream().map(Seat::getId).toList();
-            List<Long> notFoundSeatIds = seatIds.stream().filter(id -> !foundSeatIds.contains(id)).toList();
+            List<Long> foundSeatIds = seats
+                    .stream()
+                    .map(Seat::getId)
+                    .toList();
+            List<Long> notFoundSeatIds = seatIds
+                    .stream()
+                    .filter(id -> !foundSeatIds.contains(id))
+                    .toList();
             throw new SeatUnavailableException("Seat not found with id: " + notFoundSeatIds);
         }
 

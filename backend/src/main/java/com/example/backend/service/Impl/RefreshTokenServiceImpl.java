@@ -6,7 +6,6 @@ import com.example.backend.repository.RefreshTokenRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,12 +30,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + userId)));
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurations));
-        refreshToken.setToken(UUID.randomUUID().toString());
+        RefreshToken refreshToken = RefreshToken
+                .builder()
+                .user(userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + userId)))
+                .expiryDate(Instant.now().plusMillis(refreshTokenDurations))
+                .token(UUID.randomUUID().toString())
+                .build();
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("report")
 @RequiredArgsConstructor
 public class ReportController {
+
     private final ReportService reportService;
 
     @GetMapping("/export/{format}")

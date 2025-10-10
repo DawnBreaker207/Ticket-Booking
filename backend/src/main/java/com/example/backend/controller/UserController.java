@@ -22,7 +22,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<List<UserResponseDTO>> getAll() {

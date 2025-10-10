@@ -22,18 +22,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> findAll() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserMappingHelper::map).toList();
+        return users
+                .stream()
+                .map(UserMappingHelper::map)
+                .toList();
     }
 
     @Override
     public User findOne(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
+        return userRepository
+                .findById(id)
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
     }
 
     @Override
     @Transactional
     public User update(Long id, User user) {
-        var check = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
+        var check = userRepository
+                .findById(id)
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
         check.setEmail(user.getEmail());
         check.setUsername(user.getUsername());
         userRepository.save(check);
@@ -43,6 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with email " + email));
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with email " + email));
     }
 }

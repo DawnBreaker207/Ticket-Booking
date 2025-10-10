@@ -29,7 +29,9 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public List<SeatResponseDTO> getByShowtime(Long showtimeId) {
         log.info("Fetching seats for showtime id: {}", showtimeId);
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + showtimeId));
+        Showtime showtime = showtimeRepository
+                .findById(showtimeId)
+                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + showtimeId));
 
         log.info("Found showtime: {} for movie: {} at theater: {}",
                 showtimeId,
@@ -59,7 +61,9 @@ public class SeatServiceImpl implements SeatService {
     public List<SeatResponseDTO> getAvailableSeatByShowtime(Long showtimeId) {
         log.info("Fetching available seats for showtime id: {}", showtimeId);
 
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
+        Showtime showtime = showtimeRepository
+                .findById(showtimeId)
+                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
 
         List<Seat> allSeats = seatRepository.findByShowtime(showtime);
         if (allSeats.isEmpty()) {
@@ -72,7 +76,11 @@ public class SeatServiceImpl implements SeatService {
             }
         }
 
-        return seatRepository.findByShowtimeAndStatus(showtime, SeatStatus.AVAILABLE).stream().map(SeatMappingHelper::map).toList();
+        return seatRepository
+                .findByShowtimeAndStatus(showtime, SeatStatus.AVAILABLE)
+                .stream()
+                .map(SeatMappingHelper::map)
+                .toList();
     }
 
     @Override

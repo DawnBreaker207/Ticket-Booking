@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mail")
 @RequiredArgsConstructor
 public class NotificationController {
-    private final NotificationService notificationService;
 
+    private final NotificationService notificationService;
 
     @GetMapping("/test")
     public void sendEmail() {

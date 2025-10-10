@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class SeatController {
+
     private final SeatService seatService;
 
     @GetMapping("/showtime/{showtimeId}")
