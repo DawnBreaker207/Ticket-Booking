@@ -3,8 +3,7 @@ package com.example.backend.exception;
 import com.example.backend.exception.payload.ExceptionMessage;
 import com.example.backend.exception.wrapper.*;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,8 +14,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @RestControllerAdvice
+@Slf4j
 public class ApiExceptionHandler {
-    private final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
     private static final HttpStatus DEFAULT_STATUS = HttpStatus.BAD_REQUEST;
 
     @ExceptionHandler(value = {
@@ -25,11 +25,11 @@ public class ApiExceptionHandler {
             UserPasswordNotMatchException.class,
             UsernameExistedException.class,
             MovieNotFoundException.class,
-            CinemaHallNotFoundException.class,
-            OrderNotFoundException.class,
+            TheaterNotFoundException.class,
+            ReservationNotFoundException.class,
             MovieExistedException.class,
             ForbiddenPermissionException.class,
-            OrderExpiredException.class,
+            ReservationExpiredException.class,
             SeatUnavailableException.class,
             RedisStorageException.class,
             RefreshTokenNotFoundException.class,
@@ -44,7 +44,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionMessage> handlerValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ExceptionMessage> handlerValidationException(final MethodArgumentNotValidException ex) {
         String errorMsg = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -55,7 +55,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionMessage> handlerConstraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ExceptionMessage> handlerConstraintViolationException(final ConstraintViolationException ex) {
         String errorMsg = ex.getConstraintViolations()
                 .stream()
                 .map(err -> err.getPropertyPath() + ": " + err.getMessage())
@@ -63,4 +63,19 @@ public class ApiExceptionHandler {
                 .orElse("Invalid parameter");
         return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
     }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ExceptionMessage> handleIllegalException(final Exception ex) {
+        log.warn("Invalid argument: {}", ex.getMessage());
+        String errorMsg = ex.getMessage();
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionMessage> handleAllException(final Exception ex) {
+        log.warn("Unhandled exception: {}", ex.getMessage());
+        String errorMsg = "Internal server error";
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.INTERNAL_SERVER_ERROR, errorMsg), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

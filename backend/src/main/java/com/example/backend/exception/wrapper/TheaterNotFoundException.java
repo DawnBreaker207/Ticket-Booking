@@ -5,15 +5,15 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
 
-public class CinemaHallNotFoundException extends ApiException {
+public class TheaterNotFoundException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public CinemaHallNotFoundException(String message) {
+    public TheaterNotFoundException(String message) {
         super(message);
     }
 
-    public CinemaHallNotFoundException(HttpStatus status, String message) {
+    public TheaterNotFoundException(HttpStatus status, String message) {
         super(status, message);
     }
 }

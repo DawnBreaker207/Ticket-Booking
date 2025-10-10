@@ -3,7 +3,8 @@ package com.example.backend.service.Impl;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.request.ShowtimeRequestDTO;
 import com.example.backend.dto.response.ShowtimeResponseDTO;
-import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.exception.wrapper.ShowtimeNotFoundException;
+import com.example.backend.exception.wrapper.TheaterNotFoundException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.helper.ShowtimeMappingHelper;
 import com.example.backend.model.Movie;
@@ -53,7 +54,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<ShowtimeResponseDTO> getByTheater(Long theaterId) {
         log.info("Fetching showtime for theater id: {}", theaterId);
-        Theater theater = theaterRepository.findById(theaterId).orElseThrow(() -> new CinemaHallNotFoundException("Theater not found with id: " + theaterId));
+        Theater theater = theaterRepository.findById(theaterId).orElseThrow(() -> new TheaterNotFoundException("Theater not found with id: " + theaterId));
         return showtimeRepository.findByTheater(theater).stream().map(ShowtimeMappingHelper::map).toList();
     }
 
@@ -72,21 +73,21 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public ShowtimeResponseDTO getById(Long id) {
         log.info("Fetching showtime with id {}", id);
-        return showtimeRepository.findById(id).map(ShowtimeMappingHelper::map).orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + id));
+        return showtimeRepository.findById(id).map(ShowtimeMappingHelper::map).orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + id));
     }
 
     @Override
     @Transactional
     public ShowtimeResponseDTO add(ShowtimeRequestDTO showtimeRequest) {
         log.info("Adding new showtime for movie id: {} at theater id: {}", showtimeRequest.getMovieId(), showtimeRequest.getTheaterId());
-
+        
         Movie movie = movieRepository
                 .findById(showtimeRequest.getMovieId())
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + showtimeRequest.getMovieId()));
 
         Theater theater = theaterRepository
                 .findById(showtimeRequest.getTheaterId())
-                .orElseThrow(() -> new CinemaHallNotFoundException("Theater not found with id: " + showtimeRequest.getTheaterId()));
+                .orElseThrow(() -> new TheaterNotFoundException("Theater not found with id: " + showtimeRequest.getTheaterId()));
 
         if (showtimeRequest.getTotalSeats() > theater.getCapacity()) {
             throw new IllegalArgumentException("Total seats cannot be greater than capacity of " + theater.getCapacity());
@@ -122,7 +123,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     public ShowtimeResponseDTO update(Long id, ShowtimeRequestDTO showtimeDetails) {
         log.info("Updating showtime with id: {}", id);
         Showtime showtime = showtimeRepository.findById(id).
-                orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + id));
+                orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + id));
 
         if (showtimeDetails.getMovieId() != null) {
             Movie movie = movieRepository.findById(showtimeDetails.getMovieId()).orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + showtimeDetails.getMovieId()));
@@ -131,7 +132,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         if (showtimeDetails.getTheaterId() != null) {
             Theater theater = theaterRepository.findById(showtimeDetails.getTheaterId())
-                    .orElseThrow(() -> new CinemaHallNotFoundException("Theater not found with id: " + showtimeDetails.getTheaterId()));
+                    .orElseThrow(() -> new TheaterNotFoundException("Theater not found with id: " + showtimeDetails.getTheaterId()));
             showtime.setTheater(theater);
         }
 
@@ -161,7 +162,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     public void delete(Long id) {
         log.info("Deleting showtime with id: {}", id);
         Showtime showtime = showtimeRepository.findById(id)
-                .orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + id));
+                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + id));
 
 //     Safety check - can't delete if people have tickets
         if (showtime.getReservations() != null && !showtime.getReservations().isEmpty()) {

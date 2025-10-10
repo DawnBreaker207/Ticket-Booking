@@ -5,16 +5,16 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
 
-public class OrderExpiredException extends ApiException {
+public class ReservationExpiredException extends ApiException {
     @Serial
     private static final long serialVersionUID = 1L;
 
 
-    public OrderExpiredException(String message) {
+    public ReservationExpiredException(String message) {
         super(message);
     }
 
-    public OrderExpiredException(HttpStatus status, String message) {
+    public ReservationExpiredException(HttpStatus status, String message) {
         super(status, message);
     }
 }

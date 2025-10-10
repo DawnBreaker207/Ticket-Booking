@@ -2,7 +2,7 @@ package com.example.backend.service.Impl;
 
 import com.example.backend.dto.request.TheaterRequestDTO;
 import com.example.backend.dto.response.TheaterResponseDTO;
-import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.exception.wrapper.TheaterNotFoundException;
 import com.example.backend.helper.TheaterMappingHelper;
 import com.example.backend.model.Theater;
 import com.example.backend.repository.TheaterRepository;
@@ -35,7 +35,7 @@ public class TheaterServiceImpl implements TheaterService {
         return theaterRepository
                 .findById(id)
                 .map(TheaterMappingHelper::map)
-                .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Can not find with id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with id " + id));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TheaterServiceImpl implements TheaterService {
     public TheaterResponseDTO update(Long id, TheaterRequestDTO theaterDetails) {
         Theater theater = theaterRepository
                 .findById(id)
-                .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
 
         theater.setName(theaterDetails.getName());
         theater.setLocation(theaterDetails.getLocation());
@@ -75,7 +75,7 @@ public class TheaterServiceImpl implements TheaterService {
     public void remove(Long id) {
         theaterRepository
                 .findById(id)
-                .orElseThrow(() -> new CinemaHallNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
         theaterRepository.deleteById(id);
     }
 

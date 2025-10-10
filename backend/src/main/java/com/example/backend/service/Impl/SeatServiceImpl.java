@@ -2,7 +2,8 @@ package com.example.backend.service.Impl;
 
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.response.SeatResponseDTO;
-import com.example.backend.exception.wrapper.CinemaHallNotFoundException;
+import com.example.backend.exception.wrapper.ShowtimeNotFoundException;
+import com.example.backend.exception.wrapper.TheaterNotFoundException;
 import com.example.backend.helper.SeatMappingHelper;
 import com.example.backend.model.Seat;
 import com.example.backend.model.Showtime;
@@ -28,7 +29,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public List<SeatResponseDTO> getByShowtime(Long showtimeId) {
         log.info("Fetching seats for showtime id: {}", showtimeId);
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + showtimeId));
+        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + showtimeId));
 
         log.info("Found showtime: {} for movie: {} at theater: {}",
                 showtimeId,
@@ -58,7 +59,7 @@ public class SeatServiceImpl implements SeatService {
     public List<SeatResponseDTO> getAvailableSeatByShowtime(Long showtimeId) {
         log.info("Fetching available seats for showtime id: {}", showtimeId);
 
-        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new CinemaHallNotFoundException("Showtime not found with id: " + showtimeId));
+        Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
 
         List<Seat> allSeats = seatRepository.findByShowtime(showtime);
         if (allSeats.isEmpty()) {
