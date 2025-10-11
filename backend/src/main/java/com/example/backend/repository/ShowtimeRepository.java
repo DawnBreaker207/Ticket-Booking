@@ -25,9 +25,6 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     //    Find by date and theater
     List<Showtime> findByShowDateAndTheater(LocalDate date, Theater theater);
 
-
-
-
     //    Find available showtime from a date
     @Query("SELECT s FROM Showtime s WHERE s.showDate >= :date AND s.availableSeats > 0")
     List<Showtime> findAvailableShowtimeFromDate(LocalDate date);
