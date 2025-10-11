@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseObject<?> logout() {
+    public ResponseObject<String> logout() {
         authService.logout();
         return new ResponseObject<>(HttpStatus.NO_CONTENT, "Success", "");
     }
