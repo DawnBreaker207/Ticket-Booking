@@ -5,18 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class PaymentResponseDTO {
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @SuperBuilder
-    public static class VNPayResponse {
-        public String code;
+    public String code;
 
-        public String message;
+    public String message;
 
-        public String paymentUrl;
-    }
+    public String paymentUrl;
+
 }

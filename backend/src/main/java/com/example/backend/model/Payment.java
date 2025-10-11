@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
+
 @Hidden
 @Entity
 @Table(name = "payment")
@@ -27,11 +29,11 @@ public class Payment extends AbstractMappedEntity {
     @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
-    @Column(name = "payment_intient_Id", nullable = false)
+    @Column(name = "payment_intent_id", nullable = false)
     private String paymentIntentId;
 
     @Column(name = "amount", nullable = false)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
