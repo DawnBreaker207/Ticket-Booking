@@ -13,8 +13,8 @@ public interface ReservationService {
 
     String initReservation(ReservationInitRequestDTO reservation);
 
-    void holdSeats(ReservationHoldSeatRequestDTO reservation);
+    void holdReservationSeats(ReservationHoldSeatRequestDTO reservation);
 
-    ReservationResponseDTO confirm(ReservationRequestDTO reservation);
+    ReservationResponseDTO confirmReservation(ReservationRequestDTO reservation);
 
 }

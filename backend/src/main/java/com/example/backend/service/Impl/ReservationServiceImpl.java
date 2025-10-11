@@ -135,7 +135,7 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationId;
     }
 
-    public void holdSeats(ReservationHoldSeatRequestDTO reservation) {
+    public void holdReservationSeats(ReservationHoldSeatRequestDTO reservation) {
 
         validateHoldSeatRequest(reservation);
 
@@ -255,7 +255,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ReservationResponseDTO confirm(ReservationRequestDTO request) {
+    public ReservationResponseDTO confirmReservation(ReservationRequestDTO request) {
 
 
         log.info("Confirming reservation: {}", request.getReservationId());
@@ -367,8 +367,9 @@ public class ReservationServiceImpl implements ReservationService {
         showtime.setAvailableSeats(newAvailableSeats);
         showtimeRepository.save(showtime);
 
-
-        notificationService.sendEmail(user.getEmail(), user.getUsername(), reservationId);
+        if (ReservationStatus.CONFIRMED.equals(reservation.getReservationStatus())) {
+            notificationService.sendEmail(user.getEmail(), user.getUsername(), reservationId);
+        }
 
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
 

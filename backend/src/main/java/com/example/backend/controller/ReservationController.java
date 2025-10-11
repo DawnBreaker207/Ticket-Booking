@@ -41,13 +41,13 @@ public class ReservationController {
 
     @PostMapping("/seatHold")
     public ResponseObject<Void> reservationHoldSeat(@RequestBody ReservationHoldSeatRequestDTO o) {
-        reservationService.holdSeats(o);
+        reservationService.holdReservationSeats(o);
         return new ResponseObject<>(HttpStatus.OK, "Success", null);
     }
 
     @PostMapping("/confirm")
     public ResponseObject<ReservationResponseDTO> reservationConfirm(@RequestBody ReservationRequestDTO o) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.confirm(o));
+        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.confirmReservation(o));
     }
 
 }
