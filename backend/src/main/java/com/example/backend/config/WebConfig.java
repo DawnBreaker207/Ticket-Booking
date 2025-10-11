@@ -1,5 +1,6 @@
 package com.example.backend.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,11 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final RateLimitFilter rateLimitFilter;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -24,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegister() {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new RateLimitFilter());
+        registrationBean.setFilter(rateLimitFilter);
         registrationBean.addUrlPatterns("/api/v1/**");
         return registrationBean;
     }
