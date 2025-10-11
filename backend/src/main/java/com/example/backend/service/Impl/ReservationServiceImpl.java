@@ -30,10 +30,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -370,7 +368,18 @@ public class ReservationServiceImpl implements ReservationService {
 
         if (ReservationStatus.CONFIRMED.equals(reservation.getReservationStatus())) {
             updatePayment(reservation, true);
-            notificationService.sendEmail(user.getEmail(), user.getUsername(), reservationId);
+            notificationService.sendEmail(
+                    user.getEmail(),
+                    user.getUsername(),
+                    reservationId,
+                    showtime.getMovie().getTitle(),
+                    showtime.getTheater().getName(),
+                    LocalDateTime
+                            .of(showtime.getShowDate(), showtime.getShowTime())
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+                    seatEntities.stream().map(Seat::getSeatNumber).collect(Collectors.joining(",")),
+                    reservation.getTotalAmount().toString()
+            );
         } else {
             updatePayment(reservation, false);
         }
