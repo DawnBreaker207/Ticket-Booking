@@ -95,9 +95,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/auth/logout")
                         .addLogoutHandler(signOutHandler)
-                        .logoutSuccessHandler((req, res, auth) -> {
-                            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                        })
+                        .logoutSuccessHandler(
+                                (req, res, auth) ->
+                                        res.setStatus(HttpServletResponse.SC_NO_CONTENT)
+                        )
                 );
 
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
