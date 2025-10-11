@@ -1,9 +1,7 @@
 package com.example.backend.dto.request;
 
-import com.example.backend.model.AbstractMappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,8 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class ReservationRequestDTO extends AbstractMappedEntity {
+public class ReservationRequestDTO{
 
     private String reservationId;
 

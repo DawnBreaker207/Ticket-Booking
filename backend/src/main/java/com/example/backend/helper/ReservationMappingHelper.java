@@ -25,19 +25,4 @@ public interface ReservationMappingHelper {
 
     }
 
-//    static Reservation map(final ReservationResponseDTO reservation) {
-//        return
-//                Reservation
-//                        .builder()
-//                        .id(reservation.getId())
-//                        .user(reservation.getUser())
-//                        .showtime(reservation.getShowtime())
-//                        .reservationStatus(reservation.getReservationStatus())
-//                        .totalAmount(reservation.getTotalAmount())
-//                        .seats(reservation.getSeats())
-//                        .isDeleted(reservation.getIsDeleted())
-//                        .createdAt(reservation.getCreatedAt())
-//                        .updatedAt(reservation.getUpdatedAt())
-//                        .build();
-//    }
 }
