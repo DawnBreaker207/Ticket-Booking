@@ -20,7 +20,11 @@ public interface TheaterMappingHelper {
                 .id(theater.getId())
                 .name(theater.getName())
                 .location(theater.getLocation())
-                .showtime(theater.getShowtime())
+                .showtime(theater
+                        .getShowtime()
+                        .stream()
+                        .map(ShowtimeMappingHelper::map)
+                        .toList())
                 .capacity(theater.getCapacity())
                 .isDeleted(theater.getIsDeleted())
                 .createdAt(theater.getCreatedAt())

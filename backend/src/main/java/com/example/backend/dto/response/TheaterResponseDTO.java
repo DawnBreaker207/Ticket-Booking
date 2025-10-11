@@ -27,5 +27,5 @@ public class TheaterResponseDTO extends AbstractMappedEntity {
 
     private Boolean isDeleted;
 
-    private List<Showtime> showtime = new ArrayList<>();
+    private List<ShowtimeResponseDTO> showtime = new ArrayList<>();
 }
