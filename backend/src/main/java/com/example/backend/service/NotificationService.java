@@ -20,7 +20,16 @@ public class NotificationService {
 
     private final TemplateEngine templateEngine;
 
-    public void sendEmail(String to, String name, String reservationId) {
+    public void sendEmail(
+            String to,
+            String name,
+            String reservationId,
+            String movieName,
+            String theaterName,
+            String showtimeSession,
+            String seats,
+            String total
+    ) {
         log.info("Got message from reservation");
         String barcodeBase64 = BarcodeUtils.generateCode128(reservationId, 300, 100);
 
@@ -33,11 +42,11 @@ public class NotificationService {
             Context context = new Context();
             context.setVariable("name", name);
             context.setVariable("reservationId", reservationId);
-            context.setVariable("movieName", "Overlord");
-            context.setVariable("theaterName", "Thanh Xuan");
-            context.setVariable("showtimeSession", "11/10/2025 12:00:00");
-            context.setVariable("seats", "A2,A3");
-            context.setVariable("total", "100000");
+            context.setVariable("movieName", movieName);
+            context.setVariable("theaterName", theaterName);
+            context.setVariable("showtimeSession", showtimeSession);
+            context.setVariable("seats", seats);
+            context.setVariable("total", total);
             context.setVariable("barcode", barcodeBase64);
 
             String html = templateEngine.process("email", context);

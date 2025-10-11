@@ -15,7 +15,16 @@ public class NotificationController {
 
     @GetMapping("/test")
     public void sendEmail() {
-        notificationService.sendEmail("ngotunganh207@gmail.com", "test", "ORD-D4DAAD940C10");
+        notificationService.sendEmail(
+                "ngotunganh207@gmail.com",
+                "Ngo Tung Anh",
+                "ORD-D4DAAD940C10",
+                "Overlord",
+                "Thanh Xuan",
+                "11/10/2025 12:00:00",
+                "A2,A3",
+                "100000"
+        );
     }
 
 }
