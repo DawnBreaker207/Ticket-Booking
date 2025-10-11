@@ -6,6 +6,7 @@ import com.example.backend.service.Impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class UserController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<List<User>> getAll() {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findAll());
     }
@@ -38,7 +40,6 @@ public class UserController {
     public ResponseObject<User> getEmail(@PathVariable String email) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
-
 
 
 }
