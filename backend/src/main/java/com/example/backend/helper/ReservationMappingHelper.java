@@ -13,7 +13,11 @@ public interface ReservationMappingHelper {
                         .showtime(ShowtimeMappingHelper.map(reservation.getShowtime()))
                         .reservationStatus(reservation.getReservationStatus())
                         .totalAmount(reservation.getTotalAmount())
-                        .seats(reservation.getSeats().stream().map(SeatMappingHelper::map).toList())
+                        .seats(reservation
+                                .getSeats()
+                                .stream()
+                                .map(SeatMappingHelper::map)
+                                .toList())
                         .isDeleted(reservation.getIsDeleted())
                         .createdAt(reservation.getCreatedAt())
                         .updatedAt(reservation.getUpdatedAt())

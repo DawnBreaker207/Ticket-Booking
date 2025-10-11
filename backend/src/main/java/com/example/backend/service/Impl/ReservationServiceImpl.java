@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.PaymentStatus;
 import com.example.backend.constant.ReservationStatus;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.request.ReservationFilterDTO;
@@ -10,15 +11,10 @@ import com.example.backend.dto.response.ReservationResponseDTO;
 import com.example.backend.exception.wrapper.*;
 import com.example.backend.helper.RedisKeyHelper;
 import com.example.backend.helper.ReservationMappingHelper;
-import com.example.backend.model.Reservation;
-import com.example.backend.model.Seat;
-import com.example.backend.model.Showtime;
-import com.example.backend.model.User;
-import com.example.backend.repository.ReservationRepository;
-import com.example.backend.repository.SeatRepository;
-import com.example.backend.repository.ShowtimeRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.model.*;
+import com.example.backend.repository.*;
 import com.example.backend.service.NotificationService;
+import com.example.backend.service.PaymentService;
 import com.example.backend.service.ReservationService;
 import com.example.backend.util.ReservationUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -62,6 +59,10 @@ public class ReservationServiceImpl implements ReservationService {
     private final ShowtimeRepository showtimeRepository;
 
     private final NotificationService notificationService;
+
+    private final PaymentService paymentService;
+
+    private final PaymentRepository paymentRepository;
 
     @Override
     public List<ReservationResponseDTO> findAll(ReservationFilterDTO o) {
@@ -368,7 +369,10 @@ public class ReservationServiceImpl implements ReservationService {
         showtimeRepository.save(showtime);
 
         if (ReservationStatus.CONFIRMED.equals(reservation.getReservationStatus())) {
+            updatePayment(reservation, true);
             notificationService.sendEmail(user.getEmail(), user.getUsername(), reservationId);
+        } else {
+            updatePayment(reservation, false);
         }
 
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
@@ -560,6 +564,25 @@ public class ReservationServiceImpl implements ReservationService {
             throw new SeatUnavailableException(HttpStatus.CONFLICT, "Seat no longer available " + String.join(", ", unavailableSeats));
         }
 
+    }
+
+    private void updatePayment(Reservation reservation, Boolean success) {
+        PaymentStatus status = success ? PaymentStatus.PAID : PaymentStatus.CANCELED;
+        paymentRepository.findByReservation(reservation)
+                .filter(p -> p.getStatus() == PaymentStatus.PAID)
+                .ifPresent((payment) -> {
+                    throw new IllegalStateException("Payment already complete for this reservation ");
+                });
+
+        Payment payment = Payment
+                .builder()
+                .reservation(reservation)
+                .paymentIntentId(reservation.getId())
+                .amount(reservation.getTotalAmount())
+                .status(status)
+                .createdAt(Instant.now())
+                .build();
+        paymentRepository.save(payment);
     }
 
     private void rollbackLock(List<String> lockKeys, String expectedOwner) {
