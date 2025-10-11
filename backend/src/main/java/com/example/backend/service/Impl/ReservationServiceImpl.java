@@ -14,7 +14,6 @@ import com.example.backend.helper.ReservationMappingHelper;
 import com.example.backend.model.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.NotificationService;
-import com.example.backend.service.PaymentService;
 import com.example.backend.service.ReservationService;
 import com.example.backend.util.ReservationUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,8 +56,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final ShowtimeRepository showtimeRepository;
 
     private final NotificationService notificationService;
-
-    private final PaymentService paymentService;
 
     private final PaymentRepository paymentRepository;
 
@@ -393,7 +390,6 @@ public class ReservationServiceImpl implements ReservationService {
         return ReservationMappingHelper.map(savedReservation);
     }
 
-
     //    Get data from redis
     private Reservation getFromRedis(String reservationId) {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
@@ -446,7 +442,6 @@ public class ReservationServiceImpl implements ReservationService {
             this.ownerReservationId = ownerReservationId;
         }
     }
-
     //        Clean up Redis
     private void cleanupRedisLocks(String redisKey, String reservationId, List<Seat> seats) {
         int deletedLocks = 0;
@@ -560,7 +555,6 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
     }
-
 
     private void validateSeatsStillAvailable(List<Seat> seats) {
         List<String> unavailableSeats = new ArrayList<>();
