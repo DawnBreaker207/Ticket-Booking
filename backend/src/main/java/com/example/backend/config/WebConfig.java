@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegister() {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new RateLimitFilter);
+        registrationBean.setFilter(new RateLimitFilter());
         registrationBean.addUrlPatterns("/api/v1/**");
         return registrationBean;
     }
