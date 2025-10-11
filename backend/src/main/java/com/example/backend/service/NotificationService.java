@@ -28,10 +28,16 @@ public class NotificationService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
             messageHelper.setFrom("demo@gmail.com");
             messageHelper.setTo(to);
-            messageHelper.setSubject("Your reservation with id is place successfully");
+            messageHelper.setSubject("[Thông tin vé phim] - Đặt vé trực tuyến thành công / Your online ticket purchase has been successful");
 
             Context context = new Context();
             context.setVariable("name", name);
+            context.setVariable("reservationId", reservationId);
+            context.setVariable("movieName", "Overlord");
+            context.setVariable("theaterName", "Thanh Xuan");
+            context.setVariable("showtimeSession", "11/10/2025 12:00:00");
+            context.setVariable("seats", "A2,A3");
+            context.setVariable("total", "100000");
             context.setVariable("barcode", barcodeBase64);
 
             String html = templateEngine.process("email", context);
