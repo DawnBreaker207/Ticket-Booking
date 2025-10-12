@@ -5,31 +5,33 @@ import {Jwt, RefreshToken} from '@/app/core/models/jwt.model';
 export const authFeatureKey = 'authKey';
 
 export interface AuthState {
-  jwt: Jwt | null,
-  token: RefreshToken | null,
-  loading: boolean,
-  error: any
+  jwt: Jwt | null;
+  token: RefreshToken | null;
+  userId: string | null;
+  loading: boolean;
+  error: any;
 }
 
 
 export const initialState: AuthState = {
   jwt: null,
   token: null,
+  userId: null,
   loading: false,
-  error: null
+  error: null,
 }
 
 export const authReducer = createReducer(
   initialState,
+
   // Register
   on(AuthActions.loadRegister, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(AuthActions.loadRegisterSuccess, (state, {token}) => ({
+  on(AuthActions.loadRegisterSuccess, (state) => ({
     ...state,
-    token: token,
     loading: false,
     error: null
   })),
@@ -38,6 +40,7 @@ export const authReducer = createReducer(
     error: error,
     loading: false
   })),
+
   // Login
   on(AuthActions.loadLogin, (state) => ({
     ...state,
@@ -57,6 +60,7 @@ export const authReducer = createReducer(
     error: error,
     loading: false
   })),
+
   // Logout
   on(AuthActions.loadLogout, (state) => {
     return {
@@ -69,19 +73,24 @@ export const authReducer = createReducer(
     return {
       ...state,
       error: error,
-      loading: true,
+      loading: false,
     }
   }),
+
   //   Refresh Token
   on(AuthActions.loadRefreshToken, (state) => ({
     ...state,
-    loading: false,
+    loading: true,
     error: null,
   })),
   on(AuthActions.loadRefreshTokenSuccess, (state, {token}) => ({
     ...state,
     token,
-    jwt: state.jwt ? {...state.jwt, ...token} : null,
+    jwt: state.jwt ? {
+      ...state.jwt,
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken
+    } : null,
     loading: false,
     error: null,
   })),

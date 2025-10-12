@@ -1,6 +1,5 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from '@/app/core/services/auth/auth.service';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
 import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
@@ -54,11 +53,11 @@ export class AuthComponent implements OnInit {
     if (!this.form.valid) return;
     if (this.activeTab() === 'login') {
       const {username, password} = this.form.value;
-      this.store.dispatch(AuthActions.loadLogin({username, password}));
+      this.store.dispatch(AuthActions.loadLogin({user: {username, password}}));
 
     } else {
       const {username, email, password} = this.form.value;
-      this.store.dispatch(AuthActions.loadRegister({username, email, password}));
+      this.store.dispatch(AuthActions.loadRegister({user: {username, email, password}}));
     }
   }
 

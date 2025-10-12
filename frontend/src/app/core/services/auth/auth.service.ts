@@ -34,9 +34,9 @@ export class AuthService {
   private http = inject(HttpClient);
 
   register(request: RegisterRequest): Observable<any> {
-    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/register`, request).pipe(
+    return this.http.post<ApiRes<string>>(`${this.URL}/register`, request).pipe(
       map((res) => res.data),
-      catchError(this.handleError<RefreshToken>('register')),
+      catchError(this.handleError<string>('register')),
     )
   }
 
@@ -46,8 +46,6 @@ export class AuthService {
       tap(res => {
         this.accessToken = res.accessToken;
         this.refreshToken = res.refreshToken;
-        localStorage.setItem("accessToken", this._accessToken?.toString() ?? '');
-        localStorage.setItem("refreshToken", this._refreshToken?.toString() ?? '');
       }),
       catchError(this.handleError<Jwt>('login')),
     )
@@ -61,10 +59,17 @@ export class AuthService {
   }
 
   callRefreshToken(refreshToken: string) {
-    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/refreshToken`, {refreshToken}, {withCredentials: true}).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<RefreshToken>('refreshToken')),
-    )
+    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/refreshToken`,
+      {refreshToken},
+      {withCredentials: true})
+      .pipe(
+        map((res) => res.data),
+        tap(token => {
+          this.accessToken = token.accessToken;
+          this.refreshToken = token.refreshToken;
+        }),
+        catchError(this.handleError<RefreshToken>('refreshToken')),
+      )
   }
 
   private handleError<T>(operation = "operation", result?: T) {

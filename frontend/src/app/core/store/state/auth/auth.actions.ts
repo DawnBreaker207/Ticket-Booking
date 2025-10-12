@@ -8,7 +8,7 @@ export const AuthActions = createActionGroup(
     source: 'Auth',
     events: {
       'Load Register': props<{ user: RegisterRequest }>(),
-      'Load Register Success': props<{ token: RefreshToken }>(),
+      'Load Register Success': props<{ token: string }>(),
       'Load Register Failure': props<{ error: any }>(),
 
       'Load Login': props<{ user: LoginRequest }>(),
