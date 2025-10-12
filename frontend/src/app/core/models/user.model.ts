@@ -1,5 +1,3 @@
-import {Role} from '@/app/core/constants/enum';
-
 export interface User {
   userId: string;
   username: string;
@@ -9,7 +7,6 @@ export interface User {
 export interface RegisterRequest {
   username: string;
   email: string;
-  role: Role[];
   password: string;
 }
 

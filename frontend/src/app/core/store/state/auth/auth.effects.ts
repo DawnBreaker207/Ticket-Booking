@@ -13,30 +13,63 @@ export class AuthEffects {
     return this.actions$
       .pipe(
         ofType(AuthActions.loadRegister),
-        switchMap(({username, email, password}) =>
-          this.authService.register(username, email, password)
+        switchMap(({user}) =>
+          this.authService.register(user)
             .pipe(
               map((token) =>
-                AuthActions.registerSuccess({token})),
+                AuthActions.loadRegisterSuccess({token})),
               catchError((err) =>
-                of(AuthActions.registerFailure({error: err}))
-              )),
-        ))
+                of(AuthActions.loadRegisterFailure({error: err}))
+              ))))
   })
+
   login$ = createEffect(() => {
     return this.actions$
       .pipe(
         ofType(AuthActions.loadLogin),
-        switchMap(({username, password}) =>
-          this.authService.login(username, password)
+        switchMap(({user}) =>
+          this.authService.login(user)
             .pipe(
               map((jwt) =>
-                AuthActions.loginSuccess({jwt}),
-              ),
+                AuthActions.loadLoginSuccess({jwt})),
               catchError((err) =>
-                of(AuthActions.loginFailure({error: err})
-                )))
-        )
-      )
+                of(AuthActions.loadLoginFailure({error: err}))))
+        ))
+  })
+
+  logout$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(AuthActions.loadLogout),
+        switchMap(() =>
+          this.authService.logout()
+            .pipe(
+              map(() => {
+                this.authService.accessToken = null;
+                this.authService.refreshToken = null;
+                return AuthActions.loadLogoutSuccess();
+              }),
+              catchError((err) => {
+                this.authService.accessToken = null;
+                this.authService.refreshToken = null;
+                return of(AuthActions.loadLoginFailure({error: err}))
+              }))))
+  })
+
+  refreshToken$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(AuthActions.loadRefreshToken),
+        switchMap(({refreshToken}) =>
+          this.authService.callRefreshToken(refreshToken)
+            .pipe(
+              map((token) => {
+                this.authService.accessToken = token.accessToken;
+                this.authService.refreshToken = token.refreshToken;
+                return AuthActions.loadRefreshTokenSuccess({token});
+              }),
+              catchError((err) =>
+                of(AuthActions.loadLoginFailure({error: err}))
+              ))))
   })
 }

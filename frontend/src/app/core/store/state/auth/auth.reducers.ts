@@ -1,53 +1,93 @@
 import {createReducer, on} from '@ngrx/store';
 import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
-import {Jwt} from '@/app/core/models/jwt.model';
+import {Jwt, RefreshToken} from '@/app/core/models/jwt.model';
 
 export const authFeatureKey = 'authKey';
 
 export interface AuthState {
   jwt: Jwt | null,
-  token: any | null,
+  token: RefreshToken | null,
   loading: boolean,
   error: any
 }
 
 
 export const initialState: AuthState = {
-  jwt: JSON.parse(localStorage.getItem('jwt') || 'null'),
-  token: JSON.parse(localStorage.getItem('token') || 'null'),
+  jwt: null,
+  token: null,
   loading: false,
   error: null
 }
 
 export const authReducer = createReducer(
   initialState,
-  on(AuthActions.loadLogin, AuthActions.loadRegister, (state) => ({
+  // Register
+  on(AuthActions.loadRegister, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(AuthActions.loginSuccess, (state, {jwt}) => {
-    localStorage.setItem('jwt', JSON.stringify(jwt));
+  on(AuthActions.loadRegisterSuccess, (state, {token}) => ({
+    ...state,
+    token: token,
+    loading: false,
+    error: null
+  })),
+  on(AuthActions.loadRegisterFailure, (state, {error}) => ({
+    ...state,
+    error: error,
+    loading: false
+  })),
+  // Login
+  on(AuthActions.loadLogin, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(AuthActions.loadLoginSuccess, (state, {jwt}) => {
     return {
       ...state,
       jwt: jwt,
-      userId: jwt.userId,
+      userId: jwt.email,
       loading: false
     }
   }),
-  on(AuthActions.registerSuccess, (state, {token}) => ({
+  on(AuthActions.loadLoginFailure, (state, {error}) => ({
     ...state,
-    token: token,
+    error: error,
     loading: false
   })),
-  on(AuthActions.loginFailure, AuthActions.registerFailure, (state, {error}) => ({
+  // Logout
+  on(AuthActions.loadLogout, (state) => {
+    return {
+      ...state,
+      loading: true,
+    }
+  }),
+  on(AuthActions.loadLogoutSuccess, () => initialState),
+  on(AuthActions.loadLogoutFailure, (state, {error}) => {
+    return {
+      ...state,
+      error: error,
+      loading: true,
+    }
+  }),
+  //   Refresh Token
+  on(AuthActions.loadRefreshToken, (state) => ({
     ...state,
-    error,
-    loading: false
+    loading: false,
+    error: null,
   })),
-  on(AuthActions.logoutSuccess, () => {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('token');
-    return initialState
-  })
+  on(AuthActions.loadRefreshTokenSuccess, (state, {token}) => ({
+    ...state,
+    token,
+    jwt: state.jwt ? {...state.jwt, ...token} : null,
+    loading: false,
+    error: null,
+  })),
+  on(AuthActions.loadRefreshTokenFailure, (state, {error}) => ({
+    ...state,
+    loading: false,
+    error: error,
+  })),
 )

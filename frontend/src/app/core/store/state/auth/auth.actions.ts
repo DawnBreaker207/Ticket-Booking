@@ -1,21 +1,27 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {Jwt, RefreshToken} from '@/app/core/models/jwt.model';
+import {LoginRequest, RegisterRequest} from '@/app/core/models/user.model';
 
 
 export const AuthActions = createActionGroup(
   {
     source: 'Auth',
     events: {
-      'Load Register': props<{ username: string, email: string, password: string }>(),
-      'Register Success': props<{ token: RefreshToken }>(),
-      'Register Failure': props<{ error: any }>(),
+      'Load Register': props<{ user: RegisterRequest }>(),
+      'Load Register Success': props<{ token: RefreshToken }>(),
+      'Load Register Failure': props<{ error: any }>(),
 
-      'Load Login': props<{ username: string; password: string }>(),
-      'Login Success': props<{ jwt: Jwt }>(),
-      'Login Failure': props<{ error: any }>(),
+      'Load Login': props<{ user: LoginRequest }>(),
+      'Load Login Success': props<{ jwt: Jwt }>(),
+      'Load Login Failure': props<{ error: any }>(),
 
       'Load Logout': emptyProps(),
-      'Logout Success': emptyProps(),
+      'Load Logout Success': emptyProps(),
+      'Load Logout Failure': props<{ error: any }>(),
+
+      'Load Refresh Token': props<{ refreshToken: string }>(),
+      'Load Refresh Token Success': props<{ token: RefreshToken }>(),
+      'Load Refresh Token Failure': props<{ error: any }>(),
     }
 
   }
