@@ -4,6 +4,7 @@ import {environment} from '@/environments/environment';
 import {ApiRes} from '../../models/common.model';
 import {Jwt, RefreshToken} from '../../models/jwt.model';
 import {catchError, map, Observable, of, tap, throwError} from 'rxjs';
+import {LoginRequest, RegisterRequest} from '@/app/core/models/user.model';
 
 
 @Injectable({
@@ -32,18 +33,18 @@ export class AuthService {
   URL = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
 
-  register(username: string, email: string, password: string) {
-    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/register`, {username, email, password}).pipe(
+  register(request: RegisterRequest): Observable<any> {
+    return this.http.post<ApiRes<RefreshToken>>(`${this.URL}/register`, request).pipe(
       map((res) => res.data),
       catchError(this.handleError<RefreshToken>('register')),
     )
   }
 
-  login(username: string, password: string) {
-    return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, {username, password}).pipe(
+  login(request: LoginRequest): Observable<any> {
+    return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, request).pipe(
       map((res) => res.data),
       tap(res => {
-        this.accessToken = res.token;
+        this.accessToken = res.accessToken;
         this.refreshToken = res.refreshToken;
         localStorage.setItem("accessToken", this._accessToken?.toString() ?? '');
         localStorage.setItem("refreshToken", this._refreshToken?.toString() ?? '');

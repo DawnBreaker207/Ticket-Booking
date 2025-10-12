@@ -3,17 +3,22 @@ import {environment} from '@/environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {ApiRes} from '@/app/core/models/common.model';
-import {Order, OrderFilter} from '@/app/core/models/order.model';
+import {
+  Reservation,
+  ReservationFilter,
+  ReservationInitRequest,
+  ReservationRequest
+} from '@/app/core/models/reservation.model';
 import {formatTime} from '@/app/shared/utils/formatDate';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrderService {
-  URL = `${environment.apiUrl}/order`;
+export class ReservationService {
+  URL = `${environment.apiUrl}/reservation`;
   private http = inject(HttpClient);
 
-  getOrders(filter?: Partial<OrderFilter>, page: number = 0, size: number = 0) {
+  getReservations(filter?: Partial<ReservationFilter>, page: number = 0, size: number = 0) {
     console.log(filter)
     let params = new HttpParams();
 
@@ -26,44 +31,44 @@ export class OrderService {
 
     if (filter) {
       Object.keys(filter).forEach((key) => {
-        const value = filter[key as keyof OrderFilter];
+        const value = filter[key as keyof ReservationFilter];
         if (value !== null && value !== undefined && value !== '') {
           params = params.set(key, value.toString());
         }
       })
     }
 
-    return this.http.get<ApiRes<Order[]>>(`${this.URL}`, {params}).pipe(
+    return this.http.get<ApiRes<Reservation[]>>(`${this.URL}`, {params}).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Order[]>('Get orders'))
+      catchError(this.handleError<Reservation[]>('Get orders'))
     )
   }
 
-  getOrder(id: number) {
-    return this.http.get<ApiRes<Order>>(`${this.URL}/${id}`, {}).pipe(
+  getReservation(id: number) {
+    return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`, {}).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Order>('Get order'))
+      catchError(this.handleError<Reservation>('Get reservation'))
     )
   }
 
-  initOrder(order: Partial<Order>) {
-    return this.http.post<ApiRes<string>>(`${this.URL}/init`, order).pipe(
+  initReservation(reservation: ReservationInitRequest) {
+    return this.http.post<ApiRes<string>>(`${this.URL}/init`, reservation).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<string>('Init order'))
+      catchError(this.handleError<string>('Init reservation'))
     )
   }
 
-  holdSeat(order: Partial<Order>) {
-    return this.http.post<ApiRes<Order>>(`${this.URL}/seatHold`, order).pipe(
+  holdReservationSeat(reservation: ReservationRequest) {
+    return this.http.post<ApiRes<void>>(`${this.URL}/seatHold`, reservation).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Order>('hold seat order'))
+      catchError(this.handleError<void>('hold seat reservation'))
     )
   }
 
-  confirm(order: Partial<Order>) {
-    return this.http.post<ApiRes<Order>>(`${this.URL}/confirm`, order).pipe(
+  confirmReservation(reservation: ReservationRequest) {
+    return this.http.post<ApiRes<Reservation>>(`${this.URL}/confirm`, reservation).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Order>('Confirm order'))
+      catchError(this.handleError<Reservation>('Confirm reservation'))
     )
   }
 

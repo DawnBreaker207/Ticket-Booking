@@ -3,6 +3,7 @@ import {environment} from '@/environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {ApiRes} from '@/app/core/models/common.model';
+import {Payment, PaymentRequest} from '@/app/core/models/payment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,13 @@ export class PaymentService {
   URL = `${environment.apiUrl}/payment`;
   private http = inject(HttpClient);
 
-  createPayment(query?: any) {
-    console.log(query)
+  createPayment(query: PaymentRequest) {
     let params = new HttpParams();
-    params = params.set('amount', query.totalPrice);
-    params = params.set('vnp_TxnRef', query.orderId);
-    params = params.set('bankCode', 'NCB');
-    return this.http.get<ApiRes<any>>(`${this.URL}/vnpay`, {params}).pipe(
-      map(res => res.data),
+    params = params.set('reservationId', query.reservationId);
+    params = params.set('amount', query.amount);
+    params = params.set('paymentType', query.paymentType);
+    return this.http.get<ApiRes<Payment>>(`${this.URL}/create`, {params}).pipe(
+      map(res => res.data.paymentUrl),
       catchError(this.handleError<any>('Payment'))
     )
   }

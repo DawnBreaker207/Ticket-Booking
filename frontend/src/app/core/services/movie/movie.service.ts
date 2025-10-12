@@ -3,7 +3,7 @@ import {environment} from '@/environments/environment';
 import {HttpClient, HttpContext, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {SKIP_AUTH, USE_HEADER} from '@/app/core/constants/context-token.model';
-import {Movie} from '@/app/core/models/movie.model';
+import {Movie, MovieRequest} from '@/app/core/models/movie.model';
 import {ApiRes} from '@/app/core/models/common.model';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class MovieService {
     );
   }
 
-  saveMovie(movie: Movie) {
+  saveMovie(movie: MovieRequest) {
     return this.http.post<ApiRes<Movie>>(`${this.URL}`, movie).pipe(
       map((res) => res.data),
       catchError(this.handleError<Movie>('movie')));
@@ -38,8 +38,8 @@ export class MovieService {
     )
   }
 
-  updateMovie(movie: Movie) {
-    return this.http.put<ApiRes<Movie>>(`${this.URL}/${movie.id}`, movie).pipe(
+  updateMovie(id: number,movie: MovieRequest) {
+    return this.http.put<ApiRes<Movie>>(`${this.URL}/${id}`, movie).pipe(
       map((res) => res.data),
       catchError(this.handleError<Movie>('movie'))
     )
