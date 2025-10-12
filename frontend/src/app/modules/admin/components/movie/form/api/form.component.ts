@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, input, output, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {MovieService} from '@/app/core/services/movie/movie.service';
 import {DatePipe, NgClass} from '@angular/common';
