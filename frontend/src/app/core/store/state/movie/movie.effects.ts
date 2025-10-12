@@ -9,27 +9,79 @@ export class ReservationEffects {
   private actions$ = inject(Actions);
   private movieService = inject(MovieService);
 
-  movies$ = createEffect(() => {
+  loadMovies$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MovieActions.loadMovies),
-      switchMap(({movies}) =>
+      switchMap(() =>
         this.movieService.getMovieLists()
           .pipe(
-            map((order) => MovieActions.loadMovies({movies})),
+            map((movies) => MovieActions.loadMoviesSuccess({movies})),
             catchError((err) => of(MovieActions.loadMoviesFailed({error: err})))
           )
       )
     )
   })
 
-  movie$ = createEffect(() => {
+  searchMovies$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MovieActions.searchMovies),
+      switchMap(({search}) =>
+        this.movieService.getMovieLists(search)
+          .pipe(
+            map((movies) => MovieActions.searchMoviesSuccess({movies})),
+            catchError((err) => of(MovieActions.searchMoviesFailed({error: err})))
+          )
+      )
+    )
+  })
+
+  loadMovie$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MovieActions.loadMovie),
-      switchMap(({movie}) =>
-        this.movieService.getMovieDetails(movie.id)
+      switchMap(({id}) =>
+        this.movieService.findOneMovie(id)
           .pipe(
-            map((order) => MovieActions.loadMovie({movie})),
+            map((movie) => MovieActions.loadMovieSuccess({movie})),
             catchError((err) => of(MovieActions.loadMovieFailed({error: err})))
+          )
+      )
+    )
+  })
+
+  createMovie$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MovieActions.createMovie),
+      switchMap(({movie}) =>
+        this.movieService.saveMovie(movie)
+          .pipe(
+            map((movie) => MovieActions.createMovieSuccess({movie})),
+            catchError((err) => of(MovieActions.createMovieFailed({error: err})))
+          )
+      )
+    )
+  })
+
+  updateMovie$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MovieActions.updateMovie),
+      switchMap(({id, movie}) =>
+        this.movieService.updateMovie(id, movie)
+          .pipe(
+            map((movie) => MovieActions.updateMovieSuccess({movie})),
+            catchError((err) => of(MovieActions.updateMovieFailed({error: err})))
+          )
+      )
+    )
+  })
+
+  deleteMovie$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MovieActions.deleteMovie),
+      switchMap(({id}) =>
+        this.movieService.getMovieDetails(id)
+          .pipe(
+            map(() => MovieActions.deleteMovieSuccess({id})),
+            catchError((err) => of(MovieActions.deleteMovieFailed({error: err})))
           )
       )
     )
