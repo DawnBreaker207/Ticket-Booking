@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.constant.URole;
 import com.example.backend.dto.request.LoginRequestDTO;
 import com.example.backend.dto.request.RegisterRequestDTO;
@@ -54,16 +55,19 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void register(RegisterRequestDTO newUser) {
+
         userRepository
                 .findByEmail(newUser.getEmail())
                 .ifPresent(u -> {
-                    throw new UserEmailExistedException("This email already exists " + newUser.getEmail());
+                    throw new UserEmailExistedException(Message.Exception.EMAIL_EXISTED);
                 });
+
         userRepository
                 .findByUsername(newUser.getUsername())
                 .ifPresent((u) -> {
-                    throw new UsernameExistedException("This username already exists " + newUser.getUsername());
+                    throw new UsernameExistedException(Message.Exception.USERNAME_EXISTED);
                 });
+
         User user = User
                 .builder()
                 .username(newUser.getUsername())
@@ -71,15 +75,15 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(newUser.getPassword()))
                 .build();
 
-        Set<Role> roles = newUser
-                .getRole()
-                .stream()
-                .map(roleName -> roleRepository
-                        .findByName(URole.valueOf(roleName.toUpperCase()))
-                        .orElseThrow(() -> new IllegalArgumentException("Role not found " + roleName)))
-                .collect(Collectors.toSet());
-        user.setRoles(roles);
+        Role userRole = roleRepository
+                        .findByName(URole.USER)
+                        .orElseThrow(() -> new IllegalArgumentException(Message.Exception.ROLE_NOT_FOUND));
+
+        user.setRoles(Set.of(userRole));
+
         userRepository.save(user);
+
+        log.info("User registered successfully: {}",newUser.getUsername());
     }
 
     @Override
@@ -90,19 +94,12 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jWTUtils.generateToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return JwtResponseDTO
                 .builder()
                 .accessToken(jwt)
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
-                .roles(roles)
                 .refreshToken(refreshToken.getToken())
                 .build();
     }
@@ -126,7 +123,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenRefreshResponseDTO refreshToken(HttpServletRequest token) {
         String refreshToken = jWTUtils.getJwtRefreshCookie(token);
         if (refreshToken == null || refreshToken.isEmpty()) {
-            throw new RefreshTokenExpiredException("Refresh token not existed");
+            throw new RefreshTokenExpiredException(Message.Exception.REFRESH_TOKEN_EXPIRED);
         }
         return refreshTokenService.findByToken(refreshToken)
                 .map(refreshTokenService::verifyExpiration)
@@ -139,6 +136,6 @@ public class AuthServiceImpl implements AuthService {
                             .refreshToken(refreshToken)
                             .build();
                 })
-                .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found " + token));
+                .orElseThrow(() -> new RefreshTokenNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));
     }
 }

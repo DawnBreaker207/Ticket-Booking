@@ -26,9 +26,6 @@ public class RegisterRequestDTO {
     @Email(message = "Email is not valid")
     private String email;
 
-    @NotBlank(message = "Role is not mandatory")
-    private Set<String> role;
-
     @NotBlank(message = "Password is not mandatory")
     @Min(value = 6, message = "Password is required 8 characters above ")
     private String password;
