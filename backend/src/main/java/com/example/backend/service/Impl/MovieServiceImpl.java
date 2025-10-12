@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.exception.wrapper.MovieExistedException;
@@ -46,7 +47,7 @@ public class MovieServiceImpl implements MovieService {
         return movieRepository
                 .findById(id)
                 .map(MovieMappingHelper::map)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class MovieServiceImpl implements MovieService {
         return movieRepository
                 .findByFilmId(id)
                 .map(MovieMappingHelper::map)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class MovieServiceImpl implements MovieService {
         String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
 
         movieRepository.findByFilmId(String.valueOf(id)).ifPresent((movie) -> {
-            throw new MovieExistedException("This movie is existed");
+            throw new MovieExistedException(Message.Exception.MOVIE_EXISTED);
         });
 
         HttpHeaders headers = new HttpHeaders();
@@ -100,7 +101,7 @@ public class MovieServiceImpl implements MovieService {
         movieRepository
                 .findByFilmId(String.valueOf(m.getFilmId()))
                 .ifPresent((movie) -> {
-                    throw new MovieExistedException("This movie is existed");
+                    throw new MovieExistedException(Message.Exception.MOVIE_EXISTED);
                 });
         Movie movie = Movie
                 .builder()
@@ -123,7 +124,7 @@ public class MovieServiceImpl implements MovieService {
     public MovieResponseDTO update(Long id, Movie movie) {
         movieRepository
                 .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
         return MovieMappingHelper.map(movieRepository.save(movie));
 
     }
@@ -132,7 +133,7 @@ public class MovieServiceImpl implements MovieService {
     public void delete(Long id) {
         movieRepository
                 .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, "Not match found with id " + id));
+                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
 
         movieRepository.deleteById(id);
     }

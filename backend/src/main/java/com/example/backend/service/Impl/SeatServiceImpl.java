@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.constant.SeatStatus;
 import com.example.backend.dto.response.SeatResponseDTO;
 import com.example.backend.exception.wrapper.ShowtimeNotFoundException;
@@ -31,7 +32,7 @@ public class SeatServiceImpl implements SeatService {
         log.info("Fetching seats for showtime id: {}", showtimeId);
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id: " + showtimeId));
+                .orElseThrow(() -> new ShowtimeNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
 
         log.info("Found showtime: {} for movie: {} at theater: {}",
                 showtimeId,
@@ -63,7 +64,7 @@ public class SeatServiceImpl implements SeatService {
 
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
+                .orElseThrow(() -> new TheaterNotFoundException(Message.Exception.THEATER_NOT_FOUND));
 
         List<Seat> allSeats = seatRepository.findByShowtime(showtime);
         if (allSeats.isEmpty()) {

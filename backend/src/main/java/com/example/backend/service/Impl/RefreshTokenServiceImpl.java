@@ -1,6 +1,8 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.exception.wrapper.RefreshTokenExpiredException;
+import com.example.backend.exception.wrapper.RefreshTokenNotFoundException;
 import com.example.backend.model.RefreshToken;
 import com.example.backend.repository.RefreshTokenRepository;
 import com.example.backend.repository.UserRepository;
@@ -34,7 +36,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .builder()
                 .user(userRepository
                         .findById(userId)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + userId)))
+                        .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND)))
                 .expiryDate(Instant.now().plusMillis(refreshTokenDurations))
                 .token(UUID.randomUUID().toString())
                 .build();
@@ -45,14 +47,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepository.findByToken(token);
+        return Optional
+                .ofNullable(refreshTokenRepository
+                        .findByToken(token)
+                        .orElseThrow(() -> new RefreshTokenNotFoundException(Message.Exception.REFRESH_TOKEN_NOT_FOUND)));
     }
 
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
             refreshTokenRepository.deleteByToken(token.getToken());
-            throw new RefreshTokenExpiredException(token.getToken() + " Refresh token was expired, Please make a new signin request");
+            throw new RefreshTokenExpiredException(Message.Exception.REFRESH_TOKEN_EXPIRED);
         }
         return token;
     }
@@ -62,6 +67,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void deleteByUserId(Long userId) {
         refreshTokenRepository.deleteByUser(userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + userId)));
+                .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND)));
     }
 }

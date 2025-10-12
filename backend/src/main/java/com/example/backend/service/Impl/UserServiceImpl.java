@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.exception.wrapper.UserNotFoundException;
 import com.example.backend.helper.UserMappingHelper;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public User findOne(Long id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public User update(Long id, User user) {
         var check = userRepository
                 .findById(id)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with id " + id));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
         check.setEmail(user.getEmail());
         check.setUsername(user.getUsername());
         userRepository.save(check);
@@ -52,6 +53,6 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Can not find user with email " + email));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
     }
 }

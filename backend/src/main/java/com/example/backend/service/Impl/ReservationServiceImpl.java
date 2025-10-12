@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.constant.PaymentStatus;
 import com.example.backend.constant.ReservationStatus;
 import com.example.backend.constant.SeatStatus;
@@ -69,7 +70,7 @@ public class ReservationServiceImpl implements ReservationService {
     public Reservation findOne(String id) {
         return reservationRepository
                 .findById(id)
-                .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, "Reservation not found"));
+                .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_NOT_FOUND));
     }
 
 //    @Scheduled(fixedRate = 5000)
@@ -160,18 +161,18 @@ public class ReservationServiceImpl implements ReservationService {
         Long userIdRedis = Long.parseLong(userIdStr);
 
         if (!userId.equals(userIdRedis)) {
-            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission !");
+            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, Message.Exception.PERMISSION_FORBIDDEN);
         }
 
 //        Check user existed
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(Message.Exception.USER_NOT_FOUND));
 
 //        Validate showtime
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id: " + showtimeId));
+                .orElseThrow(() -> new TheaterNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
 
 //      Check showtime is in the past
         if (showtime.getShowDate().isBefore((LocalDate.now())) ||
@@ -271,7 +272,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .map(Seat::getId)
                 .toList();
         if (seatIds.isEmpty()) {
-            throw new IllegalStateException("No seats selected in this reservation");
+            throw new IllegalStateException(Message.Exception.NO_SEAT_SELECTED);
         }
 
         List<Long> expiredLocks = new ArrayList<>();
@@ -314,7 +315,7 @@ public class ReservationServiceImpl implements ReservationService {
         //        Create reservation to save
         Showtime showtime = showtimeRepository
                 .findById(request.getShowtimeId())
-                .orElseThrow(() -> new TheaterNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
+                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
         User user = userRepository
                 .findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User now found with id :" + request.getUserId()));
@@ -395,7 +396,7 @@ public class ReservationServiceImpl implements ReservationService {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
         Map<Object, Object> data = redisTemplate.opsForHash().entries(key);
         if (data.isEmpty()) {
-            throw new ReservationExpiredException(HttpStatus.NOT_FOUND, "Reservation expired or not existed");
+            throw new ReservationExpiredException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_EXPIRED);
         }
 
         Reservation dto = new Reservation();
@@ -404,14 +405,14 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = safeParseLong((String) data.get("userId"), "userId");
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+                .orElseThrow(() -> new UserNotFoundException(Message.Exception.USER_NOT_FOUND));
 
         dto.setUser(user);
         dto.setReservationStatus(ReservationStatus.valueOf((String) data.get("status")));
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id " + showtimeId));
+                .orElseThrow(() -> new ShowtimeNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
         dto.setShowtime(showtime);
 
         try {
@@ -442,6 +443,7 @@ public class ReservationServiceImpl implements ReservationService {
             this.ownerReservationId = ownerReservationId;
         }
     }
+
     //        Clean up Redis
     private void cleanupRedisLocks(String redisKey, String reservationId, List<Seat> seats) {
         int deletedLocks = 0;
@@ -525,7 +527,7 @@ public class ReservationServiceImpl implements ReservationService {
                     .stream()
                     .filter(id -> !foundSeatIds.contains(id))
                     .toList();
-            throw new SeatUnavailableException("Seat not found with id: " + notFoundSeatIds);
+            throw new SeatUnavailableException(Message.Exception.SEAT_NOT_FOUND);
         }
 
         //        Verify seats belong to the request showtime
@@ -551,7 +553,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
         if (!bookedSeats.isEmpty()) {
             String bookedSeatNumbers = String.join(", ", bookedSeats);
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, "Seats you choose already booked " + bookedSeatNumbers);
+            throw new SeatUnavailableException(HttpStatus.CONFLICT, Message.Exception.SEAT_UNAVAILABLE + " " + bookedSeatNumbers);
         }
 
     }
@@ -564,7 +566,7 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         if (!unavailableSeats.isEmpty()) {
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, "Seat no longer available " + String.join(", ", unavailableSeats));
+            throw new SeatUnavailableException(HttpStatus.CONFLICT, Message.Exception.SEAT_UNAVAILABLE + " " + String.join(", ", unavailableSeats));
         }
 
     }
@@ -574,7 +576,7 @@ public class ReservationServiceImpl implements ReservationService {
         paymentRepository.findByReservation(reservation)
                 .filter(p -> p.getStatus() == PaymentStatus.PAID)
                 .ifPresent((payment) -> {
-                    throw new IllegalStateException("Payment already complete for this reservation ");
+                    throw new IllegalStateException(Message.Exception.PAYMENT_COMPLETE);
                 });
 
         Payment payment = Payment

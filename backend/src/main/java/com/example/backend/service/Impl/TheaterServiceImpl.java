@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.constant.Message;
 import com.example.backend.dto.request.TheaterRequestDTO;
 import com.example.backend.dto.response.TheaterResponseDTO;
 import com.example.backend.exception.wrapper.TheaterNotFoundException;
@@ -35,7 +36,7 @@ public class TheaterServiceImpl implements TheaterService {
         return theaterRepository
                 .findById(id)
                 .map(TheaterMappingHelper::map)
-                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.THEATER_NOT_FOUND));
     }
 
     @Override
@@ -53,7 +54,6 @@ public class TheaterServiceImpl implements TheaterService {
     public TheaterResponseDTO create(TheaterRequestDTO theater) {
         log.info("Add new theater: {}", theater);
         return TheaterMappingHelper.map(theaterRepository.save(TheaterMappingHelper.map(theater)));
-//        insertSeats(cinema);
 
     }
 
@@ -62,7 +62,7 @@ public class TheaterServiceImpl implements TheaterService {
     public TheaterResponseDTO update(Long id, TheaterRequestDTO theaterDetails) {
         Theater theater = theaterRepository
                 .findById(id)
-                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.THEATER_NOT_FOUND));
         theater.setName(theaterDetails.getName());
         theater.setLocation(theaterDetails.getLocation());
         theater.setCapacity(theaterDetails.getCapacity());
@@ -74,7 +74,7 @@ public class TheaterServiceImpl implements TheaterService {
     public void remove(Long id) {
         theaterRepository
                 .findById(id)
-                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, "Can not find with movie id " + id));
+                .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.THEATER_NOT_FOUND));
         theaterRepository.deleteById(id);
     }
 
