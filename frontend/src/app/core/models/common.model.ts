@@ -24,3 +24,7 @@ export interface FilterDate {
   dateFrom?: string;
   dateTo?: string;
 }
+
+export interface IsDeleted {
+  isDeleted: boolean;
+}
