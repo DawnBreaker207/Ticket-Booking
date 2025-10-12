@@ -74,3 +74,9 @@ dawn:
     ## For test
     jwtExpirationsMs: 60000
     jwtRefreshExpirationsMs: 120000
+
+    setup:
+      admin:
+        username: ${ADMIN_USERNAME}
+        email: ${ADMIN_EMAIL}
+        password: ${ADMIN_PASSWORD}

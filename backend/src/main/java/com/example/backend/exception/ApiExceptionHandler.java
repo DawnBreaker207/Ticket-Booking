@@ -33,7 +33,8 @@ public class ApiExceptionHandler {
             SeatUnavailableException.class,
             RedisStorageException.class,
             RefreshTokenNotFoundException.class,
-            RefreshTokenExpiredException.class
+            RefreshTokenExpiredException.class,
+            RoleNotFoundException.class,
     })
     public <T extends RuntimeException> ResponseEntity<ExceptionMessage> handleApiRequestException(final T e) {
         log.info("**ApiExceptionHandler controller, handler API request*\n");
