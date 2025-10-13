@@ -1,20 +1,25 @@
-import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
-import {Order} from '@/app/core/models/order.model';
+import {createActionGroup, props} from '@ngrx/store';
+import {Reservation, ReservationFilter, ReservationRequest} from '@/app/core/models/reservation.model';
+
 
 export const ReservationActions = createActionGroup({
   source: 'Reservation',
   events: {
-    // Seats
-    'Toggle Seats': props<{ seat: CinemaSeats }>(),
-    // Order
-    'Load Order': props<{ order: Order }>(),
-    'Create Order': props<{ order: Partial<Order> }>(),
-    'Confirm Order': props<{ order: Partial<Order> }>(),
-    'Confirm Order Success': props<{ order: Order }>(),
-    'Confirm Order Failure': props<{ error: any }>(),
+
+    // // Reservation
+    'Load Reservations': props<{ filter?: ReservationFilter, page?: number, size?: number }>(),
+    'Load Reservations Success': props<{ reservations: Reservation[] }>(),
+    'Load Reservations Failure': props<{ error: any }>(),
+
+    'Load Reservation': props<{ id: string }>(),
+    'Load Reservation Success': props<{ reservation: Reservation }>(),
+    'Load Reservation Failure': props<{ error: any }>(),
+
+    'Create Reservation': props<{ reservation: ReservationRequest }>(),
+    'Create Reservation Success': props<{ reservation: Reservation }>(),
+    'Create Reservation Failure': props<{ error: any }>(),
 
     //   Count down
-    'Update Order TTL': props<{ orderId: string, ttl: number }>()
+    'Update Reservation TTL': props<{ reservationId: string, ttl: number }>()
   }
 });

@@ -6,8 +6,8 @@
     <input formControlName="query" nz-input placeholder="Tìm kiếm" type="text" class="!w-[500px]"/>
   </nz-input-group>
 
-  <nz-select formControlName="orderStatus" class="w-[150px]" nzPlaceHolder="Trạng thái">
-    @for (s of orderStatus; track s) {
+  <nz-select formControlName="reservationStatus" class="w-[150px]" nzPlaceHolder="Trạng thái">
+    @for (s of reservationStatus; track s) {
       <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
     }
   </nz-select>
@@ -59,22 +59,12 @@
     </tr>
     </thead>
     <tbody>
-      @for (item of reservationList; track item.orderId) {
+      @for (item of reservationList; track item.id) {
         <tr>
-          <td>{{ item.orderId }}</td>
+          <td>{{ item.id }}</td>
           <td>
-            <nz-tag [nzColor]="(item.orderStatus | tags).color">
-              {{ (item.orderStatus |tags).status }}
-            </nz-tag>
-          </td>
-          <td>
-            <nz-tag [nzColor]="(item.paymentMethod | tags).color">
-              {{ (item.paymentMethod |tags).status }}
-            </nz-tag>
-          </td>
-          <td>
-            <nz-tag [nzColor]="(item.paymentStatus | tags).color">
-              {{ (item.paymentStatus|tags).status }}
+            <nz-tag [nzColor]="(item.reservationStatus | tags).color">
+              {{ (item.reservationStatus |tags).status }}
             </nz-tag>
           </td>
           <td>{{ item.totalAmount | currency :'VND' }}</td>
@@ -82,7 +72,7 @@
           <td>
             <div>
               <nz-space>
-                <button nz-button nzType="text" nzShape="circle" (click)="openModal(item.orderId)">
+                <button nz-button nzType="text" nzShape="circle" (click)="openModal(item.id)">
                   <nz-icon nzType="eye" nzTheme="twotone"></nz-icon>
                 </button>
                 <!--              <button nz-button nzType="text" nzShape="circle">-->

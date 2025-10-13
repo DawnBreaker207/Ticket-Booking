@@ -44,7 +44,7 @@ export class ReservationService {
     )
   }
 
-  getReservation(id: number) {
+  getReservation(id: string) {
     return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`, {}).pipe(
       map((res: any) => res.data),
       catchError(this.handleError<Reservation>('Get reservation'))

@@ -1,69 +1,93 @@
-import {CinemaSeats} from '@/app/core/models/cinemaHall.model';
 import {createReducer, on} from '@ngrx/store';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {OrderStatus, PaymentMethod, PaymentStatus, SeatStatus} from '@/app/core/constants/enum';
+import {Reservation} from '@/app/core/models/reservation.model';
 
 
 export const reservationFeatureKey = 'reservationKey';
 
 export interface ReservationState {
-  orderId: string,
-  orderStatus: OrderStatus,
-  paymentMethod: PaymentMethod,
-  paymentStatus: PaymentStatus,
-  cinemaHallId: number
+  reservations: Reservation[];
+  reservation: Reservation | null;
+  loading: boolean;
+  saving: boolean;
+  error: string | null;
+
 }
 
 export const initialState: ReservationState = {
-  orderId: '',
-  orderStatus: JSON.parse(localStorage.getItem('orderStatus') || 'null') || 'CREATED',
-  paymentMethod: JSON.parse(localStorage.getItem('paymentMethod') || 'null') || 'CASH',
-  paymentStatus: JSON.parse(localStorage.getItem('paymentStatus') || 'null') || 'PENDING',
-  cinemaHallId: JSON.parse(localStorage.getItem('cinemaHallId') || 'null') || 7,
+  reservations: [],
+  reservation: null,
+  loading: false,
+  saving: false,
+  error: null
 }
 
 export const reservationReducer = createReducer(
   initialState,
-  on(ReservationActions.loadOrder, (state, {order}) => {
-    return {...state, order}
-  }),
-
-  on(ReservationActions.createOrder, (state, {order}) => {
+  on(ReservationActions.loadReservations, (state) => {
     return {
       ...state,
-      orderId: order.orderId ?? state.orderId,
-      orderStatus: order.orderStatus ?? state.orderStatus,
-      paymentMethod: order.paymentMethod ?? state.paymentMethod,
-      paymentStatus: order.paymentStatus ?? state.paymentStatus,
-      cinemaHallId: order.cinemaHallId ?? state.cinemaHallId
+      loading: true,
+      error: null,
     }
   }),
 
-  on(ReservationActions.confirmOrder, (state, {order}) => {
+  on(ReservationActions.loadReservationsSuccess, (state, {reservations}) => {
     return {
       ...state,
-      orderId: order.orderId ?? state.orderId,
-      orderStatus: order.orderStatus ?? state.orderStatus,
-      paymentMethod: order.paymentMethod ?? state.paymentMethod,
-      paymentStatus: order.paymentStatus ?? state.paymentStatus,
-      cinemaHallId: order.cinemaHallId ?? state.cinemaHallId
+      reservations: reservations,
+      loading: false,
     }
   }),
-  on(ReservationActions.confirmOrderSuccess, (state) => {
 
-    localStorage.removeItem('cinemaHallId');
-    localStorage.removeItem('orderStatus');
-    localStorage.removeItem('paymentMethod');
-    localStorage.removeItem('paymentStatus');
+  on(ReservationActions.loadReservationsFailure, (state, {error}) => {
     return {
       ...state,
-      initialState
+      loading: false,
+      error: error
+    }
+  }),
+  on(ReservationActions.loadReservation, (state) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    }
+  }),
+
+  on(ReservationActions.loadReservationSuccess, (state, {reservation}) => {
+    return {
+      ...state,
+      reservation: reservation,
+      loading: false,
+    }
+  }),
+
+  on(ReservationActions.loadReservationFailure, (state, {error}) => {
+    return {
+      ...state,
+      loading: false,
+      error: error
+    }
+  }),
+  on(ReservationActions.createReservation, (state) => {
+    return {
+      ...state,
+      loading: true,
+      saving: true,
+      error: null,
     };
   }),
 
-  on(ReservationActions.confirmOrderFailure, (state, {error}) => ({
+  on(ReservationActions.createReservationSuccess, (state, {reservation}) => ({
     ...state,
-    orderStatus: 'CANCELED' as OrderStatus,
-    paymentStatus: 'CANCELED' as PaymentStatus,
-  }))
+    reservation: reservation,
+    saving: false,
+    loading: false,
+  })),
+  on(ReservationActions.createReservationFailure, (state, {error}) => ({
+    ...state,
+    saving: false,
+    error: error
+  })),
 )

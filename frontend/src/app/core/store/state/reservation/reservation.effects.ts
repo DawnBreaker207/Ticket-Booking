@@ -1,35 +1,48 @@
 import {inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {OrderService} from '@/app/core/services/order/order.service';
+import {ReservationService} from '@/app/core/services/reservation/reservation.service';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {catchError, map, of, switchMap, tap} from 'rxjs';
+import {catchError, map, of, switchMap} from 'rxjs';
 
 @Injectable()
 export class ReservationEffects {
   private actions$ = inject(Actions);
-  private reservationService = inject(OrderService);
+  private reservationService = inject(ReservationService);
 
-  createOrder$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(ReservationActions.createOrder),
-        tap(({order}) => {
-          localStorage.setItem('cinemaHallId', JSON.stringify(order.cinemaHallId));
-          localStorage.setItem('orderStatus', JSON.stringify(order.orderStatus));
-          localStorage.setItem('paymentMethod', JSON.stringify(order.paymentMethod));
-          localStorage.setItem('paymentStatus', JSON.stringify(order.paymentStatus));
-        })
-      ),
-    {dispatch: false}
-  )
-
-  confirm$ = createEffect(() => {
+  loadReservations$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ReservationActions.confirmOrder),
-      switchMap(({order}) =>
-        this.reservationService.confirm(order)
+      ofType(ReservationActions.loadReservations),
+      switchMap(({filter, page, size}) =>
+        this.reservationService.getReservations(filter, page, size)
           .pipe(
-            map((order) => ReservationActions.confirmOrderSuccess({order})),
-            catchError((err) => of(ReservationActions.confirmOrderFailure({error: err})))
+            map((reservations) => ReservationActions.loadReservationsSuccess({reservations})),
+            catchError((err) => of(ReservationActions.loadReservationsFailure({error: err})))
+          )
+      )
+    )
+  })
+
+  loadReservation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ReservationActions.loadReservation),
+      switchMap(({id}) =>
+        this.reservationService.getReservation(id)
+          .pipe(
+            map((reservation) => ReservationActions.loadReservationSuccess({reservation})),
+            catchError((err) => of(ReservationActions.loadReservationFailure({error: err})))
+          )
+      )
+    )
+  })
+
+  createReservation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ReservationActions.createReservation),
+      switchMap(({reservation}) =>
+        this.reservationService.confirmReservation(reservation)
+          .pipe(
+            map((reservation) => ReservationActions.createReservationSuccess({reservation})),
+            catchError((err) => of(ReservationActions.createReservationFailure({error: err})))
           )
       )
     )

@@ -3,13 +3,20 @@ import {reservationFeatureKey, ReservationState} from '@/app/core/store/state/re
 
 export const selectReservationState = createFeatureSelector<ReservationState>(reservationFeatureKey);
 
-export const selectedOrder = createSelector(
+export const selectReservations = createSelector(
   selectReservationState,
-  (state) => ({
-    orderId: state.orderId,
-    orderStatus: state.orderStatus,
-    paymentMethod: state.paymentMethod,
-    paymentStatus: state.paymentStatus,
-    cinemaHallId: state.cinemaHallId,
-  })
+  (state) => state.reservations
+)
+
+export const selectReservation = createSelector(
+  selectReservationState,
+  (state) => state.reservation
+)
+export const selectReservationLoading = createSelector(
+  selectReservationState,
+  (state) => state.loading
+)
+export const selectReservationError = createSelector(
+  selectReservationState,
+  (state) => state.error
 )

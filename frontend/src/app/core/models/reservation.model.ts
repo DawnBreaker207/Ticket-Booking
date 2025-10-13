@@ -28,7 +28,5 @@ export interface ReservationRequest {
 export interface ReservationFilter extends FilterQuery, FilterSort, FilterDate {
   userId: string;
   reservationStatus: ReservationStatus;
-  paymentMethod: PaymentMethod;
-  paymentStatus: PaymentStatus;
   totalAmount: number;
 }
