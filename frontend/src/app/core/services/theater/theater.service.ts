@@ -62,38 +62,38 @@ export class TheaterService {
 
   getShowtimeByDate(date: number) {
     let params = new HttpParams().set('date', date);
-    return this.http.get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}`, {params}).pipe(
+    return this.http.get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}`, {params}).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Showtime>('showtime'))
+      catchError(this.handleError<Showtime[]>('showtime'))
     )
   }
 
   getShowtimeByMovie(movieId: number) {
-    return this.http.get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}/movies/${movieId}`).pipe(
+    return this.http.get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/movies/${movieId}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Showtime>('showtime'))
+      catchError(this.handleError<Showtime[]>('showtime'))
     )
   }
 
   getShowtimeByTheater(theaterId: number) {
-    return this.http.get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}/theaters/${theaterId}`).pipe(
+    return this.http.get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/theaters/${theaterId}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Showtime>('showtime'))
+      catchError(this.handleError<Showtime[]>('showtime'))
     )
   }
 
   getAvailableShowtime(date: Date) {
     let params = new HttpParams().set("date", date.toDateString());
-    return this.http.get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}/available`, {params}).pipe(
+    return this.http.get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/available`, {params}).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Showtime>('showtime'))
+      catchError(this.handleError<Showtime[]>('showtime'))
     )
   }
 
   getAvailableShowtimeByMovie(movieId: number) {
-    return this.http.get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}/available/movies/${movieId}`).pipe(
+    return this.http.get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/available/movies/${movieId}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<Showtime>('showtime'))
+      catchError(this.handleError<Showtime[]>('showtime'))
     )
   }
 

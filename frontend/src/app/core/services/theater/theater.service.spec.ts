@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ScheduleService } from './schedule.service';
+import { TheaterService } from './theater.service';
 
-describe('ScheduleService', () => {
-  let service: ScheduleService;
+describe('TheaterService', () => {
+  let service: TheaterService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ScheduleService);
+    service = TestBed.inject(TheaterService);
   });
 
   it('should be created', () => {

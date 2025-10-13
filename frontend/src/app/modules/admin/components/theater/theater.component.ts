@@ -1,11 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {ScheduleService} from '@/app/core/services/schedule/schedule.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {CinemaHall} from '@/app/core/models/cinemaHall.model';
 import {headerColumns} from '@/app/core/constants/column';
-import {MovieService} from '@/app/core/services/movie/movie.service';
-import {FormScheduleComponent} from '@/app/modules/admin/components/schedule/form/form.component';
 import {DatePipe} from '@angular/common';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzIconModule} from 'ng-zorro-antd/icon';
@@ -13,9 +9,14 @@ import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzSpaceComponent} from 'ng-zorro-antd/space';
 import {NzTableModule} from 'ng-zorro-antd/table';
+import {Store} from '@ngrx/store';
+import {Theater} from '@/app/core/models/theater.model';
+import {selectAllTheaters} from '@/app/core/store/state/theater/theater.selectors';
+import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
+import {FormTheaterComponent} from '@/app/modules/admin/components/theater/form/form.component';
 
 @Component({
-  selector: 'app-schedule',
+  selector: 'app-theater',
   imports: [
     NzTableModule,
     NzInputModule,
@@ -27,24 +28,24 @@ import {NzTableModule} from 'ng-zorro-antd/table';
     ReactiveFormsModule
   ],
   providers: [NzModalService],
-  templateUrl: './schedule.component.html',
-  styleUrl: './schedule.component.css'
+  templateUrl: './theater.component.html',
+  styleUrl: './theater.component.css'
 })
-export class ScheduleComponent implements OnInit {
-  private scheduleService = inject(ScheduleService);
+export class TheaterComponent implements OnInit {
   private modalService = inject(NzModalService);
-  private movieService = inject(MovieService);
-  headerColumn = headerColumns.schedule;
-  scheduleList: readonly CinemaHall[] = [];
+  private store = inject(Store);
+  headerColumn = headerColumns.theater;
+  theaterList: readonly Theater[] = [];
 
   ngOnInit() {
-    this.scheduleService.getSchedules().subscribe(data => this.scheduleList = data);
+    this.store.select(selectAllTheaters).subscribe(data => {
+      this.theaterList = data;
+    })
   }
-
 
   openModal(mode: 'add' | 'edit' | 'view', id?: number) {
     const modal = this.modalService.create({
-      nzContent: FormScheduleComponent,
+      nzContent: FormTheaterComponent,
       nzTitle: undefined,
       nzClosable: true,
       nzData: {
@@ -58,7 +59,7 @@ export class ScheduleComponent implements OnInit {
           label: 'Confirm',
           type: 'primary',
           onClick: () => {
-            const form = modal.getContentComponent() as FormScheduleComponent;
+            const form = modal.getContentComponent() as FormTheaterComponent;
             console.log(form.form.valid)
             if (form.form.valid) {
               form.submit();
@@ -71,8 +72,9 @@ export class ScheduleComponent implements OnInit {
   }
 
   onDelete(id: number) {
-    this.scheduleService.deleteSchedule(id).subscribe(data => {
-      console.log(data)
+    this.store.dispatch(TheaterActions.deleteTheater({id}))
+    this.store.select(selectAllTheaters).subscribe(data => {
+      this.theaterList = data;
     })
   }
 }

@@ -4,29 +4,29 @@ import {DateModel, IsDeleted} from '@/app/core/models/common.model';
 import {Reservation} from '@/app/core/models/reservation.model';
 
 export interface Theater extends DateModel, IsDeleted {
-  id: number,
-  name: string,
-  location: string,
-  capacity: number,
+  id: number;
+  name: string;
+  location: string;
+  capacity: number;
   showtime: Showtime[]
 
 }
 
 export interface TheaterRequest {
-  name: string,
-  location: string,
-  capacity: number
+  name: string;
+  location: string;
+  capacity: number;
 }
 
 export interface Showtime extends DateModel, IsDeleted {
-  id: number,
-  movieId: number,
-  movieTitle: string,
-  moviePosterUrl: string,
+  id: number;
+  movieId: number;
+  movieTitle: string;
+  moviePosterUrl: string;
 
-  theaterId: number,
-  theaterName: string,
-  theaterLocation: string,
+  theaterId: number;
+  theaterName: string;
+  theaterLocation: string;
 
   showDate: Date;
   showTime: Date;
