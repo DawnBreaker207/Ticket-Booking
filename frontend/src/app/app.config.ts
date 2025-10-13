@@ -27,8 +27,10 @@ import {provideStoreDevtools} from '@ngrx/store-devtools';
 import {reservationFeatureKey, reservationReducer} from '@/app/core/store/state/reservation/reservation.reducers';
 import {ReservationEffects} from '@/app/core/store/state/reservation/reservation.effects';
 import {countdownFeatureKey, countdownReducer} from '@/app/core/store/state/countdown/countdown.reducers';
-import {scheduleFeatureKey, scheduleReducer} from '@/app/core/store/state/schedule/schedule.reducers';
-import {ScheduleEffects} from '@/app/core/store/state/schedule/schedule.effects';
+import {theaterFeatureKey, theaterReducer} from '@/app/core/store/state/theater/theater.reducers';
+import {TheaterEffects} from '@/app/core/store/state/theater/theater.effects';
+import {movieFeatureKey, movieReducer} from '@/app/core/store/state/movie/movie.reducers';
+import {showtimeFeatureKey, showtimeReducer} from '@/app/core/store/state/showtime/showtime.reducers';
 
 registerLocaleData(en);
 
@@ -40,12 +42,14 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore({
       [authFeatureKey]: authReducer,
+      [movieFeatureKey]: movieReducer,
+      [theaterFeatureKey]: theaterReducer,
+      [showtimeFeatureKey]: showtimeReducer,
       [reservationFeatureKey]: reservationReducer,
       [countdownFeatureKey]: countdownReducer,
-      [scheduleFeatureKey]: scheduleReducer,
 
     }),
-    provideEffects([AuthEffects, ReservationEffects, ScheduleEffects]),
+    provideEffects([AuthEffects, ReservationEffects, TheaterEffects]),
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(
