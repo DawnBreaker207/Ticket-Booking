@@ -1,8 +1,10 @@
 <div class="p-6">
   <div class="flex flex-row justify-between mb-10">
-    <nz-image class="!object-cover w-fit" [nzSrc]="filmDetail()?.poster ?? ''"
-              [nzAlt]="filmDetail()?.title ?? ''"
-              [nzDisablePreview]="true"
+    <nz-image
+      class="!object-cover w-fit"
+      [nzSrc]="filmDetail()?.poster ?? ''"
+      [nzAlt]="filmDetail()?.title ?? ''"
+      [nzDisablePreview]="true"
     />
     <h1 class="text-2xl font-extrabold">{{ filmDetail()?.title }}</h1>
   </div>
@@ -10,77 +12,74 @@
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
       <p>
-        <nz-icon nzType="tags"/>
+        <nz-icon nzType="tags" />
         Thể loại
       </p>
     </div>
 
-    <p>{{ filmDetail()?.genres?.join(', ') }}</p>
+    <p>{{ filmDetail()?.genres?.join(", ") }}</p>
   </div>
 
-  <div class="flex flex-row  justify-between">
+  <div class="flex flex-row justify-between">
     <div class="flex-1/2">
-
       <p>
-        <nz-icon nzType="field-time"/>
+        <nz-icon nzType="field-time" />
         Thời lượng
       </p>
     </div>
     <p>{{ filmDetail()?.duration }} phút</p>
   </div>
 
-  <hr class="border-dashed my-3">
+  <hr class="border-dashed my-3" />
 
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
-
       <p>
-        <nz-icon nzType="bank"/>
+        <nz-icon nzType="bank" />
         Rạp chiếu
       </p>
     </div>
-    <p>{{ cinemaHall()?.id }}</p>
+    <!--    <p>{{ cinemaHall()?.id }}</p>-->
   </div>
 
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
       <p>
-        <nz-icon nzType="calendar"/>
+        <nz-icon nzType="calendar" />
         Ngày chiếu
       </p>
     </div>
-    <p>{{ cinemaHall()?.movieSession |date: 'dd/MM/yyyy' }} </p>
+    <!--    <p>{{ cinemaHall()?.movieSession | date: "dd/MM/yyyy" }}</p>-->
   </div>
 
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
       <p>
-        <nz-icon nzType="field-time"/>
+        <nz-icon nzType="field-time" />
         Giờ chiếu
       </p>
     </div>
-    <p>{{ cinemaHall()?.movieSession |date: 'HH:MM':'UTC' }}</p>
+    <!--    <p>{{ cinemaHall()?.movieSession | date: "HH:MM" : "UTC" }}</p>-->
   </div>
-
 
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
       <p>
-        <nz-icon nzType="desktop"/>
+        <nz-icon nzType="desktop" />
         Phòng chiếu
       </p>
     </div>
-    <!--      <p>{{ schedule()?.movieSession |date: 'HH:MM':'UTC' }}</p>-->
+    <!--      <p>{{ theater()?.movieSession |date: 'HH:MM':'UTC' }}</p>-->
   </div>
 
   <div class="flex flex-row justify-between">
     <div class="flex-1/2">
       <p>
-        <nz-icon nzType="table"/>
+        <nz-icon nzType="table" />
         Ghế ngồi
       </p>
     </div>
-    <p>{{ selectedSeats$| async }}</p>
+    <!--    <p>{{ selectedSeats$ | async }}</p>-->
   </div>
 </div>
 
