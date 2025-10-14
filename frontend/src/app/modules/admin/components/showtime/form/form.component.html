@@ -4,17 +4,31 @@
     <nz-col [nzSpan]="8">
       <form formGroupName="movie">
         <div class="flex flex-col gap-3">
-          <div class="w-full bg-[#f5f5f5] border-1 rounded-lg overflow-hidden" [style.aspect-ratio]="'2/3'">
-            <img [src]="form.get('movie.poster')?.value || 'https://via.placeholder.com/150x200'"
-                 class="w-full h-full object-cover block" alt="">
+          <div
+            class="w-full bg-[#f5f5f5] border-1 rounded-lg overflow-hidden"
+            [style.aspect-ratio]="'2/3'"
+          >
+            <img
+              [src]="
+                form.get('movie.poster')?.value ||
+                'https://via.placeholder.com/150x200'
+              "
+              class="w-full h-full object-cover block"
+              alt=""
+            />
           </div>
         </div>
 
         <nz-form-item class="mt-[60px]">
           <nz-form-label>Poster (URL)</nz-form-label>
           <nz-form-control>
-            <input nz-input formControlName="poster" type="text" placeholder="URL poster" [readOnly]="mode === 'view'"
-            >
+            <input
+              nz-input
+              formControlName="poster"
+              type="text"
+              placeholder="URL poster"
+              [readOnly]="mode === 'view'"
+            />
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -23,29 +37,49 @@
     <nz-col [nzSpan]="16">
       <div class="flex flex-col h-full justify-between pt-5">
         <div class="relative">
-
           <nz-form-item>
             <nz-input-group nzAddOnBeforeIcon="search">
-              <input nz-input placeholder="Tìm kiếm" style="width:500px" type="text" [formControl]="searchCtrl">
+              <input
+                nz-input
+                placeholder="Tìm kiếm"
+                style="width: 500px"
+                type="text"
+                [formControl]="searchCtrl"
+              />
             </nz-input-group>
           </nz-form-item>
           @if (searchResults() && searchResults().length > 0) {
-            <div class="absolute z-50 top-full mt-1 w-full bg-white border rounded shadow max-h-72 overflow-y-auto">
-              <nz-list [nzDataSource]="searchResults()" [nzRenderItem]="item" [nzBordered]="true"
-                       class="max-h-52 overflow-y-auto">
+            <div
+              class="absolute z-50 top-full mt-1 w-full bg-white border rounded shadow max-h-72 overflow-y-auto"
+            >
+              <nz-list
+                [nzDataSource]="searchResults()"
+                [nzRenderItem]="item"
+                [nzBordered]="true"
+                class="max-h-52 overflow-y-auto"
+              >
                 <ng-template #item let-movie>
-                  <nz-list-item (click)="selectMovie(movie)" class="cursor-pointer transition p-2 rounded"
-                                [ngClass]="{'bg-blue-100': selectedMovie()?.id === movie.id,'hover:bg-gray-100': selectedMovie()?.id !== movie.id}"
+                  <nz-list-item
+                    (click)="selectMovie(movie)"
+                    class="cursor-pointer transition p-2 rounded"
+                    [ngClass]="{
+                      'bg-blue-100': selectedMovie()?.id === movie.id,
+                      'hover:bg-gray-100': selectedMovie()?.id !== movie.id,
+                    }"
                   >
                     <nz-list-item-meta
                       [nzAvatar]="nzAvatar"
                       [nzTitle]="nzTitle"
-                      [nzDescription]="nzDescription">
+                      [nzDescription]="nzDescription"
+                    >
                     </nz-list-item-meta>
 
                     <ng-template #nzAvatar>
-                      <nz-avatar nzShape="square" [nzSize]="64"
-                                 [nzSrc]="movie.poster">
+                      <nz-avatar
+                        nzShape="square"
+                        [nzSize]="64"
+                        [nzSrc]="movie.poster"
+                      >
                       </nz-avatar>
                     </ng-template>
 
@@ -54,9 +88,10 @@
                     </ng-template>
 
                     <ng-template #nzDescription>
-              <span class="text-xs text-gray-500">
-                {{ movie.release_date | date: 'yyyy' }} — {{ movie.overview }}
-              </span>
+                      <span class="text-xs text-gray-500">
+                        {{ movie.release_date | date: "yyyy" }} —
+                        {{ movie.overview }}
+                      </span>
                     </ng-template>
                   </nz-list-item>
                 </ng-template>
@@ -67,8 +102,12 @@
         <nz-form-item>
           <nz-form-label nzRequired>Date release</nz-form-label>
           <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter release date'">
-            <nz-date-picker nzSize="default" class="w-full"
-                            formControlName="movieSession" [nzDisabled]="mode === 'view'"></nz-date-picker>
+            <nz-date-picker
+              nzSize="default"
+              class="w-full"
+              formControlName="movieSession"
+              [nzDisabled]="mode === 'view'"
+            ></nz-date-picker>
           </nz-form-control>
         </nz-form-item>
       </div>

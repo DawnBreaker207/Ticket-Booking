@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {FormShowtimeComponent} from './form.component';
+import { FormShowtimeComponent } from './form.component';
 
 describe('FormComponent', () => {
   let component: FormShowtimeComponent;
@@ -8,9 +8,8 @@ describe('FormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormShowtimeComponent]
-    })
-      .compileComponents();
+      imports: [FormShowtimeComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FormShowtimeComponent);
     component = fixture.componentInstance;

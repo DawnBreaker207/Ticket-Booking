@@ -8,9 +8,8 @@ describe('ShowtimeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShowtimeComponent]
-    })
-    .compileComponents();
+      imports: [ShowtimeComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ShowtimeComponent);
     component = fixture.componentInstance;

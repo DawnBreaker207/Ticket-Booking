@@ -1,11 +1,13 @@
-import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {Seat, Showtime, ShowtimeRequest} from '@/app/core/models/theater.model';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import {
+  Seat,
+  Showtime,
+  ShowtimeRequest,
+} from '@/app/core/models/theater.model';
 
 export const ShowtimeActions = createActionGroup({
   source: 'Showtime',
   events: {
-
-
     // Load all
     'Load Showtimes': props<{ movieId: number }>(),
     'Load Showtimes Success': props<{ showtimes: Showtime[] }>(),
@@ -22,7 +24,7 @@ export const ShowtimeActions = createActionGroup({
     'Create Showtime Failed': props<{ error: any }>(),
 
     // Update
-    'Update Showtime': props<{ id: number, showtime: ShowtimeRequest }>(),
+    'Update Showtime': props<{ id: number; showtime: ShowtimeRequest }>(),
     'Update Showtime Success': props<{ showtime: Showtime }>(),
     'Update Showtime Failed': props<{ error: any }>(),
 
@@ -42,5 +44,5 @@ export const ShowtimeActions = createActionGroup({
 
     'Clear Showtime': emptyProps(),
     'Clear Seats': emptyProps(),
-  }
+  },
 });

@@ -1,6 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
-import {Showtime} from '@/app/core/models/theater.model';
-import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions';
+import { createReducer, on } from '@ngrx/store';
+import { Showtime } from '@/app/core/models/theater.model';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
 
 export const showtimeFeatureKey = 'showtimeKey';
 
@@ -22,59 +22,64 @@ export const initialState: ShowtimeState = {
   loadingDetails: false,
   saving: false,
   error: null,
-}
+};
 
 export const showtimeReducer = createReducer(
   initialState,
-// Load all
-  on(ShowtimeActions.loadShowtimes, (state, {movieId}) => {
+  // Load all
+  on(ShowtimeActions.loadShowtimes, (state, { movieId }) => {
     return {
       ...state,
       movieId: movieId,
       loading: true,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.loadShowtimesSuccess, (state, {showtimes}) => {
+  on(ShowtimeActions.loadShowtimesSuccess, (state, { showtimes }) => {
     return {
       ...state,
       showtimes: showtimes,
       loading: false,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.loadShowtimesFailed, (state, {error}) => {
+  on(ShowtimeActions.loadShowtimesFailed, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error
-    }
+      error,
+    };
   }),
-//  Get one
+  //  Get one
   on(ShowtimeActions.loadShowtime, (state) => {
     return {
       ...state,
       loadingDetails: true,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.loadShowtimeSuccess, (state, {showtime}) => {
-    const existingIndex = state.showtimes.findIndex(s => s.id === showtime.id);
-    const showtimes = existingIndex >= 0 ? state.showtimes.map(s => s.id === showtime.id ? showtime : s) : [...state.showtimes, showtime];
+  on(ShowtimeActions.loadShowtimeSuccess, (state, { showtime }) => {
+    const existingIndex = state.showtimes.findIndex(
+      (s) => s.id === showtime.id,
+    );
+    const showtimes =
+      existingIndex >= 0
+        ? state.showtimes.map((s) => (s.id === showtime.id ? showtime : s))
+        : [...state.showtimes, showtime];
     return {
       ...state,
       showtimes: showtimes,
       selectedShowtime: showtime,
       loadingDetails: false,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.loadShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.loadShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       loadingDetails: false,
-      error
-    }
+      error,
+    };
   }),
   //  Create
   on(ShowtimeActions.createShowtime, (state) => {
@@ -82,22 +87,22 @@ export const showtimeReducer = createReducer(
       ...state,
       saving: true,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.createShowtimeSuccess, (state, {showtime}) => {
+  on(ShowtimeActions.createShowtimeSuccess, (state, { showtime }) => {
     return {
       ...state,
       showtimes: [...state.showtimes, showtime],
       saving: false,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.createShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.createShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
-      error
-    }
+      error,
+    };
   }),
   //  Update
   on(ShowtimeActions.updateShowtime, (state) => {
@@ -105,23 +110,28 @@ export const showtimeReducer = createReducer(
       ...state,
       saving: true,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.updateShowtimeSuccess, (state, {showtime}) => {
+  on(ShowtimeActions.updateShowtimeSuccess, (state, { showtime }) => {
     return {
       ...state,
-      showtimes: state.showtimes.map(s => s.id === showtime.id ? showtime : s),
-      selectedShowtime: state.selectedShowtime?.id === showtime.id ? showtime : state.selectedShowtime,
+      showtimes: state.showtimes.map((s) =>
+        s.id === showtime.id ? showtime : s,
+      ),
+      selectedShowtime:
+        state.selectedShowtime?.id === showtime.id
+          ? showtime
+          : state.selectedShowtime,
       saving: false,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.updateShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.updateShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
-      error
-    }
+      error,
+    };
   }),
   //  Delete
   on(ShowtimeActions.deleteShowtime, (state) => {
@@ -129,42 +139,43 @@ export const showtimeReducer = createReducer(
       ...state,
       loading: true,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.deleteShowtimeSuccess, (state, {id}) => {
+  on(ShowtimeActions.deleteShowtimeSuccess, (state, { id }) => {
     return {
       ...state,
-      showtimes: state.showtimes.filter(s => s.id !== id),
-      selectedShowtime: state.selectedShowtime?.id === id ? null : state.selectedShowtime,
+      showtimes: state.showtimes.filter((s) => s.id !== id),
+      selectedShowtime:
+        state.selectedShowtime?.id === id ? null : state.selectedShowtime,
       loading: false,
       error: null,
-    }
+    };
   }),
-  on(ShowtimeActions.deleteShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.deleteShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error
-    }
+      error,
+    };
   }),
-  on(ShowtimeActions.selectedShowtime, (state, {showtime}) => {
+  on(ShowtimeActions.selectedShowtime, (state, { showtime }) => {
     return {
       ...state,
       selectedShowtime: showtime,
       error: null,
-    }
+    };
   }),
   on(ShowtimeActions.clearShowtime, (state) => {
     return {
       ...state,
       selectedTheater: null,
-      error: null
-    }
+      error: null,
+    };
   }),
   on(ShowtimeActions.clearError, (state) => {
     return {
       ...state,
-      error: null
-    }
+      error: null,
+    };
   }),
-)
+);
