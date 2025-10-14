@@ -33,7 +33,7 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get reservation by id", description = "Returns reservation by its Id (Admin Only)")
-    public ResponseObject<Reservation> getOne(@PathVariable String id) {
+    public ResponseObject<ReservationResponseDTO> getOne(@PathVariable String id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findOne(id));
     }
 

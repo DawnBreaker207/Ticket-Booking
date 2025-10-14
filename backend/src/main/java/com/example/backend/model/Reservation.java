@@ -3,10 +3,7 @@ package com.example.backend.model;
 import com.example.backend.constant.ReservationStatus;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -46,5 +43,6 @@ public class Reservation extends AbstractMappedEntity {
     private List<Seat> seats = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 }

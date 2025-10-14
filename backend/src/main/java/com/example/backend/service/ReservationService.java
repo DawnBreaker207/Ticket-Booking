@@ -9,7 +9,7 @@ import java.util.List;
 public interface ReservationService {
     List<ReservationResponseDTO> findAll(ReservationFilterDTO o);
 
-    Reservation findOne(String id);
+    ReservationResponseDTO findOne(String id);
 
     String initReservation(ReservationInitRequestDTO reservation);
 

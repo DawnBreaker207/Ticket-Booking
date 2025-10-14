@@ -67,9 +67,10 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation findOne(String id) {
+    public ReservationResponseDTO findOne(String id) {
         return reservationRepository
                 .findById(id)
+                .map(ReservationMappingHelper::map)
                 .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_NOT_FOUND));
     }
 
