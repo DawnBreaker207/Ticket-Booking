@@ -1,16 +1,22 @@
 <nz-layout class="min-h-screen">
-  <nz-sider class="sticky top-0 h-screen"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-
+  <nz-sider
+    class="sticky top-0 h-screen"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
   >
-    <div class=" bg-white">
+    <div class="bg-white">
       <h1 class="text-2xl text-center">Logo</h1>
     </div>
 
-    <ul class="mt-1" nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul
+      class="mt-1"
+      nz-menu
+      nzTheme="dark"
+      nzMode="inline"
+      [nzInlineCollapsed]="isCollapsed"
+    >
       <li nz-menu-item [routerLink]="['dashboard']">
         <i nz-icon nzType="dashboard" nzTheme="outline"></i>
         <span>Thống Kê</span>
@@ -31,24 +37,26 @@
         <i nz-icon nzType="ordered-list" nzTheme="outline"></i>
         <span>Vé đã đặt</span>
       </li>
-
     </ul>
-
-
   </nz-sider>
   <nz-layout>
     <nz-header>
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"/>
+          <nz-icon
+            class="trigger"
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+          />
         </span>
       </div>
     </nz-header>
     <nz-content>
       <div class="overflow-y-auto h-full px-6 py-3 bg-white">
-        <router-outlet/>
+        <router-outlet />
       </div>
     </nz-content>
-    <nz-footer class="bg-white text-center">Booking Ticket System {{ date.getFullYear() }}</nz-footer>
+    <nz-footer class="bg-white text-center"
+      >Booking Ticket System {{ date.getFullYear() }}</nz-footer
+    >
   </nz-layout>
 </nz-layout>
