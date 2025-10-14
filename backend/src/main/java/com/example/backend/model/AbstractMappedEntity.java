@@ -34,7 +34,6 @@ public class AbstractMappedEntity implements Serializable {
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(name = "updated_at", insertable = false)
-
     private Instant updatedAt;
 
     public void markCreated() {
