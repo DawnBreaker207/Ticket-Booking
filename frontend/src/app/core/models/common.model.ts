@@ -6,7 +6,7 @@ export interface ApiRes<T> {
 
 export interface DateModel {
   createdAt: Date;
-  updatedAt: Date
+  updatedAt: Date;
 }
 
 export interface FilterQuery {
@@ -17,7 +17,6 @@ export interface FilterSort {
   sortBy?: string;
   sortDirection?: 'asc' | 'desc';
   page?: number;
-
 }
 
 export interface FilterDate {
