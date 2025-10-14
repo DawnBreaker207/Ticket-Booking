@@ -17,7 +17,7 @@ public interface MovieService {
 
     MovieResponseDTO createWithId(Long id);
 
-    MovieResponseDTO update(Long id, Movie m);
+    MovieResponseDTO update(Long id, MovieRequestDTO m);
 
     void delete(Long id);
 }

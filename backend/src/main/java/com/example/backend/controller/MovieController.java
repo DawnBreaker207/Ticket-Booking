@@ -48,7 +48,7 @@ public class MovieController {
 
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<MovieResponseDTO> update(@PathVariable Long id, @RequestBody Movie m) {
+    public ResponseObject<MovieResponseDTO> update(@PathVariable Long id, @RequestBody MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.update(id, m));
     }
 

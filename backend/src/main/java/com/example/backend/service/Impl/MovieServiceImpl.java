@@ -121,10 +121,20 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public MovieResponseDTO update(Long id, Movie movie) {
-        movieRepository
+    public MovieResponseDTO update(Long id, MovieRequestDTO movieDetails) {
+        Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+        movie.setTitle(movieDetails.getTitle());
+        movie.setPoster(movieDetails.getPoster());
+        movie.setOverview(movieDetails.getOverview());
+        movie.setDuration(movieDetails.getDuration());
+        movie.setGenres(movieDetails.getGenres());
+        movie.setReleaseDate(movieDetails.getReleaseDate());
+        movie.setLanguage(movieDetails.getLanguage());
+        movie.setFilmId(movieDetails.getFilmId());
+        movie.setImdbId(movieDetails.getImdbId());
+        movie.markUpdated();
         return MovieMappingHelper.map(movieRepository.save(movie));
 
     }

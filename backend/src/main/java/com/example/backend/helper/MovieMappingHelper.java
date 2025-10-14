@@ -31,9 +31,9 @@ public interface MovieMappingHelper {
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
                 .language(m.getLanguage())
+                .isDeleted(m.getIsDeleted())
                 .createdAt(m.getCreatedAt())
                 .updatedAt(m.getUpdatedAt())
-                .isDeleted(m.getIsDeleted())
                 .build();
     }
 }
