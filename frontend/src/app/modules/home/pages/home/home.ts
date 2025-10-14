@@ -1,20 +1,31 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {NzLayoutModule} from 'ng-zorro-antd/layout';
-import {NzTypographyComponent} from 'ng-zorro-antd/typography';
-import {NzColDirective, NzGridModule, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzCardComponent, NzCardModule} from 'ng-zorro-antd/card';
-import {NzImageViewComponent} from 'ng-zorro-antd/experimental/image';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzImageService} from 'ng-zorro-antd/image';
-import {Router} from '@angular/router';
-import {on, Store} from '@ngrx/store';
-import {OrderService} from '@/app/core/services/order/order.service';
-import {selectUser} from '@/app/core/store/state/auth/auth.selectors';
-import {filter, switchMap, take} from 'rxjs';
-import {Jwt} from '@/app/core/models/jwt.model';
-import {AsyncPipe} from '@angular/common';
-import {selectedSchedules} from '@/app/core/store/state/schedule/schedule.selectors';
-import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import {
+  NzColDirective,
+  NzGridModule,
+  NzRowDirective,
+} from 'ng-zorro-antd/grid';
+import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
+import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzImageService } from 'ng-zorro-antd/image';
+import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { filter, forkJoin, Subject, take, takeUntil } from 'rxjs';
+import { Jwt } from '@/app/core/models/jwt.model';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { TheaterComponent } from '@/app/modules/home/components/theater/theater.component';
+import { selectAllShowtimes } from '@/app/core/store/state/showtime/showtime.selectors';
+import { selectToken } from '@/app/core/store/state/auth/auth.selectors';
+import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
+import { Showtime } from '@/app/core/models/theater.model';
+import { ShowtimeComponent } from '@/app/modules/home/components/showtime/showtime.component';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
+import { Movie } from '@/app/core/models/movie.model';
+import { selectMovieById } from '@/app/core/store/state/movie/movie.selectors';
+import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 
 @Component({
   selector: 'app-home',
@@ -28,42 +39,156 @@ import {ScheduleActions} from '@/app/core/store/state/schedule/schedule.actions'
     NzButtonComponent,
     NzCardModule,
     NzGridModule,
-    AsyncPipe,
+    RouterLink,
   ],
-  providers: [NzImageService],
+  providers: [NzImageService, NzModalService],
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrl: './home.css',
 })
-export class Home implements OnInit {
-  private orderService = inject(OrderService);
+export class Home implements OnInit, OnDestroy {
   private store = inject(Store);
-  router = inject(Router);
-  schedules$ = this.store.select(selectedSchedules);
-  user$ = this.store.select(selectUser);
-  // modalService = inject(NzModalService);
+  private router = inject(Router);
+  private modalService = inject(NzModalService);
+  private destroy$ = new Subject<void>();
+  showtimes$ = this.store.select(selectAllShowtimes);
+  theaters$ = this.store.select(selectAllTheaters);
+  user$ = this.store.select(selectToken);
 
+  selectedTheaterId: number | null = null;
+  showTimesForTheater: Showtime[] = [];
+  movies: Movie[] = [];
 
   ngOnInit() {
-    this.store.dispatch(ScheduleActions.loadSchedules());
+    this.selectTheaterModal();
   }
 
-  // onShowSchedule() {
-  //   this.modalService.create({
-  //     nzContent: ScheduleComponent,
-  //     nzFooter: null,
-  //   })
-  // }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-  onSelect(cinemaHallId: number) {
-    this.store.dispatch(ScheduleActions.loadSchedule({scheduleId: cinemaHallId}))
-    this.user$.pipe(
-      take(1),
-      filter((jwt): jwt is Jwt => jwt !== undefined),
-      switchMap(jwt => this.orderService.initOrder({orderStatus: 'CREATED', userId: jwt.userId, cinemaHallId: cinemaHallId})))
+  private selectTheaterModal() {
+    const movieId = 1;
+
+    this.store.dispatch(TheaterActions.loadTheaters());
+    this.store.dispatch(ShowtimeActions.loadShowtimes({ movieId: movieId }));
+    this.store.dispatch(MovieActions.loadMovies());
+    this.theaters$
+      .pipe(
+        filter((t) => t.length > 0),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((theaters) => {
+        const defaultTheater = theaters[0];
+        this.selectedTheaterId = defaultTheater.id;
+        this.filterShowtimeByTheater(defaultTheater.id);
+        this.modalService.create({
+          nzTitle: 'Chọn rạp chiếu',
+          nzContent: TheaterComponent,
+          nzData: {
+            theaters: theaters,
+            selectedTheaterId: this.selectedTheaterId,
+          },
+          nzOnOk: (instance) => {
+            this.selectedTheaterId = instance.selectedTheater();
+            this.filterShowtimeByTheater(this.selectedTheaterId as number);
+            this.updateMovieForHome();
+          },
+        });
+      });
+  }
+
+  private updateMovieForHome() {
+    if (!this.selectedTheaterId) return;
+
+    this.showtimes$.pipe(take(1)).subscribe((showtimes) => {
+      const showtimeByTheater = showtimes.filter(
+        (st) => st.theaterId === this.selectedTheaterId,
+      );
+
+      const movieSelectors$ = showtimeByTheater.map((st) =>
+        this.store.select(selectMovieById(st.movieId)).pipe(take(1)),
+      );
+
+      forkJoin(movieSelectors$).subscribe((movieStores) => {
+        const movie: Record<number, Movie> = {};
+        showtimeByTheater.forEach((st, i) => {
+          const movieStore = movieStores[i];
+          if (movieStore) movie[st.movieId] = movieStore;
+          else
+            movie[st.movieId] = {
+              id: st.movieId,
+              title: st.movieTitle,
+              poster: st.moviePosterUrl,
+              overview: '',
+              duration: 0,
+              genres: [],
+              releaseDate: new Date(),
+              language: '',
+              imdbId: '',
+              filmId: '',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              isDeleted: false,
+            } as Movie;
+        });
+        this.movies = Object.values(movie);
+      });
+    });
+  }
+
+  private filterShowtimeByTheater(theaterId: number) {
+    this.showtimes$
+      .pipe(
+        filter((st) => st.length > 0),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((showtimes) => {
+        this.showTimesForTheater = showtimes.filter(
+          (st) => st.theaterId === theaterId,
+        );
+        this.updateMovieForHome();
+      });
+  }
+
+  onSelect(movieId: number) {
+    if (!this.selectedTheaterId) return;
+    this.showtimes$.pipe(take(1)).subscribe((showtimes) => {
+      const showtimeForMovies = showtimes.filter(
+        (st) =>
+          st.movieId === movieId && st.theaterId === this.selectedTheaterId,
+      );
+
+      if (!showtimeForMovies.length) return;
+      this.modalService.create({
+        nzTitle: `Chọn khung giờ`,
+        nzContent: ShowtimeComponent,
+        nzData: {
+          showtimes: showtimeForMovies,
+        },
+      });
+    });
+  }
+
+  private proceedToReservation(showtimeId: number) {
+    if (!this.selectedTheaterId) {
+      this.modalService.warning({
+        nzTitle: 'Error',
+        nzContent: 'Please select a theater',
+      });
+      return;
+    }
+
+    this.user$
+      .pipe(
+        take(1),
+        filter((jwt): jwt is Jwt => jwt !== undefined),
+        takeUntil(this.destroy$),
+      )
       .subscribe((res) => {
         this.router.navigateByUrl(`/reservation/${res}`);
-      })
+      });
   }
-
-  protected readonly on = on;
 }
