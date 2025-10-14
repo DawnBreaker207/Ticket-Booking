@@ -1,10 +1,8 @@
-<nz-result
-  [nzIcon]="Icon"
-  [nzTitle]="Title"
-  [nzSubTitle]="Subtitle"
->
+<nz-result [nzIcon]="Icon" [nzTitle]="Title" [nzSubTitle]="Subtitle">
   <div nz-result-extra>
-    <button nz-button nzType="primary" nzShape="round" (click)="goToHomePage()">Home Page</button>
+    <button nz-button nzType="primary" nzShape="round" (click)="goToHomePage()">
+      Home Page
+    </button>
   </div>
   >
 </nz-result>
@@ -14,13 +12,14 @@
 </ng-template>
 
 <ng-template #Subtitle>
-  <h1 class="ant-result-subtitle text-muted-foreground text-sm">The requested page is missing. Check the URL or return
-    to</h1>
+  <h1 class="ant-result-subtitle text-muted-foreground text-sm">
+    The requested page is missing. Check the URL or return to
+  </h1>
 </ng-template>
 
-
-<ng-template
-  #Icon
->
-  <svg-icon src="assets/illustrations/404.svg" svgClass="w-full h-full text-muted-foreground"></svg-icon>
+<ng-template #Icon>
+  <svg-icon
+    src="assets/illustrations/404.svg"
+    svgClass="w-full h-full text-muted-foreground"
+  ></svg-icon>
 </ng-template>
