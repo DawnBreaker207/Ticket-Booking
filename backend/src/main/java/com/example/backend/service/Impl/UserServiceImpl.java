@@ -38,14 +38,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User update(Long id, User user) {
-        var check = userRepository
+    public User update(Long id, User userDetails) {
+        var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
-        check.setEmail(user.getEmail());
-        check.setUsername(user.getUsername());
-        userRepository.save(check);
-        return check;
+        user.setEmail(userDetails.getEmail());
+        user.setUsername(userDetails.getUsername());
+        user.markUpdated();
+        userRepository.save(user);
+        return user;
 
     }
 
