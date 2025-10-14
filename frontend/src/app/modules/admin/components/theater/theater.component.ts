@@ -1,19 +1,25 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {headerColumns} from '@/app/core/constants/column';
-import {DatePipe} from '@angular/common';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzInputModule} from 'ng-zorro-antd/input';
-import {NzSelectModule} from 'ng-zorro-antd/select';
-import {NzSpaceComponent} from 'ng-zorro-antd/space';
-import {NzTableModule} from 'ng-zorro-antd/table';
-import {Store} from '@ngrx/store';
-import {Theater} from '@/app/core/models/theater.model';
-import {selectAllTheaters} from '@/app/core/store/state/theater/theater.selectors';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {FormTheaterComponent} from '@/app/modules/admin/components/theater/form/form.component';
+import { Component, inject, OnInit } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { headerColumns } from '@/app/core/constants/column';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpaceComponent } from 'ng-zorro-antd/space';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { Store } from '@ngrx/store';
+import { Theater } from '@/app/core/models/theater.model';
+import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { FormTheaterComponent } from '@/app/modules/admin/components/theater/form/form.component';
+import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import {
+  selectMovieLoading,
+  selectMoviesError,
+} from '@/app/core/store/state/movie/movie.selectors';
 
 @Component({
   selector: 'app-theater',
@@ -25,22 +31,29 @@ import {FormTheaterComponent} from '@/app/modules/admin/components/theater/form/
     NzIconModule,
     DatePipe,
     NzSpaceComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AsyncPipe,
+    NzAlertComponent,
+    NzSpinComponent,
   ],
   providers: [NzModalService],
   templateUrl: './theater.component.html',
-  styleUrl: './theater.component.css'
+  styleUrl: './theater.component.css',
 })
 export class TheaterComponent implements OnInit {
   private modalService = inject(NzModalService);
   private store = inject(Store);
   headerColumn = headerColumns.theater;
+  theaters$ = this.store.select(selectAllTheaters);
   theaterList: readonly Theater[] = [];
+  loading$ = this.store.select(selectMovieLoading);
+  error$ = this.store.select(selectMoviesError);
 
   ngOnInit() {
-    this.store.select(selectAllTheaters).subscribe(data => {
+    this.store.dispatch(TheaterActions.loadTheaters());
+    this.theaters$.subscribe((data) => {
       this.theaterList = data;
-    })
+    });
   }
 
   openModal(mode: 'add' | 'edit' | 'view', id?: number) {
@@ -54,27 +67,31 @@ export class TheaterComponent implements OnInit {
       },
       nzWidth: 900,
       nzKeyboard: true,
-      nzFooter: mode !== 'view' ? [
-        {
-          label: 'Confirm',
-          type: 'primary',
-          onClick: () => {
-            const form = modal.getContentComponent() as FormTheaterComponent;
-            console.log(form.form.valid)
-            if (form.form.valid) {
-              form.submit();
-              modal.close();
-            }
-          }
-        },
-      ] : null
-    })
+      nzFooter:
+        mode !== 'view'
+          ? [
+              {
+                label: 'Confirm',
+                type: 'primary',
+                onClick: () => {
+                  const form =
+                    modal.getContentComponent() as FormTheaterComponent;
+                  console.log(form.form.valid);
+                  if (form.form.valid) {
+                    form.submit();
+                    modal.close();
+                  }
+                },
+              },
+            ]
+          : null,
+    });
   }
 
   onDelete(id: number) {
-    this.store.dispatch(TheaterActions.deleteTheater({id}))
-    this.store.select(selectAllTheaters).subscribe(data => {
+    this.store.dispatch(TheaterActions.deleteTheater({ id }));
+    this.store.select(selectAllTheaters).subscribe((data) => {
       this.theaterList = data;
-    })
+    });
   }
 }

@@ -1,15 +1,13 @@
-import {SeatStatus} from '@/app/core/constants/enum';
-import {Movie} from '@/app/core/models/movie.model';
-import {DateModel, IsDeleted} from '@/app/core/models/common.model';
-import {Reservation} from '@/app/core/models/reservation.model';
+import { SeatStatus } from '@/app/core/constants/enum';
+import { DateModel, IsDeleted } from '@/app/core/models/common.model';
+import { Reservation } from '@/app/core/models/reservation.model';
 
 export interface Theater extends DateModel, IsDeleted {
   id: number;
   name: string;
   location: string;
   capacity: number;
-  showtime: Showtime[]
-
+  showtime: Showtime[];
 }
 
 export interface TheaterRequest {

@@ -1,5 +1,5 @@
-import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {Seat, Theater, TheaterRequest} from '@/app/core/models/theater.model';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { Seat, Theater, TheaterRequest } from '@/app/core/models/theater.model';
 
 export const TheaterActions = createActionGroup({
   source: 'Schedule',
@@ -20,7 +20,7 @@ export const TheaterActions = createActionGroup({
     'Create Theater Failed': props<{ error: any }>(),
 
     // Update
-    'Update Theater': props<{ id: number, theater: Theater }>(),
+    'Update Theater': props<{ id: number; theater: Theater }>(),
     'Update Theater Success': props<{ theater: Theater }>(),
     'Update Theater Failed': props<{ error: any }>(),
 
@@ -32,6 +32,6 @@ export const TheaterActions = createActionGroup({
     //   UI Actions
     'Selected Theater': props<{ theater: Theater | null }>(),
     'Clear Error': emptyProps(),
-    'Clear Selected Theater': emptyProps()
-  }
+    'Clear Selected Theater': emptyProps(),
+  },
 });

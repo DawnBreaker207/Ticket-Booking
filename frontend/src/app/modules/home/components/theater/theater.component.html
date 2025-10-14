@@ -1,1 +1,10 @@
-<p>theater works!</p>
+<div>
+  <div class="mb-4">
+    <label class="block font-semibold mb-2"> Chọn rạp </label>
+    <select class="w-full p-2 border border-gray-300 rounded">
+      @for (theater of theaters(); track theater.id) {
+        <option>{{ theater.name }} - {{ theater.location }}</option>
+      }
+    </select>
+  </div>
+</div>

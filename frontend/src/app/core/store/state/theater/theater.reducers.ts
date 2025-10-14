@@ -1,16 +1,16 @@
-import {createReducer, on} from '@ngrx/store';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {Theater} from '@/app/core/models/theater.model';
+import { createReducer, on } from '@ngrx/store';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { Theater } from '@/app/core/models/theater.model';
 
 export const theaterFeatureKey = 'theaterKey';
 
 export interface TheaterState {
-  theaters: Theater[]
-  selectedTheater: Theater | null
+  theaters: Theater[];
+  selectedTheater: Theater | null;
   loading: boolean;
   loadingDetails: boolean;
   saving: boolean;
-  error: string | null
+  error: string | null;
 }
 
 export const initialState: TheaterState = {
@@ -19,59 +19,62 @@ export const initialState: TheaterState = {
   loading: false,
   loadingDetails: false,
   saving: false,
-  error: null
-}
+  error: null,
+};
 
 export const theaterReducer = createReducer(
   initialState,
   // Load all
-  on(TheaterActions.loadTheaters, (state,) => {
+  on(TheaterActions.loadTheaters, (state) => {
     return {
       ...state,
       loading: true,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.loadTheatersSuccess, (state, {theaters}) => {
+  on(TheaterActions.loadTheatersSuccess, (state, { theaters }) => {
     return {
       ...state,
       theaters: theaters,
       loading: false,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.loadTheatersFailed, (state, {error}) => {
+  on(TheaterActions.loadTheatersFailed, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error
-    }
+      error,
+    };
   }),
-//  Get one
+  //  Get one
   on(TheaterActions.loadTheater, (state) => {
     return {
       ...state,
       loadingDetails: true,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.loadTheaterSuccess, (state, {theater}) => {
-    const existingIndex = state.theaters.findIndex(t => t.id === theater.id);
-    const theaters = existingIndex >= 0 ? state.theaters.map(t => t.id === theater.id ? theater : t) : [...state.theaters, theater];
+  on(TheaterActions.loadTheaterSuccess, (state, { theater }) => {
+    const existingIndex = state.theaters.findIndex((t) => t.id === theater.id);
+    const theaters =
+      existingIndex >= 0
+        ? state.theaters.map((t) => (t.id === theater.id ? theater : t))
+        : [...state.theaters, theater];
     return {
       ...state,
       theaters: theaters,
       selectedSchedule: theater,
       loadingDetails: false,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.loadTheaterFailed, (state, {error}) => {
+  on(TheaterActions.loadTheaterFailed, (state, { error }) => {
     return {
       ...state,
       loadingDetails: false,
-      error
-    }
+      error,
+    };
   }),
   //  Create
   on(TheaterActions.createTheater, (state) => {
@@ -79,22 +82,22 @@ export const theaterReducer = createReducer(
       ...state,
       saving: true,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.createTheaterSuccess, (state, {theater}) => {
+  on(TheaterActions.createTheaterSuccess, (state, { theater }) => {
     return {
       ...state,
       theaters: [...state.theaters, theater],
       saving: false,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.createTheaterFailed, (state, {error}) => {
+  on(TheaterActions.createTheaterFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
-      error
-    }
+      error,
+    };
   }),
   //  Update
   on(TheaterActions.updateTheater, (state) => {
@@ -102,23 +105,26 @@ export const theaterReducer = createReducer(
       ...state,
       saving: true,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.updateTheaterSuccess, (state, {theater}) => {
+  on(TheaterActions.updateTheaterSuccess, (state, { theater }) => {
     return {
       ...state,
-      theaters: state.theaters.map(t => t.id === theater.id ? theater : t),
-      selectedTheater: state.selectedTheater?.id === theater.id ? theater : state.selectedTheater,
+      theaters: state.theaters.map((t) => (t.id === theater.id ? theater : t)),
+      selectedTheater:
+        state.selectedTheater?.id === theater.id
+          ? theater
+          : state.selectedTheater,
       saving: false,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.updateTheaterFailed, (state, {error}) => {
+  on(TheaterActions.updateTheaterFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
-      error
-    }
+      error,
+    };
   }),
   //  Delete
   on(TheaterActions.deleteTheater, (state) => {
@@ -126,42 +132,43 @@ export const theaterReducer = createReducer(
       ...state,
       loading: true,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.deleteTheaterSuccess, (state, {id}) => {
+  on(TheaterActions.deleteTheaterSuccess, (state, { id }) => {
     return {
       ...state,
-      theaters: state.theaters.filter(t => t.id !== id),
-      selectedTheater: state.selectedTheater?.id === id ? null : state.selectedTheater,
+      theaters: state.theaters.filter((t) => t.id !== id),
+      selectedTheater:
+        state.selectedTheater?.id === id ? null : state.selectedTheater,
       loading: false,
       error: null,
-    }
+    };
   }),
-  on(TheaterActions.deleteTheaterFailed, (state, {error}) => {
+  on(TheaterActions.deleteTheaterFailed, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error
-    }
+      error,
+    };
   }),
-  on(TheaterActions.selectedTheater, (state, {theater}) => {
+  on(TheaterActions.selectedTheater, (state, { theater }) => {
     return {
       ...state,
       selectedTheater: theater,
       error: null,
-    }
+    };
   }),
   on(TheaterActions.clearSelectedTheater, (state) => {
     return {
       ...state,
       selectedTheater: null,
-      error: null
-    }
+      error: null,
+    };
   }),
   on(TheaterActions.clearError, (state) => {
     return {
       ...state,
-      error: null
-    }
+      error: null,
+    };
   }),
-)
+);

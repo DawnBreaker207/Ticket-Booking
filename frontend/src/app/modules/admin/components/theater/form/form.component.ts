@@ -1,15 +1,27 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {filter, Subject, take, takeUntil} from 'rxjs';
-import {NzInputDirective} from 'ng-zorro-antd/input';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from 'ng-zorro-antd/form';
-import {Store} from '@ngrx/store';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {selectSelectedTheater} from '@/app/core/store/state/theater/theater.selectors';
-import {Actions, ofType} from '@ngrx/effects';
-import {Theater} from '@/app/core/models/theater.model';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { filter, Subject, take, takeUntil } from 'rxjs';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import {
+  NzFormControlComponent,
+  NzFormDirective,
+  NzFormLabelComponent,
+} from 'ng-zorro-antd/form';
+import { Store } from '@ngrx/store';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import {
+  selectSelectedTheater,
+  selectTheaterById,
+} from '@/app/core/store/state/theater/theater.selectors';
+import { Actions, ofType } from '@ngrx/effects';
+import { Theater } from '@/app/core/models/theater.model';
 
 @Component({
   selector: 'app-theater-form',
@@ -22,11 +34,9 @@ import {Theater} from '@/app/core/models/theater.model';
     NzInputDirective,
     NzRowDirective,
     ReactiveFormsModule,
-
-
   ],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.css'
+  styleUrl: './form.component.css',
 })
 export class FormTheaterComponent implements OnInit, OnDestroy {
   mode: 'add' | 'edit' | 'view' = 'add';
@@ -43,36 +53,42 @@ export class FormTheaterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
 
-    const {mode, id} = this.modelRef.getConfig().nzData
+    const { mode, id } = this.modelRef.getConfig().nzData;
 
     this.mode = mode;
     this.theaterId = id;
     if (this.mode !== 'add' && this.theaterId) {
-      this.store.dispatch(TheaterActions.loadTheater({id: this.theaterId as number}))
-      this.store.select(selectSelectedTheater).pipe(
-        filter(theater => theater !== null && theater.id === this.theaterId),
-        take(1),
-        takeUntil(this.destroy$)
-      ).subscribe(theater => {
-        if (theater) {
-          this.patchFormValue(theater)
-          this.initialForm = this.form.value;
-          if (this.mode === 'view') {
-            this.disableForm();
+      this.store.dispatch(
+        TheaterActions.loadTheater({ id: this.theaterId as number }),
+      );
+      this.store
+        .select(selectTheaterById(this.theaterId))
+        .pipe(
+          filter(
+            (theater) => theater !== null && theater.id === this.theaterId,
+          ),
+          take(1),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((theater) => {
+          if (theater) {
+            this.patchFormValue(theater);
+            this.initialForm = this.form.value;
+            if (this.mode === 'view') {
+              this.disableForm();
+            }
+          } else {
+            this.initialForm = this.form.value;
           }
-        } else {
-          this.initialForm = this.form.value
-        }
-      })
+        });
     }
   }
 
   private disableForm() {
-    Object.keys(this.form.controls).forEach(key => {
+    Object.keys(this.form.controls).forEach((key) => {
       this.form.get(key)?.disable();
-    })
+    });
   }
-
 
   initForm() {
     this.form = this.fb.group({
@@ -80,7 +96,7 @@ export class FormTheaterComponent implements OnInit, OnDestroy {
       name: [''],
       location: [''],
       capacity: [''],
-    })
+    });
   }
 
   private patchFormValue(theater: Theater) {
@@ -88,46 +104,56 @@ export class FormTheaterComponent implements OnInit, OnDestroy {
       name: theater.name,
       location: theater.name,
       capacity: theater.capacity,
-    })
+    });
   }
 
   hasData(): boolean {
-    return Object.values(this.form.value).some(v => v !== null && v !== '' && !(Array.isArray(v) && v.length === 0));
+    return Object.values(this.form.value).some(
+      (v) => v !== null && v !== '' && !(Array.isArray(v) && v.length === 0),
+    );
   }
 
   submit() {
     if (this.form.valid) {
-
       const theaterData = this.form.value;
       if (this.mode === 'edit') {
-        this.store.dispatch(TheaterActions.updateTheater({id: this.theaterId as number, theater: theaterData}))
+        this.store.dispatch(
+          TheaterActions.updateTheater({
+            id: this.theaterId as number,
+            theater: theaterData,
+          }),
+        );
       } else if (this.mode === 'add') {
-        this.store.dispatch(TheaterActions.createTheater({theater: theaterData}))
+        this.store.dispatch(
+          TheaterActions.createTheater({ theater: theaterData }),
+        );
       }
 
-      this.actions$.pipe(
-        ofType(
-          TheaterActions.createTheaterSuccess,
-          TheaterActions.updateTheaterSuccess
-        ),
-        take(1),
-        takeUntil(this.destroy$)
-      ).subscribe(() => {
+      this.actions$
+        .pipe(
+          ofType(
+            TheaterActions.createTheaterSuccess,
+            TheaterActions.updateTheaterSuccess,
+          ),
+          take(1),
+          takeUntil(this.destroy$),
+        )
+        .subscribe(() => {
           this.modelRef.close();
-        }
-      )
+        });
 
-      this.actions$.pipe(
-        ofType(
-          TheaterActions.createTheaterFailed,
-          TheaterActions.updateTheaterFailed
-        ),
-        take(1),
-        takeUntil(this.destroy$)
-      ).subscribe(({error}) => {
-        console.error("Save theater failed", error)
-      })
-
+      this.actions$
+        .pipe(
+          ofType(
+            TheaterActions.createTheaterFailed,
+            TheaterActions.updateTheaterFailed,
+          ),
+          take(1),
+          takeUntil(this.destroy$),
+        )
+        .subscribe(({ error }) => {
+          console.error('Save theater failed', error);
+        });
     }
   }
 

@@ -2,30 +2,43 @@
   <nz-row [nzGutter]="16">
     <!--  Poster-->
     <nz-col [nzSpan]="8">
-      <form formGroupName="movie">
-        <nz-form-item class=" mt-[60px]">
-          <nz-form-label>Poster (URL)</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="name" type="text" placeholder="Location" [readOnly]="mode === 'view'"
-            >
-          </nz-form-control>
-        </nz-form-item>
+      <nz-form-item class="mt-[60px]">
+        <nz-form-label>Name</nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            formControlName="name"
+            type="text"
+            placeholder="Location"
+            [readOnly]="mode === 'view'"
+          />
+        </nz-form-control>
+      </nz-form-item>
 
-        <nz-form-item class=" mt-[60px]">
-          <nz-form-label>Poster (URL)</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="location" type="text" placeholder="Location" [readOnly]="mode === 'view'"
-            >
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item class="mt-[60px]">
-          <nz-form-label>Poster (URL)</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="capacity" type="text" placeholder="Capacity"
-                   [readOnly]="mode === 'view'">
-          </nz-form-control>
-        </nz-form-item>
-      </form>
+      <nz-form-item class="mt-[60px]">
+        <nz-form-label>Location</nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            formControlName="location"
+            type="text"
+            placeholder="Location"
+            [readOnly]="mode === 'view'"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-[60px]">
+        <nz-form-label>Capaticy</nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            formControlName="capacity"
+            type="text"
+            placeholder="Capacity"
+            [readOnly]="mode === 'view'"
+          />
+        </nz-form-control>
+      </nz-form-item>
     </nz-col>
   </nz-row>
 </form>
