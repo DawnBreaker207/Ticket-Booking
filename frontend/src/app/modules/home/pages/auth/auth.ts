@@ -1,14 +1,23 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
-import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
-import {NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
-import {NgClass} from '@angular/common';
-import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
-import {Store} from '@ngrx/store';
-import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
+import {
+  NzFormControlComponent,
+  NzFormItemComponent,
+  NzFormLabelComponent,
+} from 'ng-zorro-antd/form';
+import { NgClass } from '@angular/common';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
+import { Store } from '@ngrx/store';
+import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -25,10 +34,10 @@ import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
     NzFormLabelComponent,
     NzDatePickerComponent,
     NzSelectComponent,
-    NzOptionComponent
+    NzOptionComponent,
   ],
   templateUrl: './auth.html',
-  styleUrl: './auth.css'
+  styleUrl: './auth.css',
 })
 export class AuthComponent implements OnInit {
   activeTab = signal<'login' | 'register'>('login');
@@ -37,28 +46,29 @@ export class AuthComponent implements OnInit {
   private store = inject(Store);
 
   ngOnInit() {
-
     this.initializeForm();
   }
 
   initializeForm() {
     this.form = this.fb.group({
-      username: ['',],
-      email: ['',],
-      password: ['',]
-    })
+      username: [''],
+      email: [''],
+      password: [''],
+    });
   }
 
   onSubmit() {
     if (!this.form.valid) return;
     if (this.activeTab() === 'login') {
-      const {username, password} = this.form.value;
-      this.store.dispatch(AuthActions.loadLogin({user: {username, password}}));
-
+      const { username, password } = this.form.value;
+      this.store.dispatch(
+        AuthActions.loadLogin({ user: { username, password } }),
+      );
     } else {
-      const {username, email, password} = this.form.value;
-      this.store.dispatch(AuthActions.loadRegister({user: {username, email, password}}));
+      const { username, email, password } = this.form.value;
+      this.store.dispatch(
+        AuthActions.loadRegister({ user: { username, email, password } }),
+      );
     }
   }
-
 }

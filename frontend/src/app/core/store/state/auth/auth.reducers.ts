@@ -1,6 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
-import {AuthActions} from '@/app/core/store/state/auth/auth.actions';
-import {Jwt, RefreshToken} from '@/app/core/models/jwt.model';
+import { createReducer, on } from '@ngrx/store';
+import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
+import { Jwt, RefreshToken } from '@/app/core/models/jwt.model';
 
 export const authFeatureKey = 'authKey';
 
@@ -12,14 +12,13 @@ export interface AuthState {
   error: any;
 }
 
-
 export const initialState: AuthState = {
   jwt: null,
   token: null,
   userId: null,
   loading: false,
   error: null,
-}
+};
 
 export const authReducer = createReducer(
   initialState,
@@ -28,37 +27,37 @@ export const authReducer = createReducer(
   on(AuthActions.loadRegister, (state) => ({
     ...state,
     loading: true,
-    error: null
+    error: null,
   })),
   on(AuthActions.loadRegisterSuccess, (state) => ({
     ...state,
     loading: false,
-    error: null
+    error: null,
   })),
-  on(AuthActions.loadRegisterFailure, (state, {error}) => ({
+  on(AuthActions.loadRegisterFailure, (state, { error }) => ({
     ...state,
     error: error,
-    loading: false
+    loading: false,
   })),
 
   // Login
   on(AuthActions.loadLogin, (state) => ({
     ...state,
     loading: true,
-    error: null
+    error: null,
   })),
-  on(AuthActions.loadLoginSuccess, (state, {jwt}) => {
+  on(AuthActions.loadLoginSuccess, (state, { jwt }) => {
     return {
       ...state,
       jwt: jwt,
       userId: jwt.email,
-      loading: false
-    }
+      loading: false,
+    };
   }),
-  on(AuthActions.loadLoginFailure, (state, {error}) => ({
+  on(AuthActions.loadLoginFailure, (state, { error }) => ({
     ...state,
     error: error,
-    loading: false
+    loading: false,
   })),
 
   // Logout
@@ -66,15 +65,15 @@ export const authReducer = createReducer(
     return {
       ...state,
       loading: true,
-    }
+    };
   }),
   on(AuthActions.loadLogoutSuccess, () => initialState),
-  on(AuthActions.loadLogoutFailure, (state, {error}) => {
+  on(AuthActions.loadLogoutFailure, (state, { error }) => {
     return {
       ...state,
       error: error,
       loading: false,
-    }
+    };
   }),
 
   //   Refresh Token
@@ -83,20 +82,22 @@ export const authReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(AuthActions.loadRefreshTokenSuccess, (state, {token}) => ({
+  on(AuthActions.loadRefreshTokenSuccess, (state, { token }) => ({
     ...state,
     token,
-    jwt: state.jwt ? {
-      ...state.jwt,
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken
-    } : null,
+    jwt: state.jwt
+      ? {
+          ...state.jwt,
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+        }
+      : null,
     loading: false,
     error: null,
   })),
-  on(AuthActions.loadRefreshTokenFailure, (state, {error}) => ({
+  on(AuthActions.loadRefreshTokenFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error: error,
   })),
-)
+);
