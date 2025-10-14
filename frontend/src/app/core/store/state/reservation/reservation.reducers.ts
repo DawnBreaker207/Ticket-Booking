@@ -1,7 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
-import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {Reservation} from '@/app/core/models/reservation.model';
-
+import { createReducer, on } from '@ngrx/store';
+import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
+import { Reservation } from '@/app/core/models/reservation.model';
 
 export const reservationFeatureKey = 'reservationKey';
 
@@ -11,7 +10,6 @@ export interface ReservationState {
   loading: boolean;
   saving: boolean;
   error: string | null;
-
 }
 
 export const initialState: ReservationState = {
@@ -19,8 +17,8 @@ export const initialState: ReservationState = {
   reservation: null,
   loading: false,
   saving: false,
-  error: null
-}
+  error: null,
+};
 
 export const reservationReducer = createReducer(
   initialState,
@@ -29,46 +27,46 @@ export const reservationReducer = createReducer(
       ...state,
       loading: true,
       error: null,
-    }
+    };
   }),
 
-  on(ReservationActions.loadReservationsSuccess, (state, {reservations}) => {
+  on(ReservationActions.loadReservationsSuccess, (state, { reservations }) => {
     return {
       ...state,
       reservations: reservations,
       loading: false,
-    }
+    };
   }),
 
-  on(ReservationActions.loadReservationsFailure, (state, {error}) => {
+  on(ReservationActions.loadReservationsFailure, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error: error
-    }
+      error: error,
+    };
   }),
   on(ReservationActions.loadReservation, (state) => {
     return {
       ...state,
       loading: true,
       error: null,
-    }
+    };
   }),
 
-  on(ReservationActions.loadReservationSuccess, (state, {reservation}) => {
+  on(ReservationActions.loadReservationSuccess, (state, { reservation }) => {
     return {
       ...state,
       reservation: reservation,
       loading: false,
-    }
+    };
   }),
 
-  on(ReservationActions.loadReservationFailure, (state, {error}) => {
+  on(ReservationActions.loadReservationFailure, (state, { error }) => {
     return {
       ...state,
       loading: false,
-      error: error
-    }
+      error: error,
+    };
   }),
   on(ReservationActions.createReservation, (state) => {
     return {
@@ -79,15 +77,15 @@ export const reservationReducer = createReducer(
     };
   }),
 
-  on(ReservationActions.createReservationSuccess, (state, {reservation}) => ({
+  on(ReservationActions.createReservationSuccess, (state, { reservation }) => ({
     ...state,
     reservation: reservation,
     saving: false,
     loading: false,
   })),
-  on(ReservationActions.createReservationFailure, (state, {error}) => ({
+  on(ReservationActions.createReservationFailure, (state, { error }) => ({
     ...state,
     saving: false,
-    error: error
+    error: error,
   })),
-)
+);

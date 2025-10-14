@@ -1,25 +1,29 @@
-import {inject, Injectable} from '@angular/core';
-import {environment} from '@/environments/environment';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {catchError, map, Observable, of} from 'rxjs';
-import {ApiRes} from '@/app/core/models/common.model';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '@/environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
+import { ApiRes } from '@/app/core/models/common.model';
 import {
   Reservation,
   ReservationFilter,
   ReservationInitRequest,
-  ReservationRequest
+  ReservationRequest,
 } from '@/app/core/models/reservation.model';
-import {formatTime} from '@/app/shared/utils/formatDate';
+import { formatTime } from '@/app/shared/utils/formatDate';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservationService {
   URL = `${environment.apiUrl}/reservation`;
   private http = inject(HttpClient);
 
-  getReservations(filter?: Partial<ReservationFilter>, page: number = 0, size: number = 0) {
-    console.log(filter)
+  getReservations(
+    filter?: Partial<ReservationFilter>,
+    page: number = 0,
+    size: number = 0,
+  ) {
+    console.log(filter);
     let params = new HttpParams();
 
     params = params.set('page', page.toString());
@@ -27,7 +31,7 @@ export class ReservationService {
 
     const startDate = formatTime(filter?.dateFrom);
     const endDate = formatTime(filter?.dateTo);
-    filter = {...filter, dateFrom: startDate, dateTo: endDate};
+    filter = { ...filter, dateFrom: startDate, dateTo: endDate };
 
     if (filter) {
       Object.keys(filter).forEach((key) => {
@@ -35,48 +39,51 @@ export class ReservationService {
         if (value !== null && value !== undefined && value !== '') {
           params = params.set(key, value.toString());
         }
-      })
+      });
     }
 
-    return this.http.get<ApiRes<Reservation[]>>(`${this.URL}`, {params}).pipe(
+    return this.http.get<ApiRes<Reservation[]>>(`${this.URL}`, { params }).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Reservation[]>('Get orders'))
-    )
+      catchError(this.handleError<Reservation[]>('Get orders')),
+    );
   }
 
   getReservation(id: string) {
     return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`, {}).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Reservation>('Get reservation'))
-    )
+      catchError(this.handleError<Reservation>('Get reservation')),
+    );
   }
 
   initReservation(reservation: ReservationInitRequest) {
     return this.http.post<ApiRes<string>>(`${this.URL}/init`, reservation).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<string>('Init reservation'))
-    )
+      catchError(this.handleError<string>('Init reservation')),
+    );
   }
 
   holdReservationSeat(reservation: ReservationRequest) {
-    return this.http.post<ApiRes<void>>(`${this.URL}/seatHold`, reservation).pipe(
-      map((res: any) => res.data),
-      catchError(this.handleError<void>('hold seat reservation'))
-    )
+    return this.http
+      .post<ApiRes<void>>(`${this.URL}/seatHold`, reservation)
+      .pipe(
+        map((res: any) => res.data),
+        catchError(this.handleError<void>('hold seat reservation')),
+      );
   }
 
   confirmReservation(reservation: ReservationRequest) {
-    return this.http.post<ApiRes<Reservation>>(`${this.URL}/confirm`, reservation).pipe(
-      map((res: any) => res.data),
-      catchError(this.handleError<Reservation>('Confirm reservation'))
-    )
+    return this.http
+      .post<ApiRes<Reservation>>(`${this.URL}/confirm`, reservation)
+      .pipe(
+        map((res: any) => res.data),
+        catchError(this.handleError<Reservation>('Confirm reservation')),
+      );
   }
 
-  private handleError<T>(operation = "operation", result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
       return of(result as T);
-    }
+    };
   }
-
 }

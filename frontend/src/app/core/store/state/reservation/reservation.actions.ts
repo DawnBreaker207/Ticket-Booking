@@ -1,13 +1,17 @@
-import {createActionGroup, props} from '@ngrx/store';
-import {Reservation, ReservationFilter, ReservationRequest} from '@/app/core/models/reservation.model';
-
+import { createActionGroup, props } from '@ngrx/store';
+import {
+  Reservation,
+  ReservationFilter,
+  ReservationRequest,
+} from '@/app/core/models/reservation.model';
 
 export const ReservationActions = createActionGroup({
   source: 'Reservation',
   events: {
-
     // // Reservation
-    'Load Reservations': props<{ filter?: ReservationFilter, page?: number, size?: number }>(),
+    'Load Reservations': props<{
+      filter?: ReservationFilter;
+    }>(),
     'Load Reservations Success': props<{ reservations: Reservation[] }>(),
     'Load Reservations Failure': props<{ error: any }>(),
 
@@ -20,6 +24,6 @@ export const ReservationActions = createActionGroup({
     'Create Reservation Failure': props<{ error: any }>(),
 
     //   Count down
-    'Update Reservation TTL': props<{ reservationId: string, ttl: number }>()
-  }
+    'Update Reservation TTL': props<{ reservationId: string; ttl: number }>(),
+  },
 });

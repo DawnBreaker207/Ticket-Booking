@@ -1,13 +1,14 @@
 <div class="w-full h-full">
   <div>Order Id: {{ reservation.id }}</div>
-  <div>User Id:{{ reservation.user.userId }}</div>
-  <div>Showtime:{{ reservation.showtime.showDate | date: 'dd/MM/yyyy' }}</div>
+  <div>Name: {{ reservation.user.username }}</div>
+  <div>Showtime: {{ reservation.showtime.showDate | date: "dd/MM/yyyy" }}</div>
   <div>
     Status:
     <nz-tag [nzColor]="(reservation.reservationStatus | tags).color">
       {{ (reservation.reservationStatus | tags).status }}
     </nz-tag>
   </div>
-  <div>Total Amount: {{ reservation.totalAmount | currency :'VND' }}</div>
-  <div>Order Day: {{ reservation.createdAt | date: 'dd/MM/yyyy' }}</div>
+  <div>Total Amount: {{ reservation.totalAmount | currency: "VND" }}</div>
+  <div>Order Day: {{ reservation.createdAt | date: "dd/MM/yyyy" }}</div>
+  <div>Seats: {{ seats }}</div>
 </div>

@@ -1,24 +1,46 @@
 <div class="mb-5 flex items-center justify-between">
   <h1 class="text-2xl font-bold mb-4">Quản lý đơn đặt</h1>
 </div>
-<form [formGroup]="form" (submit)="onSubmit()" class="mb-5 flex items-center justify-between gap-3">
+<form
+  [formGroup]="form"
+  (submit)="onSubmit()"
+  class="mb-5 flex items-center justify-between gap-3"
+>
   <nz-input-group nzAddOnBeforeIcon="search" class="!w-fit">
-    <input formControlName="query" nz-input placeholder="Tìm kiếm" type="text" class="!w-[500px]"/>
+    <input
+      formControlName="query"
+      nz-input
+      placeholder="Tìm kiếm"
+      type="text"
+      class="!w-[500px]"
+    />
   </nz-input-group>
 
-  <nz-select formControlName="reservationStatus" class="w-[150px]" nzPlaceHolder="Trạng thái">
+  <nz-select
+    formControlName="reservationStatus"
+    class="w-[150px]"
+    nzPlaceHolder="Trạng thái"
+  >
     @for (s of reservationStatus; track s) {
       <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
     }
   </nz-select>
 
-  <nz-select formControlName="paymentMethod" class="w-[150px]" nzPlaceHolder="Phương thức thanh toán">
+  <nz-select
+    formControlName="paymentMethod"
+    class="w-[150px]"
+    nzPlaceHolder="Phương thức thanh toán"
+  >
     @for (p of paymentMethod; track p) {
       <nz-option [nzLabel]="p" [nzValue]="p"></nz-option>
     }
   </nz-select>
 
-  <nz-select formControlName="paymentStatus" class="w-[150px]" nzPlaceHolder="Trạng thái thanh toán">
+  <nz-select
+    formControlName="paymentStatus"
+    class="w-[150px]"
+    nzPlaceHolder="Trạng thái thanh toán"
+  >
     @for (s of paymentStatus; track s) {
       <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
     }
@@ -27,7 +49,13 @@
   <nz-range-picker formControlName="dateRange"></nz-range-picker>
 
   <nz-input-group nzAddOnBeforeIcon="dollar" class="!w-fit">
-    <input formControlName="totalAmount" nz-input placeholder="Giá" type="number" class="!w-[100px]"/>
+    <input
+      formControlName="totalAmount"
+      nz-input
+      placeholder="Giá"
+      type="number"
+      class="!w-[100px]"
+    />
   </nz-input-group>
 
   <nz-select formControlName="sortBy" class="w-[150px]" nzPlaceHolder="Sắp xếp">
@@ -37,7 +65,9 @@
 
   <button nz-button nzType="primary" type="submit">Apply</button>
   <button nz-button nzType="primary" (click)="clearFilter()">Clear</button>
-  <button nz-button nz-dropdown [nzDropdownMenu]="select" nzType="primary">Export</button>
+  <button nz-dropdown nz-icon [nzDropdownMenu]="select" nzType="export">
+    Export
+  </button>
   <nz-dropdown-menu #select="nzDropdownMenu">
     <ul nz-menu>
       <li nz-menu-item (click)="exportReport('pdf')">PDF</li>
@@ -47,16 +77,16 @@
   </nz-dropdown-menu>
 </form>
 
-<app-loading [asyncData]="reservation$">
+<nz-spin [nzSpinning]="loading$ | async">
   <nz-table [nzData]="reservationList" nzShowPagination nzShowSizeChanger>
     <thead>
-    <tr>
-      @for (item of headerColumn; track item) {
-        <th>
-          {{ item }}
-        </th>
-      }
-    </tr>
+      <tr>
+        @for (item of headerColumn; track item) {
+          <th>
+            {{ item }}
+          </th>
+        }
+      </tr>
     </thead>
     <tbody>
       @for (item of reservationList; track item.id) {
@@ -64,22 +94,31 @@
           <td>{{ item.id }}</td>
           <td>
             <nz-tag [nzColor]="(item.reservationStatus | tags).color">
-              {{ (item.reservationStatus |tags).status }}
+              {{ (item.reservationStatus | tags).status }}
             </nz-tag>
           </td>
-          <td>{{ item.totalAmount | currency :'VND' }}</td>
-          <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ item.totalAmount | currency: "VND" }}</td>
+          <td>{{ item.createdAt | date: "dd/MM/yyyy" }}</td>
           <td>
             <div>
               <nz-space>
-                <button nz-button nzType="text" nzShape="circle" (click)="openModal(item.id)">
+                <button
+                  nz-button
+                  nzType="text"
+                  nzShape="circle"
+                  (click)="openModal(item.id)"
+                >
                   <nz-icon nzType="eye" nzTheme="twotone"></nz-icon>
                 </button>
                 <!--              <button nz-button nzType="text" nzShape="circle">-->
                 <!--                <nz-icon nzType="edit" nzTheme="twotone" nzTwotoneColor="#52c41a"></nz-icon>-->
                 <!--              </button>-->
                 <button nz-button nzType="text" nzShape="circle">
-                  <nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#e7000b"></nz-icon>
+                  <nz-icon
+                    nzType="delete"
+                    nzTheme="twotone"
+                    nzTwotoneColor="#e7000b"
+                  ></nz-icon>
                 </button>
               </nz-space>
             </div>
@@ -88,4 +127,9 @@
       }
     </tbody>
   </nz-table>
-</app-loading>
+</nz-spin>
+@let error = error$ | async;
+@if (error) {
+  <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
+  </nz-alert>
+}

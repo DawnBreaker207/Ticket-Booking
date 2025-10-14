@@ -1,7 +1,13 @@
-import {PaymentMethod, PaymentStatus, ReservationStatus} from '@/app/core/constants/enum';
-import {DateModel, FilterDate, FilterQuery, FilterSort, IsDeleted} from '@/app/core/models/common.model';
-import {User} from '@/app/core/models/user.model';
-import {Seat, Showtime} from '@/app/core/models/theater.model';
+import { ReservationStatus } from '@/app/core/constants/enum';
+import {
+  DateModel,
+  FilterDate,
+  FilterQuery,
+  FilterSort,
+  IsDeleted,
+} from '@/app/core/models/common.model';
+import { User } from '@/app/core/models/user.model';
+import { Seat, Showtime } from '@/app/core/models/theater.model';
 
 export interface Reservation extends DateModel, IsDeleted {
   id: string;
@@ -9,7 +15,7 @@ export interface Reservation extends DateModel, IsDeleted {
   showtime: Showtime;
   reservationStatus: ReservationStatus;
   totalAmount: number;
-  seats: Seat[]
+  seats: Seat[];
 }
 
 export interface ReservationInitRequest {
