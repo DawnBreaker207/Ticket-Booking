@@ -1,4 +1,4 @@
-import {DateModel, IsDeleted} from '@/app/core/models/common.model';
+import { DateModel, IsDeleted } from '@/app/core/models/common.model';
 
 export interface Movie extends DateModel, IsDeleted {
   id: number;
@@ -6,7 +6,7 @@ export interface Movie extends DateModel, IsDeleted {
   poster: string;
   overview: string;
   duration: number;
-  genres: String[];
+  genres: string[];
   releaseDate: Date;
   language: string;
   imdbId: string;
@@ -18,7 +18,7 @@ export interface MovieRequest {
   poster: string;
   overview: string;
   duration: number;
-  genres: String[];
+  genres: string[];
   releaseDate: Date;
   language: string;
   imdbId: string;
@@ -27,7 +27,7 @@ export interface MovieRequest {
 
 export interface ApiMovie {
   id: number;
-  Title: String;
+  Title: string;
   Year: string;
   Genre: string;
   imdbId?: string;

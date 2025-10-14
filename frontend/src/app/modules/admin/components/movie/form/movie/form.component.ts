@@ -1,33 +1,38 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {NzModalModule, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {MovieService} from '@/app/core/services/movie/movie.service';
-import {filter, map, Subject, take, takeUntil} from 'rxjs';
-import {NzAutosizeDirective, NzInputDirective} from 'ng-zorro-antd/input';
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from 'ng-zorro-antd/form';
-import {FormMovieAPIComponent} from '@/app/modules/admin/components/movie/form/api/form.component';
-import {NzGridModule} from 'ng-zorro-antd/grid';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
-import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
-import {environment} from '@/environments/environment';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzSpaceModule} from 'ng-zorro-antd/space';
-import {Store} from '@ngrx/store';
-import {Actions, ofType} from '@ngrx/effects';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { MovieService } from '@/app/core/services/movie/movie.service';
+import { filter, map, Subject, take, takeUntil } from 'rxjs';
+import { NzAutosizeDirective, NzInputDirective } from 'ng-zorro-antd/input';
 import {
+  NzFormControlComponent,
+  NzFormDirective,
+  NzFormLabelComponent,
+} from 'ng-zorro-antd/form';
+import { FormMovieAPIComponent } from '@/app/modules/admin/components/movie/form/api/form.component';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { environment } from '@/environments/environment';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import {
+  selectMovieById,
   selectMovieLoadingDetails,
   selectMoviesError,
   selectMoviesSaving,
-  selectSelectedMovie
+  selectSelectedMovie,
 } from '@/app/core/store/state/movie/movie.selectors';
-import {MovieActions} from '@/app/core/store/state/movie/movie.actions';
-import {Movie} from '@/app/core/models/movie.model';
-import {NzSpinComponent} from 'ng-zorro-antd/spin';
-import {AsyncPipe} from '@angular/common';
-import {NzAlertComponent} from 'ng-zorro-antd/alert';
+import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
+import { Movie } from '@/app/core/models/movie.model';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { AsyncPipe } from '@angular/common';
+import { NzAlertComponent } from 'ng-zorro-antd/alert';
 
 @Component({
-  selector: 'movie-form',
+  selector: 'app-movie-form',
   imports: [
     NzModalModule,
     NzInputDirective,
@@ -44,10 +49,10 @@ import {NzAlertComponent} from 'ng-zorro-antd/alert';
     NzAutosizeDirective,
     NzSpinComponent,
     AsyncPipe,
-    NzAlertComponent
+    NzAlertComponent,
   ],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.css'
+  styleUrl: './form.component.css',
 })
 export class FormMovieComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
@@ -60,43 +65,43 @@ export class FormMovieComponent implements OnInit, OnDestroy {
   // Props
   mode: 'add' | 'edit' | 'view' = 'add';
   movieId!: number;
-  movieForm!: FormGroup;
+  form!: FormGroup;
   imageBase = environment.tmbd.imageUrl;
 
   // NgRx State
   loading$ = this.store.select(selectMovieLoadingDetails);
   saving$ = this.store.select(selectMoviesSaving);
   error$ = this.store.select(selectMoviesError);
-  selectedMovie$ = this.store.select(selectSelectedMovie);
 
   private initialFormValue: any = null;
   private destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit() {
     this.initForm();
-
-    const {mode, movieId} = this.modelRef.getConfig().nzData;
+    const { mode, movieId } = this.modelRef.getConfig().nzData;
     this.mode = mode;
     this.movieId = movieId;
 
     if (this.mode !== 'add' && this.movieId) {
-      this.store.dispatch(MovieActions.loadMovie({id: this.movieId}));
-
-      this.selectedMovie$.pipe(
-        filter(movie => movie !== null && movie.id === this.movieId),
-        take(1),
-        takeUntil(this.destroy$)
-      ).subscribe(movie => {
-        if (movie) {
-          this.patchFormValue(movie);
-          this.initialFormValue = this.movieForm.value;
-          if (this.mode === 'view') {
-            this.disableForm();
+      this.store.dispatch(MovieActions.loadMovie({ id: this.movieId }));
+      this.store
+        .select(selectMovieById(this.movieId))
+        .pipe(
+          filter((movie) => movie !== null && movie.id === this.movieId),
+          take(1),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((movie) => {
+          if (movie) {
+            this.patchFormValue(movie);
+            this.initialFormValue = this.form.value;
+            if (this.mode === 'view') {
+              this.disableForm();
+            }
+          } else {
+            this.initialFormValue = this.form.value;
           }
-        } else {
-          this.initialFormValue = this.movieForm.value;
-        }
-      })
+        });
     }
   }
 
@@ -105,11 +110,13 @@ export class FormMovieComponent implements OnInit, OnDestroy {
 
     if (!this.initialFormValue) return false;
 
-    return JSON.stringify(this.initialFormValue) !== JSON.stringify(this.movieForm.value);
+    return (
+      JSON.stringify(this.initialFormValue) !== JSON.stringify(this.form.value)
+    );
   }
 
   initForm() {
-    this.movieForm = this.fb.group({
+    this.form = this.fb.group({
       id: [''],
       poster: [''],
       title: [''],
@@ -120,9 +127,8 @@ export class FormMovieComponent implements OnInit, OnDestroy {
       releaseDate: [null],
       imdbId: [''],
       filmId: [null],
-    })
+    });
   }
-
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -130,13 +136,13 @@ export class FormMovieComponent implements OnInit, OnDestroy {
   }
 
   private disableForm() {
-    Object.keys(this.movieForm.controls).forEach(key => {
-      this.movieForm.get(key)?.disable();
-    })
+    Object.keys(this.form.controls).forEach((key) => {
+      this.form.get(key)?.disable();
+    });
   }
 
   private patchFormValue(movie: Movie) {
-    this.movieForm.patchValue({
+    this.form.patchValue({
       title: movie.title,
       poster: movie.poster,
       overview: movie.overview,
@@ -146,47 +152,49 @@ export class FormMovieComponent implements OnInit, OnDestroy {
       releaseDate: movie.releaseDate,
       imdbId: movie.imdbId,
       filmId: movie.filmId,
-    })
+    });
   }
 
   submit() {
-    if (!this.movieForm.valid) {
-      Object.keys(this.movieForm.controls).forEach(key => {
-        this.movieForm.get(key)?.markAllAsTouched();
-      })
+    if (!this.form.valid) {
+      Object.keys(this.form.controls).forEach((key) => {
+        this.form.get(key)?.markAllAsTouched();
+      });
       return;
     }
 
-    const movieData = this.movieForm.value;
+    const movieData = this.form.value;
 
     if (this.mode === 'edit') {
-      this.store.dispatch(MovieActions.updateMovie({id: this.movieId, movie: movieData}))
+      this.store.dispatch(
+        MovieActions.updateMovie({ id: this.movieId, movie: movieData }),
+      );
     } else if (this.mode === 'add') {
-      this.store.dispatch(MovieActions.createMovie({movie: movieData}))
+      this.store.dispatch(MovieActions.createMovie({ movie: movieData }));
     }
 
-    this.actions$.pipe(
-      ofType(
-        MovieActions.createMovieSuccess,
-        MovieActions.updateMovieSuccess
-      ),
-      take(1),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.modelRef.close();
-    })
+    this.actions$
+      .pipe(
+        ofType(
+          MovieActions.createMovieSuccess,
+          MovieActions.updateMovieSuccess,
+        ),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.modelRef.close();
+      });
 
-    this.actions$.pipe(
-      ofType(
-        MovieActions.createMovieFailed,
-        MovieActions.updateMovieFailed
-      ),
-      take(1),
-      takeUntil(this.destroy$)
-    ).subscribe(({error}) => {
-      console.error('Save movie failed: ', error);
-    })
-
+    this.actions$
+      .pipe(
+        ofType(MovieActions.createMovieFailed, MovieActions.updateMovieFailed),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(({ error }) => {
+        console.error('Save movie failed: ', error);
+      });
   }
 
   openMovieModal() {
@@ -206,42 +214,42 @@ export class FormMovieComponent implements OnInit, OnDestroy {
 
             if (!selected) return;
 
-            this.movieService.getMovieDetails(selected.id).pipe(
-              map((movie: any) => ({
-                ...movie,
-                poster_path: `${this.imageBase}/${movie.poster_path}`,
-                genres: movie.genres.map((g: any) =>
-                  g.name.replace(/^Phim\s/i, ''))
-              })),
-              take(1),
-              takeUntil(this.destroy$)
-            ).subscribe({
-              next: (result: any) => {
-                this.movieForm.patchValue({
-                  title: result.title,
-                  poster: result.poster_path,
-                  overview: result.overview,
-                  duration: result.runtime,
-                  language: result.original_language,
-                  genres: result.genres,
-                  releaseDate: result.release_date,
-                  imdbId: result.imdb_id,
-                  filmId: result.id,
-                })
-                this.movieForm.markAsDirty();
-                modal.close();
-              },
-              error: (error) => {
-                console.error('Failed to fetch movie details', error);
-              }
-            })
-
-          }
-        }
+            this.movieService
+              .getMovieDetails(selected.id)
+              .pipe(
+                map((movie: any) => ({
+                  ...movie,
+                  poster_path: `${this.imageBase}/${movie.poster_path}`,
+                  genres: movie.genres.map((g: any) =>
+                    g.name.replace(/^Phim\s/i, ''),
+                  ),
+                })),
+                take(1),
+                takeUntil(this.destroy$),
+              )
+              .subscribe({
+                next: (result: any) => {
+                  this.form.patchValue({
+                    title: result.title,
+                    poster: result.poster_path,
+                    overview: result.overview,
+                    duration: result.runtime,
+                    language: result.original_language,
+                    genres: result.genres,
+                    releaseDate: result.release_date,
+                    imdbId: result.imdb_id,
+                    filmId: result.id,
+                  });
+                  this.form.markAsDirty();
+                  modal.close();
+                },
+                error: (error) => {
+                  console.error('Failed to fetch movie details', error);
+                },
+              });
+          },
+        },
       ],
-
-
     });
-
   }
 }

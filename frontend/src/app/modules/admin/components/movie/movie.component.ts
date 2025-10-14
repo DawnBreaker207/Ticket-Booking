@@ -1,21 +1,34 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {NzTableModule} from 'ng-zorro-antd/table';
-import {MovieService} from '@/app/core/services/movie/movie.service';
-import {NzInputModule} from 'ng-zorro-antd/input';
-import {NzSelectModule} from 'ng-zorro-antd/select';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {FormMovieComponent} from '@/app/modules/admin/components/movie/form/movie/form.component';
-import {displayColumns, headerColumns} from '@/app/core/constants/column';
-import {Movie} from '@/app/core/models/movie.model';
-import {NzTagComponent} from 'ng-zorro-antd/tag';
-import {DatePipe, NgClass} from '@angular/common';
-import {NzSpaceComponent} from 'ng-zorro-antd/space';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
-import {NzListComponent, NzListItemComponent, NzListItemMetaComponent} from 'ng-zorro-antd/list';
-import {debounceTime, map, of, switchMap} from 'rxjs';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FormMovieComponent } from '@/app/modules/admin/components/movie/form/movie/form.component';
+import { headerColumns } from '@/app/core/constants/column';
+import { Movie } from '@/app/core/models/movie.model';
+import { NzTagComponent } from 'ng-zorro-antd/tag';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import { NzSpaceComponent } from 'ng-zorro-antd/space';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
+import {
+  NzListComponent,
+  NzListItemComponent,
+  NzListItemMetaComponent,
+} from 'ng-zorro-antd/list';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { Store } from '@ngrx/store';
+import {
+  selectAllMovies,
+  selectMovieLoading,
+  selectMoviesError,
+  selectSelectedMovie,
+} from '@/app/core/store/state/movie/movie.selectors';
+import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
+import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
   selector: 'app-movie',
@@ -33,44 +46,63 @@ import {debounceTime, map, of, switchMap} from 'rxjs';
     NzListItemComponent,
     NzListItemMetaComponent,
     NgClass,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AsyncPipe,
+    NzAlertComponent,
+    NzSpinModule,
   ],
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
-  providers: [NzModalService]
+  providers: [NzModalService],
 })
 export class MovieComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private store = inject(Store);
   private modalService = inject(NzModalService);
-  private movieService = inject(MovieService);
-  headerColumn = headerColumns.movie;
-  displayColumn = displayColumns.movie;
-  movieList: readonly Movie[] = [];
 
+  // NgRx Selectors
+  movies$ = this.store.select(selectAllMovies);
+  loading$ = this.store.select(selectMovieLoading);
+  error$ = this.store.select(selectMoviesError);
+
+  // Local State
+  headerColumn = headerColumns.movie;
   searchCtrl = this.fb.control('');
   searchResults = signal<any | null>(null);
   selectedMovie = signal<any>(null);
 
+  movieList: readonly Movie[] = [];
+
   ngOnInit() {
-    this.movieService.getMovieLists().subscribe(data => this.movieList = data);
-    this.searchCtrl.valueChanges.pipe(
-      debounceTime(1000),
-      map(v => v?.trim()),
-      switchMap(query => {
-        if (!query) return of([]);
-        return this.movieService.getMovieLists(query)
-      })
-    ).subscribe(res => {
-        console.log(res);
-        this.searchResults.set(res);
-      }
-    )
+    this.store.dispatch(MovieActions.loadMovies());
+    this.movies$.subscribe((movies) => (this.movieList = movies));
+    this.searchCtrl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        map((v) => v?.trim() || ''),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => {
+        if (search) {
+          this.store.dispatch(MovieActions.searchMovies({ search: search }));
+          this.movies$.subscribe((result) => this.searchResults.set(result));
+        } else {
+          this.store.dispatch(MovieActions.loadMovies());
+          this.searchResults.set([]);
+        }
+      });
   }
 
   selectMovie(id: number) {
+    const movie = this.movieList.find((m) => m.id === id);
+    if (movie) {
+      this.store.dispatch(MovieActions.selectedMovie({ movie }));
+      this.selectedMovie.set(movie);
+    }
+
     this.openMovieModal('view', id);
-    this.searchResults.set(null);
-    this.searchCtrl.setValue("");
+    this.searchResults.set([]);
+    this.searchCtrl.setValue('', { emitEvent: false });
   }
 
   openMovieModal(mode: 'add' | 'edit' | 'view', id?: string | number) {
@@ -80,26 +112,29 @@ export class MovieComponent implements OnInit {
       nzClosable: true,
       nzData: {
         mode: mode,
-        movieId: id
+        movieId: id,
       },
       nzWidth: 900,
       nzKeyboard: true,
-      nzFooter: mode !== 'view' ? [
-        {
-          label: 'Confirm',
-          type: 'primary',
-          onClick: () => {
-            const form = modal.getContentComponent() as FormMovieComponent;
-            console.log('onClick', form.movieForm.valid)
-            if (form.movieForm.valid) {
-              form.submit();
-              modal.close()
-            } else {
-              console.log('Form Invalid!');
-            }
-          }
-        }
-      ] : null,
+      nzFooter:
+        mode !== 'view'
+          ? [
+              {
+                label: 'Confirm',
+                type: 'primary',
+                onClick: () => {
+                  const form =
+                    modal.getContentComponent() as FormMovieComponent;
+                  if (form.form.valid) {
+                    form.submit();
+                    modal.close();
+                  } else {
+                    console.log('Form Invalid!');
+                  }
+                },
+              },
+            ]
+          : null,
       nzOnCancel: () => {
         const formComponent = modal.getContentComponent();
         if (!formComponent.hasData()) {
@@ -110,19 +145,15 @@ export class MovieComponent implements OnInit {
               nzTitle: 'Are u sure',
               nzOnOk: () => resolve(true),
               nzOnCancel: () => resolve(false),
-            })
-          })
+            });
+          });
         }
-
-      }
-
-
+      },
     });
   }
 
   onDelete(id: number) {
-    return this.movieService.removeMovie(id).subscribe(res => {
-      console.log(res)
-    })
+    this.store.dispatch(MovieActions.deleteMovie({ id }));
+    this.store.select(selectSelectedMovie);
   }
 }

@@ -1,5 +1,5 @@
-import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {Movie, MovieRequest} from '@/app/core/models/movie.model';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { Movie, MovieRequest } from '@/app/core/models/movie.model';
 
 export const MovieActions = createActionGroup({
   source: 'Movie',
@@ -26,7 +26,7 @@ export const MovieActions = createActionGroup({
     'Create Movie Failed': props<{ error: any }>(),
 
     // Update
-    'Update Movie': props<{ id: number, movie: MovieRequest }>(),
+    'Update Movie': props<{ id: number; movie: MovieRequest }>(),
     'Update Movie Success': props<{ movie: Movie }>(),
     'Update Movie Failed': props<{ error: any }>(),
 
@@ -38,7 +38,6 @@ export const MovieActions = createActionGroup({
     //   UI Actions
     'Selected Movie': props<{ movie: Movie | null }>(),
     'Clear Error': emptyProps(),
-    'Clear Selected Movie': emptyProps()
-
-  }
+    'Clear Selected Movie': emptyProps(),
+  },
 });
