@@ -180,7 +180,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             showtime.setPrice(showtimeDetails.getPrice());
         }
 
-
+        showtime.markUpdated();
 //        DANGER: Don't update total seats or available seats directly - would break reservation!
         Showtime updatedShowtime = showtimeRepository.save(showtime);
         log.info("Updated showtime with ID: {}", updatedShowtime.getId());
