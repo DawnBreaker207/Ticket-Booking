@@ -4,6 +4,9 @@ import com.example.backend.dto.request.TheaterRequestDTO;
 import com.example.backend.dto.response.TheaterResponseDTO;
 import com.example.backend.model.Theater;
 
+import java.util.Collections;
+import java.util.Optional;
+
 public interface TheaterMappingHelper {
     static Theater map(final TheaterRequestDTO theater) {
         return Theater
@@ -20,11 +23,12 @@ public interface TheaterMappingHelper {
                 .id(theater.getId())
                 .name(theater.getName())
                 .location(theater.getLocation())
-                .showtime(theater
-                        .getShowtime()
-                        .stream()
-                        .map(ShowtimeMappingHelper::map)
-                        .toList())
+                .showtime(
+                        Optional.ofNullable(theater.getShowtime())
+                                .orElseGet(Collections::emptyList)
+                                .stream()
+                                .map(ShowtimeMappingHelper::map)
+                                .toList())
                 .capacity(theater.getCapacity())
                 .isDeleted(theater.getIsDeleted())
                 .createdAt(theater.getCreatedAt())

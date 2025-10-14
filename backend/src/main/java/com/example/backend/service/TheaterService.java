@@ -13,9 +13,9 @@ public interface TheaterService {
 
     List<TheaterResponseDTO> findByLocation(String location);
 
-    TheaterResponseDTO create(TheaterRequestDTO cinemaHall);
+    TheaterResponseDTO create(TheaterRequestDTO theater);
 
-    TheaterResponseDTO update(Long id, TheaterRequestDTO cinemaHall);
+    TheaterResponseDTO update(Long id, TheaterRequestDTO theaterDetails);
 
     void remove(Long id);
 
