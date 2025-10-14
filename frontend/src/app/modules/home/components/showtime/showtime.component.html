@@ -2,18 +2,17 @@
   <div class="mb-4">
     <p class="font-semibold mb-3">Chọn khung giờ chiếu</p>
     <div class="grid grid-cols-2 gap-2 md:grid-cols-3">
-      <button class="p-3 border-2 rounded hover:border-blue-500 transition">
-        {{ formatShowtime(showtime()!.showDate) }}
-        <br />
-        <span class="text-sm">{{ formatTime(showtime()!.showTime) }}</span>
-      </button>
+      @for (showtime of showtime(); track showtime.id) {
+        <button class="p-3 border-2 rounded hover:border-blue-500 transition">
+          {{ formatShowtime(showtime!.showDate) }}
+          <br />
+          <span class="text-sm">{{ formatTime(showtime!.showTime) }}</span>
+          <p class="text-sm text-gray-600">
+            Ghế còn lại: <strong>{{ showtime?.availableSeats }}</strong
+            >/ {{ showtime?.totalSeats }}
+          </p>
+        </button>
+      }
     </div>
-    <p class="text-sm text-gray-600 mt-3">
-      Giá vé: <strong>{{ showtime()?.price }}</strong>
-    </p>
-    <p class="text-sm text-gray-600">
-      Ghế còn lại: <strong>{{ showtime()?.availableSeats }}</strong
-      >/ {{ showtime()?.totalSeats }}
-    </p>
   </div>
 </div>
