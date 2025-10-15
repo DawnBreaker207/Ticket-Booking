@@ -1,4 +1,4 @@
-import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {
   Seat,
   Showtime,
@@ -9,9 +9,13 @@ export const ShowtimeActions = createActionGroup({
   source: 'Showtime',
   events: {
     // Load all
-    'Load Showtimes': props<{ movieId: number }>(),
-    'Load Showtimes Success': props<{ showtimes: Showtime[] }>(),
-    'Load Showtimes Failed': props<{ error: any }>(),
+    'Load Showtimes By Movie Id': props<{ movieId: number }>(),
+    'Load Showtimes By Movie Id Success': props<{ showtimes: Showtime[] }>(),
+    'Load Showtimes By Movie Id Failed': props<{ error: any }>(),
+
+    'Load Showtimes By Theater Id': props<{ theaterId: number }>(),
+    'Load Showtimes By Theater Id Success': props<{ showtimes: Showtime[] }>(),
+    'Load Showtimes By Theater Id Failed': props<{ error: any }>(),
 
     // Load simple
     'Load Showtime': props<{ id: number }>(),

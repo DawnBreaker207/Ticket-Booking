@@ -10,28 +10,32 @@
   </button>
 </div>
 <div class="mb-5 flex items-center justify-between">
-  <nz-input-group nzAddOnBeforeIcon="search">
-    <input nz-input placeholder="Tìm kiếm" style="width: 500px" type="text" />
-  </nz-input-group>
-  <!--   Search result list-->
-  <nz-select class="w-[150px]" nzPlaceHolder="Sắp xếp">
-    <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
-    <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
-  </nz-select>
+  <form [formGroup]="form">
+    <nz-form-item>
+      <nz-form-label nzRequired>Rạp chiếu</nz-form-label>
+      <nz-select class="w-[150px]" nzPlaceHolder="Rạp chiếu" formControlName="theaterId">
+        @for (t of theaters; track t.id) {
+          @if (t.id !== form.value.theaterId) {
+            <nz-option [nzLabel]="t.name" [nzValue]="t.id"></nz-option>
+          }
+        }
+      </nz-select>
+    </nz-form-item>
+  </form>
 </div>
 <nz-spin [nzSpinning]="loading$ | async">
-  <nz-table [nzData]="showtimeList" nzShowPagination nzShowSizeChanger>
+  <nz-table [nzData]="showtimes" nzShowPagination nzShowSizeChanger>
     <thead>
-      <tr>
-        @for (item of headerColumn; track item) {
-          <th>
-            {{ item }}
-          </th>
-        }
-      </tr>
+    <tr>
+      @for (item of headerColumn; track item) {
+        <th>
+          {{ item }}
+        </th>
+      }
+    </tr>
     </thead>
     <tbody>
-      @for (item of showtimeList; track item.id) {
+      @for (item of showtimes; track item.id) {
         <tr>
           <td>{{ item.id }}</td>
           <td>{{ item.movieTitle }}</td>
