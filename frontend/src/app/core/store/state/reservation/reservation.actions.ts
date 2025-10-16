@@ -2,6 +2,7 @@ import { createActionGroup, props } from '@ngrx/store';
 import {
   Reservation,
   ReservationFilter,
+  ReservationInitRequest,
   ReservationRequest,
 } from '@/app/core/models/reservation.model';
 
@@ -18,6 +19,10 @@ export const ReservationActions = createActionGroup({
     'Load Reservation': props<{ id: string }>(),
     'Load Reservation Success': props<{ reservation: Reservation }>(),
     'Load Reservation Failure': props<{ error: any }>(),
+
+    'Create Reservation Init': props<{ reservation: ReservationInitRequest }>(),
+    'Create Reservation Success Init': props<{ reservationId: string }>(),
+    'Create Reservation Failure Init': props<{ error: any }>(),
 
     'Create Reservation': props<{ reservation: ReservationRequest }>(),
     'Create Reservation Success': props<{ reservation: Reservation }>(),
