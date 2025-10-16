@@ -6,7 +6,7 @@ import {ApiRes} from '@/app/core/models/common.model';
 import {User} from '@/app/core/models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   URL = `${environment.apiUrl}/user`;
@@ -15,28 +15,28 @@ export class UserService {
   getALl() {
     return this.http.get<ApiRes<User>>(`${this.URL}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<User>('Get users'))
-    )
+      catchError(this.handleError<User>('Get users')),
+    );
   }
 
   getById(id: number) {
     return this.http.get<ApiRes<User>>(`${this.URL}/${id}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<User>('Get users'))
-    )
+      catchError(this.handleError<User>('Get users')),
+    );
   }
 
   getByEmail(email: string) {
-    return this.http.get<ApiRes<User>>(`${this.URL}/${email}`).pipe(
+    return this.http.get<ApiRes<User>>(`${this.URL}/email/${email}`).pipe(
       map((res) => res.data),
-      catchError(this.handleError<User>('Get users'))
-    )
+      catchError(this.handleError<User>('Get users')),
+    );
   }
 
-  private handleError<T>(operation = "operation", result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
       return of(result as T);
-    }
+    };
   }
 }
