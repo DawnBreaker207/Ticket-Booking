@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
-import { Theater } from '@/app/core/models/theater.model';
+import {Component, inject, OnInit, signal,} from '@angular/core';
+import {Theater} from '@/app/core/models/theater.model';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-theater',
@@ -7,7 +8,21 @@ import { Theater } from '@/app/core/models/theater.model';
   templateUrl: './theater.component.html',
   styleUrl: './theater.component.css',
 })
-export class TheaterComponent {
-  theaters = input<Theater[]>([]);
-  selectedTheater = input<number | null>(null);
+export class TheaterComponent implements OnInit {
+  private modelRef = inject(NzModalRef);
+  theaters = signal<Theater[]>([]);
+  selectedTheaterId = signal<number | null>(null);
+
+  ngOnInit() {
+    const { theaters, selectedTheaterId } = this.modelRef.getConfig().nzData;
+    this.theaters.set(theaters);
+    this.selectedTheaterId.set(selectedTheaterId);
+  }
+
+  onSelect(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const theaterId = Number(target.value);
+    this.selectedTheaterId.set(theaterId);
+    this.modelRef.close(theaterId);
+  }
 }
