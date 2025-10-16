@@ -2,20 +2,23 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Showtime } from '@/app/core/models/theater.model';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import dayjs from 'dayjs';
+import { NgClass } from '@angular/common';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-theater',
-  imports: [],
+  imports: [NgClass, NzButtonComponent],
   templateUrl: './showtime.component.html',
   styleUrl: './showtime.component.css',
 })
 export class ShowtimeComponent implements OnInit {
   private modalRef = inject(NzModalRef);
-  showtime = signal<Showtime[]>([]);
+  showtimes = signal<Showtime[]>([]);
+  selectedShowtimeId = signal<number | null>(null);
 
   ngOnInit() {
     const { showtimes } = this.modalRef.getConfig().nzData;
-    this.showtime.set(showtimes);
+    this.showtimes.set(showtimes);
   }
 
   formatShowtime(date: Date | string | null) {
@@ -28,5 +31,15 @@ export class ShowtimeComponent implements OnInit {
     const dateTime = dayjs(`${today} ${time}`, 'YYYY-MM-DD HH:mm:ss');
     if (!dateTime.isValid()) return '-';
     return dateTime.format('HH:mm');
+  }
+
+  onSelect(showtimeId: number) {
+    this.selectedShowtimeId.set(showtimeId);
+  }
+
+  confirmSelection() {
+    if (this.selectedShowtimeId()) {
+      this.modalRef.close(this.selectedShowtimeId());
+    }
   }
 }

@@ -13,7 +13,11 @@
   <form [formGroup]="form">
     <nz-form-item>
       <nz-form-label nzRequired>Rạp chiếu</nz-form-label>
-      <nz-select class="w-[150px]" nzPlaceHolder="Rạp chiếu" formControlName="theaterId">
+      <nz-select
+        class="w-[150px]"
+        nzPlaceHolder="Rạp chiếu"
+        formControlName="theaterId"
+      >
         @for (t of theaters; track t.id) {
           @if (t.id !== form.value.theaterId) {
             <nz-option [nzLabel]="t.name" [nzValue]="t.id"></nz-option>
@@ -26,13 +30,13 @@
 <nz-spin [nzSpinning]="loading$ | async">
   <nz-table [nzData]="showtimes" nzShowPagination nzShowSizeChanger>
     <thead>
-    <tr>
-      @for (item of headerColumn; track item) {
-        <th>
-          {{ item }}
-        </th>
-      }
-    </tr>
+      <tr>
+        @for (item of headerColumn; track item) {
+          <th>
+            {{ item }}
+          </th>
+        }
+      </tr>
     </thead>
     <tbody>
       @for (item of showtimes; track item.id) {

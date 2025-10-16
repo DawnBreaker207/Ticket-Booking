@@ -1,6 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
-import {Showtime} from '@/app/core/models/theater.model';
-import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions';
+import { createReducer, on } from '@ngrx/store';
+import { Showtime } from '@/app/core/models/theater.model';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
 
 export const showtimeFeatureKey = 'showtimeKey';
 
@@ -29,7 +29,7 @@ export const initialState: ShowtimeState = {
 export const showtimeReducer = createReducer(
   initialState,
   // Load all
-  on(ShowtimeActions.loadShowtimesByMovieId, (state, {movieId}) => {
+  on(ShowtimeActions.loadShowtimesByMovieId, (state, { movieId }) => {
     return {
       ...state,
       movieId: movieId,
@@ -37,7 +37,8 @@ export const showtimeReducer = createReducer(
       loading: true,
       error: null,
     };
-  }), on(ShowtimeActions.loadShowtimesByTheaterId, (state, {theaterId}) => {
+  }),
+  on(ShowtimeActions.loadShowtimesByTheaterId, (state, { theaterId }) => {
     return {
       ...state,
       theaterId: theaterId,
@@ -46,21 +47,29 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.loadShowtimesByMovieIdSuccess, ShowtimeActions.loadShowtimesByTheaterIdSuccess, (state, {showtimes}) => {
-    return {
-      ...state,
-      showtimes: showtimes,
-      loading: false,
-      error: null,
-    };
-  }),
-  on(ShowtimeActions.loadShowtimesByMovieIdFailed, ShowtimeActions.loadShowtimesByTheaterIdFailed, (state, {error}) => {
-    return {
-      ...state,
-      loading: false,
-      error,
-    };
-  }),
+  on(
+    ShowtimeActions.loadShowtimesByMovieIdSuccess,
+    ShowtimeActions.loadShowtimesByTheaterIdSuccess,
+    (state, { showtimes }) => {
+      return {
+        ...state,
+        showtimes: showtimes,
+        loading: false,
+        error: null,
+      };
+    },
+  ),
+  on(
+    ShowtimeActions.loadShowtimesByMovieIdFailed,
+    ShowtimeActions.loadShowtimesByTheaterIdFailed,
+    (state, { error }) => {
+      return {
+        ...state,
+        loading: false,
+        error,
+      };
+    },
+  ),
   //  Get one
   on(ShowtimeActions.loadShowtime, (state) => {
     return {
@@ -69,7 +78,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.loadShowtimeSuccess, (state, {showtime}) => {
+  on(ShowtimeActions.loadShowtimeSuccess, (state, { showtime }) => {
     const existingIndex = state.showtimes.findIndex(
       (s) => s.id === showtime.id,
     );
@@ -85,7 +94,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.loadShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.loadShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       loadingDetails: false,
@@ -100,7 +109,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.createShowtimeSuccess, (state, {showtime}) => {
+  on(ShowtimeActions.createShowtimeSuccess, (state, { showtime }) => {
     return {
       ...state,
       showtimes: [...state.showtimes, showtime],
@@ -108,7 +117,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.createShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.createShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
@@ -123,7 +132,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.updateShowtimeSuccess, (state, {showtime}) => {
+  on(ShowtimeActions.updateShowtimeSuccess, (state, { showtime }) => {
     return {
       ...state,
       showtimes: state.showtimes.map((s) =>
@@ -137,7 +146,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.updateShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.updateShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       saving: false,
@@ -152,7 +161,7 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.deleteShowtimeSuccess, (state, {id}) => {
+  on(ShowtimeActions.deleteShowtimeSuccess, (state, { id }) => {
     return {
       ...state,
       showtimes: state.showtimes.filter((s) => s.id !== id),
@@ -162,14 +171,14 @@ export const showtimeReducer = createReducer(
       error: null,
     };
   }),
-  on(ShowtimeActions.deleteShowtimeFailed, (state, {error}) => {
+  on(ShowtimeActions.deleteShowtimeFailed, (state, { error }) => {
     return {
       ...state,
       loading: false,
       error,
     };
   }),
-  on(ShowtimeActions.selectedShowtime, (state, {showtime}) => {
+  on(ShowtimeActions.selectedShowtime, (state, { showtime }) => {
     return {
       ...state,
       selectedShowtime: showtime,
