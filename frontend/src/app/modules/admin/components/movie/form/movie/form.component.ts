@@ -23,7 +23,6 @@ import {
   selectMovieLoadingDetails,
   selectMoviesError,
   selectMoviesSaving,
-  selectSelectedMovie,
 } from '@/app/core/store/state/movie/movie.selectors';
 import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 import { Movie } from '@/app/core/models/movie.model';

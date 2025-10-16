@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   NzFormControlComponent,
   NzFormDirective,
@@ -10,20 +10,25 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {AsyncPipe, DatePipe, NgClass, NgTemplateOutlet} from '@angular/common';
-import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
-import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
-import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import {
+  AsyncPipe,
+  DatePipe,
+  NgClass,
+  NgTemplateOutlet,
+} from '@angular/common';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
 import {
   NzListComponent,
   NzListItemComponent,
   NzListItemMetaComponent,
 } from 'ng-zorro-antd/list';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {Store} from '@ngrx/store';
-import {Actions, ofType} from '@ngrx/effects';
-import {MovieService} from '@/app/core/services/movie/movie.service';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { MovieService } from '@/app/core/services/movie/movie.service';
 import {
   debounceTime,
   filter,
@@ -34,16 +39,16 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import {Movie} from '@/app/core/models/movie.model';
-import {Showtime} from '@/app/core/models/theater.model';
-import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions';
-import {selectSelectedShowtime} from '@/app/core/store/state/showtime/showtime.selectors';
-import {selectAllTheaters} from '@/app/core/store/state/theater/theater.selectors';
-import {selectSearchQuery} from '@/app/core/store/state/movie/movie.selectors';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
-import {NzTimePickerComponent} from 'ng-zorro-antd/time-picker';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {formatDate, formatTime} from '@/app/shared/utils/formatDate';
+import { Movie } from '@/app/core/models/movie.model';
+import { Showtime } from '@/app/core/models/theater.model';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
+import { selectSelectedShowtime } from '@/app/core/store/state/showtime/showtime.selectors';
+import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
+import { selectSearchQuery } from '@/app/core/store/state/movie/movie.selectors';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzTimePickerComponent } from 'ng-zorro-antd/time-picker';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { formatDate, formatTime } from '@/app/shared/utils/formatDate';
 
 @Component({
   selector: 'app-form',
@@ -95,12 +100,12 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.store.dispatch(TheaterActions.loadTheaters());
-    const {mode, id} = this.modelRef.getConfig().nzData;
+    const { mode, id } = this.modelRef.getConfig().nzData;
     this.mode = mode;
     this.showtimeId = id;
     if (this.mode !== 'add' && this.showtimeId) {
       this.store.dispatch(
-        ShowtimeActions.loadShowtime({id: this.showtimeId as number}),
+        ShowtimeActions.loadShowtime({ id: this.showtimeId as number }),
       );
       this.store
         .select(selectSelectedShowtime)
@@ -150,7 +155,7 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
     console.log(movie);
     this.form.patchValue({
       movieId: movie.id,
-      moviePosterUrl: movie.poster
+      moviePosterUrl: movie.poster,
     });
     this.selectedMovie.set(movie);
     this.searchResults.set(null);
@@ -201,12 +206,15 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const showtimeData =
-      {
-        ...this.form.value,
-        showDate: this.form.value.showDate ? formatDate(this.form.value.showDate) : null,
-        showTime: this.form.value.showTime ? formatTime(this.form.value.showDate) : null,
-      }
+    const showtimeData = {
+      ...this.form.value,
+      showDate: this.form.value.showDate
+        ? formatDate(this.form.value.showDate)
+        : null,
+      showTime: this.form.value.showTime
+        ? formatTime(this.form.value.showDate)
+        : null,
+    };
 
     if (this.mode === 'edit') {
       this.store.dispatch(
@@ -217,7 +225,7 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
       );
     } else {
       this.store.dispatch(
-        ShowtimeActions.createShowtime({showtime: showtimeData}),
+        ShowtimeActions.createShowtime({ showtime: showtimeData }),
       );
     }
 
@@ -243,7 +251,7 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
         take(1),
         takeUntil(this.destroy$),
       )
-      .subscribe(({error}) => {
+      .subscribe(({ error }) => {
         console.error('Save showtime failed', error);
       });
   }

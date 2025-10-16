@@ -30,9 +30,11 @@
       <nz-form-item class="mt-[60px]">
         <nz-form-label>Capaticy</nz-form-label>
 
-        <nz-select formControlName="capacity"
-                   [nzDisabled]="mode === 'view'"
-                   nzPlaceHolder="'Select Capacity'">
+        <nz-select
+          formControlName="capacity"
+          [nzDisabled]="mode === 'view'"
+          nzPlaceHolder="'Select Capacity'"
+        >
           <nz-option [nzLabel]="40" [nzValue]="40"></nz-option>
           <nz-option [nzLabel]="50" [nzValue]="50"></nz-option>
           <nz-option [nzLabel]="60" [nzValue]="60"></nz-option>

@@ -18,7 +18,6 @@
             />
           </div>
         </div>
-
       </form>
     </nz-col>
 
@@ -36,11 +35,8 @@
               />
             </nz-input-group>
           </nz-form-item>
-          <ng-container *ngTemplateOutlet="searchDropdown">
-          </ng-container>
-
+          <ng-container *ngTemplateOutlet="searchDropdown"> </ng-container>
         </div>
-
 
         <nz-form-item>
           <nz-form-label nzRequired>Show date</nz-form-label>
@@ -55,15 +51,16 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <nz-form-item>
           <nz-form-label nzRequired>Show time</nz-form-label>
           <nz-form-control [nzSpan]="24" [nzErrorTip]="'Show time '">
-            <nz-time-picker nzSize="default"
-                            class="w-full"
-                            nzFormat="HH:mm"
-                            formControlName="showTime"
-                            [nzDisabled]="mode === 'view'">
+            <nz-time-picker
+              nzSize="default"
+              class="w-full"
+              nzFormat="HH:mm"
+              formControlName="showTime"
+              [nzDisabled]="mode === 'view'"
+            >
             </nz-time-picker>
           </nz-form-control>
         </nz-form-item>
@@ -71,11 +68,16 @@
         <nz-form-item>
           <nz-form-label nzRequired>Theater</nz-form-label>
           <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter theater'">
-            <nz-select formControlName="theaterId"
-                       [nzDisabled]="mode === 'view'"
-                       nzPlaceHolder="'Select Theater'">
+            <nz-select
+              formControlName="theaterId"
+              [nzDisabled]="mode === 'view'"
+              nzPlaceHolder="'Select Theater'"
+            >
               @for (theater of theaters$ | async; track theater.id) {
-                <nz-option [nzLabel]="theater.name" [nzValue]="theater.id"></nz-option>
+                <nz-option
+                  [nzLabel]="theater.name"
+                  [nzValue]="theater.id"
+                ></nz-option>
               }
             </nz-select>
           </nz-form-control>
@@ -84,9 +86,11 @@
         <nz-form-item>
           <nz-form-label nzRequired>Price</nz-form-label>
           <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter price'">
-            <nz-select formControlName="price"
-                       [nzDisabled]="mode === 'view'"
-                       nzPlaceHolder="'Select Price'">
+            <nz-select
+              formControlName="price"
+              [nzDisabled]="mode === 'view'"
+              nzPlaceHolder="'Select Price'"
+            >
               <nz-option [nzLabel]="50000" [nzValue]="50000"></nz-option>
               <nz-option [nzLabel]="100000" [nzValue]="100000"></nz-option>
               <nz-option [nzLabel]="150000" [nzValue]="150000"></nz-option>
@@ -97,9 +101,11 @@
         <nz-form-item>
           <nz-form-label nzRequired>Seat</nz-form-label>
           <nz-form-control [nzSpan]="24" [nzErrorTip]="'Enter seat'">
-            <nz-select formControlName="totalSeats"
-                       [nzDisabled]="mode === 'view'"
-                       nzPlaceHolder="'Select Seat'">
+            <nz-select
+              formControlName="totalSeats"
+              [nzDisabled]="mode === 'view'"
+              nzPlaceHolder="'Select Seat'"
+            >
               <nz-option [nzLabel]="40" [nzValue]="40"></nz-option>
               <nz-option [nzLabel]="50" [nzValue]="50"></nz-option>
               <nz-option [nzLabel]="60" [nzValue]="60"></nz-option>
@@ -127,9 +133,9 @@
             (click)="selectMovie(movie)"
             class="cursor-pointer transition p-2 rounded"
             [ngClass]="{
-                      'bg-blue-100': selectedMovie()?.id === movie.id,
-                      'hover:bg-gray-100': selectedMovie()?.id !== movie.id,
-                    }"
+              'bg-blue-100': selectedMovie()?.id === movie.id,
+              'hover:bg-gray-100': selectedMovie()?.id !== movie.id,
+            }"
           >
             <nz-list-item-meta
               [nzAvatar]="nzAvatar"
@@ -139,11 +145,7 @@
             </nz-list-item-meta>
 
             <ng-template #nzAvatar>
-              <nz-avatar
-                nzShape="square"
-                [nzSize]="64"
-                [nzSrc]="movie.poster"
-              >
+              <nz-avatar nzShape="square" [nzSize]="64" [nzSrc]="movie.poster">
               </nz-avatar>
             </ng-template>
 
@@ -152,10 +154,10 @@
             </ng-template>
 
             <ng-template #nzDescription>
-                      <span class="text-xs text-gray-500">
-                        {{ movie.release_date | date: "yyyy" }} —
-                        {{ movie.overview }}
-                      </span>
+              <span class="text-xs text-gray-500">
+                {{ movie.release_date | date: "yyyy" }} —
+                {{ movie.overview }}
+              </span>
             </ng-template>
           </nz-list-item>
         </ng-template>

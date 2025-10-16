@@ -1,16 +1,25 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule,} from '@angular/forms';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {filter, Subject, take, takeUntil} from 'rxjs';
-import {NzInputDirective} from 'ng-zorro-antd/input';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent,} from 'ng-zorro-antd/form';
-import {Store} from '@ngrx/store';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {selectTheaterById,} from '@/app/core/store/state/theater/theater.selectors';
-import {Actions, ofType} from '@ngrx/effects';
-import {Theater} from '@/app/core/models/theater.model';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { filter, Subject, take, takeUntil } from 'rxjs';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import {
+  NzFormControlComponent,
+  NzFormDirective,
+  NzFormLabelComponent,
+} from 'ng-zorro-antd/form';
+import { Store } from '@ngrx/store';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { selectTheaterById } from '@/app/core/store/state/theater/theater.selectors';
+import { Actions, ofType } from '@ngrx/effects';
+import { Theater } from '@/app/core/models/theater.model';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'app-theater-form',
