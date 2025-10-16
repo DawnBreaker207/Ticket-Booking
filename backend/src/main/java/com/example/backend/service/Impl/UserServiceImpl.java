@@ -30,30 +30,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findOne(Long id) {
+    public UserResponseDTO findOne(Long id) {
         return userRepository
                 .findById(id)
+                .map(UserMappingHelper::map)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
     }
 
     @Override
     @Transactional
-    public User update(Long id, User userDetails) {
+    public UserResponseDTO update(Long id, User userDetails) {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
         user.setEmail(userDetails.getEmail());
         user.setUsername(userDetails.getUsername());
         user.markUpdated();
-        userRepository.save(user);
-        return user;
-
+        return UserMappingHelper.map(userRepository.save(user));
     }
 
     @Override
-    public User findByEmail(String email) {
+    public UserResponseDTO findByEmail(String email) {
         return userRepository
                 .findByEmail(email)
+                .map(UserMappingHelper::map)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
     }
 }

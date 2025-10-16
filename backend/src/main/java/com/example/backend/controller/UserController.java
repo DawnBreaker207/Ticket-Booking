@@ -2,7 +2,6 @@ package com.example.backend.controller;
 
 import com.example.backend.config.response.ResponseObject;
 import com.example.backend.dto.response.UserResponseDTO;
-import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +28,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseObject<User> getOne(@PathVariable Long id) {
+    public ResponseObject<UserResponseDTO> getOne(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findOne(id));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseObject<User> getEmail(@PathVariable String email) {
+    public ResponseObject<UserResponseDTO> getEmail(@PathVariable String email) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
 }
