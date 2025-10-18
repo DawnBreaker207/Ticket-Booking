@@ -55,6 +55,6 @@ export interface SeatRequest {
   id: number;
   showtime: Showtime;
   seatNumber: string;
-  statue: SeatStatus;
+  status: SeatStatus;
   reservation: Reservation;
 }

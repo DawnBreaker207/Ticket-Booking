@@ -3,6 +3,7 @@ import { environment } from '@/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import {
+  Seat,
   Showtime,
   ShowtimeRequest,
   Theater,
@@ -16,7 +17,7 @@ import { ApiRes } from '@/app/core/models/common.model';
 export class TheaterService {
   URL_THEATER = `${environment.apiUrl}/theater`;
   URL_SHOWTIME = `${environment.apiUrl}/showtime`;
-  URL_SEAT = `${environment.apiUrl}/seat`;
+  URL_SEAT = `${environment.apiUrl}/seats`;
   private http = inject(HttpClient);
 
   // Theater
@@ -151,21 +152,19 @@ export class TheaterService {
   // Seat
   getSeatByShowtime(showtimeId: number) {
     return this.http
-      .get<ApiRes<Showtime>>(`${this.URL_SHOWTIME}/showtime/${showtimeId}`)
+      .get<ApiRes<Seat[]>>(`${this.URL_SEAT}/showtime/${showtimeId}`)
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<Showtime>('showtime')),
+        catchError(this.handleError<Seat[]>('showtime')),
       );
   }
 
   getAvailableSeatByShowtime(showtimeId: number) {
     return this.http
-      .get<
-        ApiRes<Showtime>
-      >(`${this.URL_SHOWTIME}/showtime/${showtimeId}/available`)
+      .get<ApiRes<Seat[]>>(`${this.URL_SEAT}/showtime/${showtimeId}/available`)
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<Showtime>('showtime')),
+        catchError(this.handleError<Seat[]>('showtime')),
       );
   }
 

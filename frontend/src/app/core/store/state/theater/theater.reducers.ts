@@ -64,7 +64,7 @@ export const theaterReducer = createReducer(
     return {
       ...state,
       theaters: theaters,
-      selectedSchedule: theater,
+      selectedTheater: theater,
       loadingDetails: false,
       error: null,
     };

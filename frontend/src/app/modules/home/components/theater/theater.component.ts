@@ -1,6 +1,6 @@
-import {Component, inject, OnInit, signal,} from '@angular/core';
-import {Theater} from '@/app/core/models/theater.model';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Theater } from '@/app/core/models/theater.model';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-theater',
