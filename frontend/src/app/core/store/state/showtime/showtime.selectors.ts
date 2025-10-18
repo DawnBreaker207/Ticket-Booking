@@ -3,6 +3,7 @@ import {
   showtimeFeatureKey,
   ShowtimeState,
 } from '@/app/core/store/state/showtime/showtime.reducers';
+import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
 
 export const selectShowtimeState =
   createFeatureSelector<ShowtimeState>(showtimeFeatureKey);
@@ -52,4 +53,13 @@ export const selectShowtimeCount = createSelector(
 export const selectHasShowtime = createSelector(
   selectAllShowtimes,
   (movies) => movies.length > 0,
+);
+export const selectTotalPrice = createSelector(
+  selectSelectedSeats,
+  selectSelectedShowtime,
+  (selectedSeats, showtime) => (showtime?.price ?? 0) * selectedSeats.length,
+);
+export const selectPrice = createSelector(
+  selectSelectedShowtime,
+  (showtime) => showtime?.price ?? 0,
 );
