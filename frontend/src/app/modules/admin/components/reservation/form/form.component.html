@@ -1,5 +1,5 @@
 <div class="w-full h-full">
-  <div>Order Id: {{ reservation.id }}</div>
+  <div>Reservation Id: {{ reservation.id }}</div>
   <div>Name: {{ reservation.user.username }}</div>
   <div>Showtime: {{ reservation.showtime.showDate | date: "dd/MM/yyyy" }}</div>
   <div>
@@ -9,6 +9,6 @@
     </nz-tag>
   </div>
   <div>Total Amount: {{ reservation.totalAmount | currency: "VND" }}</div>
-  <div>Order Day: {{ reservation.createdAt | date: "dd/MM/yyyy" }}</div>
+  <div>Reservation Day: {{ reservation.createdAt | date: "dd/MM/yyyy" }}</div>
   <div>Seats: {{ seats }}</div>
 </div>
