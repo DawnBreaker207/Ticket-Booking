@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Jwt} from '@/app/core/models/jwt.model';
+import { Injectable } from '@angular/core';
+import { Jwt } from '@/app/core/models/jwt.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
   private readonly JWT_KEY = 'jwt';
@@ -15,17 +15,16 @@ export class StorageService {
       localStorage.setItem(this.ACCESS_TOKEN_KEY, jwt.accessToken);
       localStorage.setItem(this.REFRESH_TOKEN_KEY, jwt.refreshToken);
     } catch (error) {
-      console.error("Failed to set JWT", error)
+      console.error('Failed to set JWT', error);
     }
   }
-
 
   getJwt() {
     try {
       const item = localStorage.getItem(this.JWT_KEY);
       return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error("Failed to parse Jwt", error)
+      console.error('Failed to parse Jwt', error);
       return null;
     }
   }
@@ -34,5 +33,27 @@ export class StorageService {
     localStorage.removeItem(this.JWT_KEY);
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  setItem<T>(key: string, value: T) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Failed to store ${key}`, error);
+    }
+  }
+
+  getItem<T>(key: string): T | null {
+    try {
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error(`Failed to parse ${key}`, error);
+      return null;
+    }
+  }
+
+  removeItem(key: string) {
+    localStorage.removeItem(key);
   }
 }
