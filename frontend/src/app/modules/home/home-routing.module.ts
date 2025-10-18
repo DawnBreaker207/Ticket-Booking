@@ -18,7 +18,7 @@ const routes: Routes = [
       },
       { path: 'movie/detail/:id', component: DetailComponent },
       { path: 'login', component: AuthComponent },
-      { path: 'reservation/:orderId', component: ReservationComponent },
+      { path: 'reservation/:reservationId', component: ReservationComponent },
       { path: 'paymentResult', component: PaymentResultComponent },
     ],
   },
