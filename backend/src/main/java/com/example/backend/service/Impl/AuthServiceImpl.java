@@ -94,9 +94,10 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return JwtResponseDTO
                 .builder()
-                .accessToken(jwt)
+                .userId(userDetails.getId())
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
+                .accessToken(jwt)
                 .refreshToken(refreshToken.getToken())
                 .build();
     }
