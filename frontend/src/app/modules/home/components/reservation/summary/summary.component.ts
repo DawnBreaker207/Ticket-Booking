@@ -1,23 +1,21 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {Store} from '@ngrx/store';
-import {AsyncPipe, CurrencyPipe} from '@angular/common';
-import {selectedSeats, selectedTotalPrice} from '@/app/core/store/state/schedule/schedule.selectors';
+import {selectSelectedSeats} from '@/app/core/store/state/seat/seat.selectors';
+import {selectPrice, selectTotalPrice,} from '@/app/core/store/state/showtime/showtime.selectors';
+import {CommonModule} from '@angular/common';
+import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
 
 @Component({
   selector: 'app-summary',
-  imports: [
-    NzIconModule,
-    AsyncPipe,
-    CurrencyPipe
-  ],
+  imports: [NzIconModule, CommonModule],
   templateUrl: './summary.component.html',
-  styleUrl: './summary.component.css'
+  styleUrl: './summary.component.css',
 })
 export class SummaryComponent {
-  user = input<any>();
-  store = inject(Store);
-  selectedSeats$ = this.store.select(selectedSeats);
-  totalPrice$ = this.store.select(selectedTotalPrice);
-
+  private store = inject(Store);
+  user$ = this.store.select(selectJwt);
+  selectedSeats$ = this.store.select(selectSelectedSeats);
+  totalPrice$ = this.store.select(selectTotalPrice);
+  price$ = this.store.select(selectPrice);
 }

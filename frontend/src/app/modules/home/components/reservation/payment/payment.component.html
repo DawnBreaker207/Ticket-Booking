@@ -1,63 +1,95 @@
-<div class=" mt-10">
+<div class="mt-10">
   <div class="w-max ml-auto text-right font-bold">
-    <div class="grid grid-cols-2 gap-x-4 ">
+    <div class="grid grid-cols-2 gap-x-4">
       <p>Tổng tiền</p>
-      <span class="text-orange-600">{{ totalPrice$ |async | currency: 'VND' :'symbol' }} </span>
+      <span class="text-orange-600"
+        >{{ totalPrice$ | async | currency: "VND" : "symbol" }}
+      </span>
     </div>
-    <div class="grid grid-cols-2 gap-x-4 ">
+    <div class="grid grid-cols-2 gap-x-4">
       <p>Số tiền được giảm</p>
       <span class="text-orange-600">0 vnđ</span>
     </div>
-    <div class="grid grid-cols-2 gap-x-4 ">
+    <div class="grid grid-cols-2 gap-x-4">
       <p>Số tiền cần thanh toán</p>
-      <span class="text-orange-600">{{ totalPrice$ | async | currency: 'VND' :'symbol' }} </span>
+      <span class="text-orange-600"
+        >{{ totalPrice$ | async | currency: "VND" : "symbol" }}
+      </span>
     </div>
   </div>
   <div class="flex flex-row justify-between">
-    <img src="" alt="">
+    <img src="" alt="" />
 
-    <div class="font-extrabold text-2xl uppercase">
-      Phương thức thanh toán
-    </div>
+    <div class="font-extrabold text-2xl uppercase">Phương thức thanh toán</div>
     <a href="">Hướng dẫn thanh toán</a>
   </div>
   <div class="mt-5">
     <h3>Chọn thẻ thanh toán</h3>
-    <hr/>
+    <hr />
     <nz-radio-group [(ngModel)]="radioValue" nzName="radioGroup" class="!mt-10">
       <label nz-radio nzValue="A" class="flex items-center gap-2">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/ic-card-vn.png" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/ic-card-vn.png"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span>Thẻ nội địa</span>
         </div>
       </label>
       <label nz-radio nzValue="B">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/ic-card-gb.png" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/ic-card-gb.png"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span>Thẻ quốc tế</span>
         </div>
       </label>
       <label nz-radio nzValue="C">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/shopeepay.png" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/shopeepay.png"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span>Ví ShoppePay</span>
         </div>
       </label>
       <label nz-radio nzValue="D">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/momo.ico" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/momo.ico"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span>Ví Momo</span>
         </div>
       </label>
       <label nz-radio nzValue="E">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/zalopay.png" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/zalopay.png"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span>Ví ZaloPay</span>
         </div>
       </label>
       <label nz-radio nzValue="F">
         <div class="flex flex-row items-center gap-3">
-          <nz-image nzSrc="assets/payment/vnpay.svg" nzWidth="40" nzHeight="40" nzDisablePreview="true"/>
+          <nz-image
+            nzSrc="assets/payment/vnpay.svg"
+            nzWidth="40"
+            nzHeight="40"
+            nzDisablePreview="true"
+          />
           <span> Ví VNPay</span>
         </div>
       </label>
@@ -66,8 +98,8 @@
 </div>
 <div class="flex flex-row justify-between bg-white mt-10 p-5">
   <div>
-    <p>Vui lòng kiểm tra thông tin </p>
+    <p>Vui lòng kiểm tra thông tin</p>
     <p>Vé mua rồi không hoàn tiền</p>
   </div>
-  <app-countdown/>
+  <app-countdown />
 </div>

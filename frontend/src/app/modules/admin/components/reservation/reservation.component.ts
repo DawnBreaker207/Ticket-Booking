@@ -16,7 +16,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { StatusTagsPipe } from '@/app/core/pipes/status-tags.pipe';
-import { formatTime } from '@/app/shared/utils/formatDate';
+import { formatDate, formatTime } from '@/app/shared/utils/formatDate';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReportService } from '@/app/core/services/report/report.service';
 import { saveAs } from 'file-saver';
@@ -131,8 +131,8 @@ export class ReservationComponent implements OnInit {
       query: formValue.query,
       userId: formValue.userId,
       reservationStatus: formValue.reservationStatus,
-      dateFrom: formValue.dateRange ? formatTime(formValue.dateRange[0]) : null,
-      dateTo: formValue.dateRange ? formatTime(formValue.dateRange[1]) : null,
+      dateFrom: formValue.dateRange ? formatDate(formValue.dateRange[0]) : null,
+      dateTo: formValue.dateRange ? formatDate(formValue.dateRange[1]) : null,
       totalAmount: formValue.totalAmount,
       sortBy: formValue.sortBy,
     };

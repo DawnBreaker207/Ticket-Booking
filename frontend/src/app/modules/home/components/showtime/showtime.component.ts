@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Showtime } from '@/app/core/models/theater.model';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {Showtime} from '@/app/core/models/theater.model';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import dayjs from 'dayjs';
-import { NgClass } from '@angular/common';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
+import {NgClass} from '@angular/common';
+import {NzButtonComponent} from 'ng-zorro-antd/button';
+import {timeFormat} from '@/app/shared/utils/formatDate';
 
 @Component({
   selector: 'app-theater',
@@ -17,20 +18,12 @@ export class ShowtimeComponent implements OnInit {
   selectedShowtimeId = signal<number | null>(null);
 
   ngOnInit() {
-    const { showtimes } = this.modalRef.getConfig().nzData;
+    const {showtimes} = this.modalRef.getConfig().nzData;
     this.showtimes.set(showtimes);
   }
 
   formatShowtime(date: Date | string | null) {
     return dayjs(date).format('DD/MM/YYYY');
-  }
-
-  formatTime(time: Date | string | null) {
-    if (!time) return '-';
-    const today = dayjs().format('YYYY-MM-DD');
-    const dateTime = dayjs(`${today} ${time}`, 'YYYY-MM-DD HH:mm:ss');
-    if (!dateTime.isValid()) return '-';
-    return dateTime.format('HH:mm');
   }
 
   onSelect(showtimeId: number) {
@@ -42,4 +35,6 @@ export class ShowtimeComponent implements OnInit {
       this.modalRef.close(this.selectedShowtimeId());
     }
   }
+
+  protected readonly timeFormat = timeFormat;
 }

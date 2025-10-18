@@ -12,7 +12,7 @@
         >
           {{ formatShowtime(st!.showDate) }}
           <br />
-          <span class="text-sm">{{ formatTime(st!.showTime) }}</span>
+          <span class="text-sm">{{ timeFormat(st!.showTime) }}</span>
           <p class="text-sm text-gray-600">
             Ghế còn lại: <strong>{{ st?.availableSeats }}</strong
             >/ {{ st?.totalSeats }}

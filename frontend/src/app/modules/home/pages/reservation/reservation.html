@@ -11,26 +11,27 @@
     </nz-step>
   </nz-steps>
   <nz-layout class="w-full px-8">
-    <nz-content class="mt-4 max-w-[1200px] mx-auto ">
+    <nz-content class="mt-4 max-w-[1200px] mx-auto">
       @switch (index()) {
         @case (0) {
-          @if ((schedule$ |async)?.seats) {
-            <app-seat/>
+          @if (totalSeats$ | async) {
+            <app-seat />
           }
         }
         @case (1) {
-          <app-summary [user]="user$ | async"/>
+          <app-summary />
         }
         @case (2) {
-          <app-payment/>
+          <app-payment />
         }
       }
     </nz-content>
     <nz-sider nzWidth="350px" nzTheme="light" class="!bg-transparent">
-      @if (schedule$ | async) {
-        <app-detail-film [filmDetail]="(schedule$ | async)?.movie" [cinemaHall]="schedule$ | async" [index]="index()"
-                         (stepChange)="onStepChange($event)" [steps]="steps()"/>
-      }
+      <app-detail-film
+        [index]="index()"
+        (stepChange)="onStepChange($event)"
+        [steps]="steps()"
+      />
     </nz-sider>
   </nz-layout>
 </nz-layout>

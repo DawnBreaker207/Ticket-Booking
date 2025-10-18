@@ -1,11 +1,14 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {ReservationStatus, PaymentMethod, PaymentStatus} from '@/app/core/constants/enum';
+import { Pipe, PipeTransform } from '@angular/core';
+import {
+  ReservationStatus,
+  PaymentMethod,
+  PaymentStatus,
+} from '@/app/core/constants/enum';
 
-
-type AllStatus = ReservationStatus | PaymentStatus | PaymentMethod
+type AllStatus = ReservationStatus | PaymentStatus | PaymentMethod;
 
 @Pipe({
-  name: 'tags'
+  name: 'tags',
 })
 export class StatusTagsPipe implements PipeTransform {
   private statusColors: Record<AllStatus, string> = {
@@ -19,11 +22,10 @@ export class StatusTagsPipe implements PipeTransform {
 
     PENDING: 'yellow',
     PAID: 'green',
-  }
+  };
 
   transform(status: string): { status: string; color: string } {
-    const color = this.statusColors[status as AllStatus] || 'gray'
-    return {color, status};
+    const color = this.statusColors[status as AllStatus] || 'gray';
+    return { color, status };
   }
-
 }
