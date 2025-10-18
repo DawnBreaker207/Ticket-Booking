@@ -92,7 +92,7 @@ export const movieReducer = createReducer(
     return {
       ...state,
       movies,
-      selectedMovieId: movie,
+      selectedMovie: movie,
       loadingDetails: false,
       error: null,
     };
