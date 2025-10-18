@@ -9,7 +9,15 @@ export const headerColumns = {
     'Release',
     'Action',
   ],
-  theater: ['#', 'Name', 'Location', 'Capacity', 'Day Created', 'Action'],
+  theater: [
+    '#',
+    'Name',
+    'Location',
+    'Capacity',
+    'Showtime',
+    'Day Created',
+    'Action',
+  ],
   showtime: [
     '#',
     'Movie',
