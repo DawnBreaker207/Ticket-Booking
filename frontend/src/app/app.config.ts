@@ -51,6 +51,11 @@ import {
 } from '@/app/core/store/state/showtime/showtime.reducers';
 import { MovieEffects } from '@/app/core/store/state/movie/movie.effects';
 import { ShowtimeEffects } from '@/app/core/store/state/showtime/showtime.effects';
+import {
+  seatFeatureKey,
+  seatReducer,
+} from '@/app/core/store/state/seat/seat.reducers';
+import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
 
 registerLocaleData(en);
 
@@ -73,6 +78,7 @@ export const appConfig: ApplicationConfig = {
       [showtimeFeatureKey]: showtimeReducer,
       [reservationFeatureKey]: reservationReducer,
       [countdownFeatureKey]: countdownReducer,
+      [seatFeatureKey]: seatReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -80,6 +86,7 @@ export const appConfig: ApplicationConfig = {
       TheaterEffects,
       ShowtimeEffects,
       ReservationEffects,
+      SeatEffects,
     ]),
     provideNzIcons(icons),
     provideNzI18n(en_US),
