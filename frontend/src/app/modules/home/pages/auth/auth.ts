@@ -41,9 +41,9 @@ import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
 })
 export class AuthComponent implements OnInit {
   activeTab = signal<'login' | 'register'>('login');
-  form!: FormGroup;
   private fb = inject(FormBuilder);
   private store = inject(Store);
+  form!: FormGroup;
 
   ngOnInit() {
     this.initializeForm();

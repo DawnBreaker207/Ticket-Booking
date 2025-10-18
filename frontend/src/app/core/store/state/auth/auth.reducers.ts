@@ -7,7 +7,8 @@ export const authFeatureKey = 'authKey';
 export interface AuthState {
   jwt: Jwt | null;
   token: RefreshToken | null;
-  userId: string | null;
+  userId: number | null;
+  email: string | null;
   loading: boolean;
   error: any;
 }
@@ -16,6 +17,7 @@ export const initialState: AuthState = {
   jwt: null,
   token: null,
   userId: null,
+  email: null,
   loading: false,
   error: null,
 };
@@ -50,7 +52,8 @@ export const authReducer = createReducer(
     return {
       ...state,
       jwt: jwt,
-      userId: jwt.email,
+      email: jwt.email,
+      userId: jwt.userId,
       loading: false,
     };
   }),

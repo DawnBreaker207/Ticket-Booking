@@ -23,6 +23,8 @@ export const selectRefreshToken = createSelector(
   (jwt) => jwt?.refreshToken ?? null,
 );
 
+export const selectUserId = createSelector(selectJwt, (jwt) => jwt?.userId);
+
 export const selectUsername = createSelector(selectJwt, (jwt) => jwt?.username);
 
 export const selectEmail = createSelector(selectJwt, (jwt) => jwt?.email);

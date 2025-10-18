@@ -5,6 +5,7 @@ import { ApiRes } from '../../models/common.model';
 import { Jwt, RefreshToken } from '../../models/jwt.model';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, RegisterRequest } from '@/app/core/models/user.model';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,10 @@ import { LoginRequest, RegisterRequest } from '@/app/core/models/user.model';
 export class AuthService {
   private _accessToken: string | null = null;
   private _refreshToken: string | null = null;
+
+  private http = inject(HttpClient);
+  private storageService = inject(StorageService);
+  URL = `${environment.apiUrl}/auth`;
 
   get accessToken(): string | null {
     return this._accessToken;
@@ -29,8 +34,13 @@ export class AuthService {
     this._refreshToken = token;
   }
 
-  URL = `${environment.apiUrl}/auth`;
-  private http = inject(HttpClient);
+  constructor() {
+    const jwt = this.storageService.getJwt();
+    if (jwt) {
+      this._accessToken = jwt.accessToken;
+      this.refreshToken = jwt.refreshToken;
+    }
+  }
 
   register(request: RegisterRequest): Observable<any> {
     return this.http.post<ApiRes<string>>(`${this.URL}/register`, request).pipe(

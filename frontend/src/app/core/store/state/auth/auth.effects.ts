@@ -1,15 +1,43 @@
 import { inject, Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {
+  Actions,
+  createEffect,
+  ofType,
+  ROOT_EFFECTS_INIT,
+} from '@ngrx/effects';
 import { AuthService } from '@/app/core/services/auth/auth.service';
 import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { ToastService } from '@/app/shared/services/toast/toast.service';
 
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
+  private toastService = inject(ToastService);
+
+  initAuth$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      map(() => {
+        const jwt = this.storageService.getJwt();
+        if (jwt) {
+          try {
+            this.authService.accessToken = jwt.accessToken;
+            this.authService.refreshToken = jwt.refreshToken;
+            return AuthActions.loadLoginSuccess({ jwt });
+          } catch (e) {
+            console.error('Invalid JWT in storage');
+            return AuthActions.loadLogoutSuccess();
+          }
+        } else {
+          return AuthActions.loadLogoutSuccess();
+        }
+      }),
+    );
+  });
 
   register$ = createEffect(() => {
     return this.actions$.pipe(
@@ -30,10 +58,15 @@ export class AuthEffects {
       ofType(AuthActions.loadLogin),
       switchMap(({ user }) =>
         this.authService.login(user).pipe(
-          map((jwt) => {
+          tap((jwt) => {
             this.storageService.setJWT(jwt);
-            return AuthActions.loadLoginSuccess({ jwt });
+            this.toastService.createNotification({
+              message: 'Đăng nhập thành công',
+              title: 'Thành công',
+              type: 'success',
+            });
           }),
+          map((jwt) => AuthActions.loadLoginSuccess({ jwt })),
           catchError((err) => of(AuthActions.loadLoginFailure({ error: err }))),
         ),
       ),
@@ -45,12 +78,18 @@ export class AuthEffects {
       ofType(AuthActions.loadLogout),
       switchMap(() =>
         this.authService.logout().pipe(
-          map(() => {
+          tap(() => {
+            this.toastService.createNotification({
+              message:
+                'Tài khoản của bạn đã hết thời hạn, xin vui lòng đăng nhập lại',
+              title: 'Lỗi',
+              type: 'warning',
+            });
             this.storageService.clearAuth();
             this.authService.accessToken = null;
             this.authService.refreshToken = null;
-            return AuthActions.loadLogoutSuccess();
           }),
+          map(() => AuthActions.loadLogoutSuccess()),
           catchError((err) => {
             this.storageService.clearAuth();
             this.authService.accessToken = null;
