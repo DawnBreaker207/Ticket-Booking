@@ -9,7 +9,7 @@ import {
   ReservationInitRequest,
   ReservationRequest,
 } from '@/app/core/models/reservation.model';
-import { formatTime } from '@/app/shared/utils/formatDate';
+import {formatDate, formatTime} from '@/app/shared/utils/formatDate';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class ReservationService {
     params = params.set('page', page.toString());
     params = params.set('size', size.toString());
 
-    const startDate = formatTime(filter?.dateFrom);
+    const startDate = formatDate(filter?.dateFrom);
     const endDate = formatTime(filter?.dateTo);
     filter = { ...filter, dateFrom: startDate, dateTo: endDate };
 
@@ -44,7 +44,7 @@ export class ReservationService {
 
     return this.http.get<ApiRes<Reservation[]>>(`${this.URL}`, { params }).pipe(
       map((res: any) => res.data),
-      catchError(this.handleError<Reservation[]>('Get orders')),
+      catchError(this.handleError<Reservation[]>('Get reervations')),
     );
   }
 

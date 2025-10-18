@@ -20,19 +20,19 @@ export interface Reservation extends DateModel, IsDeleted {
 
 export interface ReservationInitRequest {
   reservationId?: string;
-  userId: string;
+  userId: number;
   showtimeId: number;
   theaterId: number;
 }
 export interface ReservationRequest {
   reservationId: string;
-  useId: number;
+  userId: number;
   showtimeId: number;
   seatIds: number[];
 }
 
 export interface ReservationFilter extends FilterQuery, FilterSort, FilterDate {
-  userId: string;
+  userId: number;
   reservationStatus: ReservationStatus;
   totalAmount: number;
 }

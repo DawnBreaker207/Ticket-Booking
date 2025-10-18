@@ -1,4 +1,4 @@
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
   Reservation,
   ReservationFilter,
@@ -21,8 +21,14 @@ export const ReservationActions = createActionGroup({
     'Load Reservation Failure': props<{ error: any }>(),
 
     'Create Reservation Init': props<{ reservation: ReservationInitRequest }>(),
-    'Create Reservation Success Init': props<{ reservationId: string }>(),
-    'Create Reservation Failure Init': props<{ error: any }>(),
+    'Create Reservation Init Success': props<{ reservationId: string }>(),
+    'Create Reservation Init Failure': props<{ error: any }>(),
+
+    'Create Reservation Hold Seat': props<{
+      reservation: ReservationRequest;
+    }>(),
+    'Create Reservation Hold Seat Success': emptyProps(),
+    'Create Reservation Hold Seat Failure': props<{ error: any }>(),
 
     'Create Reservation': props<{ reservation: ReservationRequest }>(),
     'Create Reservation Success': props<{ reservation: Reservation }>(),

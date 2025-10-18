@@ -34,7 +34,7 @@ export const reservationReducer = createReducer(
   }),
 
   on(
-    ReservationActions.createReservationSuccessInit,
+    ReservationActions.createReservationInitSuccess,
     (state, { reservationId }) => ({
       ...state,
       reservationId: reservationId,
@@ -42,12 +42,12 @@ export const reservationReducer = createReducer(
       loading: false,
     }),
   ),
-  on(ReservationActions.createReservationFailureInit, (state, { error }) => ({
+  on(ReservationActions.createReservationInitFailure, (state, { error }) => ({
     ...state,
     saving: false,
     error: error,
   })),
-  on(ReservationActions.createReservation, (state) => {
+  on(ReservationActions.createReservationHoldSeat, (state) => {
     return {
       ...state,
       loading: true,
@@ -56,6 +56,28 @@ export const reservationReducer = createReducer(
     };
   }),
 
+  on(ReservationActions.createReservationHoldSeatSuccess, (state) => ({
+    ...state,
+    saving: false,
+    loading: false,
+  })),
+  on(
+    ReservationActions.createReservationHoldSeatFailure,
+    (state, { error }) => ({
+      ...state,
+      saving: false,
+      error: error,
+    }),
+  ),
+
+  on(ReservationActions.createReservation, (state) => {
+    return {
+      ...state,
+      loading: true,
+      saving: true,
+      error: null,
+    };
+  }),
   on(ReservationActions.createReservationSuccess, (state, { reservation }) => ({
     ...state,
     reservation: reservation,
