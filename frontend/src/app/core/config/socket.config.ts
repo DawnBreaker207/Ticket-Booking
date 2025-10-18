@@ -1,4 +1,4 @@
-import {RxStompConfig} from '@stomp/rx-stomp';
+import { RxStompConfig } from '@stomp/rx-stomp';
 import SockJS from 'sockjs-client';
 
 export const SocketConfig: RxStompConfig = {
@@ -10,12 +10,12 @@ export const SocketConfig: RxStompConfig = {
   heartbeatOutgoing: 20000,
 
   debug: (message: string) => {
-    console.log('[SockJS]', new Date(), message)
+    console.log('[SockJS]', new Date(), message);
   },
 
   connectHeaders: {},
 
-  beforeConnect: ()=>{
+  beforeConnect: () => {
     console.log('Connecting to the server via SockJS...');
-  }
-}
+  },
+};
