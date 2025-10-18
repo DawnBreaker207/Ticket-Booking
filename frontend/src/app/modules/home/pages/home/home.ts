@@ -8,13 +8,13 @@ import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzImageService} from 'ng-zorro-antd/image';
 import {Router, RouterLink} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {filter, forkJoin, map, Subject, switchMap, take, takeUntil} from 'rxjs';
+import {concatMap, filter, forkJoin, map, Subject, take, takeUntil,} from 'rxjs';
 import {Jwt} from '@/app/core/models/jwt.model';
 import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {TheaterComponent} from '@/app/modules/home/components/theater/theater.component';
 import {selectAllShowtimes} from '@/app/core/store/state/showtime/showtime.selectors';
-import {selectJwt,} from '@/app/core/store/state/auth/auth.selectors';
+import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
 import {selectAllTheaters} from '@/app/core/store/state/theater/theater.selectors';
 import {Showtime} from '@/app/core/models/theater.model';
 import {ShowtimeComponent} from '@/app/modules/home/components/showtime/showtime.component';
@@ -22,11 +22,10 @@ import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions'
 import {Movie} from '@/app/core/models/movie.model';
 import {selectMovieById} from '@/app/core/store/state/movie/movie.selectors';
 import {MovieActions} from '@/app/core/store/state/movie/movie.actions';
-import {ReservationInitRequest,} from '@/app/core/models/reservation.model';
-import {UserService} from '@/app/core/services/user/user.service';
+import {ReservationInitRequest} from '@/app/core/models/reservation.model';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 import {Actions, ofType} from '@ngrx/effects';
-import {User} from '@/app/core/models/user.model';
+import {StorageService} from '@/app/shared/services/storage/storage.service';
 
 @Component({
   selector: 'app-home',
@@ -51,9 +50,8 @@ export class Home implements OnInit, OnDestroy {
   private router = inject(Router);
   private actions$ = inject(Actions);
   private modalService = inject(NzModalService);
-  private userService = inject(UserService);
   private destroy$ = new Subject<void>();
-
+  private storageService = inject(StorageService);
   showtimes$ = this.store.select(selectAllShowtimes);
   theaters$ = this.store.select(selectAllTheaters);
   user$ = this.store.select(selectJwt);
@@ -103,7 +101,7 @@ export class Home implements OnInit, OnDestroy {
 
           this.selectedTheaterId = selectedId;
           this.store.dispatch(
-            ShowtimeActions.loadShowtimesByTheaterId({theaterId: selectedId}),
+            ShowtimeActions.loadShowtimesByTheaterId({ theaterId: selectedId }),
           );
           this.filterShowtimeByTheater(selectedId);
           this.updateMovieForHome();
@@ -184,9 +182,10 @@ export class Home implements OnInit, OnDestroy {
           nzFooter: null,
         })
         .afterClose.subscribe((selectShowtimeId: number | null) => {
-        if (!selectShowtimeId) return;
-        this.proceedToReservation(selectShowtimeId);
-      });
+          if (!selectShowtimeId) return;
+          console.log('Selected showtime', selectShowtimeId);
+          this.proceedToReservation(selectShowtimeId);
+        });
     });
   }
 
@@ -195,33 +194,42 @@ export class Home implements OnInit, OnDestroy {
       .pipe(
         take(1),
         filter((jwt): jwt is Jwt => jwt !== undefined),
-        switchMap((res) => this.userService.getByEmail(res.email)),
-        filter((user): user is User => !!user),
-        switchMap((user) => {
-          console.log(user)
+        concatMap((user) => {
+          console.log(user);
+          console.log('Reservation showtime ID', showtimeId);
           const reservation: ReservationInitRequest = {
             reservationId: '',
-            userId: user.userId.toString(),
+            userId: user.userId,
             showtimeId: showtimeId,
             theaterId: this.selectedTheaterId!,
           };
-          console.log('Init Reservation', reservation)
-
           this.store.dispatch(
-            ReservationActions.createReservationInit({reservation: reservation}),
+            ReservationActions.createReservationInit({
+              reservation: reservation,
+            }),
           );
-
-          return this.actions$
-            .pipe(
-              ofType(ReservationActions.createReservationSuccessInit),
-              take(1),
-              map(({reservationId}) => reservationId)
-            )
+          return this.actions$.pipe(
+            ofType(ReservationActions.createReservationInitSuccess),
+            take(1),
+            map(({ reservationId }) => ({
+              reservationId,
+              user,
+            })),
+          );
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe((reservationId) => {
-        this.router.navigateByUrl(`/reservation/${reservationId}`);
+      .subscribe(({ reservationId, user }) => {
+        const state = {
+          reservationId,
+          userId: user.userId,
+          showtimeId,
+          theaterId: this.selectedTheaterId,
+        };
+        this.storageService.setItem('reservationState', state);
+        this.router.navigate([`/reservation/${reservationId}`], {
+          state: state,
+        });
       });
   }
 }
