@@ -1,7 +1,7 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { inject } from '@angular/core';
-import { ToastService } from '@/app/shared/services/toast/toast.service';
-import { delay, of, tap } from 'rxjs';
+import {CanActivateFn, Router} from '@angular/router';
+import {inject} from '@angular/core';
+import {ToastService} from '@/app/shared/services/toast/toast.service';
+import {delay, of, tap} from 'rxjs';
 
 export const AdminGuard: CanActivateFn = (route, state) => {
   const toast = inject(ToastService);

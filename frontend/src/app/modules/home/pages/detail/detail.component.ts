@@ -1,14 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import {
-  selectMovieById,
-  selectSelectedMovie,
-} from '@/app/core/store/state/movie/movie.selectors';
-import { Movie } from '@/app/core/models/movie.model';
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
-import { filter, map, switchMap, tap } from 'rxjs';
+import {Component, inject, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {selectMovieById,} from '@/app/core/store/state/movie/movie.selectors';
+import {AsyncPipe, JsonPipe} from '@angular/common';
+import {MovieActions} from '@/app/core/store/state/movie/movie.actions';
+import {map, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-detail',

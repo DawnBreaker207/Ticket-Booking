@@ -16,7 +16,6 @@ import {CommonModule} from '@angular/common';
 import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
 import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
 import {selectSelectedShowtime, selectTotalPrice,} from '@/app/core/store/state/showtime/showtime.selectors';
-import {selectReservation} from '@/app/core/store/state/reservation/reservation.selectors';
 import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions';
 import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
 import {StorageService} from '@/app/shared/services/storage/storage.service';
