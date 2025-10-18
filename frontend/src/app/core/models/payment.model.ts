@@ -1,4 +1,4 @@
-import {PaymentMethod} from '@/app/core/constants/enum';
+import { PaymentMethod } from '@/app/core/constants/enum';
 
 export interface Payment {
   code: string;
