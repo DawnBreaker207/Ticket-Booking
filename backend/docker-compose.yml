@@ -1,4 +1,4 @@
-version: '4'
+#version: '4'
 
 networks:
   booking-net:
@@ -17,28 +17,29 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-     - booking-net
+      - booking-net
   redis:
     container_name: redis
     image: redis:latest
     ports:
-     - "6379:6379"
+      - "6379:6379"
     networks:
-     - booking-net
+      - booking-net
+    command: [ "redis-server", "--notify-keyspace-events", "Ex" ]
   server:
     container_name: booking-ticket
     image: booking-ticket:latest
     environment:
-###   Spring DB Config
+      ###   Spring DB Config
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/booking_ticket
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: mysql
-###   VNPay Config
+      ###   VNPay Config
       VNPAY_URL: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
       VNPAY_TMN_CODE: 61CXFDAH
       VNPAY_SECRET_KEY: J81W79Q18JMFS7H71ZB9RQI5CUVZ571U
@@ -46,7 +47,7 @@ services:
       VNPAY_VERSION: 2.1.0
       VNPAY_COMMAND: pay
       VNPAY_ORDER_TYPE: other
-###   Default admin account
+      ###   Default admin account
       ADMIN_USERNAME: admin
       ADMIN_EMAIL: admin@gmail.com
       ADMIN_PASSWORD: admin
