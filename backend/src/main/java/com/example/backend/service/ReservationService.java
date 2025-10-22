@@ -1,8 +1,11 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.request.*;
+import com.example.backend.dto.request.ReservationFilterDTO;
+import com.example.backend.dto.request.ReservationHoldSeatRequestDTO;
+import com.example.backend.dto.request.ReservationInitRequestDTO;
+import com.example.backend.dto.request.ReservationRequestDTO;
+import com.example.backend.dto.response.ReservationInitResponseDTO;
 import com.example.backend.dto.response.ReservationResponseDTO;
-import com.example.backend.model.Reservation;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ public interface ReservationService {
 
     ReservationResponseDTO findOne(String id);
 
-    String initReservation(ReservationInitRequestDTO reservation);
+    ReservationInitResponseDTO initReservation(ReservationInitRequestDTO reservation);
 
     void holdReservationSeats(ReservationHoldSeatRequestDTO reservation);
 

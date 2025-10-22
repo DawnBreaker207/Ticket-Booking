@@ -1,26 +1,23 @@
-package com.example.backend.dto.request;
+package com.example.backend.dto.response;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class ReservationInitRequestDTO {
-
+public class ReservationInitResponseDTO {
 
     private String reservationId;
 
-    @NotNull
-    private Long userId;
-
-    @NotNull
     private Long showtimeId;
 
-    @NotNull
-    private Long theaterId;
+    private Long ttl;
+
+    private Instant expiredAt;
 }

@@ -5,8 +5,8 @@ import com.example.backend.dto.request.ReservationFilterDTO;
 import com.example.backend.dto.request.ReservationHoldSeatRequestDTO;
 import com.example.backend.dto.request.ReservationInitRequestDTO;
 import com.example.backend.dto.request.ReservationRequestDTO;
+import com.example.backend.dto.response.ReservationInitResponseDTO;
 import com.example.backend.dto.response.ReservationResponseDTO;
-import com.example.backend.model.Reservation;
 import com.example.backend.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +39,7 @@ public class ReservationController {
 
     @PostMapping("/init")
     @Operation(summary = "Init a reservation", description = "Create a reservation and return Id")
-    public ResponseObject<String> reservationInit(@RequestBody ReservationInitRequestDTO reservation) {
+    public ResponseObject<ReservationInitResponseDTO> reservationInit(@RequestBody ReservationInitRequestDTO reservation) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.initReservation(reservation));
     }
 
