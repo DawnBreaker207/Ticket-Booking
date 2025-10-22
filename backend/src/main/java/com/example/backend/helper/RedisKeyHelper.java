@@ -1,11 +1,15 @@
 package com.example.backend.helper;
 
-public class RedisKeyHelper {
-    public static String reservationHoldKey(final String reservationId) {
-        return "reservationId:" + reservationId;
+public interface RedisKeyHelper {
+    static String reservationHoldKey(final String reservationId) {
+        return "reservation:data:" + reservationId;
     }
 
-    public static String seatLockKey(final Long seatId) {
+    static String seatLockKey(final Long seatId) {
         return "seat:locked:" + seatId;
+    }
+
+    static String showtimeChannel(final Long showtimeId) {
+        return "channel:showtime:" + showtimeId;
     }
 }
