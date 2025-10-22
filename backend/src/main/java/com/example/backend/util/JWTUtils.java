@@ -10,8 +10,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -24,8 +23,8 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JWTUtils {
-    private static final Logger logger = LoggerFactory.getLogger(JWTUtils.class);
 
     @Value("${dawn.app.jwtSecret}")
     private String jwtSecret;
