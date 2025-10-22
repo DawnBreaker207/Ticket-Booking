@@ -73,7 +73,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         source.registerCorsConfiguration("/api/v1/**", config);
-
+        source.registerCorsConfiguration("/api/v1/notification/**", config);
         return new CorsFilter(source);
     }
 
@@ -89,7 +89,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/notification/**").permitAll()
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated())
                 .logout(logout -> logout
