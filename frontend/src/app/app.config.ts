@@ -33,10 +33,6 @@ import {
 } from '@/app/core/store/state/reservation/reservation.reducers';
 import { ReservationEffects } from '@/app/core/store/state/reservation/reservation.effects';
 import {
-  countdownFeatureKey,
-  countdownReducer,
-} from '@/app/core/store/state/countdown/countdown.reducers';
-import {
   theaterFeatureKey,
   theaterReducer,
 } from '@/app/core/store/state/theater/theater.reducers';
@@ -77,7 +73,6 @@ export const appConfig: ApplicationConfig = {
       [theaterFeatureKey]: theaterReducer,
       [showtimeFeatureKey]: showtimeReducer,
       [reservationFeatureKey]: reservationReducer,
-      [countdownFeatureKey]: countdownReducer,
       [seatFeatureKey]: seatReducer,
     }),
     provideEffects([
