@@ -41,12 +41,12 @@ export const seatReducer = createReducer(
   on(SeatActions.selectSeat, (state, { seat }) => ({
     ...state,
     seats: state.seats.map((s) =>
-      s.id === seat.id ? { ...s, status: 'SELECTED' as SeatStatus } : s,
+      s.id === seat.id ? { ...s, status: seat.status } : s,
     ),
-    selectedSeat: [
-      ...state.selectedSeat,
-      { ...seat, status: 'SELECTED' as SeatStatus },
-    ],
+    selectedSeat:
+      seat.status === ('SELECTED' as SeatStatus)
+        ? [...state.selectedSeat, seat]
+        : state.selectedSeat,
     error: null,
   })),
   on(SeatActions.deselectSeat, (state, { seatId }) => ({
