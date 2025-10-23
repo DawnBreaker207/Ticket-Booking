@@ -35,6 +35,11 @@ export const ReservationActions = createActionGroup({
     'Create Reservation Failure': props<{ error: any }>(),
 
     //   Count down
-    'Update Reservation TTL': props<{ reservationId: string; ttl: number }>(),
+    'Update Reservation TTL': props<{
+      reservationId: string;
+      ttl: number;
+      expiredAt: Date;
+    }>(),
+    'Update Reservation Countdown TTL': props<{ ttl: number }>(),
   },
 });

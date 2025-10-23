@@ -2,7 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ReservationService } from '@/app/core/services/reservation/reservation.service';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
-import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
+import {
+  catchError,
+  concatMap,
+  map,
+  of,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
 import { selectSelectedShowtime } from '@/app/core/store/state/showtime/showtime.selectors';
@@ -50,11 +57,19 @@ export class ReservationEffects {
       ofType(ReservationActions.createReservationInit),
       switchMap(({ reservation }) =>
         this.reservationService.initReservation(reservation).pipe(
-          map((reservationId) =>
-            ReservationActions.createReservationInitSuccess({
-              reservationId: reservationId,
-            }),
-          ),
+          map((response) => {
+            return [
+              ReservationActions.createReservationInitSuccess({
+                reservationId: response.reservationId,
+              }),
+              ReservationActions.updateReservationTTL({
+                reservationId: response.reservationId,
+                ttl: response.ttl,
+                expiredAt: response.expiredAt,
+              }),
+            ];
+          }),
+          concatMap((actions) => actions),
           catchError((err) =>
             of(ReservationActions.createReservationInitFailure({ error: err })),
           ),

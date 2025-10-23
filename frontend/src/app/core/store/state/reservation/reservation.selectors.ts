@@ -17,6 +17,17 @@ export const selectReservation = createSelector(
   selectReservationState,
   (state) => state.reservation,
 );
+
+export const selectCurrentTTL = createSelector(
+  selectReservationState,
+  (state) => state.currentTTL,
+);
+
+export const selectedRemainingTime = createSelector(selectCurrentTTL, (ttl) => {
+  if (!ttl) return;
+  return ttl.ttl;
+});
+
 export const selectReservationLoading = createSelector(
   selectReservationState,
   (state) => state.loading,
