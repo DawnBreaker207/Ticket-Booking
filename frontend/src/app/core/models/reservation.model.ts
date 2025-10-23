@@ -24,6 +24,14 @@ export interface ReservationInitRequest {
   showtimeId: number;
   theaterId: number;
 }
+
+export interface ReservationInitResponse {
+  reservationId: string;
+  showtimeId: number;
+  ttl: number;
+  expiresAt: Date;
+}
+
 export interface ReservationRequest {
   reservationId: string;
   userId: number;
