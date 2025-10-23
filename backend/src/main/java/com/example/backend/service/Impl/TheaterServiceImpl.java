@@ -10,6 +10,9 @@ import com.example.backend.repository.TheaterRepository;
 import com.example.backend.service.TheaterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TheaterServiceImpl implements TheaterService {
+    public static final String THEATER_CACHE = "theater";
     private final TheaterRepository theaterRepository;
 
     @Override
@@ -32,6 +36,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
+    @Cacheable(value = THEATER_CACHE, key = "'id:' + #id")
     public TheaterResponseDTO findOne(Long id) {
         return theaterRepository
                 .findById(id)
@@ -40,6 +45,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
+    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
     public List<TheaterResponseDTO> findByLocation(String location) {
         log.info("Search theater by location {}", location);
         return theaterRepository
@@ -51,6 +57,7 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     @Transactional
+    @CachePut(value = THEATER_CACHE, key = "'id:' + #result.id")
     public TheaterResponseDTO create(TheaterRequestDTO theater) {
         log.info("Add new theater: {}", theater);
         return TheaterMappingHelper.map(theaterRepository.save(TheaterMappingHelper.map(theater)));
@@ -59,6 +66,7 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     @Transactional
+    @CachePut(value = THEATER_CACHE, key = "'id:' + #id")
     public TheaterResponseDTO update(Long id, TheaterRequestDTO theaterDetails) {
         Theater theater = theaterRepository
                 .findById(id)
@@ -71,6 +79,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
+    @CacheEvict(value = THEATER_CACHE, key = "'id:' + #id")
     public void remove(Long id) {
         theaterRepository
                 .findById(id)

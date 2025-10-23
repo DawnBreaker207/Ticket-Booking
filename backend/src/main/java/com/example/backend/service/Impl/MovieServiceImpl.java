@@ -11,6 +11,8 @@ import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
 
 
-    //    @Cacheable(MOVIE_CACHE)
+    @Cacheable(MOVIE_CACHE)
     @Override
     public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
         return movieRepository
@@ -42,7 +44,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "#id")
+    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
     public MovieResponseDTO findOne(Long id) {
         return movieRepository
                 .findById(id)
@@ -51,7 +53,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "#id")
+    @Cacheable(value = MOVIE_CACHE, key = "'movieId' + #id")
     public MovieResponseDTO findByMovieId(String id) {
         return movieRepository
                 .findByFilmId(id)
@@ -97,6 +99,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
+    @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
     public MovieResponseDTO create(MovieRequestDTO m) {
         movieRepository
                 .findByFilmId(String.valueOf(m.getFilmId()))
@@ -121,6 +124,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
+    @CachePut(value = MOVIE_CACHE, key = "'id:' + #id")
     public MovieResponseDTO update(Long id, MovieRequestDTO movieDetails) {
         Movie movie = movieRepository
                 .findById(id)
@@ -140,6 +144,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @CacheEvict(value = MOVIE_CACHE, key = "'id:' + #id")
     public void delete(Long id) {
         movieRepository
                 .findById(id)

@@ -19,6 +19,8 @@ import com.example.backend.repository.TheaterRepository;
 import com.example.backend.service.ShowtimeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ShowtimeServiceImpl implements ShowtimeService {
+    public static final String SHOWTIME_CACHE = "showtime";
 
     private final ShowtimeRepository showtimeRepository;
 
@@ -148,6 +151,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     @Transactional
+    @Cacheable(value = SHOWTIME_CACHE, key = "'id:' + #id")
     public ShowtimeResponseDTO update(Long id, ShowtimeRequestDTO showtimeDetails) {
         log.info("Updating showtime with id: {}", id);
         Showtime showtime = showtimeRepository
@@ -191,6 +195,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = SHOWTIME_CACHE, key = "'id:' + #id")
     public void delete(Long id) {
         log.info("Deleting showtime with id: {}", id);
         Showtime showtime = showtimeRepository
