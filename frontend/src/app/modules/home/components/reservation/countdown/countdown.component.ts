@@ -1,13 +1,12 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {SocketService} from '@/app/core/services/socket/socket.service';
-import {interval, Subject, Subscription, takeUntil, withLatestFrom} from 'rxjs';
-import {Store} from '@ngrx/store';
-import {selectedRemainingTime} from '@/app/core/store/state/countdown/countdown.selectors';
-import {AsyncPipe} from '@angular/common';
-import {FormattedCountdownPipe} from '@/app/core/pipes/formatted-countdown.pipe';
-import {CountdownActions} from '@/app/core/store/state/countdown/countdown.actions';
-import {StorageService} from '@/app/shared/services/storage/storage.service';
-import {ReservationRequest} from '@/app/core/models/reservation.model';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { interval, Subject, takeUntil, withLatestFrom } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AsyncPipe } from '@angular/common';
+import { FormattedCountdownPipe } from '@/app/core/pipes/formatted-countdown.pipe';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { ReservationRequest } from '@/app/core/models/reservation.model';
+import { selectedRemainingTime } from '@/app/core/store/state/reservation/reservation.selectors';
+import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 
 @Component({
   selector: 'app-countdown',
@@ -17,44 +16,31 @@ import {ReservationRequest} from '@/app/core/models/reservation.model';
 })
 export class CountdownComponent implements OnInit, OnDestroy {
   private store = inject(Store);
-  private socketService = inject(SocketService);
-  private subscription: Subscription = new Subscription();
   private storageService = inject(StorageService);
   private destroy$ = new Subject<void>();
 
   remainingTime$ = this.store.select(selectedRemainingTime);
 
   ngOnInit() {
-    const reservationState = this.storageService.getItem<ReservationRequest>("reservationState");
+    const reservationState =
+      this.storageService.getItem<ReservationRequest>('reservationState');
     const reservationId = reservationState?.reservationId;
-    if (!reservationId) return;
-    this.socketService.watchReservation(
-      `/topic/reservation/${reservationId}`,
-    ).pipe(takeUntil(this.destroy$)).subscribe((data) => {
-        const body = JSON.parse(data.body);
-        if (body.event === 'TTL_SYNC') {
+    const userId = reservationState?.userId;
+    if (!reservationId || !userId) return;
+
+    interval(1000)
+      .pipe(withLatestFrom(this.remainingTime$), takeUntil(this.destroy$))
+      .subscribe(([_, ttl]) => {
+        if (!ttl || ttl < 0) return;
+        if (ttl > 0) {
           this.store.dispatch(
-            CountdownActions.updateCountdownTTL({ttl: body.ttl}),
+            ReservationActions.updateReservationCountdownTTL({ ttl: ttl - 1 }),
           );
         }
-      }
-    );
-
-
-    interval(1000).pipe(
-      withLatestFrom(this.remainingTime$),
-      takeUntil(this.destroy$)
-    ).subscribe(([_, ttl]) => {
-      if (ttl > 0) {
-        this.store.dispatch(
-          CountdownActions.updateCountdownTTL({ttl: ttl - 1}),
-        );
-      }
-    });
+      });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.destroy$.next();
     this.destroy$.complete();
   }
