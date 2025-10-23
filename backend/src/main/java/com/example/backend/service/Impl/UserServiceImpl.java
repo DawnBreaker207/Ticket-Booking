@@ -8,6 +8,8 @@ import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+    public static final String USER_CACHE = "user";
     private final UserRepository userRepository;
 
     @Override
+    @Cacheable(value = USER_CACHE)
     public List<UserResponseDTO> findAll() {
         List<User> users = userRepository.findAll();
         return users
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = USER_CACHE, key = "'id:' + #id")
     public UserResponseDTO findOne(Long id) {
         return userRepository
                 .findById(id)
@@ -39,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CachePut(value = USER_CACHE, key = "'id:' + #id")
     public UserResponseDTO update(Long id, User userDetails) {
         var user = userRepository
                 .findById(id)
@@ -50,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = USER_CACHE, key = "'email:' + #email")
     public UserResponseDTO findByEmail(String email) {
         return userRepository
                 .findByEmail(email)
