@@ -7,9 +7,10 @@ import {
   Reservation,
   ReservationFilter,
   ReservationInitRequest,
+  ReservationInitResponse,
   ReservationRequest,
 } from '@/app/core/models/reservation.model';
-import {formatDate, formatTime} from '@/app/shared/utils/formatDate';
+import { formatDate, formatTime } from '@/app/shared/utils/formatDate';
 
 @Injectable({
   providedIn: 'root',
@@ -56,10 +57,14 @@ export class ReservationService {
   }
 
   initReservation(reservation: ReservationInitRequest) {
-    return this.http.post<ApiRes<string>>(`${this.URL}/init`, reservation).pipe(
-      map((res: any) => res.data),
-      catchError(this.handleError<string>('Init reservation')),
-    );
+    return this.http
+      .post<ApiRes<ReservationInitResponse>>(`${this.URL}/init`, reservation)
+      .pipe(
+        map((res: any) => res.data),
+        catchError(
+          this.handleError<ReservationInitResponse>('Init reservation'),
+        ),
+      );
   }
 
   holdReservationSeat(reservation: ReservationRequest) {

@@ -1,11 +1,11 @@
-import {inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '@/environments/environment';
-import {ApiRes} from '../../models/common.model';
-import {Jwt, RefreshToken} from '../../models/jwt.model';
-import {catchError, map, Observable, tap, throwError} from 'rxjs';
-import {LoginRequest, RegisterRequest} from '@/app/core/models/user.model';
-import {StorageService} from '@/app/shared/services/storage/storage.service';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
+import { ApiRes } from '../../models/common.model';
+import { Jwt, RefreshToken } from '../../models/jwt.model';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { LoginRequest, RegisterRequest } from '@/app/core/models/user.model';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
 
 @Injectable({
   providedIn: 'root',

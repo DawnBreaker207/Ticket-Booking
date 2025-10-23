@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RxStomp } from '@stomp/rx-stomp';
 import { SocketConfig } from '@/app/core/config/socket.config';
-import { map } from 'rxjs';
+import { map, retry, shareReplay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,16 +13,14 @@ export class SocketService extends RxStomp {
     this.activate();
   }
 
-  watchTopic<T>(topic: string) {
+  watchEvent<T>(topic: string) {
     return this.watch(topic).pipe(
-      map((message) => {
-        return JSON.parse(message.body) as T;
+      map((msg) => {
+        return JSON.parse(msg.body);
       }),
+      retry({ delay: 2000, count: 3 }),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
-  }
-
-  watchReservation(topic: string) {
-    return this.watch(topic);
   }
 
   send(destination: string, body: any) {
