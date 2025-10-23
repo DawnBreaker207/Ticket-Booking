@@ -18,7 +18,10 @@ const routes: Routes = [
       },
       { path: 'movie/detail/:id', component: DetailComponent },
       { path: 'login', component: AuthComponent },
-      { path: 'reservation/:reservationId', component: ReservationComponent },
+      {
+        path: 'reservation/:reservationId/:showtimeId',
+        component: ReservationComponent,
+      },
       { path: 'paymentResult', component: PaymentResultComponent },
     ],
   },

@@ -1,31 +1,43 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {NzLayoutModule} from 'ng-zorro-antd/layout';
-import {NzTypographyComponent} from 'ng-zorro-antd/typography';
-import {NzColDirective, NzGridModule, NzRowDirective,} from 'ng-zorro-antd/grid';
-import {NzCardComponent, NzCardModule} from 'ng-zorro-antd/card';
-import {NzImageViewComponent} from 'ng-zorro-antd/experimental/image';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzImageService} from 'ng-zorro-antd/image';
-import {Router, RouterLink} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {concatMap, filter, forkJoin, map, Subject, take, takeUntil,} from 'rxjs';
-import {Jwt} from '@/app/core/models/jwt.model';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {TheaterComponent} from '@/app/modules/home/components/theater/theater.component';
-import {selectAllShowtimes} from '@/app/core/store/state/showtime/showtime.selectors';
-import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
-import {selectAllTheaters} from '@/app/core/store/state/theater/theater.selectors';
-import {Showtime} from '@/app/core/models/theater.model';
-import {ShowtimeComponent} from '@/app/modules/home/components/showtime/showtime.component';
-import {ShowtimeActions} from '@/app/core/store/state/showtime/showtime.actions';
-import {Movie} from '@/app/core/models/movie.model';
-import {selectMovieById} from '@/app/core/store/state/movie/movie.selectors';
-import {MovieActions} from '@/app/core/store/state/movie/movie.actions';
-import {ReservationInitRequest} from '@/app/core/models/reservation.model';
-import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {Actions, ofType} from '@ngrx/effects';
-import {StorageService} from '@/app/shared/services/storage/storage.service';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import {
+  NzColDirective,
+  NzGridModule,
+  NzRowDirective,
+} from 'ng-zorro-antd/grid';
+import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
+import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzImageService } from 'ng-zorro-antd/image';
+import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import {
+  concatMap,
+  filter,
+  forkJoin,
+  map,
+  Subject,
+  take,
+  takeUntil,
+} from 'rxjs';
+import { Jwt } from '@/app/core/models/jwt.model';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { TheaterComponent } from '@/app/modules/home/components/theater/theater.component';
+import { selectAllShowtimes } from '@/app/core/store/state/showtime/showtime.selectors';
+import { selectJwt } from '@/app/core/store/state/auth/auth.selectors';
+import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
+import { Showtime } from '@/app/core/models/theater.model';
+import { ShowtimeComponent } from '@/app/modules/home/components/showtime/showtime.component';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
+import { Movie } from '@/app/core/models/movie.model';
+import { selectMovieById } from '@/app/core/store/state/movie/movie.selectors';
+import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
+import { ReservationInitRequest } from '@/app/core/models/reservation.model';
+import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
+import { Actions, ofType } from '@ngrx/effects';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
 
 @Component({
   selector: 'app-home',
@@ -118,7 +130,7 @@ export class Home implements OnInit, OnDestroy {
       );
 
       const movieSelectors$ = showtimeByTheater.map((st) =>
-        this.store.select(selectMovieById(st.movieId)).pipe(take(1)),
+        this.store.select(selectMovieById(st.movieId as number)).pipe(take(1)),
       );
 
       forkJoin(movieSelectors$).subscribe((movieStores) => {
@@ -183,7 +195,6 @@ export class Home implements OnInit, OnDestroy {
         })
         .afterClose.subscribe((selectShowtimeId: number | null) => {
           if (!selectShowtimeId) return;
-          console.log('Selected showtime', selectShowtimeId);
           this.proceedToReservation(selectShowtimeId);
         });
     });
@@ -195,8 +206,6 @@ export class Home implements OnInit, OnDestroy {
         take(1),
         filter((jwt): jwt is Jwt => jwt !== undefined),
         concatMap((user) => {
-          console.log(user);
-          console.log('Reservation showtime ID', showtimeId);
           const reservation: ReservationInitRequest = {
             reservationId: '',
             userId: user.userId,
@@ -227,7 +236,7 @@ export class Home implements OnInit, OnDestroy {
           theaterId: this.selectedTheaterId,
         };
         this.storageService.setItem('reservationState', state);
-        this.router.navigate([`/reservation/${reservationId}`], {
+        this.router.navigate([`/reservation/${reservationId}/${showtimeId}`], {
           state: state,
         });
       });
