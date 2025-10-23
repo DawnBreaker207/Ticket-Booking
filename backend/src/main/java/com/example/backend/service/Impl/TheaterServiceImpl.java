@@ -27,6 +27,7 @@ public class TheaterServiceImpl implements TheaterService {
     private final TheaterRepository theaterRepository;
 
     @Override
+    @Cacheable(value = THEATER_CACHE)
     public List<TheaterResponseDTO> findAll() {
         return theaterRepository
                 .findAll()
