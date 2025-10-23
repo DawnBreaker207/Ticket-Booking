@@ -1,10 +1,13 @@
-import {Component, inject} from '@angular/core';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {Store} from '@ngrx/store';
-import {selectSelectedSeats} from '@/app/core/store/state/seat/seat.selectors';
-import {selectPrice, selectTotalPrice,} from '@/app/core/store/state/showtime/showtime.selectors';
-import {CommonModule} from '@angular/common';
-import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
+import { Component, inject } from '@angular/core';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { Store } from '@ngrx/store';
+import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
+import {
+  selectPrice,
+  selectTotalPrice,
+} from '@/app/core/store/state/showtime/showtime.selectors';
+import { CommonModule } from '@angular/common';
+import { selectJwt } from '@/app/core/store/state/auth/auth.selectors';
 
 @Component({
   selector: 'app-summary',

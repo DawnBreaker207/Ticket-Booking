@@ -1,6 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
-import {ReservationActions} from '@/app/core/store/state/reservation/reservation.actions';
-import {Reservation} from '@/app/core/models/reservation.model';
+import { createReducer, on } from '@ngrx/store';
+import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
+import { Reservation } from '@/app/core/models/reservation.model';
 
 export const reservationFeatureKey = 'reservationKey';
 

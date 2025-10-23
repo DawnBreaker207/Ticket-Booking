@@ -14,4 +14,4 @@ export const timeFormat = (time: Date | string | null | undefined) => {
   const dateTime = dayjs(`${today} ${time}`, 'YYYY-MM-DD HH:mm:ss');
   if (!dateTime.isValid()) return '-';
   return dateTime.format('HH:mm');
-}
+};

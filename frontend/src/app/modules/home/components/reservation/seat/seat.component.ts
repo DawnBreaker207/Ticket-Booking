@@ -1,23 +1,23 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Store} from '@ngrx/store';
-import {Seat, Showtime} from '@/app/core/models/theater.model';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Seat, Showtime } from '@/app/core/models/theater.model';
 import {
   selectSeats,
   selectSelectedSeats,
 } from '@/app/core/store/state/seat/seat.selectors';
-import {filter, map, Subject, switchMap, take, takeUntil} from 'rxjs';
-import {SeatActions} from '@/app/core/store/state/seat/seat.actions';
+import { filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
 import {
   selectPrice,
   selectSelectedShowtime,
   selectTotalPrice,
 } from '@/app/core/store/state/showtime/showtime.selectors';
-import {CountdownComponent} from '@/app/modules/home/components/reservation/countdown/countdown.component';
-import {SseService} from '@/app/core/services/sse/sse.service';
-import {SeatStatus} from '@/app/core/constants/enum';
-import {StorageService} from '@/app/shared/services/storage/storage.service';
-import {ReservationRequest} from '@/app/core/models/reservation.model';
+import { CountdownComponent } from '@/app/modules/home/components/reservation/countdown/countdown.component';
+import { SseService } from '@/app/core/services/sse/sse.service';
+import { SeatStatus } from '@/app/core/constants/enum';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { ReservationRequest } from '@/app/core/models/reservation.model';
 
 @Component({
   selector: ' app-seat',
@@ -62,12 +62,12 @@ export class SeatComponent implements OnInit, OnDestroy {
                 status: isMySeat ? 'SELECTED' : ('HOLD' as SeatStatus),
               } as Seat;
               console.log(seat);
-              this.store.dispatch(SeatActions.selectSeat({seat: seat}));
+              this.store.dispatch(SeatActions.selectSeat({ seat: seat }));
             });
           });
         } else if (res.event === 'SEAT_RELEASE') {
           res.data.seatIds.forEach((seatId: number) => {
-            this.store.dispatch(SeatActions.deselectSeat({seatId: seatId}));
+            this.store.dispatch(SeatActions.deselectSeat({ seatId: seatId }));
           });
         }
       });
@@ -79,8 +79,10 @@ export class SeatComponent implements OnInit, OnDestroy {
       const isSelected = selected.some((s) => s.id === seat.id);
       this.store.dispatch(
         isSelected
-          ? SeatActions.deselectSeat({seatId: seat.id})
-          : SeatActions.selectSeat({seat: {...seat, status: 'SELECTED' as SeatStatus}}),
+          ? SeatActions.deselectSeat({ seatId: seat.id })
+          : SeatActions.selectSeat({
+              seat: { ...seat, status: 'SELECTED' as SeatStatus },
+            }),
       );
     });
   }

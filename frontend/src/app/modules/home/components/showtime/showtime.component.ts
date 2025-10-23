@@ -1,10 +1,10 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {Showtime} from '@/app/core/models/theater.model';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Showtime } from '@/app/core/models/theater.model';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 import dayjs from 'dayjs';
-import {NgClass} from '@angular/common';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {timeFormat} from '@/app/shared/utils/formatDate';
+import { NgClass } from '@angular/common';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { timeFormat } from '@/app/shared/utils/formatDate';
 
 @Component({
   selector: 'app-theater',
@@ -18,7 +18,7 @@ export class ShowtimeComponent implements OnInit {
   selectedShowtimeId = signal<number | null>(null);
 
   ngOnInit() {
-    const {showtimes} = this.modalRef.getConfig().nzData;
+    const { showtimes } = this.modalRef.getConfig().nzData;
     this.showtimes.set(showtimes);
   }
 
