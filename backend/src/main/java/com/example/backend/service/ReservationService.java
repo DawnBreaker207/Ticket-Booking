@@ -20,4 +20,6 @@ public interface ReservationService {
 
     ReservationResponseDTO confirmReservation(ReservationRequestDTO reservation);
 
+    void cancelReservation(String reservationId, Long userId);
+
 }

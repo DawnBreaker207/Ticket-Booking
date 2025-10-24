@@ -51,9 +51,16 @@ public class ReservationController {
     }
 
     @PostMapping("/confirm")
-    @Operation(summary = "Save reservation after payment ", description = "Returns reservation after booking seats and payment")
+    @Operation(summary = "Save reservation after payment ", description = "Returns reservation after booking seats and payment success")
     public ResponseObject<ReservationResponseDTO> reservationConfirm(@RequestBody ReservationRequestDTO o) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.confirmReservation(o));
+    }
+
+    @PostMapping("/{reservationId}/cancel")
+    @Operation(summary = "Cancel reservation after payment ", description = "Cancel reservation after booking seats and payment failed")
+    public ResponseObject<Void> reservationCancel(@PathVariable String reservationId, @RequestBody Long userId) {
+        reservationService.cancelReservation(reservationId, userId);
+        return new ResponseObject<>(HttpStatus.OK, "Success", null);
     }
 
 }

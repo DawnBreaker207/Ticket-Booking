@@ -1,5 +1,6 @@
 package com.example.backend.service.Impl;
 
+import com.example.backend.config.redis.RedisPublisher;
 import com.example.backend.constant.Message;
 import com.example.backend.constant.PaymentStatus;
 import com.example.backend.constant.ReservationStatus;
@@ -63,6 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ObjectMapper mapper;
 
     private final RedisService redisService;
+    private final RedisPublisher redisPublisher;
 
     @Override
     public List<ReservationResponseDTO> findAll(ReservationFilterDTO o) {
@@ -347,7 +349,7 @@ public class ReservationServiceImpl implements ReservationService {
         showtimeRepository.save(showtime);
 
         if (ReservationStatus.CONFIRMED.equals(reservation.getReservationStatus())) {
-            updatePayment(reservation, true);
+            var payment = updatePayment(reservation, true);
             notificationService.sendEmail(
                     user.getEmail(),
                     user.getUsername(),
@@ -358,6 +360,9 @@ public class ReservationServiceImpl implements ReservationService {
                             .of(showtime.getShowDate(), showtime.getShowTime())
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
                     seatEntities.stream().map(Seat::getSeatNumber).collect(Collectors.joining(",")),
+                    LocalDateTime.ofInstant(payment.getCreatedAt(), ZoneId.of("Asia/Ho_Chi_Minh"))
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                    ,
                     reservation.getTotalAmount().toString()
             );
         } else {
@@ -371,6 +376,92 @@ public class ReservationServiceImpl implements ReservationService {
 
         log.info("Successfully confirmed reservation: {} with {} seats", reservation.getId(), seatEntities.size());
         return ReservationMappingHelper.map(savedReservation);
+    }
+
+    @Override
+    @Transactional
+    public void cancelReservation(String reservationId, Long userId) {
+        log.info("Cancel reservation {} for user {}", reservationId, userId);
+
+        //        Get reservation id from redis
+        String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
+        Reservation reservationHold = getFromRedis(reservationId);
+        if (!reservationHold.getUser().getId().equals(userId)) {
+            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission to confirm this reservation");
+        }
+
+        //      Load seats from DB
+        List<Long> seatIds = reservationHold
+                .getSeats()
+                .stream()
+                .map(Seat::getId)
+                .toList();
+        if (seatIds.isEmpty()) {
+            log.warn("No seats to release for reservation {}", reservationId);
+            return;
+        }
+
+
+        List<String> lockKeys = new ArrayList<>();
+        for (Long seatId : seatIds) {
+            String lockKey = RedisKeyHelper.seatLockKey(seatId);
+            String lockOwner = (String) redisTemplate.opsForValue().get(lockKey);
+
+            if (redisKey.equals(lockOwner)) {
+                lockKeys.add(lockKey);
+                redisTemplate.delete(lockKey);
+                log.warn("Release lock for seat {} in", seatId);
+            } else {
+                log.warn("Seat {} lock not owned by this reservation, skip", seatId);
+            }
+        }
+
+        log.info("ALl Redis locks verified for reservation {}", reservationId);
+
+
+        //        Take seat from request
+        List<Seat> seatEntities = seatRepository.findByIdWithLock(seatIds);
+        //        Create reservation to save
+        Showtime showtime = showtimeRepository
+                .findById(reservationHold.getShowtime().getId())
+                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id : " + reservationHold.getShowtime().getId()));
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User now found with id :" + userId));
+
+        BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
+        log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
+
+
+        Reservation reservation = Reservation
+                .builder()
+                .id(reservationId)
+                .user(user)
+                .showtime(showtime)
+                .reservationStatus(ReservationStatus.CANCELED)
+                .seats(seatEntities)
+                .totalAmount(total)
+                .isDeleted(false)
+                .build();
+
+        reservationRepository.save(reservation);
+        log.info("Updated reservation {} status to FAILED", reservationId);
+
+        redisTemplate.delete(redisKey);
+        log.info("Remove reservation hold key {}", redisKey);
+
+        Map<String, Object> event = Map.of(
+                "event", "SEAT_RELEASE",
+                "showtimeId", showtime.getId(),
+                "seatIds", seatIds,
+                "userId", userId
+        );
+
+        //            Send notification via pub sub
+//        redisService.publishSeatHold(showtime.getId(), event);
+        log.info("Published seat release event for showtime {}: {}", showtime.getId(), seatIds);
+
+        log.info("Cancelled reservation hold {} successfully", reservationId);
     }
 
     //    Get data from redis
@@ -514,7 +605,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    private void updatePayment(Reservation reservation, Boolean success) {
+    private Payment updatePayment(Reservation reservation, Boolean success) {
         PaymentStatus status = success ? PaymentStatus.PAID : PaymentStatus.CANCELED;
         paymentRepository.findByReservation(reservation)
                 .filter(p -> p.getStatus() == PaymentStatus.PAID)
@@ -530,7 +621,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .status(status)
                 .createdAt(Instant.now())
                 .build();
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
     }
 
     private void rollbackLock(List<String> lockKeys, String expectedOwner) {
