@@ -34,6 +34,10 @@ export const ReservationActions = createActionGroup({
     'Create Reservation Success': props<{ reservation: Reservation }>(),
     'Create Reservation Failure': props<{ error: any }>(),
 
+    'Cancel Reservation': props<{ reservationId: string; userId: number }>(),
+    'Cancel Reservation Success': emptyProps(),
+    'Cancel Reservation Failure': props<{ error: any }>(),
+
     //   Count down
     'Update Reservation TTL': props<{
       reservationId: string;

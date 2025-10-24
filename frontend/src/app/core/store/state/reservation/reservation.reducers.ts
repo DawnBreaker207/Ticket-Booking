@@ -8,6 +8,7 @@ export interface ReservationState {
   reservations: Reservation[];
   reservation: Reservation | null;
   reservationId: string | null;
+  userId: number | null;
   loading: boolean;
   currentTTL: {
     reservationId: string;
@@ -22,6 +23,7 @@ export const initialState: ReservationState = {
   reservations: [],
   reservation: null,
   reservationId: null,
+  userId: null,
   currentTTL: null,
   loading: false,
   saving: false,
@@ -53,11 +55,13 @@ export const reservationReducer = createReducer(
       loading: false,
     }),
   ),
+
   on(ReservationActions.createReservationInitFailure, (state, { error }) => ({
     ...state,
     saving: false,
     error: error,
   })),
+
   on(ReservationActions.createReservationHoldSeat, (state) => {
     return {
       ...state,
@@ -72,6 +76,7 @@ export const reservationReducer = createReducer(
     saving: false,
     loading: false,
   })),
+
   on(
     ReservationActions.createReservationHoldSeatFailure,
     (state, { error }) => ({
@@ -89,17 +94,46 @@ export const reservationReducer = createReducer(
       error: null,
     };
   }),
+
   on(ReservationActions.createReservationSuccess, (state, { reservation }) => ({
     ...state,
     reservation: reservation,
     saving: false,
     loading: false,
   })),
+
   on(ReservationActions.createReservationFailure, (state, { error }) => ({
     ...state,
     saving: false,
     error: error,
   })),
+
+  on(
+    ReservationActions.cancelReservation,
+    (state, { reservationId, userId }) => {
+      return {
+        ...state,
+        reservationId: reservationId,
+        userId: userId,
+        loading: true,
+        saving: true,
+        error: null,
+      };
+    },
+  ),
+
+  on(ReservationActions.cancelReservationSuccess, (state) => ({
+    ...state,
+    saving: false,
+    loading: false,
+  })),
+
+  on(ReservationActions.cancelReservationFailure, (state, { error }) => ({
+    ...state,
+    saving: false,
+    error: error,
+  })),
+
   on(ReservationActions.loadReservations, (state) => {
     return {
       ...state,
@@ -146,6 +180,7 @@ export const reservationReducer = createReducer(
       error: error,
     };
   }),
+
   on(
     ReservationActions.updateReservationTTL,
     (state, { reservationId, ttl, expiredAt }) => {
@@ -164,6 +199,7 @@ export const reservationReducer = createReducer(
       };
     },
   ),
+
   on(ReservationActions.updateReservationCountdownTTL, (state, { ttl }) => ({
     ...state,
     currentTTL: state.currentTTL

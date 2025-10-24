@@ -85,6 +85,15 @@ export class ReservationService {
       );
   }
 
+  cancelReservation(reservationId: string, userId: number) {
+    return this.http
+      .post<ApiRes<void>>(`${this.URL}/${reservationId}/cancel`, userId)
+      .pipe(
+        map((res: any) => res.data),
+        catchError(this.handleError<void>('Cancel reservation')),
+      );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);

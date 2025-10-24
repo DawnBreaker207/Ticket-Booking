@@ -124,4 +124,22 @@ export class ReservationEffects {
       }),
     );
   });
+
+  cancelReservation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ReservationActions.cancelReservation),
+      switchMap(({ reservationId, userId }) =>
+        this.reservationService.cancelReservation(reservationId, userId).pipe(
+          map(() => ReservationActions.cancelReservationSuccess()),
+          catchError((err) =>
+            of(
+              ReservationActions.cancelReservationFailure({
+                error: err,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }
