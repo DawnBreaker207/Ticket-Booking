@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ObjectMapper mapper;
 
     private final RedisService redisService;
+
     private final RedisPublisher redisPublisher;
 
     @Override
