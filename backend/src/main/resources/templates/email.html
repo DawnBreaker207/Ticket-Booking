@@ -29,6 +29,10 @@
         <span th:text="${seats}" style="font-weight: bold"></span>
     </p>
     <p style="margin: 10px 0; display: flex; justify-content: space-between">
+        <span style="margin-right: 5px">Thời gian thanh toán (Payment Time)</span>
+        <span th:text="${paymentTime}" style="font-weight: bold"></span>
+    </p>
+    <p style="margin: 10px 0; display: flex; justify-content: space-between">
         <span style="margin-right: 5px">Tổng tiền (Total)</span>
         <span th:text="${total} + ' VND'" style="font-weight: bold"></span>
     </p>
@@ -42,6 +46,6 @@
 <p>Cinema does not offer refunds or exchanges for successful tickets purchased on our Cinema website. if you have any
     questions or problems with this order, you can Contact Us or see our F.A.Q for more information. Thank you for
     choosing Cinema and Enjoy the movie!</p>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
