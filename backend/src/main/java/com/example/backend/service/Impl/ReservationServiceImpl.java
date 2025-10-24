@@ -35,9 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,104 +109,117 @@ public class ReservationServiceImpl implements ReservationService {
         String reservationId = reservation.getReservationId();
         Long showtimeId = reservation.getShowtimeId();
         List<Long> seatIds = reservation.getSeatIds();
-
         //        Take reservationId and userId on redis
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
-        Map<Object, Object> reservationData = redisTemplate.opsForHash().entries(redisKey);
-        if (reservationData.isEmpty()) {
-            throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, Message.Exception.RESERVATION_NOT_FOUND);
-        }
-        String userIdStr = (String) reservationData.get("userId");
-        if (!userIdStr.equals(String.valueOf(userId))) {
-            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, Message.Exception.PERMISSION_FORBIDDEN);
-        }
-        String reservationIdStr = (String) reservationData.get("reservationId");
-
-        //        Check and compare value valid
-        if (reservationIdStr == null || !reservationIdStr.equals(reservationId)) {
-            throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid reservation data");
-        }
-
-        //        Check user existed
-        userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(Message
-                        .Exception
-                        .USER_NOT_FOUND));
-
-        //        Validate showtime
-        Showtime showtime = showtimeRepository
-                .findById(showtimeId)
-                .orElseThrow(() -> new TheaterNotFoundException(Message
-                        .Exception
-                        .SHOWTIME_NOT_FOUND));
-
-        //      Check showtime is in the past
-        if (showtime.getShowDate().isBefore((LocalDate.now())) ||
-                (showtime.getShowDate().isEqual(LocalDate.now()) &&
-                        showtime.getShowTime().isBefore(LocalTime.now()))) {
-            throw new IllegalStateException("Cannot reserve seats for past showtime");
-        }
-
-        //        Check if showtime has enough available seats
-        if (showtime.getAvailableSeats() < seatIds.size()) {
-            throw new IllegalStateException(String.format("Not enough available seats. Request: %d, Available: %d", seatIds.size(), showtime.getAvailableSeats()));
-        }
-
-        //        Load seats from DB and validate
-        List<Seat> seats = seatRepository.findAllById(seatIds);
-        validateSeatsForReservation(seats, showtimeId, seatIds);
-
         //        Define locks to update seat
         List<String> successfulLocks = new ArrayList<>();
         List<SeatLockFailure> lockFailures = new ArrayList<>();
+        try {
+            Map<Object, Object> reservationData = redisTemplate.opsForHash().entries(redisKey);
+            if (reservationData.isEmpty()) {
+                throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, Message.Exception.RESERVATION_NOT_FOUND);
+            }
+            String userIdStr = (String) reservationData.get("userId");
+            if (!userIdStr.equals(String.valueOf(userId))) {
+                throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, Message.Exception.PERMISSION_FORBIDDEN);
+            }
+            //        Check and compare value valid
+            String reservationIdStr = (String) reservationData.get("reservationId");
+            if (reservationIdStr == null || !reservationIdStr.equals(reservationId)) {
+                throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid reservation data");
+            }
 
-        //        Check seat in showtime was booked in redis
-        for (Long seatId : seatIds) {
-            String lockKey = RedisKeyHelper.seatLockKey(seatId);
-            //            Check seat lock in redis
-            Boolean lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, redisKey, HOLD_TIMEOUT);
-            //            Get owner of this seat
-            String existingOwner = (String) redisTemplate.opsForValue().get(lockKey);
-            if (lockAcquired != null && lockAcquired) {
-                successfulLocks.add(lockKey);
-                log.debug("Successfully locked seat {} for reservation {}", seatId, reservationId);
+            //        Check user existed
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException(Message
+                            .Exception
+                            .USER_NOT_FOUND));
 
-                //                Check the right owner
-            } else {
-                if (redisKey.equals(existingOwner)) {
-                    redisTemplate.expire(lockKey, HOLD_TIMEOUT);
-                    successfulLocks.add(lockKey);
-                    log.debug("Refreshed existing lock for seat {} in reservation {}", seatId, reservationId);
-                } else {
-                    //                Check if the seat was hold by another owner
-                    Seat seat = seats.stream().filter(s -> s
-                                    .getId()
-                                    .equals(seatId))
-                            .findFirst()
-                            .orElse(null);
-                    String seatNumber = seat != null ? seat.getSeatNumber() : seatId.toString();
-                    lockFailures.add(new SeatLockFailure(seatId, seatNumber, existingOwner));
-                    log.warn("Seat {} ({}) is hold by reservation {}", seatId, seatNumber, existingOwner);
+            //        Validate showtime
+            Showtime showtime = showtimeRepository
+                    .findById(showtimeId)
+                    .orElseThrow(() -> new TheaterNotFoundException(Message
+                            .Exception
+                            .SHOWTIME_NOT_FOUND));
+
+            //      Check showtime is in the past
+            if (showtime.getShowDate().isBefore((LocalDate.now())) ||
+                    (showtime.getShowDate().isEqual(LocalDate.now()) &&
+                            showtime.getShowTime().isBefore(LocalTime.now()))) {
+                throw new IllegalStateException("Cannot reserve seats for past showtime");
+            }
+
+            //        Check if showtime has enough available seats
+            if (showtime.getAvailableSeats() < seatIds.size()) {
+                throw new IllegalStateException(String.format("Not enough available seats. Request: %d, Available: %d", seatIds.size(), showtime.getAvailableSeats()));
+            }
+
+
+            Set<Long> oldSeatIds = new HashSet<>();
+            String currentSeatsJson = (String) reservationData.get("seats");
+            if (currentSeatsJson != null && !currentSeatsJson.isEmpty()) {
+                oldSeatIds = new HashSet<>(mapper.readValue(currentSeatsJson, new TypeReference<List<Long>>() {
+                }));
+            }
+
+            for (Long oldSeatId : oldSeatIds) {
+                if (!seatIds.contains(oldSeatId)) {
+                    redisTemplate.delete(RedisKeyHelper.seatLockKey(oldSeatId));
                 }
             }
 
-        }
 
-        //        If one of the list fail, return this exception
-        if (!lockFailures.isEmpty()) {
-            log.warn("Failed to lock {} for seats for reservation {}. Rolling back {} successful locks", lockFailures.size(), reservationId, successfulLocks.size());
+            //        Load seats from DB and validate
+            List<Seat> seats = seatRepository.findAllById(seatIds);
+            validateSeatsForReservation(seats, showtimeId, seatIds);
 
-            rollbackLock(successfulLocks, redisKey);
 
-            String failedSeatMessage = lockFailures
-                    .stream()
-                    .map(f -> f.seatNumber + " (hold by " + f.ownerReservationId + ")")
-                    .collect(Collectors.joining((", ")));
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, "Cannot hold seats. The following seats are currently hold by other users: " + failedSeatMessage);
-        }
+            //        Check seat in showtime was booked in redis
+            for (Long seatId : seatIds) {
+                String lockKey = RedisKeyHelper.seatLockKey(seatId);
+                //            Check seat lock in redis
+                Boolean lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, redisKey, HOLD_TIMEOUT);
+                //            Get owner of this seat
+                String existingOwner = (String) redisTemplate.opsForValue().get(lockKey);
+                if (lockAcquired != null && lockAcquired) {
+                    successfulLocks.add(lockKey);
+                    log.debug("Successfully locked seat {} for reservation {}", seatId, reservationId);
 
-        try {
+                    //                Check the right owner
+                } else {
+                    if (redisKey.equals(existingOwner)) {
+                        redisTemplate.expire(lockKey, HOLD_TIMEOUT);
+                        successfulLocks.add(lockKey);
+                        log.debug("Refreshed existing lock for seat {} in reservation {}", seatId, reservationId);
+                    } else {
+                        //                Check if the seat was hold by another owner
+                        Seat seat = seats.stream().filter(s -> s
+                                        .getId()
+                                        .equals(seatId))
+                                .findFirst()
+                                .orElse(null);
+                        String seatNumber = seat != null ? seat.getSeatNumber() : seatId.toString();
+                        lockFailures.add(new SeatLockFailure(seatId, seatNumber, existingOwner));
+                        log.warn("Seat {} ({}) is hold by reservation {}", seatId, seatNumber, existingOwner);
+                    }
+                }
+
+            }
+
+            //        If one of the list fail, return this exception
+            if (!lockFailures.isEmpty()) {
+                log.warn("Failed to lock {} for seats for reservation {}. Rolling back {} successful locks", lockFailures.size(), reservationId, successfulLocks.size());
+
+                rollbackLock(successfulLocks, redisKey);
+
+                String failedSeatMessage = lockFailures
+                        .stream()
+                        .map(f -> f.seatNumber + " (hold by " + f.ownerReservationId + ")")
+                        .collect(Collectors.joining((", ")));
+                throw new SeatUnavailableException(HttpStatus.CONFLICT, "Cannot hold seats. The following seats are currently hold by other users: " + failedSeatMessage);
+            }
+
 
             //        Update seat in redis
             String seatsJson = mapper.writeValueAsString(seatIds);
