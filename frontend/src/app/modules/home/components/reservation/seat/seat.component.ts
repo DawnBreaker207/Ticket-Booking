@@ -47,8 +47,6 @@ export class SeatComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe((res: any) => {
-        console.log(res);
-
         if (res.event === 'SEAT_STATE_INIT' || res.event === 'SEAT_HOLD') {
           this.seats$.pipe(take(1)).subscribe((seats) => {
             res.data.seatIds.forEach((s: any) => {

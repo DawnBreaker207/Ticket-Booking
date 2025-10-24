@@ -1,7 +1,7 @@
-import { createReducer, on } from '@ngrx/store';
-import { Seat } from '@/app/core/models/theater.model';
-import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
-import { SeatStatus } from '@/app/core/constants/enum';
+import {createReducer, on} from '@ngrx/store';
+import {Seat} from '@/app/core/models/theater.model';
+import {SeatActions} from '@/app/core/store/state/seat/seat.actions';
+import {SeatStatus} from '@/app/core/constants/enum';
 
 export const seatFeatureKey = 'seatKey';
 
@@ -29,30 +29,37 @@ export const seatReducer = createReducer(
     };
   }),
 
-  on(SeatActions.loadAllSeatsSuccess, (state, { seats }) => ({
+  on(SeatActions.loadAllSeatsSuccess, (state, {seats}) => ({
     ...state,
     seats: seats,
     loading: false,
   })),
-  on(SeatActions.loadAllSeatsFailed, (state, { error }) => ({
+  on(SeatActions.loadAllSeatsFailed, (state, {error}) => ({
     ...state,
     error: error,
   })),
-  on(SeatActions.selectSeat, (state, { seat }) => ({
+  on(SeatActions.selectSeat, (state, {seat}) => {
+    const updatedSeats = state.seats.map((s) =>
+      s.id === seat.id ? {...s, status: seat.status} : s
+    );
+
+    const updatedSelectedSeat =
+      seat.status === 'SELECTED'
+        ? [...state.selectedSeat.filter((s) => s.id !== seat.id), seat]
+        : state.selectedSeat.filter((s) => s.id !== seat.id);
+
+    return {
+
+      ...state,
+      seats: updatedSeats,
+      selectedSeat: updatedSelectedSeat,
+      error: null,
+    }
+  }),
+  on(SeatActions.deselectSeat, (state, {seatId}) => ({
     ...state,
     seats: state.seats.map((s) =>
-      s.id === seat.id ? { ...s, status: seat.status } : s,
-    ),
-    selectedSeat:
-      seat.status === ('SELECTED' as SeatStatus)
-        ? [...state.selectedSeat, seat]
-        : state.selectedSeat,
-    error: null,
-  })),
-  on(SeatActions.deselectSeat, (state, { seatId }) => ({
-    ...state,
-    seats: state.seats.map((s) =>
-      s.id === seatId ? { ...s, status: 'AVAILABLE' as SeatStatus } : s,
+      s.id === seatId ? {...s, status: 'AVAILABLE' as SeatStatus} : s,
     ),
     selectedSeat: state.selectedSeat.filter((s) => s.id !== seatId),
     error: null,
