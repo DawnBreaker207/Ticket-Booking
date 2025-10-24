@@ -51,7 +51,7 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
       this.saveReservation(state);
     } else {
       this.status = 'error';
-      this.saveReservation(state);
+      this.cancelReservation(state.reservationId, state.userId);
       this.errorMessage = `Thanh toán thất bại. Mã lỗi: ${this.vnpResponseCode}`;
     }
     this.storageService.removeItem('reservationState');
@@ -67,6 +67,15 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
           showtimeId: reservation.showtimeId,
           seatIds: reservation.seatIds,
         },
+      }),
+    );
+  }
+
+  cancelReservation(reservationId: string, userId: number) {
+    this.store.dispatch(
+      ReservationActions.cancelReservation({
+        reservationId: reservationId,
+        userId: userId,
       }),
     );
   }
