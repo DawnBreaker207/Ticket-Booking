@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
 
 
-    @Cacheable(MOVIE_CACHE)
+//    @Cacheable(MOVIE_CACHE)
     @Override
     public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
         return movieRepository
@@ -44,7 +43,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
+//    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
     public MovieResponseDTO findOne(Long id) {
         return movieRepository
                 .findById(id)
@@ -53,7 +52,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "'movieId' + #id")
+//    @Cacheable(value = MOVIE_CACHE, key = "'movieId' + #id")
     public MovieResponseDTO findByMovieId(String id) {
         return movieRepository
                 .findByFilmId(id)

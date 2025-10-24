@@ -41,7 +41,6 @@ public class ApiExceptionHandler {
         final var status = (e instanceof ApiException ae && ae.getStatus() != null) ? ae.getStatus() : DEFAULT_STATUS;
         return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), status,
                 "#### " + e.getMessage() + "! ####"), status);
-
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

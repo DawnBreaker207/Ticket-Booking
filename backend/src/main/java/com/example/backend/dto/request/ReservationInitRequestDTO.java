@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ReservationInitRequestDTO {
 
-
     private String reservationId;
 
     @NotNull

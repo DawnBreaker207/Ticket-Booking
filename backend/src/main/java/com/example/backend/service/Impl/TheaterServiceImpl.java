@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class TheaterServiceImpl implements TheaterService {
     private final TheaterRepository theaterRepository;
 
     @Override
-    @Cacheable(value = THEATER_CACHE)
+//    @Cacheable(value = THEATER_CACHE)
     public List<TheaterResponseDTO> findAll() {
         return theaterRepository
                 .findAll()
@@ -37,7 +36,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
-    @Cacheable(value = THEATER_CACHE, key = "'id:' + #id")
+//    @Cacheable(value = THEATER_CACHE, key = "'id:' + #id")
     public TheaterResponseDTO findOne(Long id) {
         return theaterRepository
                 .findById(id)
@@ -46,7 +45,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
-    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
+//    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
     public List<TheaterResponseDTO> findByLocation(String location) {
         log.info("Search theater by location {}", location);
         return theaterRepository
