@@ -69,9 +69,11 @@ public class NotificationService {
             channelEmitters.remove(clientId);
             if (channelEmitters.isEmpty()) {
                 emitters.remove(channel);
+                log.info("All clients disconnected from [{}]", channel);
             }
+        } else {
+            log.info("Client [{}] disconnected from [{}]", clientId, channel);
         }
-        log.info("Client [{}] disconnected from [{}]", clientId, channel);
     }
 
 
@@ -97,7 +99,6 @@ public class NotificationService {
             List<Map<String, Object>> holdSeats = new ArrayList<>();
 
             for (String key : holdSeatKeys) {
-                log.info("Key in redis {}", key);
                 String reservationKey = String.valueOf(redisTemplate.opsForValue().get(key));
                 String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
                 String seatId = key.substring(key.lastIndexOf(":") + 1);
@@ -116,7 +117,9 @@ public class NotificationService {
             emitter.send(SseEmitter.event().name("SEAT_STATE_INIT").data(messageJson));
             log.info("Sent initial seat state to new client, {} seats hold", holdSeats.size());
         } catch (Exception e) {
+            log.debug("Emitter disconnected before receiving initial state.");
             log.error("Failed to send initial seat state", e);
+            removeEmitter(channel, "anonymous");
         }
     }
 
@@ -136,7 +139,7 @@ public class NotificationService {
                         .data(message));
                 log.info("Broadcast send event [{}] to client [{}] in channel [{}]", eventName, clientId, emitter);
             } catch (IOException e) {
-                log.warn("Failed to send message to [{}]", clientId);
+                log.debug("Client [{}] disconnected during broadcast. Cleaning up.", clientId);
                 removeEmitter(channel, clientId);
             }
         });
@@ -145,13 +148,12 @@ public class NotificationService {
     private String extractEventName(String messageJson) {
         try {
             log.debug("Parsing event from: {}", messageJson);
-
             JsonNode node = objectMapper.readTree(messageJson);
             String eventName = node.has("event") ? node.get("event").asText() : "message";
             log.debug("Extracted event name [{}]", eventName);
             return eventName;
         } catch (Exception e) {
-            log.warn("Cannot parse event name from messsage", e);
+            log.warn("Cannot parse event name from message", e);
             return "message";
         }
     }
@@ -164,6 +166,7 @@ public class NotificationService {
             String theaterName,
             String showtimeSession,
             String seats,
+            String paymentTime,
             String total
     ) {
         log.info("Got message from reservation");
@@ -182,6 +185,7 @@ public class NotificationService {
             context.setVariable("theaterName", theaterName);
             context.setVariable("showtimeSession", showtimeSession);
             context.setVariable("seats", seats);
+            context.setVariable("paymentTime", paymentTime);
             context.setVariable("total", total);
             context.setVariable("barcode", barcodeBase64);
 
