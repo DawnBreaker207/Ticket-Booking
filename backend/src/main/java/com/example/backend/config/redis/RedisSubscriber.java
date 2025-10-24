@@ -21,6 +21,10 @@ public class RedisSubscriber implements MessageListener {
         String channel = new String(message.getChannel(), StandardCharsets.UTF_8);
         String body = new String(message.getBody(), StandardCharsets.UTF_8);
         log.info("Receive message from channel:{}, body:{}", channel, body);
-        notificationService.broadcastToChannel(channel, body);
+        try {
+            notificationService.broadcastToChannel(channel, body);
+        } catch (Exception e) {
+            log.error("Failed to broadcast message to channel {}: {}", channel, e.getMessage());
+        }
     }
 }

@@ -33,7 +33,7 @@ public class RedisService {
     public void publishSeatHold(Long showtimeId, Map<String, Object> event) {
         try {
             String channel = RedisKeyHelper.showtimeChannel(showtimeId);
-            log.info("Publish seat hold {}", channel);
+            log.info("Publish to Redis channel [{}]: {}", channel, event);
             String message = mapper.writeValueAsString(event);
             redisPublisher.publish(channel, message);
             log.info("Successfully publish event {} to channel {}", event.get("event"), channel);
