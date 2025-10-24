@@ -41,7 +41,7 @@ public class NotificationService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     public SseEmitter subscribe(String channel, String clientId) {
-        SseEmitter emitter = new SseEmitter(0L);
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         emitter.onCompletion(() -> removeEmitter(channel, clientId));
         emitter.onTimeout(() -> removeEmitter(channel, clientId));
