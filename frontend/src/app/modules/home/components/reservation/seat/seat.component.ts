@@ -43,17 +43,18 @@ export class SeatComponent implements OnInit, OnDestroy {
     this.showtime$
       .pipe(
         filter((data): data is Showtime => !!data),
-        switchMap((data) => this.sseService.connect(data?.id)),
+        switchMap((data) =>
+          this.sseService.connect(data?.id, reservationState?.userId as number),
+        ),
         takeUntil(this.destroy$),
       )
       .subscribe((res: any) => {
-        if (res.event === 'SEAT_STATE_INIT' || res.event === 'SEAT_HOLD') {
-          this.seats$.pipe(take(1)).subscribe((seats) => {
+        this.seats$.pipe(take(1)).subscribe((seats) => {
+          if (res.event === 'SEAT_STATE_INIT') {
             res.data.seatIds.forEach((s: any) => {
-              const seatId = Number(s.seatId);
               const isMySeat = s.reservationId === reservationId;
+              const seatId = Number(s.seatId);
               const existingSeat = seats.find((x) => x.id === seatId);
-
               const seat: Seat = {
                 id: seatId,
                 seatNumber: existingSeat?.seatNumber || seatId.toString(),
@@ -62,12 +63,31 @@ export class SeatComponent implements OnInit, OnDestroy {
               console.log(seat);
               this.store.dispatch(SeatActions.selectSeat({ seat: seat }));
             });
-          });
-        } else if (res.event === 'SEAT_RELEASE') {
-          res.data.seatIds.forEach((seatId: number) => {
-            this.store.dispatch(SeatActions.deselectSeat({ seatId: seatId }));
-          });
-        }
+          } else if (res.event === 'SEAT_HOLD') {
+            const uniqueSeats = res.data.seatIds.filter(
+              (v: any, i: number, a: any[]) =>
+                a.findIndex((t) => t.seatId === v.seatId) === i,
+            );
+            uniqueSeats.forEach((s: any) => {
+              const isMySeat = s.reservationId === reservationId;
+              const seatId = Number(s.seatId);
+              const existingSeat = seats.find((x) => x.id === seatId);
+
+              this.store.dispatch(SeatActions.deselectSeat({ seatId }));
+
+              const seat: Seat = {
+                id: s.seatId,
+                seatNumber: existingSeat?.seatNumber || seatId.toString(),
+                status: isMySeat ? 'SELECTED' : ('HOLD' as SeatStatus),
+              } as Seat;
+              this.store.dispatch(SeatActions.selectSeat({ seat: seat }));
+            });
+          } else if (res.event === 'SEAT_RELEASE') {
+            res.data.seatIds.forEach((seatId: number) => {
+              this.store.dispatch(SeatActions.deselectSeat({ seatId: seatId }));
+            });
+          }
+        });
       });
   }
 
