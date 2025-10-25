@@ -155,7 +155,7 @@ public class ReservationServiceImpl implements ReservationService {
                 throw new IllegalStateException(String.format("Not enough available seats. Request: %d, Available: %d", seatIds.size(), showtime.getAvailableSeats()));
             }
 
-
+            // Delete old seats in Redis
             Set<Long> oldSeatIds = new HashSet<>();
             String currentSeatsJson = (String) reservationData.get("seats");
             if (currentSeatsJson != null && !currentSeatsJson.isEmpty()) {
@@ -227,12 +227,22 @@ public class ReservationServiceImpl implements ReservationService {
             redisTemplate.expire(redisKey, HOLD_TIMEOUT);
 
 
+            List<Map<String, Object>> seatInfo = seatIds
+                    .stream()
+                    .map(id -> {
+                        Map<String, Object> seat = new HashMap<>();
+                        seat.put("seatId", id);
+                        seat.put("reservationId", reservationId);
+                        return seat;
+                    })
+                    .toList();
+
             Map<String, Object> event = Map.of(
                     "event", "SEAT_HOLD",
                     "showtimeId", showtimeId,
-                    "seatIds", seatIds,
-                    "userId", userId
-            );
+                    "userId", userId,
+                    "seatIds", seatInfo
+                    );
 
             //            Send notification via pub sub
             redisService.publishSeatHold(showtimeId, event);
