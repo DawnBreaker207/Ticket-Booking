@@ -147,10 +147,10 @@ public class NotificationService {
 
     private String extractEventName(String messageJson) {
         try {
-            log.debug("Parsing event from: {}", messageJson);
+            log.info("Parsing event from: {}", messageJson);
             JsonNode node = objectMapper.readTree(messageJson);
             String eventName = node.has("event") ? node.get("event").asText() : "message";
-            log.debug("Extracted event name [{}]", eventName);
+            log.info("Extracted event name [{}]", eventName);
             return eventName;
         } catch (Exception e) {
             log.warn("Cannot parse event name from message", e);
