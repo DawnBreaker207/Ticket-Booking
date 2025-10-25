@@ -22,7 +22,6 @@ public class RedisService {
 
     private final RedisPublisher redisPublisher;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ObjectMapper mapper;
 
     public void saveReservation(String reservationId, Map<String, String> data, Duration ttl) {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
@@ -34,10 +33,9 @@ public class RedisService {
         try {
             String channel = RedisKeyHelper.showtimeChannel(showtimeId);
             log.info("Publish to Redis channel [{}]: {}", channel, event);
-            String message = mapper.writeValueAsString(event);
-            redisPublisher.publish(channel, message);
+            redisPublisher.publish(channel, event);
             log.info("Successfully publish event {} to channel {}", event.get("event"), channel);
-        } catch (JsonProcessingException ex) {
+        } catch (Exception ex) {
             log.error("Failed to serialize event", ex);
             throw new RedisStorageException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store seat information. Please try again");
         }
