@@ -83,30 +83,38 @@ public class NotificationService {
             Long showtimeId = Long.valueOf(parts[2]);
 
             String pattern = "seat:locked:*";
-            List<String> holdSeatKeys = new ArrayList<>();
-
+            List<Map<String, Object>> holdSeats = new ArrayList<>();
 
             redisTemplate.execute((RedisCallback<Void>) connection -> {
-                ScanOptions options = ScanOptions.scanOptions().match(pattern).count(500).build();
-                try (Cursor<byte[]> cursor = connection.scan(options)) {
+                ScanOptions options = ScanOptions.scanOptions()
+                        .match(pattern)
+                        .count(500)
+                        .build();
+
+                try (Cursor<byte[]> cursor = connection.keyCommands().scan(options)) {
                     while (cursor.hasNext()) {
-                        holdSeatKeys.add(new String(cursor.next(), StandardCharsets.UTF_8));
+                        String key = new String(cursor.next(), StandardCharsets.UTF_8);
+
+                        //     Take data from Redis
+                        Object rawValue = redisTemplate.opsForValue().get(key);
+                        if (rawValue == null) continue;
+
+                        String reservationKey = rawValue.toString();
+                        String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
+                        String seatIdStr = key.substring(key.lastIndexOf(":") + 1);
+                        Long seatId = Long.parseLong(seatIdStr);
+
+                        Map<String, Object> initialState = Map.of(
+                                "seatId", seatId,
+                                "reservationId", reservationId
+                        );
+
+                        holdSeats.add(initialState);
                     }
                 }
                 return null;
             });
 
-            List<Map<String, Object>> holdSeats = new ArrayList<>();
-
-            for (String key : holdSeatKeys) {
-                String reservationKey = String.valueOf(redisTemplate.opsForValue().get(key));
-                String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
-                String seatId = key.substring(key.lastIndexOf(":") + 1);
-                holdSeats.add(Map.of(
-                        "seatId", seatId,
-                        "reservationId", reservationId
-                ));
-            }
             Map<String, Object> initialState = Map.of(
                     "event", "SEAT_STATE_INIT",
                     "showtimeId", showtimeId,
