@@ -1,6 +1,6 @@
 import { inject, Injectable, NgZone } from '@angular/core';
 import { environment } from '@/environments/environment';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +9,11 @@ export class SseService {
   URL = `${environment.apiUrl}/notification/subscribe/showtime`;
   private zone = inject(NgZone);
 
-  connect(id: string | number, options?: { subscribeSeat?: boolean }) {
+  connect(id: string | number, userId: number) {
     return new Observable((observer) => {
       // Seat channel
 
-      const source = new EventSource(`${this.URL}/${id}`);
-
+      const source = new EventSource(`${this.URL}/${id}?clientId=${userId}`);
       source.addEventListener('SEAT_STATE_INIT', (event: MessageEvent) => {
         this.zone.run(() => {
           const data = JSON.parse(event.data);
@@ -48,12 +47,13 @@ export class SseService {
         console.error('Seat SSE error', error);
         observer.error(error);
         source?.close();
+        setTimeout(() => this.connect(id, userId), 1000);
       };
 
       // Clean up
       return () => {
         source?.close();
       };
-    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    });
   }
 }
