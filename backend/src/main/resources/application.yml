@@ -19,7 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+#    show-sql: true
   sql:
     init:
       mode: never
@@ -86,3 +86,7 @@ dawn:
         username: ${ADMIN_USERNAME}
         email: ${ADMIN_EMAIL}
         password: ${ADMIN_PASSWORD}
+      user:
+        username: ${USER_USERNAME}
+        email: ${USER_EMAIL}
+        password: ${USER_PASSWORD}

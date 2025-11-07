@@ -30,20 +30,30 @@ public class DataInitializer implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${dawn.app.setup.admin.username}")
-    private String username;
+    private String adminUsername;
 
     @Value("${dawn.app.setup.admin.email}")
-    private String email;
+    private String adminEmail;
 
     @Value("${dawn.app.setup.admin.password}")
-    private String password;
+    private String adminPassword;
+
+    @Value("${dawn.app.setup.user.username}")
+    private String userUsername;
+
+    @Value("${dawn.app.setup.user.email}")
+    private String userEmail;
+
+    @Value("${dawn.app.setup.user.password}")
+    private String userPassword;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        try{
+        try {
             createAdminAccountIfNotExist();
-        }catch (Exception e){
+            createUserAccountIfNotExist();
+        } catch (Exception e) {
             log.error("Error initializing admin account", e);
         }
     }
@@ -51,19 +61,20 @@ public class DataInitializer implements ApplicationRunner {
     //    Note: This just for demo, don't use this in production
     private void createAdminAccountIfNotExist() {
         if (userRepository.existsByRolesName(URole.ADMIN)) {
-            log.info("Admin Account already exists");
+            log.info("Admin account already exists");
             return;
         }
 
         Role role = roleRepository
                 .findByName(URole.ADMIN)
-                .orElseThrow(() -> new RoleNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+                .orElseThrow(() ->
+                        new RoleNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
         User user = User
                 .builder()
-                .username(username)
-                .email(email)
-                .password(passwordEncoder.encode(password))
+                .username(adminUsername)
+                .email(adminEmail)
+                .password(passwordEncoder.encode(adminPassword))
                 .roles(Set.of(role))
                 .isDeleted(false)
                 .build();
@@ -71,10 +82,39 @@ public class DataInitializer implements ApplicationRunner {
         userRepository.save(user);
 
         log.info("========================================");
-        log.info("✅ DEMO ADMIN ACCOUNT CREATED");
-        log.info("   Username: {}", user);
-        log.info("   Email: {}", email);
-        log.info("   Password: {}", password);
+        log.info("   DEMO ADMIN ACCOUNT CREATED");
+        log.info("   Username: {}", adminUsername);
+        log.info("   Email: {}", adminEmail);
+        log.info("   Password: {}", adminPassword);
+        log.info("========================================");
+    }
+
+    //    Note: This just for demo, don't use this in production
+    private void createUserAccountIfNotExist() {
+        if (userRepository.existsByRolesName(URole.USER)) {
+            log.info("User account already created");
+            return;
+        }
+        Role role = roleRepository
+                .findByName(URole.USER)
+                .orElseThrow(() ->
+                        new RoleNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+
+        User user = User
+                .builder()
+                .username(userUsername)
+                .email(userEmail)
+                .password(passwordEncoder.encode(userPassword))
+                .roles(Set.of(role))
+                .isDeleted(false)
+                .build();
+        userRepository.save(user);
+
+        log.info("========================================");
+        log.info("   DEMO USER ACCOUNT CREATED");
+        log.info("   Username: {}", userUsername);
+        log.info("   Email: {}", userEmail);
+        log.info("   Password: {}", userPassword);
         log.info("========================================");
     }
 }
