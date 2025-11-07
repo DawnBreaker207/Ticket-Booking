@@ -1,59 +1,124 @@
 # [Ticket-Booking](https://github.com/DawnBreaker207/Ticket-Booking)
 
 A booking film tickets system
-## Background
 
+## Overview
 
-## 🚀 Getting Started
-A detail API endpoints can be found after installation on `http://localhost:8888/api/v1/swagger-ui.html`
+## 🏗️ Architecture
 
-## 🛠  Installation
+### Technology stack
+
+- Backend: Java 17, Spring Boot 3.5.3, Spring Data JPA
+- Database: MySQL 8.0, Flyway, Redis
+- Security: Spring Security, JWT 0.12.6
+- API Documentation: Swagger OpenAPI
+- Payment Processing: VNPay
+- PDF Generator: Jasper Reports
+- Barcode Generator: ZXing
+- Email Service: Spring Mail
+- Utilities: Lombok
+
+## 🛠 Installation
 
 ### Requirements
 
-- A server with Java 17 version or [newer](https://www.oracle.com/java/technologies/downloads/)
-- A database. Supports [MySQL](https://www.mysql.com) (minimum v8.0) 
 - [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install) in Window or [Docker](https://docs.docker.com/desktop/setup/install/linux/ubuntu) in Linux if setup with Docker
 
-
-### Get the Source code and Install Packages
+### Get the source code
 
 ```bash
 git clone https://github.com/DawnBreaker207/Ticket-Booking
 cd Ticket-Booking
 ```
-With Maven (run with terminal)
 
-Requirement: [Set up maven local](https://www.baeldung.com/install-maven-on-windows-linux-mac)
+### Configure System
+
+For more information about VNPay config check out [here](https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html)
+
+If you don't have account, register [here](https://sandbox.vnpayment.vn/devreg)
+
+Create an <code>.env</code> file with the following:
+
 ```bash
-mvn spring-boot:run
+###   MySQL config
+MYSQL_PORT=3307
+MYSQL_DATABASE=db-name
+MYSQL_ROOT_PASSWORD=mysql
+###   Redis Config
+REDIS_PORT=6379
+###   Spring Port Config
+SPRING_PORT=8888
+###   Spring DB Config
+SPRING_DATASOURCE_URL=connection-url
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=mysql
+###   VNPay Config
+VNPAY_URL=vnpay-url
+VNPAY_TMN_CODE=vnpay-tmn-code
+VNPAY_SECRET_KEY=vnpay-secret-key
+VNPAY_RETURN_URL=vnpay-return-url
+VNPAY_VERSION=vnpay-version
+VNPAY_COMMAND=vnpay-command
+VNPAY_ORDER_TYPE=vnpay-order-type
+###   Default admin account - You can change default account
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@gmail.com
+ADMIN_PASSWORD=admin
+###   Default user account - You can change default account
+USER_USERNAME=user
+USER_EMAIL=user@gmail.com
+USER_PASSWORD=user
 ```
 
-[With IntelliJ](https://www.jetbrains.com/help/idea/spring-boot.html#add-starter)
+The connection URL format:
 
-[With Eclipse](https://www.geeksforgeeks.org/java/how-to-run-your-first-spring-boot-application-in-eclipse-ide)
-### Start the Application
-
-With Maven (run with terminal)
 ```bash
-mvn spring-boot:run
+jdbc:mysql://mysql:3306/db
 ```
-_By default, this will launch the application on `http://localhost:8888/api/v1`
 
+To access the application:
 
-### 🐳 Installing with Docker
+- Swagger UI: `http://localhost:8888/api/v1/swagger-ui.html`
 
-To build the server container and start up a MySQL database, run:
+### Default Credentials
+
+The system automatically creates two users on startup:
+
+| Role  | Username | Password |
+| ----- | -------- | -------- |
+| Admin | `admin`  | `admin`  |
+| User  | `user`   | `user`   |
+
+### 🐳 Start with Docker
+
+To build the backend system, run:
+
 ```bash
 docker-compose up --build
 ```
 
-## 🔄 Getting Updates
-To get the latest features, simply do a pull, install any new dependencies, and rebuild:
+or
 
-With Maven (run with terminal)
 ```bash
+docker-compose up --b
+```
+
+To end the system, run
+
+```bash
+docker-compose down -v
+```
+
+## 🔄 Getting Updates
+
+To get the latest features, simply do a pull, install any new dependencies:
+
+```git
 git pull
-mvn clean install
-mvn spring-boot:run
+```
+
+and rebuild
+
+```bash
+docker-compose up --b
 ```
