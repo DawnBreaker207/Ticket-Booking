@@ -118,8 +118,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public TokenRefreshResponseDTO refreshToken(HttpServletRequest token) {
-        String refreshToken = jWTUtils.getJwtRefreshCookie(token);
+    public TokenRefreshResponseDTO refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new RefreshTokenExpiredException(Message.Exception.REFRESH_TOKEN_EXPIRED);
         }
@@ -131,7 +130,6 @@ public class AuthServiceImpl implements AuthService {
                     return TokenRefreshResponseDTO
                             .builder()
                             .accessToken(jwtCookie)
-                            .refreshToken(refreshToken)
                             .build();
                 })
                 .orElseThrow(() -> new RefreshTokenNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));

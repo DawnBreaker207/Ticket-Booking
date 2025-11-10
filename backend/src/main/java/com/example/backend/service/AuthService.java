@@ -15,5 +15,5 @@ public interface AuthService {
 
     void logout();
 
-    TokenRefreshResponseDTO refreshToken(HttpServletRequest req);
+    TokenRefreshResponseDTO refreshToken(String refreshToken);
 }

@@ -8,14 +8,10 @@ import com.example.backend.dto.response.TokenRefreshResponseDTO;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -50,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseObject<TokenRefreshResponseDTO> refreshToken(HttpServletRequest request) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", authService.refreshToken(request));
+    public ResponseObject<TokenRefreshResponseDTO> refreshToken(@CookieValue("refreshToken") String refreshToken) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", authService.refreshToken(refreshToken));
     }
 }
