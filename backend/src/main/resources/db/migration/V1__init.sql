@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS movie
     poster       VARCHAR(255),
     overview     TEXT,
     duration     INT          NOT NULL,
-    genres       JSON,
     release_date DATE,
     imdb_id      VARCHAR(255),
     film_id      VARCHAR(255),
@@ -60,7 +59,9 @@ CREATE TABLE IF NOT EXISTS movie
 CREATE TABLE IF NOT EXISTS genre
 (
     id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
