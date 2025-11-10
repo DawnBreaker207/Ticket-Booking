@@ -57,7 +57,22 @@ CREATE TABLE IF NOT EXISTS movie
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS genre
+(
+    id   BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS movie_genre
+(
+    movie_id BIGINT NOT NULL,
+    genre_id BIGINT NOT NULL,
+    PRIMARY KEY (movie_id, genre_id),
+    CONSTRAINT fk_movie_genre FOREIGN KEY (movie_id) REFERENCES movie (id) ON DELETE CASCADE,
+    CONSTRAINT fk_genre_movie FOREIGN KEY (genre_id) REFERENCES genre (id) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS theater
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -99,6 +114,7 @@ CREATE TABLE IF NOT EXISTS reservation
     showtime_id  BIGINT         NOT NULL,
     status       ENUM ('CONFIRMED','CANCELED'),
     total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    is_paid      BOOLEAN                 DEFAULT FALSE,
     is_deleted   BOOLEAN                 DEFAULT FALSE,
     created_at   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -135,11 +151,11 @@ CREATE TABLE IF NOT EXISTS payment
     id                BIGINT PRIMARY KEY AUTO_INCREMENT,
     reservation_id    VARCHAR(50) UNIQUE,
     payment_intent_id VARCHAR(255)   NOT NULL UNIQUE,
-    amount            DECIMAL(10, 2) NOT NULL                   DEFAULT 0.00,
-    method            ENUM ('MOMO', 'VNPAY', 'ZALOPAY', 'CASH') DEFAULT 'CASH',
-    status            ENUM ('PENDING', 'PAID', 'CANCELED')      DEFAULT 'PENDING',
-    created_at        DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP,
-    updated_at        DATETIME       NOT NULL                   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    amount            DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    method            ENUM ('MOMO', 'VNPAY', 'ZALOPAY'),
+    status            ENUM ('PAID', 'CANCELED'),
+    created_at        DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at        DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_payment FOREIGN KEY (reservation_id) REFERENCES reservation (id) ON DELETE SET NULL,
     INDEX idx_reservation_id (reservation_id),
     INDEX idx_status (status),
