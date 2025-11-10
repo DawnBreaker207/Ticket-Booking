@@ -48,10 +48,10 @@ spring:
     type: redis
   # Mail Properties
   mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: d44afe38e75431
-    password: 004bd628e2ec80
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
 logging:
   level:
     org:
@@ -73,14 +73,11 @@ payment:
   #Config JWT
 dawn:
   app:
-    jwtCookieName: dawn-jwt
-    jwtRefreshCookieName: dawn-jwt-refresh
-    jwtSecret: =====================DawnBreaker===========================
-    #      jwtExpirationsMs: 86400000
-    #      jwtRefreshExpirationsMs: 86400000
-    ## For test
-    jwtExpirationsMs: 60000
-    jwtRefreshExpirationsMs: 120000
+    jwtCookieName: ${JWT_COOKIE_NAME}
+    jwtRefreshCookieName: ${JWT_COOKIE_REFRESH_NAME}
+    jwtSecret: ${JWT_SECRET}
+    jwtExpirationsMs: ${JWT_EXPIRATION}
+    jwtRefreshExpirationsMs: ${JWT_REFRESH_EXPIRATION}
     setup:
       admin:
         username: ${ADMIN_USERNAME}
