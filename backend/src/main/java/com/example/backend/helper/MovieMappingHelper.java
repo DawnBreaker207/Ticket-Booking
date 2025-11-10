@@ -2,7 +2,10 @@ package com.example.backend.helper;
 
 import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.dto.response.MovieResponseDTO;
+import com.example.backend.model.Genre;
 import com.example.backend.model.Movie;
+
+import java.util.stream.Collectors;
 
 public interface MovieMappingHelper {
     static Movie map(final MovieRequestDTO m) {
@@ -11,7 +14,6 @@ public interface MovieMappingHelper {
                 .poster(m.getPoster())
                 .overview(m.getOverview())
                 .duration(m.getDuration())
-                .genres(m.getGenres())
                 .releaseDate(m.getReleaseDate())
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
@@ -26,7 +28,11 @@ public interface MovieMappingHelper {
                 .poster(m.getPoster())
                 .overview(m.getOverview())
                 .duration(m.getDuration())
-                .genres(m.getGenres())
+                .genres(m
+                        .getGenres()
+                        .stream()
+                        .map(Genre::getName)
+                        .collect(Collectors.toSet()))
                 .releaseDate(m.getReleaseDate())
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())

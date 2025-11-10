@@ -40,11 +40,6 @@ public class MovieController {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }
 
-    @PostMapping("/filmId/{id}")
-    public ResponseObject<MovieResponseDTO> createWithId(@PathVariable Long id) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", movieService.createWithId(id));
-    }
-
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<MovieResponseDTO> update(@PathVariable Long id, @RequestBody MovieRequestDTO m) {

@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 
-import com.example.backend.typeHandler.StringListConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -9,9 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Hidden
 @Entity
@@ -44,9 +43,13 @@ public class Movie extends AbstractMappedEntity {
     @Column(name = "language")
     private String language;
 
-    @Column(name = "genres", columnDefinition = "JSON")
-    @Convert(converter = StringListConverter.class)
-    private List<String> genres = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @Builder.Default
+    private Set<Genre> genres = new HashSet<>();
 
     @Column(name = "release_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

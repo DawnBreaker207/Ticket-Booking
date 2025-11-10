@@ -9,9 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class MovieRequestDTO{
     private Integer duration;
 
     @NotBlank(message = "Genres is not mandatory")
-    private List<String> genres = new ArrayList<>();
+    private Set<String> genres = new HashSet<>();
 
     @NotBlank(message = "Release Date is not mandatory")
     @Past(message = "Release Date must be in the past")

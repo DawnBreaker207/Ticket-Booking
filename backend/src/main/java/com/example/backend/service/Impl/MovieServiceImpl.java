@@ -6,33 +6,31 @@ import com.example.backend.dto.response.MovieResponseDTO;
 import com.example.backend.exception.wrapper.MovieExistedException;
 import com.example.backend.exception.wrapper.MovieNotFoundException;
 import com.example.backend.helper.MovieMappingHelper;
+import com.example.backend.model.Genre;
 import com.example.backend.model.Movie;
+import com.example.backend.repository.GenreRepository;
 import com.example.backend.repository.MovieRepository;
 import com.example.backend.service.MovieService;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
     public static final String MOVIE_CACHE = "movie";
-    private final RestTemplate restTemplate;
     private final MovieRepository movieRepository;
+    private final GenreRepository genreRepository;
 
-
-//    @Cacheable(MOVIE_CACHE)
+    //    @Cacheable(MOVIE_CACHE)
     @Override
     public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
         return movieRepository
@@ -62,42 +60,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public MovieResponseDTO createWithId(Long id) {
-        String apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjgxYTVkNmVhYTVmZWViZjEzNWM5MTJjNzQ1YmI0MSIsIm5iZiI6MTc1MzcwMTQ4OC4zNzksInN1YiI6IjY4ODc1YzcwZTA4OGQ1NzhjNzhhNzRhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zCqZxPPYPUxf-b_MJPIyb4tgaN6F_TM_n3Jn9nK8pM8";
-        String url = "https://api.themoviedb.org/3/movie/" + id + "?language=vi-VN";
-
-        movieRepository.findByFilmId(String.valueOf(id)).ifPresent((movie) -> {
-            throw new MovieExistedException(Message.Exception.MOVIE_EXISTED);
-        });
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<JsonNode> res = restTemplate.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-        JsonNode root = res.getBody();
-
-        Movie movie = new Movie();
-        movie.setTitle(root.path("title").asText());
-        movie.setDuration(root.path("runtime").asInt());
-        movie.setOverview(root.path("overview").asText());
-        movie.setImdbId(root.path("imdb_id").asText());
-        movie.setFilmId(root.path("id").asText());
-        movie.setPoster("https://image.tmdb.org/t/p/original" + root.path("poster_path").asText());
-        movie.setReleaseDate(Date.from(
-                LocalDate.parse(root.path("release_date").asText()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-
-        List<String> genres = new ArrayList<>();
-        for (JsonNode genreNode : root.path("genres")) {
-            genres.add(genreNode.path("name").asText());
-        }
-        movie.setGenres(genres);
-        movieRepository.save(movie);
-        return MovieMappingHelper.map(movie);
-    }
-
-
-    @Override
-    @Transactional
     @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
     public MovieResponseDTO create(MovieRequestDTO m) {
         movieRepository
@@ -105,18 +67,9 @@ public class MovieServiceImpl implements MovieService {
                 .ifPresent((movie) -> {
                     throw new MovieExistedException(Message.Exception.MOVIE_EXISTED);
                 });
-        Movie movie = Movie
-                .builder()
-                .title(m.getTitle())
-                .duration(m.getDuration())
-                .overview(m.getOverview())
-                .imdbId(m.getImdbId())
-                .filmId(m.getFilmId())
-                .poster(m.getPoster())
-                .language(m.getLanguage())
-                .releaseDate(m.getReleaseDate())
-                .genres(m.getGenres())
-                .build();
+        Set<Genre> genres = checkExistedGenre(m.getGenres());
+        Movie movie = MovieMappingHelper.map(m);
+        movie.setGenres(genres);
         movie.markCreated();
         return MovieMappingHelper.map(movieRepository.save(movie));
     }
@@ -125,14 +78,18 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     @CachePut(value = MOVIE_CACHE, key = "'id:' + #id")
     public MovieResponseDTO update(Long id, MovieRequestDTO movieDetails) {
+
         Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+
+        Set<Genre> genres = checkExistedGenre(movieDetails.getGenres());
+
         movie.setTitle(movieDetails.getTitle());
         movie.setPoster(movieDetails.getPoster());
         movie.setOverview(movieDetails.getOverview());
         movie.setDuration(movieDetails.getDuration());
-        movie.setGenres(movieDetails.getGenres());
+        movie.setGenres(genres);
         movie.setReleaseDate(movieDetails.getReleaseDate());
         movie.setLanguage(movieDetails.getLanguage());
         movie.setFilmId(movieDetails.getFilmId());
@@ -152,4 +109,26 @@ public class MovieServiceImpl implements MovieService {
         movieRepository.deleteById(id);
     }
 
+    private Set<Genre> checkExistedGenre(Set<String> genreNames) {
+        List<Genre> existedGenres = genreRepository.findAll();
+
+        Set<String> existingNames = existedGenres
+                .stream()
+                .map(Genre::getName)
+                .collect(Collectors.toSet());
+
+        Set<Genre> newGenres = genreNames
+                .stream()
+                .filter(name -> !existingNames
+                        .contains(name))
+                .map(name-> Genre
+                        .builder()
+                        .name(name)
+                        .build())
+                .map(genreRepository::save)
+                .collect(Collectors.toSet());
+
+        existedGenres.addAll(newGenres);
+        return new HashSet<>(existedGenres);
+    }
 }

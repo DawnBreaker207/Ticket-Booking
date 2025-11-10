@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.dto.request.MovieRequestDTO;
 import com.example.backend.dto.response.MovieResponseDTO;
-import com.example.backend.model.Movie;
 
 import java.util.List;
 
@@ -14,8 +13,6 @@ public interface MovieService {
     MovieResponseDTO findByMovieId(String id);
 
     MovieResponseDTO create(MovieRequestDTO id);
-
-    MovieResponseDTO createWithId(Long id);
 
     MovieResponseDTO update(Long id, MovieRequestDTO m);
 
