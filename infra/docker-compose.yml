@@ -65,6 +65,17 @@ services:
       USER_USERNAME: ${USER_USERNAME}
       USER_EMAIL: ${USER_EMAIL}
       USER_PASSWORD: ${USER_PASSWORD}
+      ###   Mailtrap Config
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      ###   Refresh Token Config
+      JWT_COOKIE_NAME: ${JWT_COOKIE_NAME}
+      JWT_COOKIE_REFRESH_NAME: ${JWT_COOKIE_REFRESH_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
     build:
       context: ../backend
       dockerfile: Dockerfile
