@@ -19,6 +19,7 @@ public interface ReservationMappingHelper {
                                 .map(SeatMappingHelper::map)
                                 .toList())
                         .isDeleted(reservation.getIsDeleted())
+                        .isPaid(reservation.getIsPaid())
                         .createdAt(reservation.getCreatedAt())
                         .updatedAt(reservation.getUpdatedAt())
                         .build();

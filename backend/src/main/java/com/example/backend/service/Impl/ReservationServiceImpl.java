@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,8 +63,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final RedisService redisService;
 
-    private final RedisPublisher redisPublisher;
-
     @Override
     public List<ReservationResponseDTO> findAll(ReservationFilterDTO o) {
         List<Reservation> reservations = reservationRepository.findAllWithFilter(o);
@@ -78,6 +77,20 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_NOT_FOUND));
     }
 
+    @Override
+    public List<ReservationResponseDTO> findByUser(Boolean isPaid, ReservationStatus status) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return reservationRepository
+                .findAllWithFilter(ReservationFilterDTO
+                        .builder()
+                        .username(username)
+                        .isPaid(isPaid)
+                        .reservationStatus(status)
+                        .build())
+                .stream()
+                .map(ReservationMappingHelper::map)
+                .toList();
+    }
 
     @Override
     public ReservationInitResponseDTO initReservation(ReservationInitRequestDTO o) {
@@ -89,7 +102,6 @@ public class ReservationServiceImpl implements ReservationService {
                 "userId", o.getUserId().toString(),
                 "showtimeId", o.getShowtimeId().toString(),
                 "theaterId", o.getTheaterId().toString(),
-                "status", ReservationStatus.CREATED.toString(),
                 "seats", "[]");
 
         //        Create expired time on redis key
@@ -224,25 +236,15 @@ public class ReservationServiceImpl implements ReservationService {
             //        Update seat in redis
             String seatsJson = mapper.writeValueAsString(seatIds);
             redisTemplate.opsForHash().put(redisKey, "seats", seatsJson);
-            redisTemplate.expire(redisKey, HOLD_TIMEOUT);
 
 
-            List<Map<String, Object>> seatInfo = seatIds
-                    .stream()
-                    .map(id -> {
-                        Map<String, Object> seat = new HashMap<>();
-                        seat.put("seatId", id);
-                        seat.put("reservationId", reservationId);
-                        return seat;
-                    })
-                    .toList();
-
+            List<Map<String, Object>> seatInfo = notificationService.getSeatSnapshot();
             Map<String, Object> event = Map.of(
                     "event", "SEAT_HOLD",
                     "showtimeId", showtimeId,
                     "userId", userId,
                     "seatIds", seatInfo
-                    );
+            );
 
             //            Send notification via pub sub
             redisService.publishSeatHold(showtimeId, event);
@@ -345,6 +347,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .reservationStatus(ReservationStatus.CONFIRMED)
                 .seats(seatEntities)
                 .totalAmount(total)
+                .isPaid(true)
                 .isDeleted(false)
                 .build();
 
@@ -462,6 +465,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .reservationStatus(ReservationStatus.CANCELED)
                 .seats(seatEntities)
                 .totalAmount(total)
+                .isPaid(false)
                 .isDeleted(false)
                 .build();
 

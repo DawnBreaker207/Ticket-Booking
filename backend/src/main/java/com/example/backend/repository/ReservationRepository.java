@@ -23,13 +23,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                    LEFT JOIN FETCH r.seats AS os
                    WHERE
                          (:#{#reservation.getQuery()} IS NULL OR r.id LIKE CONCAT('%', :#{#reservation.getQuery()}, '%') )
-                         AND (:#{#reservation.getUserId()} IS NULL OR u.id  =:#{#reservation.getUserId()})
+                         AND (:#{#reservation.getUsername()} IS NULL OR u.username =:#{#reservation.getUsername()})
                          AND (:#{#reservation.getReservationStatus()} IS NULL OR r.reservationStatus = :#{#reservation.getReservationStatus()})
                          AND (
                             :#{#reservation.getStartDate()} IS NULL
                             OR :#{#reservation.getEndDate()} IS NULL
                             OR ( r.createdAt  BETWEEN :#{#reservation.getStartDate()} AND :#{#reservation.getEndDate()}) )
                          AND (:#{#reservation.getTotalAmount()} IS NULL OR r.totalAmount = :#{#reservation.getTotalAmount()})
+                         AND (:#{#reservation.getIsPaid()} IS NULL OR r.isPaid = :#{#reservation.getIsPaid()})
                     ORDER BY
                         CASE WHEN :#{#reservation.getSortBy()} = 'oldest' THEN r.createdAt END ASC,
                         CASE WHEN :#{#reservation.getSortBy()} = 'newest' THEN r.createdAt END DESC

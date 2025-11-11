@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.constant.ReservationStatus;
 import com.example.backend.dto.request.ReservationFilterDTO;
 import com.example.backend.dto.request.ReservationHoldSeatRequestDTO;
 import com.example.backend.dto.request.ReservationInitRequestDTO;
@@ -13,6 +14,8 @@ public interface ReservationService {
     List<ReservationResponseDTO> findAll(ReservationFilterDTO o);
 
     ReservationResponseDTO findOne(String id);
+
+    List<ReservationResponseDTO> findByUser(Boolean isPaid, ReservationStatus status);
 
     ReservationInitResponseDTO initReservation(ReservationInitRequestDTO reservation);
 

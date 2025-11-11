@@ -18,9 +18,11 @@ import java.time.LocalDate;
 public class ReservationFilterDTO {
     private String query;
 
-    private Long userId;
+    private String username;
 
     private ReservationStatus reservationStatus;
+
+    private Boolean isPaid;
 
     private BigDecimal totalAmount;
 

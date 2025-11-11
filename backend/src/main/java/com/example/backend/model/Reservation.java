@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicInsert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,6 +40,10 @@ public class Reservation extends AbstractMappedEntity {
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Seat> seats = new ArrayList<>();
+
+    @Column(name = "is_paid")
+    @Builder.Default
+    private Boolean isPaid = false;
 
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default

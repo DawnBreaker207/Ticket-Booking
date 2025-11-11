@@ -32,4 +32,6 @@ public class ReservationResponseDTO extends AbstractMappedEntity {
     private List<SeatResponseDTO> seats = new ArrayList<>();
 
     private Boolean isDeleted;
+
+    private Boolean isPaid;
 }
