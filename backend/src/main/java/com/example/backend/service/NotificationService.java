@@ -82,38 +82,7 @@ public class NotificationService {
             String[] parts = channel.split(":");
             Long showtimeId = Long.valueOf(parts[2]);
 
-            String pattern = "seat:locked:*";
-            List<Map<String, Object>> holdSeats = new ArrayList<>();
-
-            redisTemplate.execute((RedisCallback<Void>) connection -> {
-                ScanOptions options = ScanOptions.scanOptions()
-                        .match(pattern)
-                        .count(500)
-                        .build();
-
-                try (Cursor<byte[]> cursor = connection.keyCommands().scan(options)) {
-                    while (cursor.hasNext()) {
-                        String key = new String(cursor.next(), StandardCharsets.UTF_8);
-
-                        //     Take data from Redis
-                        Object rawValue = redisTemplate.opsForValue().get(key);
-                        if (rawValue == null) continue;
-
-                        String reservationKey = rawValue.toString();
-                        String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
-                        String seatIdStr = key.substring(key.lastIndexOf(":") + 1);
-                        Long seatId = Long.parseLong(seatIdStr);
-
-                        Map<String, Object> initialState = Map.of(
-                                "seatId", seatId,
-                                "reservationId", reservationId
-                        );
-
-                        holdSeats.add(initialState);
-                    }
-                }
-                return null;
-            });
+            List<Map<String, Object>> holdSeats = getSeatSnapshot();
 
             Map<String, Object> initialState = Map.of(
                     "event", "SEAT_STATE_INIT",
@@ -129,6 +98,42 @@ public class NotificationService {
             log.error("Failed to send initial seat state", e);
             removeEmitter(channel, "anonymous");
         }
+    }
+
+    public List<Map<String, Object>> getSeatSnapshot() {
+        List<Map<String, Object>> seatState = new ArrayList<>();
+        String pattern = "seat:locked:*";
+
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
+            ScanOptions options = ScanOptions.scanOptions()
+                    .match(pattern)
+                    .count(500)
+                    .build();
+
+            try (Cursor<byte[]> cursor = connection.keyCommands().scan(options)) {
+                while (cursor.hasNext()) {
+                    String key = new String(cursor.next(), StandardCharsets.UTF_8);
+
+                    //     Take data from Redis
+                    Object rawValue = redisTemplate.opsForValue().get(key);
+                    if (rawValue == null) continue;
+
+                    String reservationKey = rawValue.toString();
+                    String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
+                    String seatIdStr = key.substring(key.lastIndexOf(":") + 1);
+
+                    Map<String, Object> initialState = Map.of(
+                            "seatId", Long.parseLong(seatIdStr),
+                            "reservationId", reservationId
+                    );
+
+                    seatState.add(initialState);
+                }
+            }
+            return null;
+        });
+
+        return seatState;
     }
 
     public void broadcastToChannel(String channel, String message) {
