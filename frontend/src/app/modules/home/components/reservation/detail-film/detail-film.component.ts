@@ -1,18 +1,18 @@
-import {Component, inject, input, OnInit, output} from '@angular/core';
-import {NzImageModule} from 'ng-zorro-antd/image';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzImageViewComponent} from 'ng-zorro-antd/experimental/image';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
-import {Store} from '@ngrx/store';
-import {selectSelectedMovie} from '@/app/core/store/state/movie/movie.selectors';
-import {CommonModule} from '@angular/common';
-import {selectSelectedTheater} from '@/app/core/store/state/theater/theater.selectors';
-import {selectSelectedSeats} from '@/app/core/store/state/seat/seat.selectors';
-import {map} from 'rxjs';
-import {selectSelectedShowtime} from '@/app/core/store/state/showtime/showtime.selectors';
-import {timeFormat} from '@/app/shared/utils/formatDate';
-import {MovieActions} from '@/app/core/store/state/movie/movie.actions';
+import { Component, inject, input, OnInit, output } from '@angular/core';
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { Store } from '@ngrx/store';
+import { selectSelectedMovie } from '@/app/core/store/state/movie/movie.selectors';
+import { CommonModule } from '@angular/common';
+import { selectSelectedTheater } from '@/app/core/store/state/theater/theater.selectors';
+import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
+import { map } from 'rxjs';
+import { selectSelectedShowtime } from '@/app/core/store/state/showtime/showtime.selectors';
+import { timeFormat } from '@/app/shared/utils/formatDate';
+import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 
 @Component({
   selector: 'app-detail-film',
