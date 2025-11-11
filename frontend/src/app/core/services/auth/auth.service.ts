@@ -54,7 +54,6 @@ export class AuthService {
       map((res) => res.data),
       tap((res) => {
         this.accessToken = res.accessToken;
-        this.refreshToken = res.refreshToken;
       }),
       catchError(this.handleError<Jwt>('login')),
     );
@@ -75,7 +74,6 @@ export class AuthService {
         map((res) => res.data),
         tap((token) => {
           this.accessToken = token.accessToken;
-          this.refreshToken = token.refreshToken;
         }),
         catchError(this.handleError<RefreshToken>('refreshToken')),
       );

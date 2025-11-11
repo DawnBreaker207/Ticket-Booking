@@ -7,13 +7,11 @@ import { Jwt } from '@/app/core/models/jwt.model';
 export class StorageService {
   private readonly JWT_KEY = 'jwt';
   private readonly ACCESS_TOKEN_KEY = 'accessToken';
-  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
   setJWT(jwt: Jwt) {
     try {
       localStorage.setItem(this.JWT_KEY, JSON.stringify(jwt));
       localStorage.setItem(this.ACCESS_TOKEN_KEY, jwt.accessToken);
-      localStorage.setItem(this.REFRESH_TOKEN_KEY, jwt.refreshToken);
     } catch (error) {
       console.error('Failed to set JWT', error);
     }
@@ -32,7 +30,6 @@ export class StorageService {
   clearAuth() {
     localStorage.removeItem(this.JWT_KEY);
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
-    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
 
   setItem<T>(key: string, value: T) {
