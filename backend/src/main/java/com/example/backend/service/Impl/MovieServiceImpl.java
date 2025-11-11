@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -112,23 +113,19 @@ public class MovieServiceImpl implements MovieService {
     private Set<Genre> checkExistedGenre(Set<String> genreNames) {
         List<Genre> existedGenres = genreRepository.findAll();
 
-        Set<String> existingNames = existedGenres
+        Map<String, Genre> existingNames = existedGenres
                 .stream()
-                .map(Genre::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors
+                        .toMap(Genre::getName, g -> g));
 
-        Set<Genre> newGenres = genreNames
-                .stream()
-                .filter(name -> !existingNames
-                        .contains(name))
-                .map(name-> Genre
-                        .builder()
-                        .name(name)
-                        .build())
-                .map(genreRepository::save)
-                .collect(Collectors.toSet());
-
-        existedGenres.addAll(newGenres);
-        return new HashSet<>(existedGenres);
+        Set<Genre> result = new HashSet<>();
+        for (String name : genreNames) {
+            Genre genre = existingNames.get(name);
+            if (genre == null) {
+                genre = genreRepository.save(Genre.builder().name(name).build());
+            }
+            result.add(genre);
+        }
+        return result;
     }
 }
