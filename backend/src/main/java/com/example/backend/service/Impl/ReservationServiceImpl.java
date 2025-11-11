@@ -1,6 +1,5 @@
 package com.example.backend.service.Impl;
 
-import com.example.backend.config.redis.RedisPublisher;
 import com.example.backend.constant.Message;
 import com.example.backend.constant.PaymentStatus;
 import com.example.backend.constant.ReservationStatus;

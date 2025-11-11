@@ -2,10 +2,7 @@ package com.example.backend.repository;
 
 import com.example.backend.dto.request.ReservationFilterDTO;
 import com.example.backend.model.Reservation;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
