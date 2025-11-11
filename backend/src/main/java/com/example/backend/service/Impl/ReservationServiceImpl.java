@@ -503,9 +503,7 @@ public class ReservationServiceImpl implements ReservationService {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(Message.Exception.USER_NOT_FOUND));
-
         dto.setUser(user);
-        dto.setReservationStatus(ReservationStatus.valueOf((String) data.get("status")));
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
