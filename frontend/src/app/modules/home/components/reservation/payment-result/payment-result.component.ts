@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
 import { ReservationRequest } from '@/app/core/models/reservation.model';
+import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
 
 @Component({
   selector: 'app-payment-result',
@@ -45,6 +46,7 @@ export class PaymentResultComponent implements OnInit, OnDestroy {
       this.errorMessage = `Thanh toán thất bại. Mã lỗi: ${this.vnpResponseCode}`;
       return;
     }
+    this.store.dispatch(ShowtimeActions.loadShowtime({ id: state.showtimeId }));
     if (this.vnpTxnRef && this.vnpResponseCode === '00') {
       console.log(`This is success`);
       this.status = 'success';

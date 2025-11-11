@@ -2,17 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ReservationService } from '@/app/core/services/reservation/reservation.service';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
-import {
-  catchError,
-  concatMap,
-  map,
-  of,
-  switchMap,
-  withLatestFrom,
-} from 'rxjs';
+import { catchError, concatMap, filter, map, of, switchMap, take } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
-import { selectSelectedShowtime } from '@/app/core/store/state/showtime/showtime.selectors';
+import { selectPrice } from '@/app/core/store/state/showtime/showtime.selectors';
 
 @Injectable()
 export class ReservationEffects {
@@ -96,34 +88,36 @@ export class ReservationEffects {
     );
   });
 
-  createReservation$ = createEffect(() => {
-    return this.actions$.pipe(
+  createReservation$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(ReservationActions.createReservation),
-      withLatestFrom(
-        this.store.select(selectSelectedSeats),
-        this.store.select(selectSelectedShowtime),
+      concatMap(({ reservation }) =>
+        this.store.select(selectPrice).pipe(
+          filter((price) => price > 0),
+          take(1),
+          switchMap((price) => {
+            const totalPrice = price * reservation.seatIds.length;
+            const request = {
+              ...reservation,
+              seatIds: reservation.seatIds,
+              totalAmount: totalPrice,
+            };
+
+            return this.reservationService.confirmReservation(request).pipe(
+              map((reservation) =>
+                ReservationActions.createReservationSuccess({
+                  reservation: reservation,
+                }),
+              ),
+              catchError((err) =>
+                of(ReservationActions.createReservationFailure({ error: err })),
+              ),
+            );
+          }),
+        ),
       ),
-      switchMap(([{ reservation }, selectedSeats, selectShowtime]) => {
-        const seatIds = selectedSeats.map((s) => s.id);
-        const totalPrice = (selectShowtime?.price ?? 0) * selectedSeats.length;
-
-        const request = {
-          ...reservation,
-          seatIds,
-          totalAmount: totalPrice,
-        };
-
-        return this.reservationService.confirmReservation(request).pipe(
-          map((reservation) =>
-            ReservationActions.createReservationSuccess({ reservation }),
-          ),
-          catchError((err) =>
-            of(ReservationActions.createReservationFailure({ error: err })),
-          ),
-        );
-      }),
-    );
-  });
+    ),
+  );
 
   cancelReservation$ = createEffect(() => {
     return this.actions$.pipe(
