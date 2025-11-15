@@ -1,6 +1,6 @@
 <nz-layout class="min-h-screen">
   <nz-sider
-    class="sticky top-0 h-screen"
+    style="height: calc(100vh); position: sticky; top: 0"
     nzCollapsible
     nzWidth="256px"
     nzBreakpoint="md"
@@ -40,23 +40,21 @@
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <nz-icon
-            class="trigger"
-            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-          />
-        </span>
-      </div>
+    <nz-header class="sticky top-0 z-10">
+      <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+        <nz-icon
+          class="trigger"
+          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        />
+      </span>
     </nz-header>
     <nz-content>
-      <div class="overflow-y-auto h-full px-6 py-3 bg-white">
+      <div class="overflow-y-auto px-6 py-3 bg-white">
         <router-outlet />
       </div>
     </nz-content>
-    <nz-footer class="bg-white text-center"
-      >Booking Ticket System {{ date.getFullYear() }}</nz-footer
-    >
+    <nz-footer class="bg-white text-center">
+      Booking Ticket System {{ date.getFullYear() }}
+    </nz-footer>
   </nz-layout>
 </nz-layout>
