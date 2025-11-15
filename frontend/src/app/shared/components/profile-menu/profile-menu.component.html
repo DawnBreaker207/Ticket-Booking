@@ -1,0 +1,58 @@
+<div class="relative ml-3">
+  <!-- Profile Button -->
+  <button nz-dropdown
+          nzTrigger="click"
+          [nzDropdownMenu]="profile"
+          class="bg-card relative flex rounded-full text-sm"
+          type="button"
+  >
+    <span class="sr-only">Open user menu</span>
+    <img
+      src="https://avatars.githubusercontent.com/u/12519008?v=4"
+      class="size-9 shrink-0 rounded-md"
+      alt=""
+    />
+  </button>
+
+  <!-- Dropdown -->
+  <nz-dropdown-menu #profile="nzDropdownMenu">
+    <div
+      class="bg-amber-100 absolute z-20 -mt-1 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0"
+    >
+      <div class="flex-row flex items-center px-4 pb-4">
+        <div class="w-10 shrink-0">
+          <img
+            src="https://avatars.githubusercontent.com/u/12519008?v=4"
+            alt=""
+            class="rounded-md"
+          />
+        </div>
+        <div class="overflow-hidden px-2 text-sm font-semibold">
+          Luciano Oliveira
+          <p
+            class="truncate text-ellipsis text-xs font-semibold"
+          >
+            me&#64;lanno.dev
+          </p>
+        </div>
+      </div>
+
+      <div class="border-border border-b border-dashed"></div>
+
+      <ul class="my-2 mx-2 flex flex-col">
+        @for (item of profileMenu; track $index) {
+          <li
+            routerLink="{{ item.link }}"
+            class="hover:bg-card hover:text-primary inline-flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold"
+          >
+            <i-lucide
+              [name]="item.icon"
+            ></i-lucide>
+            {{ item.title }}
+          </li>
+        }
+      </ul>
+      <hr class="border-border border-dashed"/>
+    </div>
+  </nz-dropdown-menu>
+</div>
