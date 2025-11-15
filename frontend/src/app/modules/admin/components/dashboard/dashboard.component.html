@@ -1,1 +1,124 @@
-<p>dashboard works!</p>
+<nz-layout>
+  <!--  <nz-header class="flex justify-around items-center py-4">-->
+  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
+  <!--      @for (arr of array; track arr) {-->
+  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
+  <!--      }-->
+  <!--    </nz-select>-->
+
+  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
+  <!--      @for (arr of array; track arr) {-->
+  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
+  <!--      }-->
+  <!--    </nz-select>-->
+
+  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
+  <!--      @for (arr of array; track arr) {-->
+  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
+  <!--      }-->
+  <!--    </nz-select>-->
+
+  <!--    <div>-->
+  <!--      <span>Realtime</span>-->
+  <!--      <nz-switch class="ml-2"></nz-switch>-->
+  <!--    </div>-->
+  <!--  </nz-header>-->
+
+  <nz-content class="m-4">
+    <nz-row nzGutter="16">
+      <nz-col nzSpan="6">
+        <nz-card>
+          <i-lucide [name]="DollarSign"></i-lucide>
+          <div class="font-bold text-xl">Total Revenue</div>
+          <h2>$42,560</h2>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-card>
+          <i-lucide [name]="Tickets"></i-lucide>
+          <div class="font-bold text-xl">Ticket Sold</div>
+          <h2>12,560</h2>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-card>
+          <i-lucide [name]="Theater"></i-lucide>
+          <div class="font-bold text-xl">Active Theaters</div>
+          <h2>8</h2>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-card>
+          <i-lucide [name]="Armchair"></i-lucide>
+          <div class="font-bold text-xl">Seat Utilization</div>
+          <h2>78%</h2>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+
+    <!-- Chart-->
+    <nz-row nzGutter="16" class="mt-4">
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Revenue Over Time</div>
+          <div style="height: 250px">
+            <!-- Line Chart  -->
+            <app-revenue-chart />
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Top Movies</div>
+          <div style="height: 250px">
+            <!-- Bar Chart  -->
+            <app-movie-chart />
+          </div>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+
+    <nz-row nzGutter="16" class="mt-4">
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Top Theaters</div>
+          <div style="height: 250px">
+            <!-- Bar Chart  -->
+            <app-theater-chart />
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Payment Distribution</div>
+          <div style="height: 250px">
+            <!-- Pie Chart  -->
+            <app-payment-chart />
+          </div>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+
+    <!-- Tables-->
+    <nz-row nzGutter="16" class="mt-4">
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Theater Performance</div>
+          <div style="height: 300px">
+            <!-- Table-->
+            <app-theater-table />
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-card>
+          <div class="font-bold text-xl">Movie Insights</div>
+          <div style="height: 300px">
+            <!-- Table-->
+            <app-movie-table />
+          </div>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </nz-content>
+</nz-layout>
