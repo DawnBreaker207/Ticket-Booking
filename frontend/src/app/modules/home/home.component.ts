@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '@/app/modules/home/components/footer/footer';
-import { HeaderComponent } from '@/app/modules/home/components/header/header';
+import { FooterComponent } from '@/app/modules/home/components/footer/footer.component';
+import { HeaderComponent } from '@/app/modules/home/components/header/header.component';
 import {
   NzContentComponent,
   NzFooterComponent,
-  NzHeaderComponent,
   NzLayoutComponent,
 } from 'ng-zorro-antd/layout';
 import { RouterOutlet } from '@angular/router';
@@ -18,7 +17,6 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     RouterOutlet,
     NzContentComponent,
     NzFooterComponent,
-    NzHeaderComponent,
     NzLayoutComponent,
     NzMenuModule,
   ],
