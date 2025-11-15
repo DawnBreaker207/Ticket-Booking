@@ -52,9 +52,26 @@ import {
   seatReducer,
 } from '@/app/core/store/state/seat/seat.reducers';
 import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
+import { provideEchartsCore } from 'ngx-echarts';
+import * as echarts from 'echarts/core';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import {
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 
 registerLocaleData(en);
-
+echarts.use([
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  CanvasRenderer,
+  BarChart,
+  LineChart,
+  PieChart,
+]);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -83,6 +100,7 @@ export const appConfig: ApplicationConfig = {
       ReservationEffects,
       SeatEffects,
     ]),
+    provideEchartsCore({ echarts }),
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(CommonModule, FormsModule, ReactiveFormsModule),
