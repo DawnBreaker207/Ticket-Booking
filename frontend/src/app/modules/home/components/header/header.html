@@ -1,7 +1,0 @@
-<header nz-menu class="flex flex-row justify-around items-center h-full">
-  @for (header of headers; track header) {
-    <button nz-button [routerLink]="header.path" class="h-full">
-      {{ header.name | uppercase }}
-    </button>
-  }
-</header>

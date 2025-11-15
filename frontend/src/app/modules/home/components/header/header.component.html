@@ -1,0 +1,35 @@
+<nz-header nz-menu nzTheme="light" style="height: auto">
+  <div class="w-full">
+    <div class="flex flex-col w-full max-w-5xl mx-auto">
+      <!---->
+      <div class="flex items-center justify-end h-10 px-4 md:px-6">
+        <a href="/login">
+          <span class="uppercase">Đăng nhập/ đăng ký</span>
+        </a>
+        <app-profile-menu/>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <div
+    class="w-full bg-[url('/assets/bg-header.png')] bg-repeat-x bg-bottom h-32"
+  >
+    <div
+      class="max-w-5xl mx-auto flex space-x-40 items-center h-full px-4 md:px-6"
+    >
+      <!-- Logo-->
+      <a href="#" class="flex items-center">
+        <p>Logo</p>
+      </a>
+
+      <!-- Menu-->
+      <div class="flex space-x-4 items-center">
+        @for (header of headers; track header) {
+          <button nz-button nzType="text" class="font-bold!" [routerLink]="header.path">
+            {{ header.name | uppercase }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</nz-header>

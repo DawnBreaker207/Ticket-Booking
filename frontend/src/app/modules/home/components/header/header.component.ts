@@ -2,22 +2,27 @@ import { Component } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzHeaderComponent } from 'ng-zorro-antd/layout';
 import { NzMenuDirective } from 'ng-zorro-antd/menu';
+import { ProfileMenuComponent } from '@/app/shared/components/profile-menu/profile-menu.component';
 
 @Component({
   selector: 'app-header',
-  imports: [UpperCasePipe, RouterLink, NzButtonComponent, NzMenuDirective],
-  templateUrl: './header.html',
-  styleUrl: './header.css',
+  imports: [
+    UpperCasePipe,
+    RouterLink,
+    NzButtonComponent,
+    NzHeaderComponent,
+    NzMenuDirective,
+    ProfileMenuComponent,
+  ],
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css',
 })
 export class HeaderComponent {
   headers = [
-    { name: 'Lịch chiếu rạp', path: '' },
     { name: 'Phim', path: '/home' },
     { name: ' Rạp', path: '' },
-    { name: 'Giá vé', path: '' },
     { name: 'Tin mới và ưu đãi', path: '' },
-    { name: 'Nhượng quyền', path: '' },
-    { name: 'Thành viên', path: '/login' },
   ];
 }
