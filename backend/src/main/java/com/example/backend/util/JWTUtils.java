@@ -1,11 +1,8 @@
 package com.example.backend.util;
 
-import com.example.backend.model.User;
 import com.example.backend.model.UserDetailsImpl;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
@@ -32,43 +29,24 @@ public class JWTUtils {
     @Value("${dawn.app.jwtExpirationsMs}")
     private int jwtExpirations;
 
+    @Value("${dawn.app.jwtRefreshExpirationsMs}")
+    private int refreshTokenExpirations;
+
     @Value("${dawn.app.jwtCookieName}")
     private String jwtCookie;
 
     @Value("${dawn.app.jwtRefreshCookieName}")
     private String jwtRefreshCookie;
 
-
-    public ResponseCookie generateJwtCookie(UserDetailsImpl user) {
-        String jwt = generateToken(user.getUsername());
-        return generateCookie(jwtCookie, jwt, "/api/v1");
-    }
-
-    public ResponseCookie generateJwtCookie(User user) {
-        String jwt = generateToken(user.getUsername());
-        return generateCookie(jwtCookie, jwt, "/api/v1");
-    }
-
     public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
         return generateCookie(jwtRefreshCookie, refreshToken, "/api/v1/refreshToken");
     }
 
-
-    public String getJwtCookie(HttpServletRequest req) {
-        return getCookieByName(req, jwtCookie);
-    }
-
-    public String getJwtRefreshCookie(HttpServletRequest req) {
-        return getCookieByName(req, jwtRefreshCookie);
-    }
-
-
-    public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie.from(jwtRefreshCookie, null).path("/api/v1").build();
-    }
-
-    public ResponseCookie getCleanJwtRefreshCookie() {
-        return ResponseCookie.from(jwtRefreshCookie, null).path("/api/v1/auth/refreshToken").build();
+    public void getCleanJwtRefreshCookie() {
+        ResponseCookie.from(jwtRefreshCookie)
+                .path("/api/v1/auth/refreshToken")
+                .maxAge(0)
+                .build();
     }
 
     public String getUserNameFromToken(String token) {
@@ -82,24 +60,24 @@ public class JWTUtils {
     }
 
     public String generateToken(Authentication authentication) {
-
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return Jwts
                 .builder()
                 .subject(userPrincipal.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date((new Date().getTime() + jwtExpirations)))
-                .signWith(key()).compact();
+                .signWith(key())
+                .compact();
     }
 
     public String generateToken(String username) {
-
         return Jwts
                 .builder()
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date().getTime() + jwtExpirations)))
-                .signWith(key()).compact();
+                .signWith(key())
+                .compact();
     }
 
     public SecretKey key() {
@@ -113,19 +91,19 @@ public class JWTUtils {
                     .build()
                     .parse(authToken);
             return true;
-        } catch (MalformedJwtException o) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token ");
-        } catch (ExpiredJwtException o) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
-        } catch (UnsupportedJwtException o) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid signature");
-        } catch (IllegalArgumentException o) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is empty or null");
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Token validation failed: {}", e.getMessage());
+          return false;
         }
     }
 
     private ResponseCookie generateCookie(String name, String value, String path) {
-        return ResponseCookie.from(name, value).path(path).maxAge(20 * 60 * 60).httpOnly(true).build();
+        return ResponseCookie
+                .from(name, value)
+                .path(path)
+                .maxAge(refreshTokenExpirations)
+                .httpOnly(true)
+                .build();
     }
 
     private String getCookieByName(HttpServletRequest req, String name) {
