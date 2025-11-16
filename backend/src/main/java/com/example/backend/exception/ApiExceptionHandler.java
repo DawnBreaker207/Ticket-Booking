@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -71,6 +72,15 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
     }
 
+    //  403 Error
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ExceptionMessage> handleAccessDeniedException(final Exception ex) {
+        log.warn("Access denied: {}", ex.getMessage());
+        String errorMsg = ex.getMessage();
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.FORBIDDEN, errorMsg), HttpStatus.FORBIDDEN);
+    }
+
+    //  500 Error
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionMessage> handleAllException(final Exception ex) {
         log.warn("Unhandled exception: {}", ex.getMessage());
