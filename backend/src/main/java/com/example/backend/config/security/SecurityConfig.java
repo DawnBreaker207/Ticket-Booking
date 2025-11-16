@@ -7,22 +7,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
@@ -39,6 +34,8 @@ public class SecurityConfig {
 
     private final AuthTokenFilter authTokenFilter;
 
+    private final CorsConfig corsConfig;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,58 +48,50 @@ public class SecurityConfig {
         return authBuilder.build();
     }
 
-    public final String[] ALLOWED_DOMAINS = {
-            "http://localhost:3000",
-            "http://localhost:4200",
-            "http://localhost:5173"};
-
     @Bean
     public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList(ALLOWED_DOMAINS));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        config.setAllowedMethods(Arrays.asList(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(),
-                HttpMethod.OPTIONS.name()));
-
-        config.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        source.registerCorsConfiguration("/api/v1/**", config);
-        source.registerCorsConfiguration("/api/v1/notification/**", config);
-        return new CorsFilter(source);
+        return new CorsFilter(corsConfig.config());
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         http
                 .csrf(CsrfConfigurer::disable)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler)
-                        .accessDeniedHandler(roleAccessHandler)
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/notification/**").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated())
-                .logout(logout -> logout
-                        .logoutUrl("/api/v1/auth/logout")
-                        .addLogoutHandler(signOutHandler)
-                        .logoutSuccessHandler(
-                                (req, res, auth) ->
-                                        res.setStatus(HttpServletResponse.SC_NO_CONTENT)
-                        )
-                );
+                .exceptionHandling(this::configExceptionHandling)
+                .sessionManagement(this::configSession)
+                .authorizeHttpRequests(this::configAuth)
+                .logout(this::configLogout);
 
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private void configExceptionHandling(ExceptionHandlingConfigurer<HttpSecurity> config) {
+        config
+                .authenticationEntryPoint(unauthorizedHandler)
+                .accessDeniedHandler(roleAccessHandler);
+    }
+
+    private void configSession(SessionManagementConfigurer<HttpSecurity> config) {
+        config
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    private void configAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry config) {
+        config
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/notification/**").permitAll()
+                .requestMatchers("/**").permitAll()
+                .anyRequest().authenticated();
+    }
+
+    private void configLogout(LogoutConfigurer<HttpSecurity> config) {
+        config.logoutUrl("/api/v1/auth/logout")
+                .addLogoutHandler(signOutHandler)
+                .logoutSuccessHandler(
+                        (req, res, auth) ->
+                                res.setStatus(HttpServletResponse.SC_NO_CONTENT)
+                );
     }
 }
