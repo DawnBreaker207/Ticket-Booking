@@ -2,7 +2,6 @@ package com.example.backend.config.security;
 
 import com.example.backend.config.response.SignOutHandler;
 import com.example.backend.service.Impl.UserDetailsServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +53,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(CsrfConfigurer::disable)
                 .exceptionHandling(this::configExceptionHandling)
