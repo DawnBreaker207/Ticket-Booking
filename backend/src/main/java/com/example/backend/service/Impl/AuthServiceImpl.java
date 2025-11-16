@@ -108,6 +108,7 @@ public class AuthServiceImpl implements AuthService {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+        jWTUtils.getCleanJwtRefreshCookie();
         if (principle instanceof UserDetailsImpl user) {
             Long userId = user.getId();
             refreshTokenService.deleteByUserId(userId);

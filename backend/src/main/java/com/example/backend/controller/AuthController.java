@@ -45,7 +45,7 @@ public class AuthController {
         return new ResponseObject<>(HttpStatus.NO_CONTENT, "Success", "");
     }
 
-    @PostMapping("/refreshToken")
+    @PostMapping("/refresh-token")
     public ResponseObject<TokenRefreshResponseDTO> refreshToken(@CookieValue("refreshToken") String refreshToken) {
         return new ResponseObject<>(HttpStatus.OK, "Success", authService.refreshToken(refreshToken));
     }
