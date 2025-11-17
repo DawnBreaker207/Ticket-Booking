@@ -34,7 +34,11 @@ export class StorageService {
 
   setItem<T>(key: string, value: T) {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      if (typeof value === 'string') {
+        localStorage.setItem(key, value);
+      } else {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
     } catch (error) {
       console.error(`Failed to store ${key}`, error);
     }
@@ -43,7 +47,12 @@ export class StorageService {
   getItem<T>(key: string): T | null {
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : null;
+      if (!data) return null;
+      try {
+        return JSON.parse(data);
+      } catch {
+        return data as T;
+      }
     } catch (error) {
       console.error(`Failed to parse ${key}`, error);
       return null;
