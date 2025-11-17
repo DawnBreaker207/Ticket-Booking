@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,11 +32,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseObject<JwtResponseDTO> login(@RequestBody LoginRequestDTO user) {
-        var jwt = authService.login(user);
-        var refreshCookie = jWTUtils.generateJwtRefreshCookie(jwt.getRefreshToken());
-        HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        return new ResponseObject<>(HttpStatus.OK, "Success", jwt, header);
+        JwtResponseDTO jwt = authService.login(user);
+        return new ResponseObject<>(
+                HttpStatus.OK,
+                "Success",
+                jwt,
+                new HttpHeaders() {{
+                    add(
+                            HttpHeaders.SET_COOKIE,
+                            jWTUtils.generateJwtRefreshCookie(jwt.getRefreshToken())
+                                    .toString());
+                }}
+        );
 
     }
 
