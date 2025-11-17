@@ -2,45 +2,19 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { ApiRes } from '../../models/common.model';
-import { Jwt, RefreshToken } from '../../models/jwt.model';
+import { Jwt, JWTPayload, RefreshToken } from '../../models/jwt.model';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, RegisterRequest } from '@/app/core/models/user.model';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _accessToken: string | null = null;
-  private _refreshToken: string | null = null;
-
   private http = inject(HttpClient);
   private storageService = inject(StorageService);
   URL = `${environment.apiUrl}/auth`;
-
-  get accessToken(): string | null {
-    return this._accessToken;
-  }
-
-  set accessToken(token: string | null) {
-    this._accessToken = token;
-  }
-
-  get refreshToken(): string | null {
-    return this._refreshToken;
-  }
-
-  set refreshToken(token: string | null) {
-    this._refreshToken = token;
-  }
-
-  constructor() {
-    const jwt = this.storageService.getJwt();
-    if (jwt) {
-      this._accessToken = jwt.accessToken;
-      this.refreshToken = jwt.refreshToken;
-    }
-  }
 
   register(request: RegisterRequest): Observable<any> {
     return this.http.post<ApiRes<string>>(`${this.URL}/register`, request).pipe(
@@ -52,9 +26,6 @@ export class AuthService {
   login(request: LoginRequest): Observable<any> {
     return this.http.post<ApiRes<Jwt>>(`${this.URL}/login`, request).pipe(
       map((res) => res.data),
-      tap((res) => {
-        this.accessToken = res.accessToken;
-      }),
       catchError(this.handleError<Jwt>('login')),
     );
   }
@@ -65,18 +36,61 @@ export class AuthService {
       .pipe(catchError(this.handleError<Jwt>('logout')));
   }
 
-  callRefreshToken(refreshToken: string) {
+  callRefreshToken() {
     return this.http
       .post<
         ApiRes<RefreshToken>
-      >(`${this.URL}/refreshToken`, { refreshToken }, { withCredentials: true })
+      >(`${this.URL}/refreshToken`, {}, { withCredentials: true })
       .pipe(
         map((res) => res.data),
         tap((token) => {
-          this.accessToken = token.accessToken;
+          this.storageService.setItem('accessToken', token.accessToken);
         }),
         catchError(this.handleError<RefreshToken>('refreshToken')),
       );
+  }
+
+  getFromToken(token: string) {
+    if (!token) return null;
+    try {
+      return jwtDecode<JWTPayload>(token);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
+
+  getCurrentUser() {
+    const token = this.storageService.getItem('accessToken') as string;
+    if (!token) return null;
+    return this.getFromToken(token);
+  }
+
+  isTokenExpired(token?: string): boolean {
+    const currentUser = token || this.storageService.getItem('accessToken');
+    if (!currentUser) return true;
+
+    const payload = this.getFromToken(currentUser);
+    if (!payload?.exp) return true;
+    return payload.exp < Math.floor(Date.now() / 1000);
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.storageService.getItem('accessToken') as string;
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  hasRole(role: string) {
+    const user = this.getCurrentUser();
+    console.log(user?.roles);
+    return user?.roles.includes(role) || false;
+  }
+
+  hasAnyRole(roles: string[]) {
+    const user = this.getCurrentUser();
+    if (!user || !user.roles) return false;
+
+    return roles.some((role) => user.roles.includes(role));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

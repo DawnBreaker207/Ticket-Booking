@@ -25,8 +25,6 @@ export class AuthEffects {
         const jwt = this.storageService.getJwt();
         if (jwt) {
           try {
-            this.authService.accessToken = jwt.accessToken;
-            this.authService.refreshToken = jwt.refreshToken;
             return AuthActions.loadLoginSuccess({ jwt });
           } catch (e) {
             console.error('Invalid JWT in storage');
@@ -86,14 +84,10 @@ export class AuthEffects {
               type: 'warning',
             });
             this.storageService.clearAuth();
-            this.authService.accessToken = null;
-            this.authService.refreshToken = null;
           }),
           map(() => AuthActions.loadLogoutSuccess()),
           catchError((err) => {
             this.storageService.clearAuth();
-            this.authService.accessToken = null;
-            this.authService.refreshToken = null;
             return of(AuthActions.loadLogoutFailure({ error: err }));
           }),
         ),
@@ -104,11 +98,9 @@ export class AuthEffects {
   refreshToken$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(AuthActions.loadRefreshToken),
-      switchMap(({ refreshToken }) =>
-        this.authService.callRefreshToken(refreshToken).pipe(
+      switchMap(() =>
+        this.authService.callRefreshToken().pipe(
           map((token) => {
-            this.authService.accessToken = token.accessToken;
-            this.authService.refreshToken = token.refreshToken;
             return AuthActions.loadRefreshTokenSuccess({ token });
           }),
           catchError((err) =>

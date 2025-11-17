@@ -92,7 +92,6 @@ export const authReducer = createReducer(
       ? {
           ...state.jwt,
           accessToken: token.accessToken,
-          refreshToken: token.refreshToken,
         }
       : null,
     loading: false,

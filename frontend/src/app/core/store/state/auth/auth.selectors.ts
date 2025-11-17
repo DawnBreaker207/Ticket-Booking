@@ -18,11 +18,6 @@ export const selectAccessToken = createSelector(
   (jwt) => jwt?.accessToken ?? null,
 );
 
-export const selectRefreshToken = createSelector(
-  selectJwt,
-  (jwt) => jwt?.refreshToken ?? null,
-);
-
 export const selectUserId = createSelector(selectJwt, (jwt) => jwt?.userId);
 
 export const selectUsername = createSelector(selectJwt, (jwt) => jwt?.username);
