@@ -6,7 +6,7 @@
         <a href="/login">
           <span class="uppercase">Đăng nhập/ đăng ký</span>
         </a>
-        <app-profile-menu/>
+        <app-profile-menu />
       </div>
     </div>
   </div>
@@ -25,7 +25,12 @@
       <!-- Menu-->
       <div class="flex space-x-4 items-center">
         @for (header of headers; track header) {
-          <button nz-button nzType="text" class="font-bold!" [routerLink]="header.path">
+          <button
+            nz-button
+            nzType="text"
+            class="font-bold!"
+            [routerLink]="header.path"
+          >
             {{ header.name | uppercase }}
           </button>
         }
