@@ -1,10 +1,11 @@
 <div class="relative ml-3">
   <!-- Profile Button -->
-  <button nz-dropdown
-          nzTrigger="click"
-          [nzDropdownMenu]="profile"
-          class="bg-card relative flex rounded-full text-sm"
-          type="button"
+  <button
+    nz-dropdown
+    nzTrigger="click"
+    [nzDropdownMenu]="profile"
+    class="bg-card relative flex rounded-full text-sm"
+    type="button"
   >
     <span class="sr-only">Open user menu</span>
     <img
@@ -29,9 +30,7 @@
         </div>
         <div class="overflow-hidden px-2 text-sm font-semibold">
           Luciano Oliveira
-          <p
-            class="truncate text-ellipsis text-xs font-semibold"
-          >
+          <p class="truncate text-ellipsis text-xs font-semibold">
             me&#64;lanno.dev
           </p>
         </div>
@@ -45,14 +44,12 @@
             routerLink="{{ item.link }}"
             class="hover:bg-card hover:text-primary inline-flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold"
           >
-            <i-lucide
-              [name]="item.icon"
-            ></i-lucide>
+            <i-lucide [name]="item.icon"></i-lucide>
             {{ item.title }}
           </li>
         }
       </ul>
-      <hr class="border-border border-dashed"/>
+      <hr class="border-border border-dashed" />
     </div>
   </nz-dropdown-menu>
 </div>

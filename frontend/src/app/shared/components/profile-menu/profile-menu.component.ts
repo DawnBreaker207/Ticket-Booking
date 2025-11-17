@@ -1,7 +1,12 @@
-import {Component} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {CircleUserRound, LogOut, LucideAngularModule, Settings} from 'lucide-angular';
-import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import {
+  CircleUserRound,
+  LogOut,
+  LucideAngularModule,
+  Settings,
+} from 'lucide-angular';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-profile-menu',
