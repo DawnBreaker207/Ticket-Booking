@@ -1,6 +1,7 @@
 package com.example.backend.config.payment;
 
 import com.example.backend.util.VNPayUtils;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 @Configuration
+@Getter
 public class VNPayConfig {
 
     @Value("${payment.VNPay.url}")
@@ -23,7 +25,7 @@ public class VNPayConfig {
     private String vnp_TmnCode;
 
     @Value("${payment.VNPay.secretKey}")
-    private String secretKey;
+    private String vnp_secretKey;
 
     @Value("${payment.VNPay.version}")
     private String vnp_Version;
@@ -32,15 +34,7 @@ public class VNPayConfig {
     private String vnp_Command;
 
     @Value("${payment.VNPay.orderType}")
-    private String orderType;
-
-    public String getVnp_PayUrl() {
-        return vnp_PayUrl;
-    }
-
-    public String getVnp_secretKey() {
-        return secretKey;
-    }
+    private String vnp_orderType;
 
     public Map<String, String> getVNPayConfig() {
         Map<String, String> vnpParamsMap = new HashMap<>();
@@ -50,7 +44,7 @@ public class VNPayConfig {
         vnpParamsMap.put("vnp_CurrCode", "VND");
         vnpParamsMap.put("vnp_TxnRef", VNPayUtils.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" + VNPayUtils.getRandomNumber(8));
-        vnpParamsMap.put("vnp_OrderType", this.orderType);
+        vnpParamsMap.put("vnp_OrderType", this.vnp_orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
         vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
