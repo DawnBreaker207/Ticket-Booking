@@ -61,7 +61,7 @@ VALUES ('Superman', 'https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlN
         100, '2014-02-06', 'tt1490017', '137106', 'en', 0, '2025-11-10 08:03:13', '2025-11-10 08:03:13');
 
 
-INSERT INTO booking_ticket.movie_genre (movie_id, genre_id)
+INSERT INTO movie_genre (movie_id, genre_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),
