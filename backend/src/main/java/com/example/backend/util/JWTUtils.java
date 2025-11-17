@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -58,11 +59,19 @@ public class JWTUtils {
     }
 
     public String generateToken(Authentication authentication) {
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+
         return Jwts
                 .builder()
-                .subject(userPrincipal.getUsername())
+                .subject(user.getUsername())
                 .issuedAt(new Date())
+                .claim("email", user.getEmail())
+                .claim("roles", user
+                        .getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .map((authority) -> authority.split("_")[1])
+                        .toList())
                 .expiration(new Date((new Date().getTime() + jwtExpirations)))
                 .signWith(key())
                 .compact();
@@ -91,7 +100,7 @@ public class JWTUtils {
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Token validation failed: {}", e.getMessage());
-          return false;
+            return false;
         }
     }
 

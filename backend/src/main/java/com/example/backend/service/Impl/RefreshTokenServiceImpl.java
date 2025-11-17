@@ -4,6 +4,7 @@ import com.example.backend.constant.Message;
 import com.example.backend.exception.wrapper.RefreshTokenExpiredException;
 import com.example.backend.exception.wrapper.RefreshTokenNotFoundException;
 import com.example.backend.model.RefreshToken;
+import com.example.backend.model.User;
 import com.example.backend.repository.RefreshTokenRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.RefreshTokenService;
@@ -32,17 +33,19 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public RefreshToken createRefreshToken(Long userId) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND));
+
+        refreshTokenRepository.deleteByUser(user);
+
         RefreshToken refreshToken = RefreshToken
                 .builder()
-                .user(userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND)))
+                .user(user)
                 .expiryDate(Instant.now().plusMillis(refreshTokenDurations))
                 .token(UUID.randomUUID().toString())
                 .build();
-        refreshTokenRepository.save(refreshToken);
-        return refreshToken;
-
+        return refreshTokenRepository.save(refreshToken);
     }
 
     @Override
@@ -65,8 +68,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public void deleteByUserId(Long userId) {
-        refreshTokenRepository.deleteByUser(userRepository
+        userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND)));
+                .ifPresent(refreshTokenRepository::deleteByUser);
     }
 }
