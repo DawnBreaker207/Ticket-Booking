@@ -38,12 +38,12 @@ public class JWTUtils {
     private String jwtRefreshCookie;
 
     public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
-        return generateCookie(jwtRefreshCookie, refreshToken, "/api/v1/refreshToken");
+        return generateCookie(jwtRefreshCookie, refreshToken, "/api/v1/refresh-token");
     }
 
     public void getCleanJwtRefreshCookie() {
         ResponseCookie.from(jwtRefreshCookie)
-                .path("/api/v1/auth/refreshToken")
+                .path("/api/v1/auth/refresh-token")
                 .maxAge(0)
                 .build();
     }

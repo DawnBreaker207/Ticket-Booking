@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,6 +54,13 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseObject<TokenRefreshResponseDTO> refreshToken(@CookieValue("refreshToken") String refreshToken) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", authService.refreshToken(refreshToken));
+        TokenRefreshResponseDTO token = authService.refreshToken(refreshToken);
+        return new ResponseObject<>(HttpStatus.OK, "Success", token,
+                new HttpHeaders() {{
+                    add(
+                            HttpHeaders.SET_COOKIE,
+                            jWTUtils.generateJwtRefreshCookie(token.getRefreshToken())
+                                    .toString());
+                }});
     }
 }
