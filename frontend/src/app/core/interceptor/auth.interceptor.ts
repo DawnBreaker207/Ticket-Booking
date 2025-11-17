@@ -28,7 +28,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(modifiedReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !req.url.includes('/refreshToken')) {
+        if (error.status === 401 && !req.url.includes('/refresh-token')) {
           return authService.callRefreshToken().pipe(
             switchMap((token) => {
               storageService.setItem('accessToken', token.accessToken);
