@@ -6,6 +6,7 @@ import { ReservationComponent } from '@/app/modules/home/pages/reservation/reser
 import { Home } from '@/app/modules/home/pages/home/home';
 import { PaymentResultComponent } from '@/app/modules/home/components/reservation/payment-result/payment-result.component';
 import { DetailComponent } from '@/app/modules/home/pages/detail/detail.component';
+import { AuthGuard } from '@/app/core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'movie/detail/:id', component: DetailComponent },
       { path: 'login', component: AuthComponent },
       {
+        canActivate: [AuthGuard],
         path: 'reservation/:reservationId/:showtimeId',
         component: ReservationComponent,
       },
