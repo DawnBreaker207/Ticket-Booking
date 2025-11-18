@@ -1,4 +1,4 @@
-package com.dawn.backend.config.security;
+package com.dawn.backend.config.security.handler;
 
 import com.dawn.backend.config.response.ResponseObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
