@@ -4,6 +4,7 @@ import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.dto.request.MovieRequestDTO;
 import com.dawn.backend.dto.response.MovieResponseDTO;
 import com.dawn.backend.service.MovieService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,13 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping("")
+    @RateLimiter(name = "limiter")
     public ResponseObject<List<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m));
     }
 
     @GetMapping("/{id}")
+    @RateLimiter(name = "limiter")
     public ResponseObject<MovieResponseDTO> findById(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findOne(id));
     }

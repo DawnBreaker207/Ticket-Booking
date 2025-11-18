@@ -87,3 +87,11 @@ dawn:
         username: ${USER_USERNAME}
         email: ${USER_EMAIL}
         password: ${USER_PASSWORD}
+#Config Rate Limiter
+resilience4j:
+  ratelimiter:
+    instances:
+      limiter:
+        limit-for-period: 100
+        limit-refresh-period: 1m
+        timeout-duration: 1s

@@ -11,8 +11,8 @@
     <groupId>com.dawn</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>Ticket booking using Spring Boot</description>
+    <name>Backend</name>
+    <description>Ticket Booking System</description>
     <url/>
     <licenses>
         <license/>
@@ -29,7 +29,9 @@
     <properties>
         <java.version>17</java.version>
         <jwt.version>0.12.6</jwt.version>
+        <springdoc.version>2.8.9</springdoc.version>
         <zxing.version>3.5.3</zxing.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
     </properties>
     <dependencies>
 
@@ -66,7 +68,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
         <!--  Spring Boot Test Pack -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -98,12 +103,12 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.9</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-            <version>2.8.9</version>
+            <version>${springdoc.version}</version>
         </dependency>
 
         <!--  Tools   -->
@@ -112,6 +117,19 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!--  Resilience4J Packs -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-ratelimiter</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+
         <!--  JWT      -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

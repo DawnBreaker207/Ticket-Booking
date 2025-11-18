@@ -3,6 +3,7 @@ package com.dawn.backend.exception;
 import com.dawn.backend.exception.payload.ExceptionMessage;
 import com.dawn.backend.exception.wrapper.*;
 import com.dawn.backend.exception.wrapper.*;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -77,8 +78,16 @@ public class ApiExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<ExceptionMessage> handleAccessDeniedException(final Exception ex) {
         log.warn("Access denied: {}", ex.getMessage());
-        String errorMsg = ex.getMessage();
+        String errorMsg = "You don't have permission to access this resource";
         return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.FORBIDDEN, errorMsg), HttpStatus.FORBIDDEN);
+    }
+
+    //  429 Error
+    @ExceptionHandler({RequestNotPermitted.class})
+    public ResponseEntity<ExceptionMessage> handleRateLimitException(final Exception ex) {
+        log.warn("Too many request: {}", ex.getMessage());
+        String errorMsg = "Rate limit exceeded, please try again later";
+        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.TOO_MANY_REQUESTS, errorMsg), HttpStatus.TOO_MANY_REQUESTS);
     }
 
     //  500 Error
