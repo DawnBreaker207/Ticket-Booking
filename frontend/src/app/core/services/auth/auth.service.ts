@@ -32,7 +32,7 @@ export class AuthService {
 
   logout() {
     return this.http
-      .post<void>(`${this.URL}/logout`, {})
+      .post<void>(`${this.URL}/logout`, {}, { withCredentials: true })
       .pipe(catchError(this.handleError<Jwt>('logout')));
   }
 

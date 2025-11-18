@@ -10,6 +10,7 @@ import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
 import { ToastService } from '@/app/shared/services/toast/toast.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthEffects {
@@ -17,6 +18,7 @@ export class AuthEffects {
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
   private toastService = inject(ToastService);
+  private router = inject(Router);
 
   initAuth$ = createEffect(() => {
     return this.actions$.pipe(
@@ -78,12 +80,12 @@ export class AuthEffects {
         this.authService.logout().pipe(
           tap(() => {
             this.toastService.createNotification({
-              message:
-                'Tài khoản của bạn đã hết thời hạn, xin vui lòng đăng nhập lại',
-              title: 'Lỗi',
-              type: 'warning',
+              type: 'success',
+              title: 'Thành công',
+              message: 'Tài khoản của bạn đã đăng xuất thành công',
             });
             this.storageService.clearAuth();
+            this.router.navigate(['/home']);
           }),
           map(() => AuthActions.loadLogoutSuccess()),
           catchError((err) => {

@@ -40,18 +40,18 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
               message: 'Not Found',
             });
             break;
-          case 500:
-            toast.createNotification({
-              type: 'error',
-              title: `${error.status}: Server Error`,
-              message: 'Server Error',
-            });
-            break;
           case 429:
             toast.createNotification({
               type: 'warning',
               title: `${error.status}: Too Many Requests`,
               message: 'Too Many Requests',
+            });
+            break;
+          case 500:
+            toast.createNotification({
+              type: 'error',
+              title: `${error.status}: Server Error`,
+              message: 'Server Error',
             });
             break;
           case 503:
