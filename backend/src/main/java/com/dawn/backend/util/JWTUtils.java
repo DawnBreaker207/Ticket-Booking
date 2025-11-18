@@ -38,7 +38,7 @@ public class JWTUtils {
     private String jwtRefreshCookie;
 
     public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
-        return generateCookie(jwtRefreshCookie, refreshToken, "/api/v1/refresh-token");
+        return generateCookie(jwtRefreshCookie, refreshToken, "/api/v1/auth/refresh-token");
     }
 
     public void getCleanJwtRefreshCookie() {
