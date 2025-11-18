@@ -102,21 +102,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout() {
-        Object principle = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        jWTUtils.getCleanJwtRefreshCookie();
-        if (principle instanceof UserDetailsImpl user) {
-            Long userId = user.getId();
-            refreshTokenService.deleteByUserId(userId);
-        }
-
-
-    }
-
-    @Override
     @Transactional
     public TokenRefreshResponseDTO refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
