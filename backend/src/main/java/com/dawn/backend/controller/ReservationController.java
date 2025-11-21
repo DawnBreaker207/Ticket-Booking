@@ -38,7 +38,7 @@ public class ReservationController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get reservation by user id", description = "Returns reservation by they own Id (User Only)")
-    public ResponseObject<List<ReservationResponseDTO>> getAllByUser(@RequestParam ReservationUserRequestDTO request) {
+    public ResponseObject<List<ReservationResponseDTO>> getAllByUser(@ModelAttribute ReservationUserRequestDTO request) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request.getIsPaid(), request.getStatus()));
     }
 
