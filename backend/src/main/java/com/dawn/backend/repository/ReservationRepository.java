@@ -1,7 +1,9 @@
 package com.dawn.backend.repository;
 
+import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.dto.request.ReservationFilterDTO;
 import com.dawn.backend.model.Reservation;
+import com.dawn.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -34,6 +36,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             """)
     List<Reservation> findAllWithFilter(ReservationFilterDTO reservation);
 
-    Optional<Reservation> findFirstByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status);
+
+    List<Reservation> user(User user);
 }
 

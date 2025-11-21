@@ -1,10 +1,7 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.ReservationFilterDTO;
-import com.dawn.backend.dto.request.ReservationHoldSeatRequestDTO;
-import com.dawn.backend.dto.request.ReservationInitRequestDTO;
-import com.dawn.backend.dto.request.ReservationRequestDTO;
+import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponseDTO;
 import com.dawn.backend.dto.response.ReservationResponseDTO;
 import com.dawn.backend.service.ReservationService;
@@ -36,6 +33,13 @@ public class ReservationController {
     @Operation(summary = "Get reservation by id", description = "Returns reservation by its Id (Admin Only)")
     public ResponseObject<ReservationResponseDTO> getOne(@PathVariable String id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findOne(id));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get reservation by user id", description = "Returns reservation by they own Id (User Only)")
+    public ResponseObject<List<ReservationResponseDTO>> getAllByUser(@RequestParam ReservationUserRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request.getIsPaid(), request.getStatus()));
     }
 
     @PostMapping("/init")
