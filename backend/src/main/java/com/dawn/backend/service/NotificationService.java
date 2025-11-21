@@ -82,7 +82,7 @@ public class NotificationService {
             String[] parts = channel.split(":");
             Long showtimeId = Long.valueOf(parts[2]);
 
-            List<Map<String, Object>> holdSeats = getSeatSnapshot();
+            List<Map<String, Object>> holdSeats = getSeatSnapshot(showtimeId);
 
             Map<String, Object> initialState = Map.of(
                     "event", "SEAT_STATE_INIT",
@@ -100,7 +100,7 @@ public class NotificationService {
         }
     }
 
-    public List<Map<String, Object>> getSeatSnapshot() {
+    public List<Map<String, Object>> getSeatSnapshot(Long showtimeId) {
         List<Map<String, Object>> seatState = new ArrayList<>();
         String pattern = "seat:locked:*";
 
@@ -120,6 +120,18 @@ public class NotificationService {
 
                     String reservationKey = rawValue.toString();
                     String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
+
+                    if (showtimeId != null) {
+                        Map<Object, Object> reservationData = redisTemplate.opsForHash().entries(reservationKey);
+
+                        if (reservationData.isEmpty()) continue;
+
+                        String storedShowtimeId = (String) reservationData.get("showtimeId");
+
+                        if (!showtimeId.toString().equals(storedShowtimeId)) {
+                            continue;
+                        }
+                    }
                     String seatIdStr = key.substring(key.lastIndexOf(":") + 1);
 
                     Map<String, Object> initialState = Map.of(
