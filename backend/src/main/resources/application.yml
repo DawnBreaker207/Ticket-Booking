@@ -19,7 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-#    show-sql: true
+  #    show-sql: true
   sql:
     init:
       mode: never
@@ -56,12 +56,16 @@ logging:
   level:
     org:
       springframework:
+        security: TRACE
+        web:
+          client:
+            RestTemplate: DEBUG
         boot:
           autoconfigure:
             jdbc: debug
-
-  #Config VNPay
+  #Config Payment
 payment:
+  # VNPay
   VNPay:
     url: ${VNPAY_URL}
     tmnCode: ${VNPAY_TMN_CODE}
@@ -70,7 +74,16 @@ payment:
     version: ${VNPAY_VERSION}
     command: ${VNPAY_COMMAND}
     orderType: ${VNPAY_ORDER_TYPE}
-  #Config JWT
+  # Momo
+  Momo:
+    url: ${MOMO_URL}
+    partnerCode: ${MOMO_PARTNER_CODE}
+    accessKey: ${MOMO_ACCESS_KEY}
+    secretKey: ${MOMO_SECRET_KEY}
+    returnUrl: ${MOMO_RETURN_URL}
+    notifyUrl: ${MOMO_IPN_URL}
+    orderType: ${MOMO_ORDER_TYPE}
+#Config JWT
 dawn:
   app:
     jwtCookieName: ${JWT_COOKIE_NAME}
