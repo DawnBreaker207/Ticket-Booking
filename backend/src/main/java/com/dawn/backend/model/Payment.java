@@ -35,6 +35,10 @@ public class Payment extends AbstractMappedEntity {
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "method", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus method;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;

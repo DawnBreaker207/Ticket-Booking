@@ -3,13 +3,13 @@ package com.dawn.backend.repository;
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.dto.request.ReservationFilterDTO;
 import com.dawn.backend.model.Reservation;
-import com.dawn.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
@@ -38,6 +38,48 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     List<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status);
 
-    List<Reservation> user(User user);
+    @Query(value = """
+            SELECT
+            	COUNT(se.id)
+            FROM
+            	seat se
+            JOIN reservation r ON
+            	r.id = se.reservation_id
+            JOIN showtime s ON
+            	s.id = r.showtime_id
+            WHERE
+            	r.status = 'CONFIRMED'
+            	AND (:movieId IS NULL
+            		OR s.movie_id = :movieId)
+            	AND (:theaterId IS NULL
+            		OR s.theater_id = :theaterId)
+            """, nativeQuery = true)
+    Long getTicketsSold(
+            @Param("movieId") Long movieId,
+            @Param("theaterId") Long theaterId);
+
+    @Query(value = """
+            SELECT
+            	COUNT(DISTINCT s.theater_id)
+            FROM
+            	showtime s
+            JOIN reservation r ON
+            	r.showtime_id = s.id
+            WHERE
+            	r.status = 'CONFIRMED'
+                AND
+                (:from IS NULL OR r.created_at >= :from)
+                AND
+                (:to IS NULL OR r.created_at <= :to)
+            	AND (:movieId IS NULL
+            		OR s.movie_id = :movieId)
+            	AND (:theaterId IS NULL
+            		OR s.theater_id = :theaterId)
+            """, nativeQuery = true)
+    Long getActiveTheaters(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            @Param("movieId") Long movieId,
+            @Param("theaterId") Long theaterId);
 }
 
