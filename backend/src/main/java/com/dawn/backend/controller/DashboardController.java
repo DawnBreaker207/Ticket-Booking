@@ -1,9 +1,11 @@
 package com.dawn.backend.controller;
 
+import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.dto.request.DashboardFilterRequestDTO;
 import com.dawn.backend.dto.response.dashboard.*;
 import com.dawn.backend.service.DashboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,28 +21,28 @@ public class DashboardController {
     private final DashboardService dashboardService;
 
     @GetMapping("/metrics")
-    public MetricsResponseDTO getMetrics(@ModelAttribute DashboardFilterRequestDTO request) {
-        return dashboardService.getMetrics(request);
+    public ResponseObject<MetricsResponseDTO> getMetrics(@ModelAttribute DashboardFilterRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", dashboardService.getMetrics(request));
     }
 
     @GetMapping("/revenue")
-    public List<RevenuePointDTOResponse> getRevenue(@ModelAttribute DashboardFilterRequestDTO request) {
-        return dashboardService.getRevenueOverTime(request);
+    public ResponseObject<List<RevenuePointDTOResponse>> getRevenue(@ModelAttribute DashboardFilterRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", dashboardService.getRevenueOverTime(request));
     }
 
     @GetMapping("/top-movies")
-    public List<TopMovieDTO> getTopMovies(@ModelAttribute DashboardFilterRequestDTO request) {
-        return dashboardService.getTopMovies(request);
+    public ResponseObject<List<TopMovieDTO>> getTopMovies(@ModelAttribute DashboardFilterRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", dashboardService.getTopMovies(request));
     }
 
     @GetMapping("/top-theaters")
-    public List<TopTheaterDTO> getTopTheaters(@ModelAttribute DashboardFilterRequestDTO request) {
-        return dashboardService.getTopTheaters(request);
+    public ResponseObject<List<TopTheaterDTO>> getTopTheaters(@ModelAttribute DashboardFilterRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", dashboardService.getTopTheaters(request));
     }
 
     @GetMapping("/payment-distribution")
-    public List<PaymentDistributionDTO> getPaymentDistribution(@ModelAttribute DashboardFilterRequestDTO request) {
-        return dashboardService.getPaymentDistribution(request);
+    public ResponseObject<List<PaymentDistributionDTO>> getPaymentDistribution(@ModelAttribute DashboardFilterRequestDTO request) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", dashboardService.getPaymentDistribution(request));
     }
 
 }
