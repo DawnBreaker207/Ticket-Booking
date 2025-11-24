@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -18,6 +18,8 @@ import {
 } from 'lucide-angular';
 import { TheaterTableComponent } from '@/app/modules/admin/components/dashboard/tables/theater-table/theater-table.component';
 import { MovieTableComponent } from '@/app/modules/admin/components/dashboard/tables/movie-table/movie-table.component';
+import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
+import { DashboardMetrics } from '@/app/core/models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,10 +42,19 @@ import { MovieTableComponent } from '@/app/modules/admin/components/dashboard/ta
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   readonly DollarSign = DollarSign;
   readonly Tickets = Tickets;
   readonly Theater = Theater;
   readonly Armchair = Armchair;
-  array = ['1', '2', '3'];
+  metrics!: DashboardMetrics;
+  dashboardService = inject(DashboardService);
+
+  ngOnInit() {
+    this.dashboardService.getMetrics().subscribe((data) => {
+      if (data) {
+        this.metrics = data;
+      }
+    });
+  }
 }

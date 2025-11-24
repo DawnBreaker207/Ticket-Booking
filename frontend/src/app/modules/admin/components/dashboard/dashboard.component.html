@@ -30,28 +30,28 @@
         <nz-card>
           <i-lucide [name]="DollarSign"></i-lucide>
           <div class="font-bold text-xl">Total Revenue</div>
-          <h2>$42,560</h2>
+          <h2>${{ metrics.totalRevenue }}</h2>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-card>
           <i-lucide [name]="Tickets"></i-lucide>
           <div class="font-bold text-xl">Ticket Sold</div>
-          <h2>12,560</h2>
+          <h2>{{ metrics.ticketsSold }}</h2>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-card>
           <i-lucide [name]="Theater"></i-lucide>
           <div class="font-bold text-xl">Active Theaters</div>
-          <h2>8</h2>
+          <h2>{{ metrics.activeTheaters }}</h2>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-card>
           <i-lucide [name]="Armchair"></i-lucide>
           <div class="font-bold text-xl">Seat Utilization</div>
-          <h2>78%</h2>
+          <h2>{{ metrics.seatUtilization }}%</h2>
         </nz-card>
       </nz-col>
     </nz-row>

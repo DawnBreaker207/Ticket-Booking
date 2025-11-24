@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
+import { PaymentDistribution } from '@/app/core/models/dashboard.model';
+import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-payment-chart',
@@ -10,8 +12,19 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 })
 export class PaymentChartComponent implements OnInit {
   options!: EChartsCoreOption;
+  paymentDistribution: PaymentDistribution[] = [];
+  dashboardService = inject(DashboardService);
 
   ngOnInit() {
+    this.dashboardService.getPaymentDistribution().subscribe((data) => {
+      if (data) this.paymentDistribution = data;
+      const methodName = this.paymentDistribution.map((p) => p.method);
+      const totalAmount = this.paymentDistribution.map((p) => p.amount);
+      this.loadChartData(methodName, totalAmount);
+    });
+  }
+
+  loadChartData(name: string[], data: any[]) {
     this.options = {
       tooltip: {
         trigger: 'item',
@@ -20,11 +33,7 @@ export class PaymentChartComponent implements OnInit {
         {
           type: 'pie',
           radius: '60%',
-          data: [
-            { value: 820, name: 'Momo' },
-            { value: 932, name: 'VNPay' },
-            { value: 901, name: 'ZaloPay' },
-          ],
+          data: [{ value: data, name: name }],
         },
       ],
       emphasis: {

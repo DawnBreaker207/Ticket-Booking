@@ -1,6 +1,6 @@
-import {inject, Injectable} from '@angular/core';
-import {environment} from '@/environments/environment';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '@/environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   DashboardMetrics,
   DashboardQuery,
@@ -9,8 +9,8 @@ import {
   TopMovie,
   TopTheater,
 } from '@/app/core/models/dashboard.model';
-import {ApiRes} from '@/app/core/models/common.model';
-import {catchError, map, Observable, of} from 'rxjs';
+import { ApiRes } from '@/app/core/models/common.model';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class DashboardService {
       });
     }
     return this.http
-      .get<ApiRes<DashboardMetrics>>(`${this.URL}/metrics`, {params})
+      .get<ApiRes<DashboardMetrics>>(`${this.URL}/metrics`, { params })
       .pipe(
         map((res) => res.data),
         catchError(this.handleError<void>('Dashboard metrics')),
@@ -47,7 +47,7 @@ export class DashboardService {
       });
     }
     return this.http
-      .get<ApiRes<RevenuePoint[]>>(`${this.URL}/revenue`, {params})
+      .get<ApiRes<RevenuePoint[]>>(`${this.URL}/revenue`, { params })
       .pipe(
         map((res) => res.data),
         catchError(this.handleError<void>('Dashboard revenue')),
@@ -65,7 +65,7 @@ export class DashboardService {
       });
     }
     return this.http
-      .get<ApiRes<TopMovie[]>>(`${this.URL}/top-movies`, {params})
+      .get<ApiRes<TopMovie[]>>(`${this.URL}/top-movies`, { params })
       .pipe(
         map((res) => res.data),
         catchError(this.handleError<void>('Dashboard top movies')),
@@ -83,7 +83,7 @@ export class DashboardService {
       });
     }
     return this.http
-      .get<ApiRes<TopTheater[]>>(`${this.URL}/top-theaters`, {params})
+      .get<ApiRes<TopTheater[]>>(`${this.URL}/top-theaters`, { params })
       .pipe(
         map((res) => res.data),
         catchError(this.handleError<void>('Dashboard top theater')),
@@ -102,7 +102,9 @@ export class DashboardService {
     }
 
     return this.http
-      .get<ApiRes<PaymentDistribution[]>>(`${this.URL}/payment-distribution`, {params})
+      .get<
+        ApiRes<PaymentDistribution[]>
+      >(`${this.URL}/payment-distribution`, { params })
       .pipe(
         map((res) => res.data),
         catchError(this.handleError<void>('Dashboard payment distribution')),
