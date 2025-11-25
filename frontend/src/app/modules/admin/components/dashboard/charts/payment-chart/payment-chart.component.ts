@@ -11,20 +11,24 @@ import { DashboardService } from '@/app/core/services/dashboard/dashboard.servic
   styleUrl: './payment-chart.component.css',
 })
 export class PaymentChartComponent implements OnInit {
+  dashboardService = inject(DashboardService);
   options!: EChartsCoreOption;
   paymentDistribution: PaymentDistribution[] = [];
-  dashboardService = inject(DashboardService);
 
   ngOnInit() {
     this.dashboardService.getPaymentDistribution().subscribe((data) => {
       if (data) this.paymentDistribution = data;
-      const methodName = this.paymentDistribution.map((p) => p.method);
-      const totalAmount = this.paymentDistribution.map((p) => p.amount);
-      this.loadChartData(methodName, totalAmount);
+
+      const chartData = this.paymentDistribution.map((p) => ({
+        name: p.method,
+        value: p.amount,
+      }));
+
+      this.loadChartData(chartData);
     });
   }
 
-  loadChartData(name: string[], data: any[]) {
+  loadChartData(data: any[]) {
     this.options = {
       tooltip: {
         trigger: 'item',
@@ -33,7 +37,7 @@ export class PaymentChartComponent implements OnInit {
         {
           type: 'pie',
           radius: '60%',
-          data: [{ value: data, name: name }],
+          data: data,
         },
       ],
       emphasis: {

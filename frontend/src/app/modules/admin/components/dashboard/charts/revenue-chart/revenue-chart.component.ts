@@ -3,6 +3,7 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsCoreOption } from 'echarts/core';
 import { RevenuePoint } from '@/app/core/models/dashboard.model';
 import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
+import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 
 @Component({
   selector: 'app-revenue-chart',
@@ -11,9 +12,11 @@ import { DashboardService } from '@/app/core/services/dashboard/dashboard.servic
   styleUrl: './revenue-chart.component.css',
 })
 export class RevenueChartComponent implements OnInit {
+  private dashboardService = inject(DashboardService);
+  private currency = inject(CurrencyFormatPipe);
+
   options!: EChartsCoreOption;
   revenue: RevenuePoint[] = [];
-  dashboardService = inject(DashboardService);
 
   ngOnInit() {
     this.dashboardService.getRevenue().subscribe((data) => {
@@ -29,16 +32,26 @@ export class RevenueChartComponent implements OnInit {
     this.options = {
       tooltip: {
         trigger: 'item',
+        formatter: (params: any) => {
+          const value = params.value ?? 0;
+          return `${this.currency.transform(value)}`;
+        },
       },
       xAxis: {
         type: 'category',
         data: name,
       },
-      yAxis: { type: 'value' },
+      yAxis: {
+        type: 'value',
+      },
       series: [
         {
-          data: data,
           type: 'line',
+          data: data,
+          label: {
+            formatter: (params: any) =>
+              this.currency.transform(params.value ?? 0),
+          },
         },
       ],
     };

@@ -20,6 +20,7 @@ import { TheaterTableComponent } from '@/app/modules/admin/components/dashboard/
 import { MovieTableComponent } from '@/app/modules/admin/components/dashboard/tables/movie-table/movie-table.component';
 import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
 import { DashboardMetrics } from '@/app/core/models/dashboard.model';
+import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,17 +39,18 @@ import { DashboardMetrics } from '@/app/core/models/dashboard.model';
     LucideAngularModule,
     TheaterTableComponent,
     MovieTableComponent,
+    CurrencyFormatPipe,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
+  dashboardService = inject(DashboardService);
   readonly DollarSign = DollarSign;
   readonly Tickets = Tickets;
   readonly Theater = Theater;
   readonly Armchair = Armchair;
   metrics!: DashboardMetrics;
-  dashboardService = inject(DashboardService);
 
   ngOnInit() {
     this.dashboardService.getMetrics().subscribe((data) => {

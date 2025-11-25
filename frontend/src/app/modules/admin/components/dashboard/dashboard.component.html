@@ -30,7 +30,7 @@
         <nz-card>
           <i-lucide [name]="DollarSign"></i-lucide>
           <div class="font-bold text-xl">Total Revenue</div>
-          <h2>${{ metrics.totalRevenue }}</h2>
+          <h2>{{ metrics.totalRevenue | currencyFormat }}</h2>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="6">
