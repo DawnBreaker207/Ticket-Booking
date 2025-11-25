@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,12 +46,13 @@ public class UserServiceTests {
     public void findAll_GivenUserExist_WhenCalled_ThenReturnsUserList() {
         // Arrange
         when(userRepository
-                .findAll())
-                .thenReturn(List.of(user));
+                .findAll(Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(user)));
 
         // Act
         List<UserResponseDTO> result = userService
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
@@ -67,7 +70,8 @@ public class UserServiceTests {
                 .findAll())
                 .thenReturn(List.of());
         List<UserResponseDTO> result = userService
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         // Act & Assert
         assertNotNull(result);

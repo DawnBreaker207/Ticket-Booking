@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
@@ -82,7 +84,8 @@ public class TheaterServiceTests {
 
         // Act
         List<TheaterResponseDTO> result = theaterService
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
@@ -101,7 +104,8 @@ public class TheaterServiceTests {
 
         // Act
         List<TheaterResponseDTO> result = theaterService
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
@@ -165,35 +169,40 @@ public class TheaterServiceTests {
     void findByLocation_GivenLocation_WhenCalled_ThenReturnTheaterDto() {
         // Arrange
         when(theaterRepository
-                .findByLocationContainingIgnoreCase("HaNoi"))
-                .thenReturn(List.of(theater));
+                .findByLocationContainingIgnoreCase("HaNoi", Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(theater)));
 
         // Act
-        List<TheaterResponseDTO> result = theaterService.findByLocation("HaNoi");
+        List<TheaterResponseDTO> result = theaterService
+                .findByLocation("HaNoi", Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(theaterResponseDTO.getName(), result.get(0).getName());
-        verify(theaterRepository, times(1)).findByLocationContainingIgnoreCase("HaNoi");
+        verify(theaterRepository, times(1))
+                .findByLocationContainingIgnoreCase("HaNoi", Pageable.unpaged());
     }
 
     @Test
     void findByLocation_GivenInvalidLocation_WhenNotFound_ThenThrowTheaterNotFoundException() {
         // Arrange
         when(theaterRepository
-                .findByLocationContainingIgnoreCase("Unknown"))
-                .thenReturn(List.of(theater));
+                .findByLocationContainingIgnoreCase("Unknown", Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(theater)));
 
         // Act
         List<TheaterResponseDTO> result = theaterService
-                .findByLocation("Unknown");
+                .findByLocation("Unknown", Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(theaterRepository, times(1))
-                .findByLocationContainingIgnoreCase("Unknown");
+                .findByLocationContainingIgnoreCase("Unknown", Pageable.unpaged())
+                .getContent();
     }
 
     @Test
