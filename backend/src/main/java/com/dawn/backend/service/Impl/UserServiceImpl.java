@@ -1,5 +1,6 @@
 package com.dawn.backend.service.Impl;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.dto.response.UserResponseDTO;
 import com.dawn.backend.exception.wrapper.UserNotFoundException;
@@ -10,11 +11,10 @@ import com.dawn.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +24,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = USER_CACHE)
-    public List<UserResponseDTO> findAll() {
-        List<User> users = userRepository.findAll();
-        return users
-                .stream()
-                .map(UserMappingHelper::map)
-                .toList();
+    public ResponsePage<UserResponseDTO> findAll(Pageable pageable) {
+        return new ResponsePage<>(
+                userRepository
+                        .findAll(pageable)
+                        .map(UserMappingHelper::map));
     }
 
     @Override

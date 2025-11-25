@@ -1,18 +1,16 @@
 package com.dawn.backend.service;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.response.UserResponseDTO;
 import com.dawn.backend.model.User;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    List<UserResponseDTO> findAll();
+    ResponsePage<UserResponseDTO> findAll(Pageable pageable);
 
     UserResponseDTO findOne(Long id);
 
     UserResponseDTO update(Long id, User userDetails);
 
     UserResponseDTO findByEmail(String email);
-
-
 }
