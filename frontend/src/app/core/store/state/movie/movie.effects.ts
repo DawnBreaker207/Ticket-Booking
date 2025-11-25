@@ -12,9 +12,14 @@ export class MovieEffects {
   loadMovies$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MovieActions.loadMovies),
-      switchMap(() =>
-        this.movieService.getMovieLists().pipe(
-          map((movies) => MovieActions.loadMoviesSuccess({ movies })),
+      switchMap(({ page, size }) =>
+        this.movieService.getMovieLists({ page, size }).pipe(
+          map((res) =>
+            MovieActions.loadMoviesSuccess({
+              movies: res.content,
+              pagination: res.pagination,
+            }),
+          ),
           catchError((err) =>
             of(MovieActions.loadMoviesFailed({ error: err })),
           ),
@@ -28,7 +33,7 @@ export class MovieEffects {
       ofType(MovieActions.searchMovies),
       switchMap(({ search }) =>
         this.movieService.getMovieLists(search).pipe(
-          map((movies) => MovieActions.searchMoviesSuccess({ movies })),
+          map((page) => MovieActions.searchMoviesSuccess({ page: page })),
           catchError((err) =>
             of(MovieActions.searchMoviesFailed({ error: err })),
           ),

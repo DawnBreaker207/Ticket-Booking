@@ -1,12 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 import { Movie } from '@/app/core/models/movie.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const movieFeatureKey = 'movieKey';
 
 export interface MovieState {
   movies: Movie[];
   selectedMovie: Movie | null;
+  pagination: Pagination | null;
   // Loading states
   loading: boolean;
   loadingDetails: boolean;
@@ -19,6 +21,7 @@ export interface MovieState {
 export const initialState: MovieState = {
   movies: [],
   selectedMovie: null,
+  pagination: null,
   loading: false,
   loadingDetails: false,
   saving: false,
@@ -36,10 +39,11 @@ export const movieReducer = createReducer(
       error: null,
     };
   }),
-  on(MovieActions.loadMoviesSuccess, (state, { movies }) => {
+  on(MovieActions.loadMoviesSuccess, (state, { movies, pagination }) => {
     return {
       ...state,
       movies: movies,
+      pagination: pagination,
       loading: false,
       error: null,
     };
@@ -60,10 +64,11 @@ export const movieReducer = createReducer(
       error: null,
     };
   }),
-  on(MovieActions.searchMoviesSuccess, (state, { movies }) => {
+  on(MovieActions.searchMoviesSuccess, (state, { page }) => {
     return {
       ...state,
-      movies,
+      movies: page.content,
+      pagination: page.pagination,
       loading: false,
       error: null,
     };

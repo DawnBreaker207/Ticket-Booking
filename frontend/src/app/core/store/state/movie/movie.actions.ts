@@ -1,18 +1,19 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Movie, MovieRequest } from '@/app/core/models/movie.model';
+import { Pagination, ResponsePage } from '@/app/core/models/common.model';
 
 export const MovieActions = createActionGroup({
   source: 'Movie',
   events: {
     // API
     // Load all
-    'Load Movies': emptyProps(),
-    'Load Movies Success': props<{ movies: Movie[] }>(),
+    'Load Movies': props<{ page: number; size: number }>(),
+    'Load Movies Success': props<{ movies: Movie[]; pagination: Pagination }>(),
     'Load Movies Failed': props<{ error: any }>(),
 
     // Search
     'Search Movies': props<{ search: string }>(),
-    'Search Movies Success': props<{ movies: Movie[] }>(),
+    'Search Movies Success': props<{ page: ResponsePage<Movie[]> }>(),
     'Search Movies Failed': props<{ error: any }>(),
 
     // Load simple

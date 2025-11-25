@@ -12,7 +12,7 @@ import {
   USE_HEADER,
 } from '@/app/core/constants/context-token.model';
 import { Movie, MovieRequest } from '@/app/core/models/movie.model';
-import { ApiRes } from '@/app/core/models/common.model';
+import { ApiRes, ResponsePage } from '@/app/core/models/common.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,15 +25,21 @@ export class MovieService {
   });
   private http = inject(HttpClient);
 
-  getMovieLists(query?: string) {
-    const params = query
-      ? new HttpParams().set('title', query?.toString())
-      : undefined;
-
-    return this.http.get<ApiRes<Movie[]>>(`${this.URL}`, { params }).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<Movie[]>('movie')),
-    );
+  getMovieLists(query?: any) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
+    return this.http
+      .get<ApiRes<ResponsePage<Movie[]>>>(`${this.URL}`, { params })
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<ResponsePage<Movie[]>>('movie')),
+      );
   }
 
   saveMovie(movie: MovieRequest) {

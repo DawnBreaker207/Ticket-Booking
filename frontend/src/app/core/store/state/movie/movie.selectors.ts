@@ -12,6 +12,10 @@ export const selectAllMovies = createSelector(
   (state) => state.movies,
 );
 
+export const selectPaginationMovie = createSelector(
+  selectMovieState,
+  (state) => state.pagination,
+);
 export const selectSelectedMovie = createSelector(
   selectMovieState,
   (state) => state.selectedMovie,

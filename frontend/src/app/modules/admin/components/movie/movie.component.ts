@@ -24,11 +24,13 @@ import {
   selectAllMovies,
   selectMovieLoading,
   selectMoviesError,
+  selectPaginationMovie,
   selectSelectedMovie,
 } from '@/app/core/store/state/movie/movie.selectors';
 import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { Pagination } from '@/app/core/models/common.model';
 
 @Component({
   selector: 'app-movie',
@@ -62,6 +64,7 @@ export class MovieComponent implements OnInit {
 
   // NgRx Selectors
   movies$ = this.store.select(selectAllMovies);
+  pagination$ = this.store.select(selectPaginationMovie);
   loading$ = this.store.select(selectMovieLoading);
   error$ = this.store.select(selectMoviesError);
 
@@ -72,10 +75,23 @@ export class MovieComponent implements OnInit {
   selectedMovie = signal<any>(null);
 
   movieList: readonly Movie[] = [];
+  pagination: Pagination | null = null;
+
+  pageIndex = 1;
+  pageSize = 10;
 
   ngOnInit() {
-    this.store.dispatch(MovieActions.loadMovies());
+    this.store.dispatch(MovieActions.loadMovies({ page: 0, size: 10 }));
+
     this.movies$.subscribe((movies) => (this.movieList = movies));
+    this.pagination$.subscribe((p) => {
+      this.pagination = p;
+      if (p) {
+        this.pageIndex = p.pageNumber + 1;
+        this.pageSize = p.pageSize;
+      }
+    });
+
     this.searchCtrl.valueChanges
       .pipe(
         debounceTime(1000),
@@ -87,7 +103,7 @@ export class MovieComponent implements OnInit {
           this.store.dispatch(MovieActions.searchMovies({ search: search }));
           this.movies$.subscribe((result) => this.searchResults.set(result));
         } else {
-          this.store.dispatch(MovieActions.loadMovies());
+          this.store.dispatch(MovieActions.loadMovies({ page: 0, size: 10 }));
           this.searchResults.set([]);
         }
       });
@@ -103,6 +119,26 @@ export class MovieComponent implements OnInit {
     this.openMovieModal('view', id);
     this.searchResults.set([]);
     this.searchCtrl.setValue('', { emitEvent: false });
+  }
+
+  onPageChange(page: number) {
+    this.pageIndex = page;
+    this.store.dispatch(
+      MovieActions.loadMovies({
+        page: page - 1,
+        size: this.pageSize,
+      }),
+    );
+  }
+
+  onSizeChange(size: number) {
+    this.pageSize = size;
+    this.store.dispatch(
+      MovieActions.loadMovies({
+        page: 0,
+        size,
+      }),
+    );
   }
 
   openMovieModal(mode: 'add' | 'edit' | 'view', id?: string | number) {
