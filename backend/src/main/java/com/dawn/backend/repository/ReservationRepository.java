@@ -3,13 +3,14 @@ package com.dawn.backend.repository;
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.dto.request.ReservationFilterDTO;
 import com.dawn.backend.model.Reservation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
@@ -34,9 +35,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                         CASE WHEN :#{#reservation.getSortBy()} = 'oldest' THEN r.createdAt END ASC,
                         CASE WHEN :#{#reservation.getSortBy()} = 'newest' THEN r.createdAt END DESC
             """)
-    List<Reservation> findAllWithFilter(ReservationFilterDTO reservation);
+    Page<Reservation> findAllWithFilter(ReservationFilterDTO reservation, Pageable pageable);
 
-    List<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status);
+    Page<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status, Pageable pageable);
 
     @Query(value = """
             SELECT

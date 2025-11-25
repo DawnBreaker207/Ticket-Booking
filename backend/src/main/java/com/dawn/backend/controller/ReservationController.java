@@ -1,6 +1,7 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponseDTO;
 import com.dawn.backend.dto.response.ReservationResponseDTO;
@@ -8,11 +9,10 @@ import com.dawn.backend.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -25,8 +25,8 @@ public class ReservationController {
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @Operation(summary = "Get all reservation with conditions", description = "Returns reservation with condition filters (Admin Only)")
-    public ResponseObject<List<ReservationResponseDTO>> getAll(@ModelAttribute ReservationFilterDTO o) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findAll(o));
+    public ResponseObject<ResponsePage<ReservationResponseDTO>> getAll(@ModelAttribute ReservationFilterDTO o, Pageable pageable) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findAll(o, pageable));
     }
 
     @GetMapping("/{id}")
@@ -38,8 +38,8 @@ public class ReservationController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get reservation by user id", description = "Returns reservation by they own Id (User Only)")
-    public ResponseObject<List<ReservationResponseDTO>> getAllByUser(@ModelAttribute ReservationUserRequestDTO request) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request.getIsPaid(), request.getStatus()));
+    public ResponseObject<ResponsePage<ReservationResponseDTO>> getAllByUser(@ModelAttribute ReservationUserRequestDTO request, Pageable pageable) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request, pageable));
     }
 
     @PostMapping("/init")

@@ -1,13 +1,11 @@
 package com.dawn.backend.service.Impl;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.PaymentStatus;
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.dto.request.ReservationFilterDTO;
-import com.dawn.backend.dto.request.ReservationHoldSeatRequestDTO;
-import com.dawn.backend.dto.request.ReservationInitRequestDTO;
-import com.dawn.backend.dto.request.ReservationRequestDTO;
+import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponseDTO;
 import com.dawn.backend.dto.response.ReservationResponseDTO;
 import com.dawn.backend.exception.wrapper.*;
@@ -26,6 +24,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -62,9 +62,29 @@ public class ReservationServiceImpl implements ReservationService {
     private final RedisService redisService;
 
     @Override
-    public List<ReservationResponseDTO> findAll(ReservationFilterDTO o) {
-        List<Reservation> reservations = reservationRepository.findAllWithFilter(o);
-        return reservations.stream().map(ReservationMappingHelper::map).toList();
+    public ResponsePage<ReservationResponseDTO> findByUser(ReservationUserRequestDTO request, Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof UserDetailsImpl user)) {
+            log.warn("No authenticated user found");
+            return new ResponsePage<>(Page.empty());
+        }
+        Long userId = user.getId();
+
+        log.debug("Finding reservation for user {} with isPaid={}, status={}", userId, request.getIsPaid(), request.getStatus());
+
+        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(userId, request.getIsPaid(), request.getStatus(), pageable);
+
+        log.info("Found {} reservations for user {}", reservations.getSize(), userId);
+
+        return new ResponsePage<>(reservations
+                .map(ReservationMappingHelper::map));
+    }
+
+    @Override
+    public ResponsePage<ReservationResponseDTO> findAll(ReservationFilterDTO o, Pageable pageable) {
+        return new ResponsePage<>(reservationRepository
+                .findAllWithFilter(o, pageable)
+                .map(ReservationMappingHelper::map));
     }
 
     @Override
@@ -73,27 +93,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .findById(id)
                 .map(ReservationMappingHelper::map)
                 .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_NOT_FOUND));
-    }
-
-    @Override
-    public List<ReservationResponseDTO> findByUser(Boolean isPaid, ReservationStatus status) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !(auth.getPrincipal() instanceof UserDetailsImpl user)) {
-            log.warn("No authenticated user found");
-            return List.of();
-        }
-        Long userId = user.getId();
-
-        log.debug("Finding reservation for user {} with isPaid={}, status={}", userId, isPaid, status);
-
-        List<Reservation> reservations = reservationRepository.findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(userId, isPaid, status);
-
-        log.info("Found {} reservations for user {}", reservations.size(), userId);
-
-        return reservations
-                .stream()
-                .map(ReservationMappingHelper::map)
-                .toList();
     }
 
     @Override

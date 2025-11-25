@@ -1,21 +1,17 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.constant.ReservationStatus;
-import com.dawn.backend.dto.request.ReservationFilterDTO;
-import com.dawn.backend.dto.request.ReservationHoldSeatRequestDTO;
-import com.dawn.backend.dto.request.ReservationInitRequestDTO;
-import com.dawn.backend.dto.request.ReservationRequestDTO;
+import com.dawn.backend.config.response.ResponsePage;
+import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponseDTO;
 import com.dawn.backend.dto.response.ReservationResponseDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface ReservationService {
-    List<ReservationResponseDTO> findAll(ReservationFilterDTO o);
+    ResponsePage<ReservationResponseDTO> findAll(ReservationFilterDTO o, Pageable pageable);
+
+    ResponsePage<ReservationResponseDTO> findByUser(ReservationUserRequestDTO request, Pageable pageable);
 
     ReservationResponseDTO findOne(String id);
-
-    List<ReservationResponseDTO> findByUser(Boolean isPaid, ReservationStatus status);
 
     ReservationInitResponseDTO initReservation(ReservationInitRequestDTO reservation);
 
