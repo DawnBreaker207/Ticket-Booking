@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -103,12 +105,13 @@ public class MovieServiceTests {
                 .build();
 
         when(movieRepository
-                .findAllWithFilter(filter))
-                .thenReturn(List.of(movie));
+                .findAllWithFilter(filter, Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(movie)));
 
         // Act
         List<MovieResponseDTO> result = movieService
-                .findAll(filter);
+                .findAll(filter, Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
@@ -126,19 +129,20 @@ public class MovieServiceTests {
                 .builder()
                 .build();
         when(movieRepository
-                .findAllWithFilter(filter))
-                .thenReturn(Collections.emptyList());
+                .findAllWithFilter(filter, Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(Collections.emptyList()));
 
         // Act
         List<MovieResponseDTO> result = movieService
-                .findAll(filter);
+                .findAll(filter, Pageable.unpaged())
+                .getContent();
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
         verify(movieRepository, times(1))
-                .findAllWithFilter(filter);
+                .findAllWithFilter(filter, Pageable.unpaged());
     }
 
     @Test
