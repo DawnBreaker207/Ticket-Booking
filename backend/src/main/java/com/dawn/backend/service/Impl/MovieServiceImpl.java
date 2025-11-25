@@ -1,5 +1,6 @@
 package com.dawn.backend.service.Impl;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.dto.request.MovieRequestDTO;
 import com.dawn.backend.dto.response.MovieResponseDTO;
@@ -14,6 +15,7 @@ import com.dawn.backend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +35,10 @@ public class MovieServiceImpl implements MovieService {
 
     //    @Cacheable(MOVIE_CACHE)
     @Override
-    public List<MovieResponseDTO> findAll(MovieRequestDTO m) {
-        return movieRepository
-                .findAllWithFilter(m)
-                .stream()
-                .map(MovieMappingHelper::map)
-                .toList();
+    public ResponsePage<MovieResponseDTO> findAll(MovieRequestDTO m, Pageable pageable) {
+        return new ResponsePage<>(movieRepository
+                .findAllWithFilter(m, pageable)
+                .map(MovieMappingHelper::map));
     }
 
     @Override

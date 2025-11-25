@@ -1,17 +1,17 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.MovieRequestDTO;
 import com.dawn.backend.dto.response.MovieResponseDTO;
 import com.dawn.backend.service.MovieService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/movie")
@@ -23,8 +23,8 @@ public class MovieController {
 
     @GetMapping("")
     @RateLimiter(name = "limiter")
-    public ResponseObject<List<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m));
+    public ResponseObject<ResponsePage<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m, Pageable pageable) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m, pageable));
     }
 
     @GetMapping("/{id}")
