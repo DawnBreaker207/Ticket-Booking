@@ -1,6 +1,7 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.TheaterRequestDTO;
 import com.dawn.backend.dto.response.TheaterResponseDTO;
 import com.dawn.backend.service.TheaterService;
@@ -8,10 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/theater")
@@ -24,21 +24,21 @@ public class TheaterController {
 
     @GetMapping("")
     @Operation(summary = "Get all theaters", description = "Return a list of all theaters")
-    public ResponseObject<List<TheaterResponseDTO>> findAll() {
-        return new ResponseObject<>(HttpStatus.OK, "Success", theaterService.findAll());
+    public ResponseObject<ResponsePage<TheaterResponseDTO>> findAll(Pageable pageable) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", theaterService.findAll(pageable));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search theaters by location", description = "Return a theaters matching the location search term")
+    public ResponseObject<ResponsePage<TheaterResponseDTO>> searchTheaterByLocation(@RequestParam(required = false) String location, Pageable pageable) {
+        log.info("Search theater by location {}", location);
+        return new ResponseObject<>(HttpStatus.OK, "Success", theaterService.findByLocation(location, pageable));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get theater by ID", description = "Return theater by its ID")
     public ResponseObject<TheaterResponseDTO> findOne(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", theaterService.findOne(id));
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "Search theaters by location", description = "Return a theaters matching the location search term")
-    public ResponseObject<List<TheaterResponseDTO>> searchTheaterByLocation(@RequestParam(required = false) String location) {
-        log.info("Search theater by location {}", location);
-        return new ResponseObject<>(HttpStatus.OK, "Success", theaterService.findByLocation(location));
     }
 
     @PostMapping("")

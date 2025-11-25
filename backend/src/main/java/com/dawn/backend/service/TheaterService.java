@@ -1,22 +1,21 @@
 package com.dawn.backend.service;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.TheaterRequestDTO;
 import com.dawn.backend.dto.response.TheaterResponseDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface TheaterService {
 
-    List<TheaterResponseDTO> findAll();
+    ResponsePage<TheaterResponseDTO> findAll(Pageable pageable);
+
+    ResponsePage<TheaterResponseDTO> findByLocation(String location, Pageable pageable);
 
     TheaterResponseDTO findOne(Long id);
-
-    List<TheaterResponseDTO> findByLocation(String location);
 
     TheaterResponseDTO create(TheaterRequestDTO theater);
 
     TheaterResponseDTO update(Long id, TheaterRequestDTO theaterDetails);
 
     void remove(Long id);
-
 }

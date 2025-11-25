@@ -1,5 +1,6 @@
 package com.dawn.backend.service.Impl;
 
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.dto.request.TheaterRequestDTO;
 import com.dawn.backend.dto.response.TheaterResponseDTO;
@@ -12,11 +13,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,12 +27,21 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
 //    @Cacheable(value = THEATER_CACHE)
-    public List<TheaterResponseDTO> findAll() {
-        return theaterRepository
-                .findAll()
-                .stream()
+    public ResponsePage<TheaterResponseDTO> findAll(Pageable pageable) {
+        return new ResponsePage<>(
+                theaterRepository
+                        .findAll(pageable)
+                        .map(TheaterMappingHelper::map));
+    }
+
+    @Override
+//    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
+    public ResponsePage<TheaterResponseDTO> findByLocation(String location, Pageable pageable) {
+        log.info("Search theater by location {}", location);
+        return new ResponsePage<>(theaterRepository
+                .findByLocationContainingIgnoreCase(location, pageable)
                 .map(TheaterMappingHelper::map)
-                .toList();
+        );
     }
 
     @Override
@@ -42,17 +51,6 @@ public class TheaterServiceImpl implements TheaterService {
                 .findById(id)
                 .map(TheaterMappingHelper::map)
                 .orElseThrow(() -> new TheaterNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.THEATER_NOT_FOUND));
-    }
-
-    @Override
-//    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
-    public List<TheaterResponseDTO> findByLocation(String location) {
-        log.info("Search theater by location {}", location);
-        return theaterRepository
-                .findByLocationContainingIgnoreCase(location)
-                .stream()
-                .map(TheaterMappingHelper::map)
-                .toList();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.dawn.backend.repository;
 
 import com.dawn.backend.model.Theater;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,9 +11,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TheaterRepository extends JpaRepository<Theater, Long> {
+    Page<Theater> findAll(Pageable pageable);
     //  Find theaters by location (city, area, etc)
-    List<Theater> findByLocationContainingIgnoreCase(String location);
-
+    Page<Theater> findByLocationContainingIgnoreCase(String location, Pageable pageable);
 
     @Query(value = """
             SELECT
