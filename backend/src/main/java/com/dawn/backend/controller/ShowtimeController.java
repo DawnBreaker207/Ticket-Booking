@@ -1,6 +1,7 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
+import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.ShowtimeRequestDTO;
 import com.dawn.backend.dto.response.ShowtimeResponseDTO;
 import com.dawn.backend.service.ShowtimeService;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +39,14 @@ public class ShowtimeController {
     @Operation(summary = "Get showtime by movie", description = "Returns showtime for a specific movie")
     public ResponseObject<List<ShowtimeResponseDTO>> getShowtimeByMovie(@PathVariable Long movieId) {
         log.info("Fetching showtime for movie id: {}", movieId);
-
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByMovie(movieId));
     }
 
     @GetMapping("/theaters/{theaterId}")
     @Operation(summary = "Get showtime by theater", description = "Returns available for a specific theater")
-    public ResponseObject<List<ShowtimeResponseDTO>> getShowtimeByTheater(@PathVariable Long theaterId) {
+    public ResponseObject<ResponsePage<ShowtimeResponseDTO>> getShowtimeByTheater(@PathVariable Long theaterId, Pageable pageable) {
         log.info("Fetching showtime for theater id: {}", theaterId);
-
-        return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByTheater(theaterId));
+        return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByTheater(theaterId, pageable));
     }
 
     @GetMapping("/available")
