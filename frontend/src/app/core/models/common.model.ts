@@ -1,7 +1,18 @@
 export interface ApiRes<T> {
-  status: string;
+  code: string;
   message: string;
   data: T;
+}
+
+export interface Pagination {
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+}
+
+export interface ResponsePage<T> {
+  content: T;
+  pagination: Pagination;
 }
 
 export interface DateModel {
@@ -16,6 +27,7 @@ export interface FilterQuery {
 export interface FilterSort {
   sortBy?: string;
   sortDirection?: 'asc' | 'desc';
+  size?: number;
   page?: number;
 }
 
