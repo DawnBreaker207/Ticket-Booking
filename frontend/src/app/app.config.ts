@@ -12,7 +12,11 @@ import { provideStore } from '@ngrx/store';
 import { icons } from './icons-provider';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import {
+  CommonModule,
+  CurrencyPipe,
+  registerLocaleData,
+} from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -61,6 +65,7 @@ import {
   TooltipComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 
 registerLocaleData(en);
 echarts.use([
@@ -75,6 +80,8 @@ echarts.use([
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    CurrencyPipe,
+    CurrencyFormatPipe,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(
       withInterceptors([
