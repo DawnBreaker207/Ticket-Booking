@@ -11,11 +11,11 @@ public class ResponsePage<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<T> content;
 
-    Pagination pageable;
+    Pagination pagination;
 
     public ResponsePage(Page<T> page) {
         this.content = page.getContent();
-        this.pageable = new Pagination(
+        this.pagination = new Pagination(
                 page.getPageable().getPageNumber(),
                 page.getPageable().getPageSize(),
                 page.getTotalElements());
