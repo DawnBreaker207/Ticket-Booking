@@ -9,10 +9,10 @@ import { timeFormat } from '@/app/shared/utils/formatDate';
 @Component({
   selector: 'app-theater',
   imports: [NgClass, NzButtonComponent],
-  templateUrl: './showtime.component.html',
-  styleUrl: './showtime.component.css',
+  templateUrl: './modal.component.html',
+  styleUrl: './modal.component.css',
 })
-export class ShowtimeComponent implements OnInit {
+export class ShowtimeModalComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   showtimes = signal<Showtime[]>([]);
   selectedShowtimeId = signal<number | null>(null);

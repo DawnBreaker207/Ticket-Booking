@@ -33,6 +33,7 @@ import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
 import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
 import { NzFormLabelComponent } from 'ng-zorro-antd/form';
+import { Pagination } from '@/app/core/models/common.model';
 
 @Component({
   selector: 'app-showtime',
@@ -68,12 +69,17 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
 
-  form!: FormGroup;
-  headerColumn = headerColumns.showtime;
-  showtimes: readonly Showtime[] = [];
-  theaters: Theater[] = [];
   loading$ = this.store.select(selectMovieLoading);
   error$ = this.store.select(selectMoviesError);
+
+  headerColumn = headerColumns.showtime;
+  form!: FormGroup;
+  showtimes: readonly Showtime[] = [];
+  pagination: Pagination | null = null;
+  theaters: Theater[] = [];
+
+  pageIndex = 1;
+  pageSize = 10;
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -81,7 +87,7 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
       date: [dayjs().toDate()],
     });
 
-    this.store.dispatch(TheaterActions.loadTheaters());
+    this.store.dispatch(TheaterActions.loadTheaters({ page: 0, size: 10 }));
     this.store
       .select(selectAllTheaters)
       .pipe(
@@ -109,7 +115,11 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
 
     this.showtimes = [];
     this.store.dispatch(
-      ShowtimeActions.loadShowtimesByTheaterId({ theaterId: theaterId }),
+      ShowtimeActions.loadShowtimesByTheaterId({
+        theaterId: theaterId,
+        page: this.pageIndex,
+        size: this.pageSize,
+      }),
     );
 
     this.store
