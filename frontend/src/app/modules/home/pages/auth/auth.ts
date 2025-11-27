@@ -51,7 +51,7 @@ export class AuthComponent implements OnInit {
 
   initializeForm() {
     this.form = this.fb.group({
-      username: [''],
+      identifier: [''],
       email: [''],
       password: [''],
     });
@@ -60,14 +60,14 @@ export class AuthComponent implements OnInit {
   onSubmit() {
     if (!this.form.valid) return;
     if (this.activeTab() === 'login') {
-      const { username, password } = this.form.value;
+      const { identifier, password } = this.form.value;
       this.store.dispatch(
-        AuthActions.loadLogin({ user: { username, password } }),
+        AuthActions.loadLogin({ user: { identifier, password } }),
       );
     } else {
-      const { username, email, password } = this.form.value;
+      const { identifier, email, password } = this.form.value;
       this.store.dispatch(
-        AuthActions.loadRegister({ user: { username, email, password } }),
+        AuthActions.loadRegister({ user: { username: identifier, email, password } }),
       );
     }
   }
