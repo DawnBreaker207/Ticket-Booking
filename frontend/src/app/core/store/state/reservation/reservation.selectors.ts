@@ -13,6 +13,11 @@ export const selectReservations = createSelector(
   (state) => state.reservations,
 );
 
+export const selectPaginationReservation = createSelector(
+  selectReservationState,
+  (state) => state.pagination,
+);
+
 export const selectReservation = createSelector(
   selectReservationState,
   (state) => state.reservation,

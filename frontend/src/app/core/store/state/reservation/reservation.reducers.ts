@@ -1,12 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 import { Reservation } from '@/app/core/models/reservation.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const reservationFeatureKey = 'reservationKey';
 
 export interface ReservationState {
   reservations: Reservation[];
   reservation: Reservation | null;
+  pagination: Pagination | null;
   reservationId: string | null;
   userId: number | null;
   loading: boolean;
@@ -22,6 +24,7 @@ export interface ReservationState {
 export const initialState: ReservationState = {
   reservations: [],
   reservation: null,
+  pagination: null,
   reservationId: null,
   userId: null,
   currentTTL: null,
@@ -142,13 +145,17 @@ export const reservationReducer = createReducer(
     };
   }),
 
-  on(ReservationActions.loadReservationsSuccess, (state, { reservations }) => {
-    return {
-      ...state,
-      reservations: reservations,
-      loading: false,
-    };
-  }),
+  on(
+    ReservationActions.loadReservationsSuccess,
+    (state, { reservations, pagination }) => {
+      return {
+        ...state,
+        reservations: reservations,
+        pagination: pagination,
+        loading: false,
+      };
+    },
+  ),
 
   on(ReservationActions.loadReservationsFailure, (state, { error }) => {
     return {

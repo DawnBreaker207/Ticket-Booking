@@ -17,8 +17,11 @@ export class ReservationEffects {
       ofType(ReservationActions.loadReservations),
       switchMap(({ filter }) =>
         this.reservationService.getReservations(filter).pipe(
-          map((reservations) =>
-            ReservationActions.loadReservationsSuccess({ reservations }),
+          map(({ content, pagination }) =>
+            ReservationActions.loadReservationsSuccess({
+              reservations: content,
+              pagination: pagination,
+            }),
           ),
           catchError((err) =>
             of(ReservationActions.loadReservationsFailure({ error: err })),

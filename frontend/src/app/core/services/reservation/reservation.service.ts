@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ApiRes } from '@/app/core/models/common.model';
+import { ApiRes, ResponsePage } from '@/app/core/models/common.model';
 import {
   Reservation,
   ReservationFilter,
@@ -43,10 +43,14 @@ export class ReservationService {
       });
     }
 
-    return this.http.get<ApiRes<Reservation[]>>(`${this.URL}`, { params }).pipe(
-      map((res: any) => res.data),
-      catchError(this.handleError<Reservation[]>('Get reervations')),
-    );
+    return this.http
+      .get<ApiRes<ResponsePage<Reservation[]>>>(`${this.URL}`, { params })
+      .pipe(
+        map((res) => res.data),
+        catchError(
+          this.handleError<ResponsePage<Reservation[]>>('Get reservations'),
+        ),
+      );
   }
 
   getReservation(id: string) {

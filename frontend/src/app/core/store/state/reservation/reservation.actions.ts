@@ -5,15 +5,19 @@ import {
   ReservationInitRequest,
   ReservationRequest,
 } from '@/app/core/models/reservation.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const ReservationActions = createActionGroup({
   source: 'Reservation',
   events: {
     // // Reservation
     'Load Reservations': props<{
-      filter?: ReservationFilter;
+      filter: Partial<ReservationFilter>;
     }>(),
-    'Load Reservations Success': props<{ reservations: Reservation[] }>(),
+    'Load Reservations Success': props<{
+      reservations: Reservation[];
+      pagination: Pagination;
+    }>(),
     'Load Reservations Failure': props<{ error: any }>(),
 
     'Load Reservation': props<{ id: string }>(),
