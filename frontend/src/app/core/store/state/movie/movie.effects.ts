@@ -14,10 +14,10 @@ export class MovieEffects {
       ofType(MovieActions.loadMovies),
       switchMap(({ page, size }) =>
         this.movieService.getMovieLists({ page, size }).pipe(
-          map((res) =>
+          map(({ content, pagination }) =>
             MovieActions.loadMoviesSuccess({
-              movies: res.content,
-              pagination: res.pagination,
+              movies: content,
+              pagination: pagination,
             }),
           ),
           catchError((err) =>

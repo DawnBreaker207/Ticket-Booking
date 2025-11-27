@@ -144,7 +144,7 @@ export const movieReducer = createReducer(
     return {
       ...state,
       movies: state.movies.map((m) => (m.id === movie.id ? movie : m)),
-      selectedMovieId:
+      selectedMovie:
         state.selectedMovie?.id === movie.id ? movie : state.selectedMovie,
       saving: false,
       error: null,
