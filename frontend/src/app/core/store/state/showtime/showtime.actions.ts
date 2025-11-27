@@ -4,17 +4,32 @@ import {
   Showtime,
   ShowtimeRequest,
 } from '@/app/core/models/theater.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const ShowtimeActions = createActionGroup({
   source: 'Showtime',
   events: {
     // Load all
-    'Load Showtimes By Movie Id': props<{ movieId: number }>(),
-    'Load Showtimes By Movie Id Success': props<{ showtimes: Showtime[] }>(),
+    'Load Showtimes By Movie Id': props<{
+      movieId: number;
+      page: number;
+      size: number;
+    }>(),
+    'Load Showtimes By Movie Id Success': props<{
+      showtimes: Showtime[];
+      pagination: Pagination;
+    }>(),
     'Load Showtimes By Movie Id Failed': props<{ error: any }>(),
 
-    'Load Showtimes By Theater Id': props<{ theaterId: number }>(),
-    'Load Showtimes By Theater Id Success': props<{ showtimes: Showtime[] }>(),
+    'Load Showtimes By Theater Id': props<{
+      theaterId: number;
+      page: number;
+      size: number;
+    }>(),
+    'Load Showtimes By Theater Id Success': props<{
+      showtimes: Showtime[];
+      pagination: Pagination;
+    }>(),
     'Load Showtimes By Theater Id Failed': props<{ error: any }>(),
 
     // Load simple

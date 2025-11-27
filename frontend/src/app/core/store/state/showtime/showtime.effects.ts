@@ -12,10 +12,13 @@ export class ShowtimeEffects {
   loadShowtimesByMovieId$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShowtimeActions.loadShowtimesByMovieId),
-      switchMap(({ movieId }) =>
-        this.showtimeService.getShowtimeByMovie(movieId).pipe(
-          map((showtimes) =>
-            ShowtimeActions.loadShowtimesByMovieIdSuccess({ showtimes }),
+      switchMap(({ movieId, page, size }) =>
+        this.showtimeService.getShowtimeByMovie(movieId, { page, size }).pipe(
+          map(({ content, pagination }) =>
+            ShowtimeActions.loadShowtimesByMovieIdSuccess({
+              showtimes: content,
+              pagination: pagination,
+            }),
           ),
           catchError((err) =>
             of(ShowtimeActions.loadShowtimesByMovieIdFailed({ error: err })),
@@ -28,15 +31,22 @@ export class ShowtimeEffects {
   loadShowtimesByTheaterId$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShowtimeActions.loadShowtimesByTheaterId),
-      switchMap(({ theaterId }) =>
-        this.showtimeService.getShowtimeByTheater(theaterId).pipe(
-          map((showtimes) =>
-            ShowtimeActions.loadShowtimesByTheaterIdSuccess({ showtimes }),
+      switchMap(({ theaterId, page, size }) =>
+        this.showtimeService
+          .getShowtimeByTheater(theaterId, { page, size })
+          .pipe(
+            map(({ content, pagination }) =>
+              ShowtimeActions.loadShowtimesByTheaterIdSuccess({
+                showtimes: content,
+                pagination: pagination,
+              }),
+            ),
+            catchError((err) =>
+              of(
+                ShowtimeActions.loadShowtimesByTheaterIdFailed({ error: err }),
+              ),
+            ),
           ),
-          catchError((err) =>
-            of(ShowtimeActions.loadShowtimesByTheaterIdFailed({ error: err })),
-          ),
-        ),
       ),
     );
   });

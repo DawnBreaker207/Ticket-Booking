@@ -1,12 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { Showtime } from '@/app/core/models/theater.model';
 import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const showtimeFeatureKey = 'showtimeKey';
 
 export interface ShowtimeState {
   showtimes: Showtime[];
   selectedShowtime: Showtime | null;
+  pagination: Pagination | null;
   movieId: number | null;
   theaterId: number | null;
   loading: boolean;
@@ -18,6 +20,7 @@ export interface ShowtimeState {
 export const initialState: ShowtimeState = {
   showtimes: [],
   selectedShowtime: null,
+  pagination: null,
   movieId: null,
   theaterId: null,
   loading: false,
@@ -50,10 +53,11 @@ export const showtimeReducer = createReducer(
   on(
     ShowtimeActions.loadShowtimesByMovieIdSuccess,
     ShowtimeActions.loadShowtimesByTheaterIdSuccess,
-    (state, { showtimes }) => {
+    (state, { showtimes, pagination }) => {
       return {
         ...state,
         showtimes: showtimes,
+        pagination: pagination,
         loading: false,
         error: null,
       };
@@ -188,7 +192,7 @@ export const showtimeReducer = createReducer(
   on(ShowtimeActions.clearShowtime, (state) => {
     return {
       ...state,
-      selectedTheater: null,
+      selectedShowtime: null,
       error: null,
     };
   }),

@@ -12,6 +12,10 @@ export const selectAllShowtimes = createSelector(
   selectShowtimeState,
   (state) => state.showtimes,
 );
+export const selectPaginationShowtime = createSelector(
+  selectShowtimeState,
+  (state) => state.pagination,
+);
 
 export const selectSelectedShowtime = createSelector(
   selectShowtimeState,
