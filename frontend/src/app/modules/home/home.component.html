@@ -2,7 +2,13 @@
   <app-header />
   <nz-content>
     <div class="relative">
-      <router-outlet />
+      @if (loading()) {
+        <nz-spin nzTip="Loading...">
+          <router-outlet />
+        </nz-spin>
+      } @else {
+        <router-outlet />
+      }
     </div>
   </nz-content>
   <nz-footer>
