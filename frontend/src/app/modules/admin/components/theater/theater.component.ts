@@ -20,6 +20,7 @@ import {
   selectMovieLoading,
   selectMoviesError,
 } from '@/app/core/store/state/movie/movie.selectors';
+import { Pagination } from '@/app/core/models/common.model';
 
 @Component({
   selector: 'app-theater',
@@ -45,12 +46,17 @@ export class TheaterComponent implements OnInit {
   private store = inject(Store);
   headerColumn = headerColumns.theater;
   theaters$ = this.store.select(selectAllTheaters);
-  theaterList: readonly Theater[] = [];
   loading$ = this.store.select(selectMovieLoading);
   error$ = this.store.select(selectMoviesError);
 
+  theaterList: readonly Theater[] = [];
+  pagination: Pagination | null = null;
+
+  pageIndex = 1;
+  pageSize = 10;
+
   ngOnInit() {
-    this.store.dispatch(TheaterActions.loadTheaters());
+    this.store.dispatch(TheaterActions.loadTheaters({ page: 0, size: 10 }));
     this.theaters$.subscribe((data) => {
       this.theaterList = data;
     });

@@ -1,0 +1,19 @@
+<div>
+  <div class="mb-4">
+    <nz-select
+      class="w-full p-2 border border-gray-300 rounded"
+      [ngModel]="selectedTheaterId$ | async"
+      (ngModelChange)="onSelect($event)"
+      nzPlaceHolder="Chọn rạp chiếu"
+    >
+      @if (theaters$ | async; as theaters) {
+        @for (theater of theaters; track theater.id) {
+          <nz-option
+            [nzValue]="theater.id"
+            [nzLabel]="theater.name"
+          ></nz-option>
+        }
+      }
+    </nz-select>
+  </div>
+</div>

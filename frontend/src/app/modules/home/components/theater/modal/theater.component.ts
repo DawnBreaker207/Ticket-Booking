@@ -8,7 +8,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
   templateUrl: './theater.component.html',
   styleUrl: './theater.component.css',
 })
-export class TheaterComponent implements OnInit {
+export class TheaterModalComponent implements OnInit {
   private modelRef = inject(NzModalRef);
   theaters = signal<Theater[]>([]);
   selectedTheaterId = signal<number | null>(null);

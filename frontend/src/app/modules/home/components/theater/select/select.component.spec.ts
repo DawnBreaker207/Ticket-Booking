@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TheaterComponent } from './theater.component';
+import { SelectShowtimeComponent } from './select.component';
 
-describe('TheaterComponent', () => {
-  let component: TheaterComponent;
-  let fixture: ComponentFixture<TheaterComponent>;
+describe('SelectShowtimeComponent', () => {
+  let component: SelectShowtimeComponent;
+  let fixture: ComponentFixture<SelectShowtimeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TheaterComponent],
+      imports: [SelectShowtimeComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TheaterComponent);
+    fixture = TestBed.createComponent(SelectShowtimeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
