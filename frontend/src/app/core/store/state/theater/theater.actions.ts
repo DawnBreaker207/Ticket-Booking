@@ -1,12 +1,16 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Seat, Theater, TheaterRequest } from '@/app/core/models/theater.model';
+import { Theater, TheaterRequest } from '@/app/core/models/theater.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const TheaterActions = createActionGroup({
   source: 'Schedule',
   events: {
     // Load all
-    'Load Theaters': emptyProps(),
-    'Load Theaters Success': props<{ theaters: Theater[] }>(),
+    'Load Theaters': props<{ page: number; size: number }>(),
+    'Load Theaters Success': props<{
+      theaters: Theater[];
+      pagination: Pagination;
+    }>(),
     'Load Theaters Failed': props<{ error: any }>(),
 
     // Load simple
@@ -30,6 +34,7 @@ export const TheaterActions = createActionGroup({
     'Delete Theater Failed': props<{ error: any }>(),
 
     //   UI Actions
+    'Set Selected Theater Id': props<{ theaterId: number | null }>(),
     'Selected Theater': props<{ theater: Theater | null }>(),
     'Clear Error': emptyProps(),
     'Clear Selected Theater': emptyProps(),

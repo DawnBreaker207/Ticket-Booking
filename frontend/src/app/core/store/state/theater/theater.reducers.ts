@@ -1,12 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { Theater } from '@/app/core/models/theater.model';
+import { Pagination } from '@/app/core/models/common.model';
 
 export const theaterFeatureKey = 'theaterKey';
 
 export interface TheaterState {
   theaters: Theater[];
   selectedTheater: Theater | null;
+  selectedTheaterId: number | null;
+  pagination: Pagination | null;
   loading: boolean;
   loadingDetails: boolean;
   saving: boolean;
@@ -16,6 +19,8 @@ export interface TheaterState {
 export const initialState: TheaterState = {
   theaters: [],
   selectedTheater: null,
+  selectedTheaterId: null,
+  pagination: null,
   loading: false,
   loadingDetails: false,
   saving: false,
@@ -32,10 +37,11 @@ export const theaterReducer = createReducer(
       error: null,
     };
   }),
-  on(TheaterActions.loadTheatersSuccess, (state, { theaters }) => {
+  on(TheaterActions.loadTheatersSuccess, (state, { theaters, pagination }) => {
     return {
       ...state,
       theaters: theaters,
+      pagination: pagination,
       loading: false,
       error: null,
     };
@@ -171,4 +177,9 @@ export const theaterReducer = createReducer(
       error: null,
     };
   }),
+
+  on(TheaterActions.setSelectedTheaterId, (state, { theaterId }) => ({
+    ...state,
+    selectedTheaterId: theaterId,
+  })),
 );
