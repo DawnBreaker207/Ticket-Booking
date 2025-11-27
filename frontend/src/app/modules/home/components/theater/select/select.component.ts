@@ -1,10 +1,13 @@
-import {Component, inject} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {selectAllTheaters, selectSelectedTheaterId} from '@/app/core/store/state/theater/theater.selectors';
-import {NzSelectModule} from 'ng-zorro-antd/select';
-import {AsyncPipe} from '@angular/common';
-import {TheaterActions} from '@/app/core/store/state/theater/theater.actions';
-import {FormsModule} from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import {
+  selectAllTheaters,
+  selectSelectedTheaterId,
+} from '@/app/core/store/state/theater/theater.selectors';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { AsyncPipe } from '@angular/common';
+import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-theater-select',
@@ -19,6 +22,8 @@ export class SelectShowtimeComponent {
   selectedTheaterId$ = this.store.select(selectSelectedTheaterId);
 
   onSelect(theaterId: number) {
-    this.store.dispatch(TheaterActions.setSelectedTheaterId({theaterId: theaterId}));
+    this.store.dispatch(
+      TheaterActions.setSelectedTheaterId({ theaterId: theaterId }),
+    );
   }
 }

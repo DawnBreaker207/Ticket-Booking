@@ -99,7 +99,7 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    this.store.dispatch(TheaterActions.loadTheaters());
+    this.store.dispatch(TheaterActions.loadTheaters({ page: 0, size: 10 }));
     const { mode, id } = this.modelRef.getConfig().nzData;
     this.mode = mode;
     this.showtimeId = id;
