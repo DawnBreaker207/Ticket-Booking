@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -6,7 +6,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { headerColumns } from '@/app/core/constants/column';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import {
   PaymentMethod,
   PaymentStatus,
@@ -21,12 +21,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReportService } from '@/app/core/services/report/report.service';
 import { saveAs } from 'file-saver';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import {
-  Reservation,
-  ReservationFilter,
-} from '@/app/core/models/reservation.model';
+import { Reservation } from '@/app/core/models/reservation.model';
 import { Store } from '@ngrx/store';
-import { selectReservations } from '@/app/core/store/state/reservation/reservation.selectors';
+import {
+  selectPaginationReservation,
+  selectReservations,
+} from '@/app/core/store/state/reservation/reservation.selectors';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 import { FormReservationComponent } from '@/app/modules/admin/components/reservation/form/form.component';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
@@ -35,6 +35,8 @@ import {
   selectMoviesError,
 } from '@/app/core/store/state/movie/movie.selectors';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { Pagination } from '@/app/core/models/common.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-reservation',
@@ -53,25 +55,37 @@ import { NzAlertComponent } from 'ng-zorro-antd/alert';
     NzDropDownModule,
     NzSpinComponent,
     NzAlertComponent,
+    AsyncPipe,
   ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.css',
   providers: [NzModalService],
 })
-export class ReservationComponent implements OnInit {
+export class ReservationComponent implements OnInit, OnDestroy {
   form!: FormGroup;
+
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private modalService = inject(NzModalService);
   private reportService = inject(ReportService);
-  headerColumn = headerColumns.reservation;
-  reservationList: readonly Reservation[] = [];
+
+  reservation$ = this.store.select(selectReservations);
+  pagination$ = this.store.select(selectPaginationReservation);
+  loading$ = this.store.select(selectMovieLoading);
+  error$ = this.store.select(selectMoviesError);
+
+  private destroy$ = new Subject<void>();
   reservationStatus: ReservationStatus[] = ['CREATED', 'CONFIRMED', 'CANCELED'];
   paymentMethod: PaymentMethod[] = ['MOMO', 'VNPAY', 'ZALOPAY'];
   paymentStatus: PaymentStatus[] = ['PENDING', 'PAID', 'CANCELED'];
-  reservation$ = this.store.select(selectReservations);
-  loading$ = this.store.select(selectMovieLoading);
-  error$ = this.store.select(selectMoviesError);
+
+  pageIndex = 1;
+  pageSize = 10;
+
+  reservationList: readonly Reservation[] = [];
+  pagination: Pagination | null = null;
+
+  headerColumn = headerColumns.reservation;
 
   ngOnInit() {
     this.initialForm();
@@ -80,11 +94,8 @@ export class ReservationComponent implements OnInit {
 
   loadData() {
     this.store.dispatch(
-      ReservationActions.loadReservations({ filter: this.form.value }),
+      ReservationActions.loadReservations({ filter: this.getFilter() }),
     );
-    this.reservation$.subscribe((data) => {
-      this.reservationList = data;
-    });
   }
 
   initialForm() {
@@ -96,6 +107,41 @@ export class ReservationComponent implements OnInit {
       totalAmount: [null],
       sortBy: ['newest'],
     });
+  }
+
+  private getFilter() {
+    const formValue = this.form.value;
+    return {
+      query: formValue.query || undefined,
+      userId: formValue.userId || undefined,
+      reservationStatus: formValue.reservationStatus || undefined,
+      dateFrom: formValue.dateRange
+        ? formatDate(formValue.dateRange[0])
+        : undefined,
+      dateTo: formValue.dateRange
+        ? formatDate(formValue.dateRange[1])
+        : undefined,
+      totalAmount: formValue.totalAmount || undefined,
+      sortBy: formValue.sortBy,
+      page: this.pageIndex - 1,
+      size: this.pageSize,
+    };
+  }
+
+  onPageChange(page: number) {
+    this.pageIndex = page;
+    this.loadData();
+  }
+
+  onSubmit() {
+    this.pageIndex = 1;
+    this.loadData();
+  }
+
+  onSizeChange(size: number) {
+    this.pageSize = size;
+    this.pageIndex = 1;
+    this.loadData();
   }
 
   openModal(reservationId: string) {
@@ -112,6 +158,13 @@ export class ReservationComponent implements OnInit {
     });
   }
 
+  clearFilter() {
+    this.form.reset();
+    this.pageIndex = 1;
+    this.pageSize = 10;
+    this.loadData();
+  }
+
   exportReport(type: string) {
     this.reportService.downloadReport(type).subscribe((res) => {
       const ext = type === 'excel' ? 'xlsx' : type;
@@ -119,31 +172,8 @@ export class ReservationComponent implements OnInit {
     });
   }
 
-  clearFilter() {
-    this.form.reset();
-    this.loadData();
-  }
-
-  onSubmit() {
-    // if (!this.form.invalid) return;
-    const formValue = this.form.value;
-    const filter = {
-      query: formValue.query,
-      userId: formValue.userId,
-      reservationStatus: formValue.reservationStatus,
-      dateFrom: formValue.dateRange ? formatDate(formValue.dateRange[0]) : null,
-      dateTo: formValue.dateRange ? formatDate(formValue.dateRange[1]) : null,
-      totalAmount: formValue.totalAmount,
-      sortBy: formValue.sortBy,
-    };
-
-    this.store.dispatch(
-      ReservationActions.loadReservations({
-        filter: filter as ReservationFilter,
-      }),
-    );
-    this.store.select(selectReservations).subscribe((data) => {
-      this.reservationList = data;
-    });
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
