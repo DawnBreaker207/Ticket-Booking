@@ -43,7 +43,6 @@ public class AuthController {
                                     .toString());
                 }}
         );
-
     }
 
     @PostMapping("/refresh-token")

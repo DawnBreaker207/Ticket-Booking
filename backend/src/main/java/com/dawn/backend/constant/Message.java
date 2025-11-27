@@ -25,6 +25,7 @@ public class Message {
         public static final String USER_NOT_FOUND = "User not found";
         public static final String USERNAME_EXISTED = "Username already exists";
         public static final String USERNAME_NOT_FOUND = "Username not found";
+        public static final String EMAIL_NOT_FOUND = "Email not found";
         public static final String EMAIL_EXISTED = "Email already exists";
 
         //    Role

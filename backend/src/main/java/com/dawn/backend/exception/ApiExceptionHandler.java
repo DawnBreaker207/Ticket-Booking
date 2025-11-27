@@ -25,6 +25,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = {
             UserNotFoundException.class,
             UserEmailExistedException.class,
+            UserEmailNotFoundException.class,
             UserPasswordNotMatchException.class,
             UsernameExistedException.class,
             MovieNotFoundException.class,

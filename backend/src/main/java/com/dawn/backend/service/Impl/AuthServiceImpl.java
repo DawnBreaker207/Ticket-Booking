@@ -6,10 +6,7 @@ import com.dawn.backend.dto.request.LoginRequestDTO;
 import com.dawn.backend.dto.request.RegisterRequestDTO;
 import com.dawn.backend.dto.response.JwtResponseDTO;
 import com.dawn.backend.dto.response.TokenRefreshResponseDTO;
-import com.dawn.backend.exception.wrapper.RefreshTokenExpiredException;
-import com.dawn.backend.exception.wrapper.RefreshTokenNotFoundException;
-import com.dawn.backend.exception.wrapper.UserEmailExistedException;
-import com.dawn.backend.exception.wrapper.UsernameExistedException;
+import com.dawn.backend.exception.wrapper.*;
 import com.dawn.backend.model.RefreshToken;
 import com.dawn.backend.model.Role;
 import com.dawn.backend.model.User;
@@ -72,20 +69,32 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         Role userRole = roleRepository
-                        .findByName(URole.USER)
-                        .orElseThrow(() -> new IllegalArgumentException(Message.Exception.ROLE_NOT_FOUND));
+                .findByName(URole.USER)
+                .orElseThrow(() -> new IllegalArgumentException(Message.Exception.ROLE_NOT_FOUND));
 
         user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
 
-        log.info("User registered successfully: {}",newUser.getUsername());
+        log.info("User registered successfully: {}", newUser.getUsername());
     }
 
     @Override
     @Transactional
     public JwtResponseDTO login(LoginRequestDTO user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        String identifier = user.getIdentifier();
+
+        //   Detect email
+        String loginKey = identifier.contains("@")
+                ? userRepository
+                .findByEmail(identifier)
+                .orElseThrow(() ->
+                        new UserEmailNotFoundException(Message.Exception.EMAIL_NOT_FOUND))
+                .getEmail()
+                : identifier;
+        Authentication authentication = authenticationManager
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(loginKey, user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jWTUtils.generateToken(authentication);
 

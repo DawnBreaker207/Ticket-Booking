@@ -13,9 +13,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class LoginRequestDTO {
-    @NotBlank(message = "Username is not mandatory")
+    @NotBlank(message = "Username or email is not mandatory")
     @Size(min = 1, max = 100)
-    private String username;
+    private String identifier;
 
     @NotBlank(message = "Password is not mandatory")
     @Min(value = 6, message = "Password is required 8 characters above")
