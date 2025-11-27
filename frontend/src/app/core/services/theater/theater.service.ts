@@ -9,7 +9,7 @@ import {
   Theater,
   TheaterRequest,
 } from '@/app/core/models/theater.model';
-import { ApiRes } from '@/app/core/models/common.model';
+import { ApiRes, ResponsePage } from '@/app/core/models/common.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,11 +21,33 @@ export class TheaterService {
   private http = inject(HttpClient);
 
   // Theater
-  getTheaters() {
-    return this.http.get<ApiRes<Theater[]>>(`${this.URL_THEATER}`).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<Theater[]>('theater')),
-    );
+  getTheaters(query?: any) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
+    return this.http
+      .get<ApiRes<ResponsePage<Theater[]>>>(`${this.URL_THEATER}`, { params })
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<ResponsePage<Theater[]>>('theater')),
+      );
+  }
+
+  getTheaterByLocation(location: string) {
+    const params = new HttpParams().set('location', location);
+    return this.http
+      .get<
+        ApiRes<ResponsePage<Theater[]>>
+      >(`${this.URL_THEATER}/search`, { params })
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<ResponsePage<Theater[]>>('theater')),
+      );
   }
 
   getTheater(id: number) {
@@ -33,16 +55,6 @@ export class TheaterService {
       map((res) => res.data),
       catchError(this.handleError<Theater>('theater')),
     );
-  }
-
-  getTheaterByLocation(location: string) {
-    const params = new HttpParams().set('location', location);
-    return this.http
-      .get<ApiRes<Theater>>(`${this.URL_THEATER}/search`, { params })
-      .pipe(
-        map((res) => res.data),
-        catchError(this.handleError<Theater>('theater')),
-      );
   }
 
   createTheater(theater: TheaterRequest) {
@@ -79,21 +91,41 @@ export class TheaterService {
       );
   }
 
-  getShowtimeByMovie(movieId: number) {
+  getShowtimeByMovie(movieId: number, query?: any) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
     return this.http
-      .get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/movies/${movieId}`)
+      .get<
+        ApiRes<ResponsePage<Showtime[]>>
+      >(`${this.URL_SHOWTIME}/movies/${movieId}`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<Showtime[]>('showtime')),
+        catchError(this.handleError<ResponsePage<Showtime[]>>('showtime')),
       );
   }
 
-  getShowtimeByTheater(theaterId: number) {
+  getShowtimeByTheater(theaterId: number, query?: any) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
     return this.http
-      .get<ApiRes<Showtime[]>>(`${this.URL_SHOWTIME}/theaters/${theaterId}`)
+      .get<
+        ApiRes<ResponsePage<Showtime[]>>
+      >(`${this.URL_SHOWTIME}/theaters/${theaterId}`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<Showtime[]>('showtime')),
+        catchError(this.handleError<ResponsePage<Showtime[]>>('showtime')),
       );
   }
 
