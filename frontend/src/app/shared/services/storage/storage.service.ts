@@ -7,6 +7,7 @@ import { Jwt } from '@/app/core/models/jwt.model';
 export class StorageService {
   private readonly JWT_KEY = 'jwt';
   private readonly ACCESS_TOKEN_KEY = 'accessToken';
+  private readonly SELECTED_THEATER_KEY = 'selectedTheaterId';
 
   setJWT(jwt: Jwt) {
     try {
@@ -57,6 +58,28 @@ export class StorageService {
       console.error(`Failed to parse ${key}`, error);
       return null;
     }
+  }
+
+  setSelectedTheaterId(theaterId: number) {
+    try {
+      localStorage.setItem(this.SELECTED_THEATER_KEY, theaterId.toString());
+    } catch (error) {
+      console.error(`Failed to set selected theater `, theaterId);
+    }
+  }
+
+  getSelectedTheaterId() {
+    try {
+      const id = localStorage.getItem(this.SELECTED_THEATER_KEY);
+      return id ? Number(id) : null;
+    } catch (error) {
+      console.error(`Failed to get selected theater `);
+      return null;
+    }
+  }
+
+  clearSelectedTheaterId() {
+    localStorage.removeItem(this.SELECTED_THEATER_KEY);
   }
 
   removeItem(key: string) {
