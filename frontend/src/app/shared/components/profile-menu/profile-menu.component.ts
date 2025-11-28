@@ -11,10 +11,11 @@ import { Store } from '@ngrx/store';
 import { selectJwt } from '@/app/core/store/state/auth/auth.selectors';
 import { AsyncPipe } from '@angular/common';
 import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @Component({
   selector: 'app-profile-menu',
-  imports: [LucideAngularModule, NzDropDownModule, AsyncPipe],
+  imports: [LucideAngularModule, NzDropDownModule, AsyncPipe, NzAvatarModule],
   templateUrl: './profile-menu.component.html',
   styleUrl: './profile-menu.component.css',
 })
