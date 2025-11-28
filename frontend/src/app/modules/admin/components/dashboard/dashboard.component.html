@@ -58,44 +58,24 @@
 
     <!-- Chart-->
     <nz-row nzGutter="16" class="mt-4">
-      <nz-col nzSpan="12">
-        <nz-card>
-          <div class="font-bold text-xl">Revenue Over Time</div>
-          <div style="height: 250px">
-            <!-- Line Chart  -->
-            <app-revenue-chart />
-          </div>
-        </nz-card>
+      <nz-col nzSpan="14">
+        <!-- Line Chart  -->
+        <app-revenue-chart />
       </nz-col>
-      <nz-col nzSpan="12">
-        <nz-card>
-          <div class="font-bold text-xl">Top Movies</div>
-          <div style="height: 250px">
-            <!-- Bar Chart  -->
-            <app-movie-chart />
-          </div>
-        </nz-card>
+      <nz-col nzSpan="10">
+        <!-- Pie Chart  -->
+        <app-payment-chart />
       </nz-col>
     </nz-row>
 
     <nz-row nzGutter="16" class="mt-4">
-      <nz-col nzSpan="12">
-        <nz-card>
-          <div class="font-bold text-xl">Top Theaters</div>
-          <div style="height: 250px">
-            <!-- Bar Chart  -->
-            <app-theater-chart />
-          </div>
-        </nz-card>
+      <nz-col nzSpan="8">
+        <!-- Bar Chart  -->
+        <app-theater-chart />
       </nz-col>
-      <nz-col nzSpan="12">
-        <nz-card>
-          <div class="font-bold text-xl">Payment Distribution</div>
-          <div style="height: 250px">
-            <!-- Pie Chart  -->
-            <app-payment-chart />
-          </div>
-        </nz-card>
+      <nz-col nzSpan="16">
+        <!-- Bar Chart  -->
+        <app-movie-chart />
       </nz-col>
     </nz-row>
 
