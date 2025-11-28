@@ -12,16 +12,37 @@ const routes: Routes = [
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'movie', component: MovieComponent },
-      { path: 'theater', component: TheaterComponent },
-      { path: 'showtime', component: ShowtimeComponent },
-      { path: 'reservation', component: ReservationComponent },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        data: { breadcrumb: 'Dashboard' },
+      },
+      {
+        path: 'movie',
+        component: MovieComponent,
+        data: { breadcrumb: 'Movie Manager' },
+      },
+      {
+        path: 'theater',
+        component: TheaterComponent,
+        data: { breadcrumb: 'Theater Manager' },
+      },
+      {
+        path: 'showtime',
+        component: ShowtimeComponent,
+        data: { breadcrumb: 'Showtime Manager' },
+      },
+      {
+        path: 'reservation',
+        component: ReservationComponent,
+        data: { breadcrumb: 'Reservation Manager' },
+      },
     ],
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'errors/404' },
 ];
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
