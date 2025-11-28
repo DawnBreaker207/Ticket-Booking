@@ -4,10 +4,12 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { TopTheater } from '@/app/core/models/dashboard.model';
 import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-theater-chart',
-  imports: [NgxEchartsDirective],
+  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule],
   templateUrl: './theater-chart.component.html',
   styleUrl: './theater-chart.component.css',
 })
@@ -29,31 +31,63 @@ export class TheaterChartComponent implements OnInit {
   }
 
   loadChartData(name: string[], data: any[]) {
-    const colors = ['#5470C6', '#91CC75', '#FAC858', '#EE6666', '#73C0DE'];
     this.options = {
       tooltip: {
         trigger: 'item',
-        formatter: (params: any) => {
-          const value = params.value ?? 0;
-          return `${params.name}:${this.currency.transform(value)}`;
-        },
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+        top: '10%',
       },
       xAxis: {
-        type: 'value',
-      },
-      yAxis: {
         type: 'category',
         data: name,
+        axisLabel: {
+          interval: 0,
+          rotate: 0,
+          color: '#666',
+        },
+        axisTick: {
+          show: false,
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#e0e0e0',
+          },
+        },
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: {
+          lineStyle: {
+            type: 'dashed',
+            color: '#f0f0f0',
+          },
+        },
       },
       series: [
         {
+          name: 'Revenue',
           type: 'bar',
-          data: data.map((val, idx) => ({
-            value: val,
-            itemStyle: {
-              color: colors[idx % colors.length],
+          barWidth: '40%',
+          data: data,
+          itemStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                { offset: 0, color: '#ff7a45' },
+                { offset: 1, color: '#ffc069' },
+              ],
             },
-          })),
+            borderRadius: [4, 4, 0, 0],
+          },
         },
       ],
     };
