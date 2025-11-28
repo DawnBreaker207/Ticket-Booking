@@ -56,7 +56,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             	m.title
             ORDER BY
             	ticketSold DESC
-            LIMIT 10
+            LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopMovie(
             @Param("from") LocalDateTime from,

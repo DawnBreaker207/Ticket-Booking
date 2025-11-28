@@ -40,7 +40,7 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
             	t.name
             ORDER BY
             	ticketsSold DESC
-            LIMIT 10
+            LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopTheaters(
             @Param("from") LocalDateTime from,
