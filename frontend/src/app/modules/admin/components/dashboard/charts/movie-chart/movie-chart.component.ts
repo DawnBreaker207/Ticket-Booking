@@ -4,10 +4,12 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { TopMovie } from '@/app/core/models/dashboard.model';
 import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-movie-chart',
-  imports: [NgxEchartsDirective],
+  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule],
   templateUrl: './movie-chart.component.html',
   styleUrl: './movie-chart.component.css',
 })
@@ -28,31 +30,33 @@ export class MovieChartComponent implements OnInit {
   }
 
   loadChartData(name: string[], data: any[]) {
-    const colors = ['#5470C6', '#91CC75', '#FAC858', '#EE6666', '#73C0DE'];
     this.options = {
       tooltip: {
-        trigger: 'item',
-        formatter: (params: any) => {
-          const value = params.value ?? 0;
-          return `${this.currency.transform(value)}`;
-        },
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
       },
+      grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
       xAxis: {
         type: 'value',
+        boundaryGap: [0, 0.01],
+        splitLine: { lineStyle: { type: 'dashes', color: '#f0f0f0' } },
       },
       yAxis: {
         type: 'category',
         data: name,
+        axisLine: { show: false },
+        axisTick: { show: false },
       },
       series: [
         {
+          name: 'Revenue',
           type: 'bar',
-          data: data.map((val, idx) => ({
-            value: val,
-            itemStyle: {
-              color: colors[idx % colors.length],
-            },
-          })),
+          data: data,
+          itemStyle: {
+            color: '#1890ff',
+            borderRadius: [0, 4, 4, 0],
+          },
+          barWidth: 20,
         },
       ],
     };
