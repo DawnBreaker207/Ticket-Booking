@@ -12,12 +12,7 @@ import { provideStore } from '@ngrx/store';
 import { icons } from './icons-provider';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
-import {
-  CommonModule,
-  CurrencyPipe,
-  registerLocaleData,
-} from '@angular/common';
-import en from '@angular/common/locales/en';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -56,27 +51,9 @@ import {
   seatReducer,
 } from '@/app/core/store/state/seat/seat.reducers';
 import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
-import { provideEchartsCore } from 'ngx-echarts';
-import * as echarts from 'echarts/core';
-import { BarChart, LineChart, PieChart } from 'echarts/charts';
-import {
-  GridComponent,
-  LegendComponent,
-  TooltipComponent,
-} from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
+import { NgxEchartsModule } from 'ngx-echarts';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 
-registerLocaleData(en);
-echarts.use([
-  GridComponent,
-  TooltipComponent,
-  LegendComponent,
-  CanvasRenderer,
-  BarChart,
-  LineChart,
-  PieChart,
-]);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -91,6 +68,8 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideRouter(routes),
+    provideNzIcons(icons),
+    provideNzI18n(en_US),
     provideStore({
       [authFeatureKey]: authReducer,
       [movieFeatureKey]: movieReducer,
@@ -107,9 +86,11 @@ export const appConfig: ApplicationConfig = {
       ReservationEffects,
       SeatEffects,
     ]),
-    provideEchartsCore({ echarts }),
-    provideNzIcons(icons),
-    provideNzI18n(en_US),
+    importProvidersFrom(
+      NgxEchartsModule.forRoot({
+        echarts: () => import('echarts'),
+      }),
+    ),
     importProvidersFrom(CommonModule, FormsModule, ReactiveFormsModule),
     provideAnimationsAsync(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
