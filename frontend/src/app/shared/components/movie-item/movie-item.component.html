@@ -1,23 +1,26 @@
 <div
-  class="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full">
-
+  class="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full"
+>
   <!-- Poster -->
   <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
-    <img [src]="movie().poster"
-         [alt]="movie().title"
-         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+    <img
+      [src]="movie().poster"
+      [alt]="movie().title"
+      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+    />
 
     <!-- Overlay Buttons -->
     <div
-      class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 z-20">
+      class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 z-20"
+    >
       <!-- Detail -->
       <button
         [routerLink]="['/movie/detail', movie().id]"
         class="bg-white text-gray-900 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg border-none cursor-pointer"
-        title="Xem chi tiết">
-        <nz-icon nzType="info-circle" class="text-xl"/>
+        title="Xem chi tiết"
+      >
+        <nz-icon nzType="info-circle" class="text-xl" />
       </button>
-
     </div>
   </div>
 
@@ -26,7 +29,8 @@
     <h3
       [routerLink]="['/movie/detail', movie().id]"
       class="font-bold text-gray-800 text-lg line-clamp-1 mb-1 group-hover:text-primary transition-colors cursor-pointer"
-      [title]="movie().title">
+      [title]="movie().title"
+    >
       {{ movie().title }}
     </h3>
 
@@ -34,12 +38,12 @@
     <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
       <!-- Genres -->
       <span class="truncate max-w-[60%]" [title]="movie().genres.join(', ')">
-        {{ movie().genres.join(', ') }}
+        {{ movie().genres.join(", ") }}
       </span>
 
       <!-- Durations -->
       <span class="flex items-center gap-1 shrink-0">
-        <nz-icon nzType="clock-circle"/>
+        <nz-icon nzType="clock-circle" />
         {{ movie().duration }} phút
       </span>
     </div>
@@ -50,9 +54,9 @@
       nzBlock
       nzType="default"
       (click)="onSelectMovie(movie().id)"
-      class="mt-auto border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-lg transition-colors h-10">
+      class="mt-auto border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-lg transition-colors h-10"
+    >
       Mua Vé
     </button>
   </div>
-
 </div>

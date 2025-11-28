@@ -1,20 +1,15 @@
-import {Component, input, output} from '@angular/core';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {RouterLink} from '@angular/router';
-import {Movie} from '@/app/core/models/movie.model';
-import {NzTypographyModule} from 'ng-zorro-antd/typography';
-import {NzIconModule} from 'ng-zorro-antd/icon';
+import { Component, input, output } from '@angular/core';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { RouterLink } from '@angular/router';
+import { Movie } from '@/app/core/models/movie.model';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-movie-item',
-  imports: [
-    RouterLink,
-    NzIconModule,
-    NzButtonComponent,
-    NzTypographyModule
-  ],
+  imports: [RouterLink, NzIconModule, NzButtonComponent, NzTypographyModule],
   templateUrl: './movie-item.component.html',
-  styleUrl: './movie-item.component.css'
+  styleUrl: './movie-item.component.css',
 })
 export class MovieItemComponent {
   movie = input.required<Movie>();
