@@ -1,1 +1,17 @@
-<div echarts [options]="options" class="h-full"></div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+  <div class="flex justify-between items-center mb-4">
+    <h4 class="text-base font-bold text-gray-800 flex items-center gap-2">
+      <!--      <nz-icon nzType="pay-circle" nzTheme="fill" class="text-primary"/>-->
+      Revenue Over Time
+    </h4>
+    <button
+      nz-button
+      nzType="text"
+      nzSize="small"
+      class="text-gray-400 hover:bg-gray-100"
+    >
+      <nz-icon nzType="more" nzTheme="outline" class="text-xl" />
+    </button>
+  </div>
+  <div echarts [options]="options" class="w-full h-[350px]"></div>
+</div>
