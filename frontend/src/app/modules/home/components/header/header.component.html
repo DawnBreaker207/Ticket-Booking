@@ -1,43 +1,59 @@
 <nz-header nz-menu nzTheme="light" style="height: auto">
-  <div class="w-full">
-    <div class="flex flex-col w-full max-w-5xl mx-auto">
-      <!---->
-      <div class="flex items-center justify-end h-10 px-4 md:px-6">
-        @if (authService.isAuthenticated()) {
-          <app-profile-menu />
-        } @else {
-          <a href="/login">
-            <span class="uppercase">Đăng nhập/ đăng ký</span>
-          </a>
-        }
-      </div>
-    </div>
-  </div>
-  <!---->
   <div
-    class="w-full bg-[url('/assets/bg-header.png')] bg-repeat-x bg-bottom h-32"
+    class="w-full bg-[url('/assets/bg-header.png')] bg-repeat-x bg-bottom h-[7.5rem]"
   >
     <div
-      class="max-w-5xl mx-auto flex space-x-40 items-center h-full px-4 md:px-6"
+      class="max-w-5xl mx-auto flex gap-6 items-center justify-between h-full"
     >
-      <!-- Logo-->
-      <a href="#" class="flex items-center">
-        <p>Logo</p>
-      </a>
+      <!-- LEFT SIDE-->
+      <div class="flex items-center gap-6">
+        <a
+          routerLink="/"
+          class="flex items-center gap-2 group cursor-pointer text-decoration-none shrink-0"
+        >
+          <nz-icon
+            nzType="shop"
+            nzTheme="fill"
+            class="text-3xl text-primary group-hover:scale-110 transition-transform"
+          />
+          <span
+            class="text-2xl font-bold tracking-tighter text-gray-900 hidden sm:block"
+            >CINE<span class="text-primary">PLEX</span></span
+          >
+        </a>
 
-      <app-theater-select />
+        <div class="hidden md:block h-8 w-px bg-gray-300"></div>
 
-      <!-- Menu-->
-      <div class="flex space-x-4 items-center">
+        <app-theater-select />
+      </div>
+
+      <!-- MIDDLE: Navigation-->
+      <div
+        class="hidden lg:flex items-center gap-8 font-medium text-gray-600 text-sm xl:text-base"
+      >
         @for (header of headers; track header) {
-          <button
-            nz-button
-            nzType="text"
-            class="font-bold!"
+          <a
+            class="hover:text-primary transition-colors py-2"
             [routerLink]="header.path"
           >
             {{ header.name | uppercase }}
-          </button>
+          </a>
+        }
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="flex items-center gap-3 h-10 shrink-8">
+        @if (authService.isAuthenticated()) {
+          <app-profile-menu />
+        } @else {
+          <a
+            routerLink="/login"
+            nz-button
+            nzType="primary"
+            class="rounded-full px-5 md:px-6 font-semibold shadow-lg shadow-blue-200 hover:scale-105 transition-transform"
+          >
+            Đăng Nhập
+          </a>
         }
       </div>
     </div>

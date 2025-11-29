@@ -7,6 +7,7 @@ import { NzMenuDirective } from 'ng-zorro-antd/menu';
 import { ProfileMenuComponent } from '@/app/shared/components/profile-menu/profile-menu.component';
 import { AuthService } from '@/app/core/services/auth/auth.service';
 import { SelectShowtimeComponent } from '@/app/modules/home/components/theater/select/select.component';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ import { SelectShowtimeComponent } from '@/app/modules/home/components/theater/s
     NzMenuDirective,
     ProfileMenuComponent,
     SelectShowtimeComponent,
+    NzIconModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
