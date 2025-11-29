@@ -44,6 +44,13 @@ export class AuthEffects {
       ofType(AuthActions.loadRegister),
       switchMap(({ user }) =>
         this.authService.register(user).pipe(
+          tap(() => {
+            this.toastService.createNotification({
+              message: 'Đăng ký thành công',
+              title: 'Thành công',
+              type: 'success',
+            });
+          }),
           map((token) => AuthActions.loadRegisterSuccess({ token })),
           catchError((err) =>
             of(AuthActions.loadRegisterFailure({ error: err })),
