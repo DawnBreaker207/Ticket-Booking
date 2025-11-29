@@ -1,14 +1,5 @@
 export const headerColumns = {
-  movie: [
-    '#',
-    'Title',
-    'Poster',
-    'Overview',
-    'Genre',
-    'Duration',
-    'Release',
-    'Action',
-  ],
+  movie: ['Poster', 'Info', 'Genre', 'Status', 'Action'],
   theater: [
     '#',
     'Name',

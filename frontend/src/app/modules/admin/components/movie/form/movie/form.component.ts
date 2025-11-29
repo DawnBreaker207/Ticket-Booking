@@ -29,6 +29,7 @@ import { Movie } from '@/app/core/models/movie.model';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { AsyncPipe } from '@angular/common';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-movie-form',
@@ -49,6 +50,7 @@ import { NzAlertComponent } from 'ng-zorro-antd/alert';
     NzSpinComponent,
     AsyncPipe,
     NzAlertComponent,
+    NzIconModule,
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.css',
@@ -199,56 +201,50 @@ export class FormMovieComponent implements OnInit, OnDestroy {
   openMovieModal() {
     const modal = this.modalService.create({
       nzContent: FormMovieAPIComponent,
-      nzTitle: undefined,
+      nzTitle: 'Search Movie',
       nzClosable: true,
       nzWidth: 800,
       nzKeyboard: true,
-      nzFooter: [
-        {
-          label: 'Confirm',
-          type: 'primary',
-          onClick: () => {
-            const formComponent = modal.getContentComponent();
-            const selected = formComponent.selectedMovie();
+      nzFooter: null,
+    });
 
-            if (!selected) return;
+    modal.afterClose.subscribe((selectMovie: any) => {
+      if (!selectMovie) return;
 
-            this.movieService
-              .getMovieDetails(selected.id)
-              .pipe(
-                map((movie: any) => ({
-                  ...movie,
-                  poster_path: `${this.imageBase}/${movie.poster_path}`,
-                  genres: movie.genres.map((g: any) =>
-                    g.name.replace(/^Phim\s/i, ''),
-                  ),
-                })),
-                take(1),
-                takeUntil(this.destroy$),
-              )
-              .subscribe({
-                next: (result: any) => {
-                  this.form.patchValue({
-                    title: result.title,
-                    poster: result.poster_path,
-                    overview: result.overview,
-                    duration: result.runtime,
-                    language: result.original_language,
-                    genres: result.genres,
-                    releaseDate: result.release_date,
-                    imdbId: result.imdb_id,
-                    filmId: result.id,
-                  });
-                  this.form.markAsDirty();
-                  modal.close();
-                },
-                error: (error) => {
-                  console.error('Failed to fetch movie details', error);
-                },
-              });
+      this.movieService
+        .getMovieDetails(selectMovie.id)
+        .pipe(
+          map((movie: any) => ({
+            ...movie,
+            poster_path: movie.poster_path
+              ? `${this.imageBase}/${movie.poster_path}`
+              : '',
+            genres: movie.genres
+              ? movie.genres.map((g: any) => g.name.replace(/^Phim\s/i, ''))
+              : [],
+          })),
+          take(1),
+          takeUntil(this.destroy$),
+        )
+        .subscribe({
+          next: (result: any) => {
+            this.form.patchValue({
+              title: result.title,
+              poster: result.poster_path,
+              overview: result.overview,
+              duration: result.runtime,
+              language: result.original_language,
+              genres: result.genres,
+              releaseDate: result.release_date,
+              imdbId: result.imdb_id,
+              filmId: result.id,
+            });
+            this.form.markAsDirty();
           },
-        },
-      ],
+          error: (error) => {
+            console.error('Failed to fetch movie details', error);
+          },
+        });
     });
   }
 }

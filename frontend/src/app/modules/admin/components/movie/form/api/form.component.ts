@@ -1,12 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MovieService } from '@/app/core/services/movie/movie.service';
-import { DatePipe, NgClass } from '@angular/common';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { DatePipe } from '@angular/common';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
 
 @Component({
   selector: 'movie-form-api',
@@ -18,7 +20,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzAvatarModule,
     NzInputModule,
     NzButtonModule,
-    NgClass,
+    NzIconModule,
+    NzSpinComponent,
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.css',
@@ -26,10 +29,11 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 export class FormMovieAPIComponent {
   private fb = inject(FormBuilder);
   private movieService = inject(MovieService);
+  private modalRef = inject(NzModalRef);
 
   searchCtrl = this.fb.control('');
   searchResults = signal<any[]>([]);
-  selectedMovie = signal<any | null>(null);
+  isLoading = signal<boolean>(false);
 
   onSearch() {
     const query = this.searchCtrl.value?.trim();
@@ -37,12 +41,19 @@ export class FormMovieAPIComponent {
       this.searchResults.set([]);
       return;
     }
-    this.movieService.searchMovies(query).subscribe((res) => {
-      this.searchResults.set(res);
+    this.isLoading.set(true);
+    this.movieService.searchMovies(query).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        this.searchResults.set(res);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
     });
   }
 
   selectMovie(movie: any) {
-    this.selectedMovie.set(movie);
+    this.modalRef.destroy(movie);
   }
 }

@@ -31,6 +31,7 @@ import { MovieActions } from '@/app/core/store/state/movie/movie.actions';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { Pagination } from '@/app/core/models/common.model';
+import { IsDeletedPipe } from '@/app/core/pipes/is-deleted.pipe';
 
 @Component({
   selector: 'app-movie',
@@ -52,6 +53,7 @@ import { Pagination } from '@/app/core/models/common.model';
     AsyncPipe,
     NzAlertComponent,
     NzSpinModule,
+    IsDeletedPipe,
   ],
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
@@ -144,7 +146,7 @@ export class MovieComponent implements OnInit {
   openMovieModal(mode: 'add' | 'edit' | 'view', id?: string | number) {
     const modal = this.modalService.create({
       nzContent: FormMovieComponent,
-      nzTitle: undefined,
+      nzTitle: mode,
       nzClosable: true,
       nzData: {
         mode: mode,
