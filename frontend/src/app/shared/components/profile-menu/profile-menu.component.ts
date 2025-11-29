@@ -13,6 +13,14 @@ import { AsyncPipe } from '@angular/common';
 import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
+interface MenuItem {
+  title: string;
+  icon: any;
+  link?: string;
+  action?: () => void;
+  isDanger?: boolean; // Thêm option cho nút Logout màu đỏ
+}
+
 @Component({
   selector: 'app-profile-menu',
   imports: [LucideAngularModule, NzDropDownModule, AsyncPipe, NzAvatarModule],
@@ -27,7 +35,7 @@ export class ProfileMenuComponent {
   readonly Settings = Settings;
   readonly LogOut = LogOut;
 
-  public profileMenu = [
+  public profileMenu: MenuItem[] = [
     {
       title: 'Your Profile',
       icon: this.CircleUserRound,
@@ -42,8 +50,17 @@ export class ProfileMenuComponent {
       title: 'Log out',
       icon: this.LogOut,
       action: () => this.logout(),
+      isDanger: true,
     },
   ];
+
+  handleItemClick(item: MenuItem) {
+    if (item.action) {
+      item.action();
+    } else if (item.link) {
+      this.router.navigate([item.link]);
+    }
+  }
 
   logout() {
     this.store.dispatch(AuthActions.loadLogout());
