@@ -33,7 +33,7 @@
       >
         @for (header of headers; track header) {
           <a
-            class="hover:text-primary transition-colors py-2"
+            class="font-bold hover:text-primary transition-colors py-2"
             [routerLink]="header.path"
           >
             {{ header.name | uppercase }}
@@ -50,7 +50,7 @@
             routerLink="/login"
             nz-button
             nzType="primary"
-            class="rounded-full px-5 md:px-6 font-semibold shadow-lg shadow-blue-200 hover:scale-105 transition-transform"
+            class="rounded-full px-5 md:px-6 font-semibold! shadow-lg shadow-blue-200 hover:scale-105 transition-transform"
           >
             Đăng Nhập
           </a>
