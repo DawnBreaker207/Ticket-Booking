@@ -1,11 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FooterComponent } from '@/app/modules/home/components/footer/footer.component';
 import { HeaderComponent } from '@/app/modules/home/components/header/header.component';
-import {
-  NzContentComponent,
-  NzFooterComponent,
-  NzLayoutComponent,
-} from 'ng-zorro-antd/layout';
+import { NzContentComponent, NzLayoutComponent } from 'ng-zorro-antd/layout';
 import {
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
@@ -23,7 +19,6 @@ import { NzSpinComponent } from 'ng-zorro-antd/spin';
     HeaderComponent,
     RouterOutlet,
     NzContentComponent,
-    NzFooterComponent,
     NzLayoutComponent,
     NzMenuModule,
     NzSpinComponent,

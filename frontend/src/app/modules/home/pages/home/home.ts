@@ -6,11 +6,8 @@ import {
   NzGridModule,
   NzRowDirective,
 } from 'ng-zorro-antd/grid';
-import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
-import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
+
 import { NzImageService } from 'ng-zorro-antd/image';
-import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   combineLatest,
@@ -43,6 +40,9 @@ import { Theater } from '@/app/core/models/theater.model';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { ShowtimeModalComponent } from '@/app/modules/home/components/showtime/modal/modal.component';
 import { TheaterModalComponent } from '@/app/modules/home/components/theater/modal/theater.component';
+import { SliderComponent } from '@/app/modules/home/components/slider/slider.component';
+import { Router } from '@angular/router';
+import { MovieItemComponent } from '@/app/shared/components/movie-item/movie-item.component';
 
 @Component({
   selector: 'app-home',
@@ -51,15 +51,12 @@ import { TheaterModalComponent } from '@/app/modules/home/components/theater/mod
     NzTypographyComponent,
     NzRowDirective,
     NzColDirective,
-    NzCardComponent,
-    NzImageViewComponent,
-    NzButtonComponent,
-    NzCardModule,
     NzGridModule,
-    RouterLink,
     AsyncPipe,
     NzEmptyComponent,
     NzModalModule,
+    SliderComponent,
+    MovieItemComponent,
   ],
   providers: [NzImageService, NzModalService],
   templateUrl: './home.html',
