@@ -1,111 +1,131 @@
-<div class="mb-5 flex items-center justify-between">
-  <h1 class="text-2xl font-bold mb-4">Quản Lý Suất Chiếu</h1>
-  <button
-    nz-button
-    nzType="primary"
-    nzShape="circle"
-    (click)="openModal('add')"
+<div class="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-5">
+  <div
+    class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
   >
-    <nz-icon nzType="plus" nzTheme="outline" />
-  </button>
-</div>
-<div class="mb-5 flex items-center justify-between">
-  <form [formGroup]="form">
-    <nz-form-item>
-      <nz-form-label nzRequired>Rạp chiếu</nz-form-label>
-      <nz-select
-        class="w-[150px]"
-        nzPlaceHolder="Rạp chiếu"
-        formControlName="theaterId"
-      >
-        @for (t of theaters; track t.id) {
-          @if (t.id !== form.value.theaterId) {
-            <nz-option [nzLabel]="t.name" [nzValue]="t.id"></nz-option>
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Quản Lý Suất Chiếu</h1>
+    </div>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="circle"
+      (click)="openModal('add')"
+    >
+      <nz-icon nzType="plus" nzTheme="outline" />
+    </button>
+  </div>
+  <div class="mb-5 flex items-center justify-between">
+    <form [formGroup]="form">
+      <nz-form-item>
+        <nz-form-label nzRequired>Rạp chiếu</nz-form-label>
+        <nz-select
+          class="w-[150px]"
+          nzPlaceHolder="Rạp chiếu"
+          formControlName="theaterId"
+        >
+          @for (t of theaters; track t.id) {
+            @if (t.id !== form.value.theaterId) {
+              <nz-option [nzLabel]="t.name" [nzValue]="t.id"></nz-option>
+            }
           }
-        }
-      </nz-select>
-    </nz-form-item>
-  </form>
+        </nz-select>
+      </nz-form-item>
+    </form>
+  </div>
+  <nz-spin [nzSpinning]="loading$ | async">
+    <div
+      class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
+    >
+      <nz-table
+        [nzData]="showtimes"
+        nzShowPagination
+        [nzFrontPagination]="false"
+        [nzTotal]="pagination?.totalElements || 0"
+        [nzPageIndex]="pageIndex"
+        [nzPageSize]="pageSize"
+        [nzShowSizeChanger]="true"
+      >
+        <thead>
+          <tr>
+            @for (item of headerColumn; track item) {
+              <th>
+                {{ item }}
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of showtimes; track item.id) {
+            <tr
+              class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
+            >
+              <td>{{ item.id }}</td>
+              <td>{{ item.movieTitle }}</td>
+              <td>
+                <img
+                  class="object-cover w-24 h-36"
+                  [src]="item.moviePosterUrl"
+                  [alt]="item.movieTitle"
+                />
+              </td>
+              <td>{{ item.showTime }}</td>
+              <td>{{ item.showDate | date: "dd/MM/yyyy" }}</td>
+              <td>{{ item.theaterName }}</td>
+              <td>{{ item.theaterLocation }}</td>
+              <td>{{ item.availableSeats }} / {{ item.totalSeats }}</td>
+              <td>
+                <div>
+                  <nz-space>
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzShape="circle"
+                      (click)="openModal('view', item.id)"
+                    >
+                      <nz-icon nzType="eye" nzTheme="twotone" />
+                    </button>
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzShape="circle"
+                      (click)="openModal('edit', item.id)"
+                    >
+                      <nz-icon
+                        nzType="edit"
+                        nzTheme="twotone"
+                        nzTwotoneColor="#52c41a"
+                      />
+                    </button>
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzShape="circle"
+                      (click)="onDelete(item.id)"
+                    >
+                      <nz-icon
+                        nzType="delete"
+                        nzTheme="twotone"
+                        nzTwotoneColor="#e7000b"
+                      />
+                    </button>
+                    <!--              <button nz-button nzType="text" nzShape="circle">-->
+                    <!--                <i nz-icon nzType="redo" class="!text-orange-600" nzTheme="outline"></i>-->
+                    <!--              </button>-->
+                    <!--              <button nz-button nzType="text">-->
+                    <!--                <i nz-icon nzType="eye-invisible" nzTheme="twotone" nzTwotoneColor="#e7000b"></i>-->
+                    <!--              </button>-->
+                  </nz-space>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-spin>
+  @let error = error$ | async;
+  @if (error) {
+    <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
+    </nz-alert>
+  }
 </div>
-<nz-spin [nzSpinning]="loading$ | async">
-  <nz-table [nzData]="showtimes" nzShowPagination nzShowSizeChanger>
-    <thead>
-      <tr>
-        @for (item of headerColumn; track item) {
-          <th>
-            {{ item }}
-          </th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of showtimes; track item.id) {
-        <tr>
-          <td>{{ item.id }}</td>
-          <td>{{ item.movieTitle }}</td>
-          <td>
-            <img
-              class="object-cover w-24 h-36"
-              [src]="item.moviePosterUrl"
-              [alt]="item.movieTitle"
-            />
-          </td>
-          <td>{{ item.showTime }}</td>
-          <td>{{ item.showDate | date: "dd/MM/yyyy" }}</td>
-          <td>{{ item.theaterName }}</td>
-          <td>{{ item.theaterLocation }}</td>
-          <td>{{ item.availableSeats }} / {{ item.totalSeats }}</td>
-          <td>
-            <div>
-              <nz-space>
-                <button
-                  nz-button
-                  nzType="text"
-                  nzShape="circle"
-                  (click)="openModal('view', item.id)"
-                >
-                  <nz-icon nzType="eye" nzTheme="twotone" />
-                </button>
-                <button
-                  nz-button
-                  nzType="text"
-                  nzShape="circle"
-                  (click)="openModal('edit', item.id)"
-                >
-                  <nz-icon
-                    nzType="edit"
-                    nzTheme="twotone"
-                    nzTwotoneColor="#52c41a"
-                  />
-                </button>
-                <button
-                  nz-button
-                  nzType="text"
-                  nzShape="circle"
-                  (click)="onDelete(item.id)"
-                >
-                  <nz-icon
-                    nzType="delete"
-                    nzTheme="twotone"
-                    nzTwotoneColor="#e7000b"
-                  />
-                </button>
-                <!--              <button nz-button nzType="text" nzShape="circle">-->
-                <!--                <i nz-icon nzType="redo" class="!text-orange-600" nzTheme="outline"></i>-->
-                <!--              </button>-->
-                <!--              <button nz-button nzType="text">-->
-                <!--                <i nz-icon nzType="eye-invisible" nzTheme="twotone" nzTwotoneColor="#e7000b"></i>-->
-                <!--              </button>-->
-              </nz-space>
-            </div>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </nz-table>
-</nz-spin>
-@let error = error$ | async;
-@if (error) {
-  <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
-  </nz-alert>
-}

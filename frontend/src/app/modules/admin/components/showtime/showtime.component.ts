@@ -17,7 +17,11 @@ import {
   NzTrDirective,
 } from 'ng-zorro-antd/table';
 import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
-import { selectAllShowtimes } from '@/app/core/store/state/showtime/showtime.selectors';
+import {
+  selectAllShowtimes,
+  selectShowtimeError,
+  selectShowtimeLoading,
+} from '@/app/core/store/state/showtime/showtime.selectors';
 import { FormShowtimeComponent } from '@/app/modules/admin/components/showtime/form/form.component';
 import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
 import {
@@ -69,8 +73,8 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
 
-  loading$ = this.store.select(selectMovieLoading);
-  error$ = this.store.select(selectMoviesError);
+  loading$ = this.store.select(selectShowtimeLoading);
+  error$ = this.store.select(selectShowtimeError);
 
   headerColumn = headerColumns.showtime;
   form!: FormGroup;
