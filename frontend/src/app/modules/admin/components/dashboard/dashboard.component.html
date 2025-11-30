@@ -1,28 +1,119 @@
-<nz-layout>
-  <!--  <nz-header class="flex justify-around items-center py-4">-->
-  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
-  <!--      @for (arr of array; track arr) {-->
-  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
-  <!--      }-->
-  <!--    </nz-select>-->
+<nz-layout class="min-h-screen bg-gray-50">
+  <nz-header class="bg-white! p-0! shadow-sm border-b border-gray-200 sticky top-0 z-50 ">
 
-  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
-  <!--      @for (arr of array; track arr) {-->
-  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
-  <!--      }-->
-  <!--    </nz-select>-->
+    <div class="h-16 px-6 flex items-center justify-between flex-nowrap gap-4 w-full">
 
-  <!--    <nz-select class="w-[150px] mr-2" nzPlaceHolder="Choose">-->
-  <!--      @for (arr of array; track arr) {-->
-  <!--        <nz-option [nzValue]="arr" [nzLabel]="arr"></nz-option>-->
-  <!--      }-->
-  <!--    </nz-select>-->
 
-  <!--    <div>-->
-  <!--      <span>Realtime</span>-->
-  <!--      <nz-switch class="ml-2"></nz-switch>-->
-  <!--    </div>-->
-  <!--  </nz-header>-->
+      <!--  Filter  -->
+      <div class="flex flex-1 items-center gap-3 min-w-0">
+      <span class="font-bold text-gray-700 mr-2 flex items-center gap-2 shrink-0">
+        <nz-icon nzType="filter" nzTheme="outline"/> Filter:
+      </span>
+
+        <!-- Times  -->
+        <nz-select
+          [(ngModel)]="filterType"
+          (ngModelChange)="onFilterChange()"
+          [nzOptionHeightPx]="36"
+          class="w-[140px]">
+          <nz-option nzValue="day" nzLabel="Theo Ngày"></nz-option>
+          <nz-option nzValue="month" nzLabel="Theo Tháng"></nz-option>
+          <nz-option nzValue="quarter" nzLabel="Theo Quý"></nz-option>
+          <nz-option nzValue="year" nzLabel="Theo Năm"></nz-option>
+        </nz-select>
+
+        <!--  Dynamic Input    -->
+
+        <!--  CASE DAY    -->
+        @if (filterType === 'day') {
+          <nz-date-picker
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="dd/MM/yyyy"
+            class="w-[200px]">
+          </nz-date-picker>
+        }
+
+        <!--  CASE MONTH   -->
+        @if (filterType === 'month') {
+          <nz-date-picker
+            nzMode="month"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="MM/yyyy"
+            class="w-[200px]">
+          </nz-date-picker>
+        }
+
+        <!--   CASE QUARTER   -->
+        @if (filterType === 'quarter') {
+          <div class="flex items-center gap-2 bg-gray-50 px-2 rounded border border-gray-200 h-[32px]">
+            <!--  SELECT QUARTER  -->
+            <nz-select
+              [(ngModel)]="selectedQuarter"
+              (ngModelChange)="onFilterChange()"
+              class="w-[120px] bg-transparent"
+              nzPlaceHolder="Quý">
+              @for (q of quarters; track q.value) {
+                <nz-option
+                  [nzLabel]="q.label"
+                  [nzValue]="q.value">
+
+                </nz-option>
+              }
+            </nz-select>
+            <span class="text-gray-400"></span>
+
+            <!--  SELECT YEAR OF QUARTER -->
+            <nz-select
+              [(ngModel)]="selectedQuarterYear"
+              (ngModelChange)="onFilterChange()"
+              class="w-[90px]">
+              @for (y of years; track y) {
+                <nz-option
+                  [nzValue]="y"
+                  [nzLabel]="y">
+                </nz-option>
+              }
+            </nz-select>
+          </div>
+        }
+
+        <!--   CASE YEAR   -->
+        @if (filterType === 'year') {
+          <nz-date-picker
+            nzMode="year"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="yyyy"
+            class="w-[120px]">
+          </nz-date-picker>
+        }
+
+        <!--   Refresh Button   -->
+        <button nz-button nzType="text" (click)="onFilterChange()" title="Làm mới dữ liệu">
+          <nz-icon nzType="reload"/>
+        </button>
+      </div>
+
+      <!-- RIGHT: SETTING OPTIONS   -->
+      <div class="flex items-center gap-4 shrink-0 ml-4">
+        <div
+          class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 h-[32px] rounded-full border border-gray-100 whitespace-nowrap">
+          <span class="text-sm font-medium">Realtime Updates</span>
+          <nz-switch nzSize="small"></nz-switch>
+        </div>
+
+        <button nz-button nzType="primary" class="flex items-center gap-2">
+          <nz-icon nzType="download"/>
+          Export
+        </button>
+      </div>
+    </div>
+  </nz-header>
 
   <nz-content class="m-4">
     <nz-row nzGutter="16">
@@ -60,22 +151,22 @@
     <nz-row nzGutter="16" class="mt-4">
       <nz-col nzSpan="14">
         <!-- Line Chart  -->
-        <app-revenue-chart />
+        <app-revenue-chart/>
       </nz-col>
       <nz-col nzSpan="10">
         <!-- Pie Chart  -->
-        <app-payment-chart />
+        <app-payment-chart/>
       </nz-col>
     </nz-row>
 
     <nz-row nzGutter="16" class="mt-4">
       <nz-col nzSpan="8">
         <!-- Bar Chart  -->
-        <app-theater-chart />
+        <app-theater-chart/>
       </nz-col>
       <nz-col nzSpan="16">
         <!-- Bar Chart  -->
-        <app-movie-chart />
+        <app-movie-chart/>
       </nz-col>
     </nz-row>
 
@@ -86,7 +177,7 @@
           <div class="font-bold text-xl">Theater Performance</div>
           <div style="height: 300px">
             <!-- Table-->
-            <app-theater-table />
+            <app-theater-table/>
           </div>
         </nz-card>
       </nz-col>
@@ -95,7 +186,7 @@
           <div class="font-bold text-xl">Movie Insights</div>
           <div style="height: 300px">
             <!-- Table-->
-            <app-movie-table />
+            <app-movie-table/>
           </div>
         </nz-card>
       </nz-col>
