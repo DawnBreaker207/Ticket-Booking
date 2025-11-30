@@ -11,7 +11,11 @@ import { NzSpaceComponent } from 'ng-zorro-antd/space';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { Store } from '@ngrx/store';
 import { Theater } from '@/app/core/models/theater.model';
-import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
+import {
+  selectAllTheaters,
+  selectTheaterError,
+  selectTheaterLoading,
+} from '@/app/core/store/state/theater/theater.selectors';
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { FormTheaterComponent } from '@/app/modules/admin/components/theater/form/form.component';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
@@ -46,8 +50,8 @@ export class TheaterComponent implements OnInit {
   private store = inject(Store);
   headerColumn = headerColumns.theater;
   theaters$ = this.store.select(selectAllTheaters);
-  loading$ = this.store.select(selectMovieLoading);
-  error$ = this.store.select(selectMoviesError);
+  loading$ = this.store.select(selectTheaterLoading);
+  error$ = this.store.select(selectTheaterError);
 
   theaterList: readonly Theater[] = [];
   pagination: Pagination | null = null;
