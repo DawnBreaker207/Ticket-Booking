@@ -6,12 +6,18 @@ import { MovieComponent } from '@/app/modules/admin/components/movie/movie.compo
 import { ReservationComponent } from '@/app/modules/admin/components/reservation/reservation.component';
 import { TheaterComponent } from '@/app/modules/admin/components/theater/theater.component';
 import { ShowtimeComponent } from '@/app/modules/admin/components/showtime/showtime.component';
+import { UserComponent } from '@/app/modules/admin/components/user/user.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
       {
         path: 'dashboard',
         component: DashboardComponent,
@@ -36,6 +42,11 @@ const routes: Routes = [
         path: 'reservation',
         component: ReservationComponent,
         data: { breadcrumb: 'Reservation Manager' },
+      },
+      {
+        path: 'user',
+        component: UserComponent,
+        data: { breadcrumb: 'User Manager' },
       },
     ],
   },

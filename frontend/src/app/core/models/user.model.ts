@@ -1,4 +1,6 @@
-export interface User {
+import { DateModel, IsDeleted } from '@/app/core/models/common.model';
+
+export interface User extends DateModel, IsDeleted {
   userId: number;
   username: string;
   email: string;

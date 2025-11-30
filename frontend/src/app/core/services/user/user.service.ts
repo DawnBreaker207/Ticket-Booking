@@ -13,7 +13,7 @@ export class UserService {
   URL = `${environment.apiUrl}/user`;
   private http = inject(HttpClient);
 
-  getALl(filter?: any) {
+  getAll(filter?: any) {
     let params = new HttpParams();
     if (filter) {
       Object.keys(filter).forEach((key) => {
@@ -40,6 +40,13 @@ export class UserService {
     return this.http.get<ApiRes<User>>(`${this.URL}/email/${email}`).pipe(
       map((res) => res.data),
       catchError(this.handleError<User>('Get users')),
+    );
+  }
+
+  updateStatus(id: number, status: boolean) {
+    return this.http.put<ApiRes<User>>(`${this.URL}/update/${id}`, status).pipe(
+      map((res) => res.data),
+      catchError(this.handleError<User>('Update user status')),
     );
   }
 
