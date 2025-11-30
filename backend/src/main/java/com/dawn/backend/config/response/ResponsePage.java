@@ -1,12 +1,15 @@
 package com.dawn.backend.config.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ResponsePage<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<T> content;
@@ -22,15 +25,12 @@ public class ResponsePage<T> {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class Pagination {
         Integer pageNumber;
         Integer pageSize;
         Long totalElements;
 
-        public Pagination(Integer pageNumber, Integer pageSize, Long totalElements) {
-            this.pageNumber = pageNumber;
-            this.pageSize = pageSize;
-            this.totalElements = totalElements;
-        }
     }
 }
