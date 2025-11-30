@@ -72,6 +72,7 @@ export class AuthEffects {
               title: 'Thành công',
               type: 'success',
             });
+            this.router.navigate(['/home']);
           }),
           map((jwt) => AuthActions.loadLoginSuccess({ jwt })),
           catchError((err) => of(AuthActions.loadLoginFailure({ error: err }))),
