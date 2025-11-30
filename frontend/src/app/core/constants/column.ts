@@ -21,6 +21,7 @@ export const headerColumns = {
     'Action',
   ],
   reservation: ['#', 'Status', 'Total', 'Day Create', 'Action'],
+  user: ['Info', 'Status', 'Action'],
 };
 
 export const displayColumns = {
