@@ -8,11 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -23,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<ResponsePage<UserResponseDTO>> getAll(Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findAll(pageable));
     }
@@ -36,5 +32,10 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseObject<UserResponseDTO> getEmail(@PathVariable String email) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseObject<UserResponseDTO> updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.updateStatus(id, status));
     }
 }

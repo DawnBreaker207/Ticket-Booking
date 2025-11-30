@@ -12,5 +12,7 @@ public interface UserService {
 
     UserResponseDTO update(Long id, User userDetails);
 
+    UserResponseDTO updateStatus(Long id, Boolean status);
+
     UserResponseDTO findByEmail(String email);
 }

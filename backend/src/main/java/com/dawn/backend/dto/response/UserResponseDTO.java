@@ -17,4 +17,6 @@ public class UserResponseDTO extends AbstractMappedEntity {
     private String username;
 
     private String email;
+
+    private Boolean isDeleted;
 }

@@ -12,6 +12,7 @@ public interface UserMappingHelper {
                 .username(u.getUsername())
                 .createdAt(u.getCreatedAt())
                 .updatedAt(u.getUpdatedAt())
+                .isDeleted(u.getIsDeleted())
                 .build();
     }
 

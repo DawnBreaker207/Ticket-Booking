@@ -9,6 +9,7 @@ import com.dawn.backend.model.User;
 import com.dawn.backend.repository.UserRepository;
 import com.dawn.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    @Cacheable(value = USER_CACHE)
+//    @Cacheable(value = USER_CACHE)
     public ResponsePage<UserResponseDTO> findAll(Pageable pageable) {
         return new ResponsePage<>(
                 userRepository
@@ -36,6 +37,15 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO findOne(Long id) {
         return userRepository
                 .findById(id)
+                .map(UserMappingHelper::map)
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
+    }
+
+    @Override
+    @Cacheable(value = USER_CACHE, key = "'email:' + #email")
+    public UserResponseDTO findByEmail(String email) {
+        return userRepository
+                .findByEmail(email)
                 .map(UserMappingHelper::map)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
     }
@@ -54,11 +64,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = USER_CACHE, key = "'email:' + #email")
-    public UserResponseDTO findByEmail(String email) {
-        return userRepository
-                .findByEmail(email)
-                .map(UserMappingHelper::map)
+    @Transactional
+    @CacheEvict(value = USER_CACHE, key = "'id:' + #id + 'status' + #status")
+    public UserResponseDTO updateStatus(Long id, Boolean status) {
+        var user = userRepository
+                .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
+        user.setIsDeleted(status);
+        user.markUpdated();
+        return UserMappingHelper.map(userRepository.save(user));
     }
 }
