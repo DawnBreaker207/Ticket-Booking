@@ -9,7 +9,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
-import { icons } from './icons-provider';
+import { nzIcons } from './icons-provider';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -68,7 +68,7 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideRouter(routes),
-    provideNzIcons(icons),
+    provideNzIcons(nzIcons),
     provideNzI18n(en_US),
     provideStore({
       [authFeatureKey]: authReducer,
