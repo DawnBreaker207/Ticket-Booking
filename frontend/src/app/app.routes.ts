@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
 import { AdminGuard } from '@/app/core/guards/admin.guard';
+import { RedirectGuard } from '@/app/core/guards/redirect.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   {
     path: '',
+    canActivateChild: [RedirectGuard],
     loadChildren: () =>
       import('./modules/home/home.module').then((m) => m.HomeModule),
   },
