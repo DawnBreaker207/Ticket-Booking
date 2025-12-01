@@ -1,37 +1,60 @@
-<nz-layout class="min-h-screen">
-  <nz-steps nzType="navigation" nzSize="small" [nzCurrent]="index()">
-    <nz-step nzTitle="Chọn ghế" nzIcon="table">
-      <p>Step 1</p>
-    </nz-step>
-    <nz-step nzTitle="Xác nhận thông tin" nzIcon="solution">
-      <p>Step 2</p>
-    </nz-step>
-    <nz-step nzTitle="Chọn phương thức" nzIcon="pay-circle">
-      <p>Step 3</p>
-    </nz-step>
-  </nz-steps>
-  <nz-layout class="w-full px-8">
-    <nz-content class="mt-4 max-w-[1200px] mx-auto">
-      @switch (index()) {
-        @case (0) {
-          @if (totalSeats$ | async) {
-            <app-seat />
-          }
-        }
-        @case (1) {
-          <app-summary />
-        }
-        @case (2) {
-          <app-payment />
-        }
-      }
-    </nz-content>
-    <nz-sider nzWidth="350px" nzTheme="light" class="!bg-transparent">
-      <app-detail-film
-        [index]="index()"
-        (stepChange)="onStepChange($event)"
-        [steps]="steps()"
-      />
-    </nz-sider>
-  </nz-layout>
+<nz-layout class="min-h-screen bg-gray-50">
+  <!-- HEADER STEPS -->
+  <div class="bg-white! px-0 h-auto shadow-sm sticky top-0 z-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <nz-steps nzType="navigation" nzSize="small" [nzCurrent]="index()">
+        <nz-step
+          nzTitle="Chọn ghế"
+          nzIcon="table">
+          Vị trí ngồi
+        </nz-step>
+        <nz-step
+          nzTitle="Xác nhận thông tin & phương thức"
+          nzIcon="solution">
+          Xác nhận thông tin & phương thức
+        </nz-step>
+      </nz-steps>
+    </div>
+  </div>
+
+  <!-- BODY CONTENT -->
+  <nz-content class="py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <!--   LEFT MAIN CONTENT     -->
+      <nz-layout class="!bg-transparent flex-col lg:flex-row gap-8">
+        <nz-content class="!bg-transparent flex-1 min-w-0">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 min-h-full">
+            @switch (index()) {
+              @case (0) {
+                @if (totalSeats$ | async) {
+                  <app-seat/>
+                }
+              }
+              @case (1) {
+                <app-summary/>
+              }
+              @case (2) {
+                <app-payment/>
+              }
+            }
+          </div>
+        </nz-content>
+
+        <!--  RIGHT SIDEBAR  -->
+        <nz-sider
+          [nzWidth]="380"
+          nzTheme="light"
+          class="!bg-transparent hidden lg:block shrink-0">
+
+          <div class="sticky top-28">
+            <app-detail-film
+              [index]="index()"
+              (stepChange)="onStepChange($event)"
+              [steps]="steps()"
+            />
+          </div>
+        </nz-sider>
+      </nz-layout>
+    </div>
+  </nz-content>
 </nz-layout>
