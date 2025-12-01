@@ -1,27 +1,20 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { Seat, Showtime } from '@/app/core/models/theater.model';
-import {
-  selectSeats,
-  selectSelectedSeats,
-} from '@/app/core/store/state/seat/seat.selectors';
-import { filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
-import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
-import {
-  selectPrice,
-  selectSelectedShowtime,
-  selectTotalPrice,
-} from '@/app/core/store/state/showtime/showtime.selectors';
-import { CountdownComponent } from '@/app/modules/home/components/reservation/countdown/countdown.component';
-import { SseService } from '@/app/core/services/sse/sse.service';
-import { SeatStatus } from '@/app/core/constants/enum';
-import { StorageService } from '@/app/shared/services/storage/storage.service';
-import { ReservationRequest } from '@/app/core/models/reservation.model';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Store} from '@ngrx/store';
+import {Seat, Showtime} from '@/app/core/models/theater.model';
+import {selectSeats, selectSelectedSeats,} from '@/app/core/store/state/seat/seat.selectors';
+import {filter, map, Subject, switchMap, take, takeUntil} from 'rxjs';
+import {SeatActions} from '@/app/core/store/state/seat/seat.actions';
+import {selectPrice, selectSelectedShowtime,} from '@/app/core/store/state/showtime/showtime.selectors';
+import {SseService} from '@/app/core/services/sse/sse.service';
+import {SeatStatus} from '@/app/core/constants/enum';
+import {StorageService} from '@/app/shared/services/storage/storage.service';
+import {ReservationRequest} from '@/app/core/models/reservation.model';
+import {NzIconModule} from 'ng-zorro-antd/icon';
 
 @Component({
   selector: ' app-seat',
-  imports: [CommonModule, CountdownComponent],
+  imports: [CommonModule, NzIconModule],
   templateUrl: './seat.component.html',
   styleUrl: './seat.component.css',
 })
@@ -33,7 +26,6 @@ export class SeatComponent implements OnInit, OnDestroy {
   showtime$ = this.store.select(selectSelectedShowtime);
   seats$ = this.store.select(selectSeats);
   selectSeats$ = this.store.select(selectSelectedSeats);
-  totalPrice$ = this.store.select(selectTotalPrice);
   price$ = this.store.select(selectPrice);
 
   ngOnInit() {
@@ -60,7 +52,7 @@ export class SeatComponent implements OnInit, OnDestroy {
                 seatNumber: existingSeat?.seatNumber || seatId.toString(),
                 status: isMySeat ? 'SELECTED' : ('HOLD' as SeatStatus),
               } as Seat;
-              this.store.dispatch(SeatActions.selectSeat({ seat: seat }));
+              this.store.dispatch(SeatActions.selectSeat({seat: seat}));
             });
           } else if (res.event === 'SEAT_HOLD') {
             const payload = res.data.seatIds;
@@ -75,7 +67,7 @@ export class SeatComponent implements OnInit, OnDestroy {
                   !holdSeatIds.includes(seat.id)
                 ) {
                   this.store.dispatch(
-                    SeatActions.deselectSeat({ seatId: seat.id }),
+                    SeatActions.deselectSeat({seatId: seat.id}),
                   );
                 }
               });
@@ -91,11 +83,11 @@ export class SeatComponent implements OnInit, OnDestroy {
                 seatNumber: existingSeat?.seatNumber || seatId.toString(),
                 status: isMySeat ? 'SELECTED' : ('HOLD' as SeatStatus),
               } as Seat;
-              this.store.dispatch(SeatActions.selectSeat({ seat: seat }));
+              this.store.dispatch(SeatActions.selectSeat({seat: seat}));
             });
           } else if (res.event === 'SEAT_RELEASE') {
             res.data.seatIds.forEach((seatId: number) => {
-              this.store.dispatch(SeatActions.deselectSeat({ seatId: seatId }));
+              this.store.dispatch(SeatActions.deselectSeat({seatId: seatId}));
             });
           }
         });
@@ -108,10 +100,10 @@ export class SeatComponent implements OnInit, OnDestroy {
       const isSelected = selected.some((s) => s.id === seat.id);
       this.store.dispatch(
         isSelected
-          ? SeatActions.deselectSeat({ seatId: seat.id })
+          ? SeatActions.deselectSeat({seatId: seat.id})
           : SeatActions.selectSeat({
-              seat: { ...seat, status: 'SELECTED' as SeatStatus },
-            }),
+            seat: {...seat, status: 'SELECTED' as SeatStatus},
+          }),
       );
     });
   }
@@ -120,11 +112,11 @@ export class SeatComponent implements OnInit, OnDestroy {
     const base = 'w-10 h-10 rounded-sm cursor-pointer transition-all';
     switch (seat.status) {
       case 'BOOKED':
-        return `${base} bg-red-500 cursor-not-allowed`;
+        return `${base} bg-red-500 border-red-700 disabled:cursor-not-allowed disabled:hover:translate-y-0`;
       case 'HOLD':
-        return `${base} bg-orange-500 cursor-not-allowed`;
+        return `${base} bg-orange-500 border-orange-700 cursor-not-allowed`;
       case 'SELECTED':
-        return `${base} bg-blue-500 text-white`;
+        return `${base} bg-blue-500 border-blue-700 text-white`;
       default:
         return `${base} bg-gray-200 hover:bg-green-300`;
     }
