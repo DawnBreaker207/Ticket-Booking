@@ -22,6 +22,15 @@ export const headerColumns = {
   ],
   reservation: ['#', 'Status', 'Total', 'Day Create', 'Action'],
   user: ['Info', 'Status', 'Action'],
+  article: [
+    'Ảnh',
+    'Tiêu đề',
+    'Danh mục',
+    'Tác giả',
+    'Trạng thái',
+    'Ngày tạo',
+    'Action',
+  ],
 };
 
 export const displayColumns = {

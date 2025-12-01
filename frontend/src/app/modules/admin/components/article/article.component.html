@@ -1,0 +1,134 @@
+<div class="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
+  <div
+    class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Quản lý bài viết</h1>
+      <p class="text-gray-600">
+        Tạo nội dung tin tức, khuyến mãi và review phim.
+      </p>
+    </div>
+    <button
+      nz-button
+      nzType="primary"
+      nzSize="large"
+      nzShape="circle"
+      (click)="openDrawer()"
+    >
+      <nz-icon nzType="plus" nzTheme="outline" />
+    </button>
+  </div>
+  <div
+    class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
+  >
+    <nz-table
+      #basicTable
+      [nzData]="articles()"
+      [nzPageSize]="10"
+      nzTableLayout="fixed"
+    >
+      <thead>
+        <tr>
+          @for (header of headerColumn; track header) {
+            <th>{{ header }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data.id) {
+          <tr
+            class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
+          >
+            <td>
+              <img
+                [src]="data.thumbnail"
+                [alt]="data.title"
+                class="w-12 h-12 object-cover rounded shadow-sm border border-gray-600"
+              />
+            </td>
+            <td>
+              <div
+                class="font-semibold truncate max-w-xs"
+                nz-tooltip
+                [nzTooltipTitle]="data.title"
+              >
+                {{ data.title }}
+              </div>
+              <div class="text-xs truncate max-w-xs">
+                {{ data.summary }}
+              </div>
+            </td>
+            <td>
+              <nz-tag [nzColor]="'blue'">
+                {{ data.category }}
+              </nz-tag>
+            </td>
+            <td>
+              {{ data.author }}
+            </td>
+            <td>
+              @if (data.status === "PUBLISHED") {
+                <nz-tag [nzColor]="'success'" class="border-none">
+                  <span nz-icon nzType="check-circle"></span> Đã đăng
+                </nz-tag>
+              } @else {
+                <nz-tag [nzColor]="'default'" class="border-none">
+                  <span nz-icon nzType="edit"></span> Nháp
+                </nz-tag>
+              }
+            </td>
+            <td class="text-gray-600">
+              {{ data.createdAt | date: "dd/MM/yyyy" }}
+            </td>
+            <td nzRight>
+              <div class="flex gap-2">
+                <button
+                  nz-button
+                  nzType="default"
+                  nzShape="circle"
+                  (click)="openDrawer(data)"
+                  nz-tooltip
+                  nzTooltipTitle="Chỉnh sửa"
+                >
+                  <span nz-icon nzType="edit" class="text-blue-400"> </span>
+                </button>
+                <button
+                  nz-button
+                  nzType="default"
+                  nzDanger
+                  nzShape="circle"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Bạn có chắc chắn muốn xóa bài này?"
+                  (nzOnConfirm)="deleteArticle(data.id)"
+                  nz-tooltip
+                  nzTooltipTitle="Xóa"
+                >
+                  <span nz-icon nzType="delete"> </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<nz-drawer
+  [nzVisible]="drawerVisible"
+  [nzWidth]="800"
+  [nzBodyStyle]="{ padding: '0', background: '#f0f0f0', color: 'black' }"
+  [nzTitle]="editingArticle ? 'Chỉnh sửa bài viết' : 'Viết bài mới'"
+  [nzPlacement]="'left'"
+  (nzOnClose)="closeDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="p-6">
+      <app-form
+        [initialData]="editingArticle"
+        (saveArticle)="handleSave($event)"
+        (cancelArticle)="closeDrawer()"
+      >
+      </app-form>
+    </div>
+  </ng-container>
+</nz-drawer>
