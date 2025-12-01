@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import {DecimalPipe} from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -48,6 +49,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzButtonComponent,
     NzDatePickerComponent,
     NzSpinModule,
+    DecimalPipe,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

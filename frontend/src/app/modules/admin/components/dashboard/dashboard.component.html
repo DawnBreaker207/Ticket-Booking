@@ -10,7 +10,7 @@
         <span
           class="font-bold text-gray-700 mr-2 flex items-center gap-2 shrink-0"
         >
-          <nz-icon nzType="filter" nzTheme="outline" /> Filter:
+          <nz-icon nzType="filter" nzTheme="outline"/> Filter:
         </span>
 
         <!-- Times  -->
@@ -66,7 +66,7 @@
               nzPlaceHolder="Quý"
             >
               @for (q of quarters; track q.value) {
-                <nz-option [nzLabel]="q.label" [nzValue]="q.value"> </nz-option>
+                <nz-option [nzLabel]="q.label" [nzValue]="q.value"></nz-option>
               }
             </nz-select>
             <span class="text-gray-400"></span>
@@ -78,7 +78,7 @@
               class="w-[90px]"
             >
               @for (y of years; track y) {
-                <nz-option [nzValue]="y" [nzLabel]="y"> </nz-option>
+                <nz-option [nzValue]="y" [nzLabel]="y"></nz-option>
               }
             </nz-select>
           </div>
@@ -104,7 +104,7 @@
           (click)="onFilterChange()"
           title="Làm mới dữ liệu"
         >
-          <nz-icon nzType="reload" />
+          <nz-icon nzType="reload"/>
         </button>
       </div>
 
@@ -118,7 +118,7 @@
         </div>
 
         <button nz-button nzType="primary" class="flex items-center gap-2">
-          <nz-icon nzType="download" />
+          <nz-icon nzType="download"/>
           Export
         </button>
       </div>
@@ -127,38 +127,120 @@
 
   @if (isLoading()) {
     <div class="flex justify-center items-center h-full">
-      <nz-spin nzSimple />
+      <nz-spin nzSimple/>
     </div>
   } @else {
     <nz-content class="m-4">
       <nz-row nzGutter="16">
         <nz-col nzSpan="6">
-          <nz-card>
-            <i-lucide [name]="DollarSign"></i-lucide>
-            <div class="font-bold text-xl">Total Revenue</div>
-            <h2>{{ metrics.totalRevenue | currencyFormat }}</h2>
-          </nz-card>
+          <div
+            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm font-medium">Total Revenue</p>
+                <h3 class="text-2xl font-bold mt-1 text-gray-800">
+                  {{ metrics.totalRevenue | currencyFormat }}
+                </h3>
+              </div>
+              <div
+                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
+              >
+                <i-lucide [name]="DollarSign" class="text-xl"></i-lucide>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+              <span
+                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
+              >
+                <nz-icon nzType="arrow-up"/> 10.2%
+              </span>
+              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
+            </div>
+          </div>
         </nz-col>
         <nz-col nzSpan="6">
-          <nz-card>
-            <i-lucide [name]="Tickets"></i-lucide>
-            <div class="font-bold text-xl">Ticket Sold</div>
-            <h2>{{ metrics.ticketsSold }}</h2>
-          </nz-card>
+          <div
+            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm font-medium">Ticket Sold</p>
+                <h3 class="text-2xl font-bold mt-1 text-gray-800">
+                  {{ metrics.ticketsSold | number: '1.0-0' }}
+                </h3>
+              </div>
+              <div
+                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
+              >
+                <i-lucide [name]="Tickets" class="text-xl"></i-lucide>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+              <span
+                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
+              >
+                <nz-icon nzType="arrow-up"/> 10.2%
+              </span>
+              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
+            </div>
+          </div>
         </nz-col>
         <nz-col nzSpan="6">
-          <nz-card>
-            <i-lucide [name]="Theater"></i-lucide>
-            <div class="font-bold text-xl">Active Theaters</div>
-            <h2>{{ metrics.activeTheaters }}</h2>
-          </nz-card>
+          <div
+            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm font-medium">Active Theaters</p>
+                <h3 class="text-2xl font-bold mt-1 text-gray-800">
+                  {{ metrics.activeTheaters }}
+                </h3>
+              </div>
+              <div
+                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
+              >
+                <i-lucide [name]="Theater"></i-lucide>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+              <span
+                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
+              >
+                <nz-icon nzType="arrow-up"/> 10.2%
+              </span>
+              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
+            </div>
+          </div>
         </nz-col>
         <nz-col nzSpan="6">
-          <nz-card>
-            <i-lucide [name]="Armchair"></i-lucide>
-            <div class="font-bold text-xl">Seat Utilization</div>
-            <h2>{{ metrics.seatUtilization }}%</h2>
-          </nz-card>
+          <div
+            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm font-medium">
+                  Seat Utilization
+                </p>
+                <h3 class="text-2xl font-bold mt-1 text-gray-800">
+                  {{ metrics.seatUtilization }}%
+                </h3>
+              </div>
+              <div
+                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
+              >
+                <i-lucide [name]="Armchair"></i-lucide>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+              <span
+                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
+              >
+                <nz-icon nzType="arrow-up"/> 10.2%
+              </span>
+              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
+            </div>
+          </div>
         </nz-col>
       </nz-row>
 
@@ -166,22 +248,22 @@
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="14">
           <!-- Line Chart  -->
-          <app-revenue-chart />
+          <app-revenue-chart/>
         </nz-col>
         <nz-col nzSpan="10">
           <!-- Pie Chart  -->
-          <app-payment-chart />
+          <app-payment-chart/>
         </nz-col>
       </nz-row>
 
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="8">
           <!-- Bar Chart  -->
-          <app-theater-chart />
+          <app-theater-chart/>
         </nz-col>
         <nz-col nzSpan="16">
           <!-- Bar Chart  -->
-          <app-movie-chart />
+          <app-movie-chart/>
         </nz-col>
       </nz-row>
 
@@ -192,7 +274,7 @@
             <div class="font-bold text-xl">Theater Performance</div>
             <div style="height: 300px">
               <!-- Table-->
-              <app-theater-table />
+              <app-theater-table/>
             </div>
           </nz-card>
         </nz-col>
@@ -201,7 +283,7 @@
             <div class="font-bold text-xl">Movie Insights</div>
             <div style="height: 300px">
               <!-- Table-->
-              <app-movie-table />
+              <app-movie-table/>
             </div>
           </nz-card>
         </nz-col>
