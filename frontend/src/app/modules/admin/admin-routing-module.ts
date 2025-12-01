@@ -7,6 +7,7 @@ import { ReservationComponent } from '@/app/modules/admin/components/reservation
 import { TheaterComponent } from '@/app/modules/admin/components/theater/theater.component';
 import { ShowtimeComponent } from '@/app/modules/admin/components/showtime/showtime.component';
 import { UserComponent } from '@/app/modules/admin/components/user/user.component';
+import { ArticleComponent } from '@/app/modules/admin/components/article/article.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,11 @@ const routes: Routes = [
         path: 'user',
         component: UserComponent,
         data: { breadcrumb: 'User Manager' },
+      },
+      {
+        path: 'article',
+        component: ArticleComponent,
+        data: { breadcrumb: 'Article Manager' },
       },
     ],
   },
