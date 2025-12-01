@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { redirectGuard } from './redirect.guard';
+import { RedirectGuard } from './redirect.guard';
 
-describe('redirectGuard', () => {
+describe('RedirectGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => redirectGuard(...guardParameters));
+    TestBed.runInInjectionContext(() => RedirectGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

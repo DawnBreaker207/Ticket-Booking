@@ -6,18 +6,15 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { PaymentService } from '@/app/core/services/payment/payment.service';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, filter, map, take, tap } from 'rxjs';
+import { filter, map, take, tap, combineLatest } from 'rxjs';
 import {
   selectSeats,
   selectSelectedSeats,
 } from '@/app/core/store/state/seat/seat.selectors';
 import { SeatComponent } from '@/app/modules/home/components/reservation/seat/seat.component';
-import { SummaryComponent } from '@/app/modules/home/components/reservation/summary/summary.component';
-import { PaymentComponent } from '@/app/modules/home/components/reservation/payment/payment.component';
 import { DetailFilmComponent } from '@/app/modules/home/components/reservation/detail-film/detail-film.component';
 import { CommonModule } from '@angular/common';
 import { selectJwt } from '@/app/core/store/state/auth/auth.selectors';
-import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 import {
   selectSelectedShowtime,
   selectTotalPrice,
@@ -26,7 +23,10 @@ import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.action
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
 import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
+import { SummaryComponent } from '@/app/modules/home/components/reservation/summary/summary.component';
+import { PaymentComponent } from '@/app/modules/home/components/reservation/payment/payment.component';
 import { ReservationRequest } from '@/app/core/models/reservation.model';
+import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
 
 @Component({
   selector: 'app-reservation',
@@ -36,10 +36,10 @@ import { ReservationRequest } from '@/app/core/models/reservation.model';
     NzButtonModule,
     NzLayoutModule,
     SeatComponent,
-    SummaryComponent,
-    PaymentComponent,
     DetailFilmComponent,
     CommonModule,
+    SummaryComponent,
+    PaymentComponent,
   ],
   templateUrl: './reservation.html',
   styleUrl: './reservation.css',

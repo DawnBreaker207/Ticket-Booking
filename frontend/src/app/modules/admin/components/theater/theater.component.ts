@@ -20,10 +20,6 @@ import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { FormTheaterComponent } from '@/app/modules/admin/components/theater/form/form.component';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import {
-  selectMovieLoading,
-  selectMoviesError,
-} from '@/app/core/store/state/movie/movie.selectors';
 import { Pagination } from '@/app/core/models/common.model';
 
 @Component({

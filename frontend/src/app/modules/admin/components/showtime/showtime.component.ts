@@ -24,10 +24,6 @@ import {
 } from '@/app/core/store/state/showtime/showtime.selectors';
 import { FormShowtimeComponent } from '@/app/modules/admin/components/showtime/form/form.component';
 import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
-import {
-  selectMovieLoading,
-  selectMoviesError,
-} from '@/app/core/store/state/movie/movie.selectors';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { debounceTime, filter, Subject, take, takeUntil } from 'rxjs';

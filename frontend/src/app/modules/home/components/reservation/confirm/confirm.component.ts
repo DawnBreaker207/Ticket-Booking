@@ -1,14 +1,17 @@
-import {Component, inject} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
-import {selectSelectedSeats} from '@/app/core/store/state/seat/seat.selectors';
-import {selectPrice, selectTotalPrice} from '@/app/core/store/state/showtime/showtime.selectors';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {AsyncPipe, CurrencyPipe} from '@angular/common';
-import {NzRadioModule} from 'ng-zorro-antd/radio';
-import {FormsModule} from '@angular/forms';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzInputModule} from 'ng-zorro-antd/input';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { selectJwt } from '@/app/core/store/state/auth/auth.selectors';
+import { selectSelectedSeats } from '@/app/core/store/state/seat/seat.selectors';
+import {
+  selectPrice,
+  selectTotalPrice,
+} from '@/app/core/store/state/showtime/showtime.selectors';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { FormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-confirm',
@@ -47,15 +50,14 @@ export class ConfirmComponent {
       if (this.voucherCode.toUpperCase() === 'WELCOME10') {
         this.appliedVoucher = {
           code: 'WELCOME10',
-          discountAmount: 50000
-        }
+          discountAmount: 50000,
+        };
       }
-    }, 1000)
+    }, 1000);
   }
 
   removeVoucher() {
     this.appliedVoucher = null;
     this.voucherCode = '';
   }
-
 }
