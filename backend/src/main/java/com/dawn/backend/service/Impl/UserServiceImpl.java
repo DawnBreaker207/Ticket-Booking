@@ -2,7 +2,7 @@ package com.dawn.backend.service.Impl;
 
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
-import com.dawn.backend.dto.response.UserResponseDTO;
+import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.exception.wrapper.UserNotFoundException;
 import com.dawn.backend.helper.UserMappingHelper;
 import com.dawn.backend.model.User;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
 //    @Cacheable(value = USER_CACHE)
-    public ResponsePage<UserResponseDTO> findAll(Pageable pageable) {
+    public ResponsePage<UserResponse> findAll(Pageable pageable) {
         return new ResponsePage<>(
                 userRepository
                         .findAll(pageable)
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = USER_CACHE, key = "'id:' + #id")
-    public UserResponseDTO findOne(Long id) {
+    public UserResponse findOne(Long id) {
         return userRepository
                 .findById(id)
                 .map(UserMappingHelper::map)
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = USER_CACHE, key = "'email:' + #email")
-    public UserResponseDTO findByEmail(String email) {
+    public UserResponse findByEmail(String email) {
         return userRepository
                 .findByEmail(email)
                 .map(UserMappingHelper::map)
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @CachePut(value = USER_CACHE, key = "'id:' + #id")
-    public UserResponseDTO update(Long id, User userDetails) {
+    public UserResponse update(Long id, User userDetails) {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @CacheEvict(value = USER_CACHE, key = "'id:' + #id + 'status' + #status")
-    public UserResponseDTO updateStatus(Long id, Boolean status) {
+    public UserResponse updateStatus(Long id, Boolean status) {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));

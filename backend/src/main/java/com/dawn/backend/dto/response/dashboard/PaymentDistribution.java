@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TopMovieDTO {
-    private String movieName;
-    private Long ticketSold;
-    private Long revenue;
+public class PaymentDistribution {
+    private String method;
+    private Long amount;
 }

@@ -1,7 +1,7 @@
 package com.dawn.backend.repository;
 
 import com.dawn.backend.constant.ReservationStatus;
-import com.dawn.backend.dto.request.ReservationFilterDTO;
+import com.dawn.backend.dto.request.ReservationFilterRequest;
 import com.dawn.backend.model.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
@@ -28,14 +29,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                          AND (
                             :#{#reservation.getStartDate()} IS NULL
                             OR :#{#reservation.getEndDate()} IS NULL
-                            OR ( r.createdAt  BETWEEN :#{#reservation.getStartDate()} AND :#{#reservation.getEndDate()}) )
+                            OR ( r.createdAt  BETWEEN :#{#startDate} AND :#{#endDate}) )
                          AND (:#{#reservation.getTotalAmount()} IS NULL OR r.totalAmount = :#{#reservation.getTotalAmount()})
                          AND (:#{#reservation.getIsPaid()} IS NULL OR r.isPaid = :#{#reservation.getIsPaid()})
                     ORDER BY
                         CASE WHEN :#{#reservation.getSortBy()} = 'oldest' THEN r.createdAt END ASC,
                         CASE WHEN :#{#reservation.getSortBy()} = 'newest' THEN r.createdAt END DESC
             """)
-    Page<Reservation> findAllWithFilter(ReservationFilterDTO reservation, Pageable pageable);
+    Page<Reservation> findAllWithFilter(ReservationFilterRequest reservation, Instant startDate, Instant endDate, Pageable pageable);
 
     Page<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status, Pageable pageable);
 
@@ -56,6 +57,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             		OR s.theater_id = :theaterId)
             """, nativeQuery = true)
     Long getTicketsSold(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
             @Param("movieId") Long movieId,
             @Param("theaterId") Long theaterId);
 
@@ -78,8 +81,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             		OR s.theater_id = :theaterId)
             """, nativeQuery = true)
     Long getActiveTheaters(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
             @Param("movieId") Long movieId,
             @Param("theaterId") Long theaterId);
 }

@@ -6,8 +6,8 @@ import com.dawn.backend.constant.PaymentStatus;
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.constant.SeatStatus;
 import com.dawn.backend.dto.request.*;
-import com.dawn.backend.dto.response.ReservationInitResponseDTO;
-import com.dawn.backend.dto.response.ReservationResponseDTO;
+import com.dawn.backend.dto.response.ReservationInitResponse;
+import com.dawn.backend.dto.response.ReservationResponse;
 import com.dawn.backend.exception.wrapper.*;
 import com.dawn.backend.helper.RedisKeyHelper;
 import com.dawn.backend.helper.ReservationMappingHelper;
@@ -62,7 +62,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final RedisService redisService;
 
     @Override
-    public ResponsePage<ReservationResponseDTO> findByUser(ReservationUserRequestDTO request, Pageable pageable) {
+    public ResponsePage<ReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetailsImpl user)) {
             log.warn("No authenticated user found");
@@ -81,14 +81,21 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ResponsePage<ReservationResponseDTO> findAll(ReservationFilterDTO o, Pageable pageable) {
+    public ResponsePage<ReservationResponse> findAll(ReservationFilterRequest req, Pageable pageable) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        //  Convert to Instant
+        Instant startDate = start.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant endDate = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
         return new ResponsePage<>(reservationRepository
-                .findAllWithFilter(o, pageable)
+                .findAllWithFilter(req, startDate, endDate, pageable)
                 .map(ReservationMappingHelper::map));
     }
 
     @Override
-    public ReservationResponseDTO findOne(String id) {
+    public ReservationResponse findOne(String id) {
         return reservationRepository
                 .findById(id)
                 .map(ReservationMappingHelper::map)
@@ -96,7 +103,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationInitResponseDTO initReservation(ReservationInitRequestDTO o) {
+    public ReservationInitResponse initReservation(ReservationInitRequest o) {
         log.info("Initializing reservation for user {} at showtime {}", o.getUserId(), o.getShowtimeId());
 
         String reservationId = ReservationUtils.generateReservationIds();
@@ -119,7 +126,7 @@ public class ReservationServiceImpl implements ReservationService {
                 o.getTheaterId(),
                 HOLD_TIMEOUT.toSeconds());
 
-        return ReservationInitResponseDTO.builder()
+        return ReservationInitResponse.builder()
                 .reservationId(reservationId)
                 .showtimeId(o.getShowtimeId())
                 .ttl(HOLD_TIMEOUT.toSeconds())
@@ -127,7 +134,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
     }
 
-    public void holdReservationSeats(ReservationHoldSeatRequestDTO reservation) {
+    public void holdReservationSeats(ReservationHoldSeatRequest reservation) {
         Long userId = reservation.getUserId();
         String reservationId = reservation.getReservationId();
         Long showtimeId = reservation.getShowtimeId();
@@ -178,7 +185,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ReservationResponseDTO confirmReservation(ReservationRequestDTO request) {
+    public ReservationResponse confirmReservation(ReservationRequest request) {
         log.info("Confirming reservation: {}", request.getReservationId());
 
         //        Get reservation id from redis
@@ -570,7 +577,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     //    Reservation private method
 
-    private Reservation validateUserAndGetReservation(ReservationRequestDTO request, String reservationId) {
+    private Reservation validateUserAndGetReservation(ReservationRequest request, String reservationId) {
         Reservation dto = getFromRedis(reservationId);
         if (!dto.getUser().getId().equals(request.getUserId())) {
             throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission to confirm this reservation");

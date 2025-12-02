@@ -1,12 +1,13 @@
 package com.dawn.backend.service.Impl;
 
-import com.dawn.backend.dto.request.DashboardFilterRequestDTO;
+import com.dawn.backend.dto.request.DashboardFilterRequest;
 import com.dawn.backend.dto.response.dashboard.*;
 import com.dawn.backend.repository.*;
 import com.dawn.backend.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +21,17 @@ public class DashboardServiceImpl implements DashboardService {
     private final MovieRepository movieRepository;
 
     @Override
-    public MetricsResponseDTO getMetrics(DashboardFilterRequestDTO req) {
-        Double totalRevenue = paymentRepository.getTotalRevenue(req.getFrom(), req.getTo(), req.getMovieId(), req.getTheaterId());
-        Long ticketSold = reservationRepository.getTicketsSold(req.getMovieId(), req.getTheaterId());
-        Long activeTheaters = reservationRepository.getActiveTheaters(req.getFrom(), req.getTo(), req.getMovieId(), req.getTheaterId());
-        Double seatUtilization = showtimeRepository.getSeatUtilization(req.getFrom(), req.getTo(), req.getTheaterId());
-        return MetricsResponseDTO
+//    @Cacheable(value = "dashboard:metrics", key = "#req.movieId + ':' + #req.theaterId")
+    public MetricsResponse getMetrics(DashboardFilterRequest req) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        Double totalRevenue = paymentRepository.getTotalRevenue(start, end, req.getMovieId(), req.getTheaterId());
+        Long ticketSold = reservationRepository.getTicketsSold(start, end, req.getMovieId(), req.getTheaterId());
+        Long activeTheaters = reservationRepository.getActiveTheaters(start, end, req.getMovieId(), req.getTheaterId());
+        Double seatUtilization = showtimeRepository.getSeatUtilization(start, end, req.getTheaterId());
+
+        return MetricsResponse
                 .builder()
                 .totalRevenue(totalRevenue)
                 .ticketsSold(ticketSold)
@@ -33,13 +39,16 @@ public class DashboardServiceImpl implements DashboardService {
                 .seatUtilization(seatUtilization)
                 .build();
     }
-
     @Override
-    public List<RevenuePointDTOResponse> getRevenueOverTime(DashboardFilterRequestDTO req) {
-        List<Object[]> raw = paymentRepository.getRevenueOverTime(req.getFrom(), req.getTo(), req.getTheaterId());
+//    @Cacheable(value = "dashboard:revenue", key = "#req.movieId + ':' + #req.theaterId")
+    public List<RevenuePointResponse> getRevenueOverTime(DashboardFilterRequest req) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        List<Object[]> raw = paymentRepository.getRevenueOverTime(start, end, req.getTheaterId());
         return raw.stream().map(
                         r ->
-                                RevenuePointDTOResponse
+                                RevenuePointResponse
                                         .builder()
                                         .date(((java.sql.Date) r[0]).toLocalDate())
                                         .revenue(((Number) r[1]).longValue())
@@ -48,12 +57,16 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<TopMovieDTO> getTopMovies(DashboardFilterRequestDTO req) {
-        List<Object[]> raw = movieRepository.getTopMovie(req.getFrom(), req.getTo());
+//    @Cacheable(value = "dashboard:topMovies", key = "#req.movieId + ':' + #req.theaterId")
+    public List<TopMovieResponse> getTopMovies(DashboardFilterRequest req) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        List<Object[]> raw = movieRepository.getTopMovie(start, end);
         return raw
                 .stream()
                 .map(r ->
-                        TopMovieDTO
+                        TopMovieResponse
                                 .builder()
                                 .movieName((String) r[0])
                                 .ticketSold(((Number) r[1]).longValue())
@@ -62,11 +75,15 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<TopTheaterDTO> getTopTheaters(DashboardFilterRequestDTO req) {
-        List<Object[]> raw = theaterRepository.getTopTheaters(req.getFrom(), req.getTo());
+//    @Cacheable(value = "dashboard:topTheaters", key = "#req.movieId + ':' + #req.theaterId")
+    public List<TopTheaterResponse> getTopTheaters(DashboardFilterRequest req) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        List<Object[]> raw = theaterRepository.getTopTheaters(start, end);
         return raw
                 .stream()
-                .map(r -> TopTheaterDTO
+                .map(r -> TopTheaterResponse
                         .builder()
                         .theaterName((String) r[0])
                         .ticketsSold(((Number) r[1]).longValue())
@@ -77,11 +94,15 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<PaymentDistributionDTO> getPaymentDistribution(DashboardFilterRequestDTO req) {
-        List<Object[]> raw = paymentRepository.getPaymentDistribution(req.getFrom(), req.getTo());
+//    @Cacheable(value = "dashboard:paymentDistribution", key = "#req.movieId + ':' + #req.theaterId")
+    public List<PaymentDistribution> getPaymentDistribution(DashboardFilterRequest req) {
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : LocalDate.now();
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : end.minusDays(30);
+
+        List<Object[]> raw = paymentRepository.getPaymentDistribution(start, end);
         return raw
                 .stream()
-                .map(r -> PaymentDistributionDTO
+                .map(r -> PaymentDistribution
                         .builder()
                         .method((String) r[0])
                         .amount(((Number) r[1]).longValue())

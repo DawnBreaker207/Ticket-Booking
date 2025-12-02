@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RevenuePointDTOResponse {
-    private LocalDate date;
-
-    private Long revenue;
+public class TopTheaterResponse {
+    private String theaterName;
+    private Long ticketsSold;
+    private Long totalRevenue;
 }

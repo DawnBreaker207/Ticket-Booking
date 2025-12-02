@@ -1,9 +1,7 @@
-package com.dawn.backend.dto.response;
+package com.dawn.backend.dto.request;
 
-import com.dawn.backend.model.AbstractMappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -15,24 +13,17 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class ShowtimeResponseDTO extends AbstractMappedEntity {
+public class ShowtimeRequest {
 
-    private Long id;
     private Long movieId;
-    private String movieTitle;
-    private String moviePosterUrl;
 
     private Long theaterId;
-    private String theaterName;
-    private String theaterLocation;
 
     private LocalDate showDate;
+
     private LocalTime showTime;
 
     private BigDecimal price;
 
     private Integer totalSeats;
-    private Integer availableSeats;
-
 }

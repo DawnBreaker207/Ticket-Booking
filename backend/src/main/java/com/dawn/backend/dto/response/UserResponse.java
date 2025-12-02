@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class UserResponseDTO extends AbstractMappedEntity {
+public class UserResponse extends AbstractMappedEntity {
 
     private Long userId;
 

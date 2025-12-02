@@ -1,10 +1,10 @@
-package com.dawn.backend.dto.response;
+package com.dawn.backend.dto.request;
 
 import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.model.AbstractMappedEntity;
+import com.dawn.backend.model.Reservation;
+import com.dawn.backend.model.Showtime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -12,15 +12,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class SeatResponseDTO extends AbstractMappedEntity {
+public class SeatRequest {
 
     private Long id;
 
-    private Long showtimeId;
+    private Showtime showtime;
 
     private String seatNumber;
 
     private SeatStatus status;
 
+    private Reservation reservation;
 }

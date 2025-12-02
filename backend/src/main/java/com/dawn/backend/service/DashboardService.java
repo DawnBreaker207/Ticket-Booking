@@ -1,19 +1,19 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.request.DashboardFilterRequestDTO;
+import com.dawn.backend.dto.request.DashboardFilterRequest;
 import com.dawn.backend.dto.response.dashboard.*;
 
 import java.util.List;
 
 
 public interface DashboardService {
-    MetricsResponseDTO getMetrics(DashboardFilterRequestDTO req);
+    MetricsResponse getMetrics(DashboardFilterRequest req);
 
-    List<RevenuePointDTOResponse> getRevenueOverTime(DashboardFilterRequestDTO req);
+    List<RevenuePointResponse> getRevenueOverTime(DashboardFilterRequest req);
 
-    List<TopMovieDTO> getTopMovies(DashboardFilterRequestDTO req);
+    List<TopMovieResponse> getTopMovies(DashboardFilterRequest req);
 
-    List<TopTheaterDTO> getTopTheaters(DashboardFilterRequestDTO req);
+    List<TopTheaterResponse> getTopTheaters(DashboardFilterRequest req);
 
-    List<PaymentDistributionDTO> getPaymentDistribution(DashboardFilterRequestDTO req);
+    List<PaymentDistribution> getPaymentDistribution(DashboardFilterRequest req);
 }

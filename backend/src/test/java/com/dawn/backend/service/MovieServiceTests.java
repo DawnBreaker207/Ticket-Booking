@@ -1,7 +1,7 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.request.MovieRequestDTO;
-import com.dawn.backend.dto.response.MovieResponseDTO;
+import com.dawn.backend.dto.request.MovieRequest;
+import com.dawn.backend.dto.response.MovieResponse;
 import com.dawn.backend.exception.wrapper.MovieExistedException;
 import com.dawn.backend.exception.wrapper.MovieNotFoundException;
 import com.dawn.backend.helper.MovieMappingHelper;
@@ -46,7 +46,7 @@ public class MovieServiceTests {
 
     private Movie movie;
 
-    private MovieRequestDTO movieRequestDTO;
+    private MovieRequest movieRequest;
 
     private Genre actionGenre;
 
@@ -77,7 +77,7 @@ public class MovieServiceTests {
                 .genres(Set.of(actionGenre, dramaGenre))
                 .build();
 
-        movieRequestDTO = MovieRequestDTO.builder()
+        movieRequest = MovieRequest.builder()
                 .filmId("12345")
                 .title("Inception")
                 .overview("A mind-bending thriller")
@@ -99,7 +99,7 @@ public class MovieServiceTests {
     @Test
     void findAll_GivenFilteredMovie_WhenCalled_ThenReturnMovieList() {
         // Arrange
-        MovieRequestDTO filter = MovieRequestDTO
+        MovieRequest filter = MovieRequest
                 .builder()
                 .title("Inception")
                 .build();
@@ -109,7 +109,7 @@ public class MovieServiceTests {
                 .thenReturn(new PageImpl<>(List.of(movie)));
 
         // Act
-        List<MovieResponseDTO> result = movieService
+        List<MovieResponse> result = movieService
                 .findAll(filter, Pageable.unpaged())
                 .getContent();
 
@@ -125,7 +125,7 @@ public class MovieServiceTests {
     @Test
     void findAll_GivenInvalidFilteredMovie_WhenCalled_ThenReturnEmptyList() {
         // Arrange
-        MovieRequestDTO filter = MovieRequestDTO
+        MovieRequest filter = MovieRequest
                 .builder()
                 .build();
         when(movieRepository
@@ -133,7 +133,7 @@ public class MovieServiceTests {
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
         // Act
-        List<MovieResponseDTO> result = movieService
+        List<MovieResponse> result = movieService
                 .findAll(filter, Pageable.unpaged())
                 .getContent();
 
@@ -153,7 +153,7 @@ public class MovieServiceTests {
                 .thenReturn(Optional.of(movie));
 
         // Act
-        MovieResponseDTO result = movieService
+        MovieResponse result = movieService
                 .findOne(1L);
 
         // Assert
@@ -206,7 +206,7 @@ public class MovieServiceTests {
         when(movieRepository
                 .findByFilmId("12345"))
                 .thenReturn(Optional.of(movie));
-        MovieResponseDTO dto = MovieResponseDTO
+        MovieResponse dto = MovieResponse
                 .builder()
                 .id(1L)
                 .filmId("12345")
@@ -216,7 +216,7 @@ public class MovieServiceTests {
                 .thenReturn(dto);
 
         // Act
-        MovieResponseDTO result = movieService
+        MovieResponse result = movieService
                 .findByMovieId("12345");
 
         // Assert
@@ -261,7 +261,7 @@ public class MovieServiceTests {
                 .filmId("12345")
                 .build();
         when(MovieMappingHelper
-                .map(movieRequestDTO))
+                .map(movieRequest))
                 .thenReturn(mappedMovie);
 
         Movie savedMovie = Movie
@@ -273,18 +273,18 @@ public class MovieServiceTests {
                 .save(mappedMovie))
                 .thenReturn(savedMovie);
 
-        MovieResponseDTO dto = MovieResponseDTO
+        MovieResponse dto = MovieResponse
                 .builder()
                 .id(1L)
                 .filmId("12345")
                 .build();
         mappingHelperMock
-                .when(() -> MovieMappingHelper.map(movieRequestDTO))
+                .when(() -> MovieMappingHelper.map(movieRequest))
                 .thenReturn(dto);
 
         // Act
-        MovieResponseDTO result = movieService
-                .create(movieRequestDTO);
+        MovieResponse result = movieService
+                .create(movieRequest);
 
         // Assert
         assertNotNull(result);
@@ -307,7 +307,7 @@ public class MovieServiceTests {
         // Act & Assert
         assertThrows(
                 MovieExistedException.class,
-                () -> movieService.create(movieRequestDTO));
+                () -> movieService.create(movieRequest));
 
         verify(movieRepository, times(1))
                 .findByFilmId("12345");
@@ -320,7 +320,7 @@ public class MovieServiceTests {
     @Test
     void update_GivenValidIdAndNewGenres_WhenSuccess_ThenMovieUpdatedWithGenres() {
         // Arrange
-        MovieRequestDTO updateDto = MovieRequestDTO
+        MovieRequest updateDto = MovieRequest
                 .builder()
                 .title("Update title")
                 .genres(Set.of("Action", "Comedy"))
@@ -346,7 +346,7 @@ public class MovieServiceTests {
         when(movieRepository.save(movie))
                 .thenReturn(savedMovie);
 
-        MovieResponseDTO dto = MovieResponseDTO
+        MovieResponse dto = MovieResponse
                 .builder()
                 .id(1L)
                 .title("Update title")
@@ -356,7 +356,7 @@ public class MovieServiceTests {
                 .thenReturn(dto);
 
         // Act
-        MovieResponseDTO result = movieService
+        MovieResponse result = movieService
                 .update(1L, updateDto);
 
         // Assert
@@ -380,7 +380,7 @@ public class MovieServiceTests {
         // Act & Assert
         assertThrows(
                 MovieNotFoundException.class,
-                () -> movieService.update(2L, movieRequestDTO));
+                () -> movieService.update(2L, movieRequest));
         verify(movieRepository, times(1))
                 .findById(2L);
         verify(movieRepository, never())

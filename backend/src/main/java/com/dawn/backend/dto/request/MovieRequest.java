@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class MovieRequestDTO{
+public class MovieRequest {
     @NotBlank(message = "Title is not mandatory")
     @Size(min = 1, max = 100, message = "Required characters")
     private String title;

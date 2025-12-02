@@ -1,6 +1,6 @@
 package com.dawn.backend.repository;
 
-import com.dawn.backend.dto.request.MovieRequestDTO;
+import com.dawn.backend.dto.request.MovieRequest;
 import com.dawn.backend.model.Movie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                 AND ( m.is_deleted = false OR m.is_deleted IS NULL)
             ORDER BY id ASC
             """, nativeQuery = true)
-    Page<Movie> findAllWithFilter(@Param("movie") MovieRequestDTO movie, Pageable pageable);
+    Page<Movie> findAllWithFilter(@Param("movie") MovieRequest movie, Pageable pageable);
 
     Optional<Movie> findByFilmId(String filmId);
 
@@ -59,6 +59,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopMovie(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to);
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to);
 }

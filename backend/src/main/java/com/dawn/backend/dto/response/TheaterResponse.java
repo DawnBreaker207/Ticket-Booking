@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class TheaterResponseDTO extends AbstractMappedEntity {
+public class TheaterResponse extends AbstractMappedEntity {
     private Long id;
 
     private String name;
@@ -26,5 +26,5 @@ public class TheaterResponseDTO extends AbstractMappedEntity {
 
     private Boolean isDeleted;
 
-    private List<ShowtimeResponseDTO> showtime = new ArrayList<>();
+    private List<ShowtimeResponse> showtime = new ArrayList<>();
 }

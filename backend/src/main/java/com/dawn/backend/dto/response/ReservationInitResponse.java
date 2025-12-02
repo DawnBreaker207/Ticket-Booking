@@ -5,16 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class PaymentResponseDTO {
+public class ReservationInitResponse {
 
-    public String code;
+    private String reservationId;
 
-    public String message;
+    private Long showtimeId;
 
-    public String paymentUrl;
+    private Long ttl;
 
+    private Instant expiredAt;
 }

@@ -1,15 +1,15 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.request.LoginRequestDTO;
-import com.dawn.backend.dto.request.RegisterRequestDTO;
-import com.dawn.backend.dto.response.JwtResponseDTO;
-import com.dawn.backend.dto.response.TokenRefreshResponseDTO;
+import com.dawn.backend.dto.request.LoginRequest;
+import com.dawn.backend.dto.request.RegisterRequest;
+import com.dawn.backend.dto.response.JwtResponse;
+import com.dawn.backend.dto.response.TokenRefreshResponse;
 
 public interface AuthService {
 
-    void register(RegisterRequestDTO newUser);
+    void register(RegisterRequest newUser);
 
-    JwtResponseDTO login(LoginRequestDTO user);
+    JwtResponse login(LoginRequest user);
 
-    TokenRefreshResponseDTO refreshToken(String refreshToken);
+    TokenRefreshResponse refreshToken(String refreshToken);
 }

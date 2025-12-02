@@ -2,8 +2,9 @@ package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.ShowtimeRequestDTO;
-import com.dawn.backend.dto.response.ShowtimeResponseDTO;
+import com.dawn.backend.dto.request.ShowtimeFilterRequest;
+import com.dawn.backend.dto.request.ShowtimeRequest;
+import com.dawn.backend.dto.response.ShowtimeResponse;
 import com.dawn.backend.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +30,7 @@ public class ShowtimeController {
 
     @GetMapping()
     @Operation(summary = "Get showtime by date", description = "Returns showtime for a specific date")
-    public ResponseObject<List<ShowtimeResponseDTO>> getShowtimeByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date) {
+    public ResponseObject<List<ShowtimeResponse>> getShowtimeByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date) {
         log.info("Fetching showtime for date: {}", date);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByDate(date));
     }
@@ -37,21 +38,21 @@ public class ShowtimeController {
 
     @GetMapping("/movies/{movieId}")
     @Operation(summary = "Get showtime by movie", description = "Returns showtime for a specific movie")
-    public ResponseObject<List<ShowtimeResponseDTO>> getShowtimeByMovie(@PathVariable Long movieId) {
+    public ResponseObject<List<ShowtimeResponse>> getShowtimeByMovie(@PathVariable Long movieId) {
         log.info("Fetching showtime for movie id: {}", movieId);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByMovie(movieId));
     }
 
     @GetMapping("/theaters/{theaterId}")
     @Operation(summary = "Get showtime by theater", description = "Returns available for a specific theater")
-    public ResponseObject<ResponsePage<ShowtimeResponseDTO>> getShowtimeByTheater(@PathVariable Long theaterId, Pageable pageable) {
-        log.info("Fetching showtime for theater id: {}", theaterId);
-        return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByTheater(theaterId, pageable));
+    public ResponseObject<ResponsePage<ShowtimeResponse>> getShowtimeByTheater(@ModelAttribute ShowtimeFilterRequest req, Pageable pageable) {
+        log.info("Fetching showtime for theater id: {}", req.getTheaterId());
+        return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getByTheater(req, pageable));
     }
 
     @GetMapping("/available")
     @Operation(summary = "Get available showtime", description = "Returns available showtime from a specific date")
-    public ResponseObject<List<ShowtimeResponseDTO>> getAvailableShowtime(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ResponseObject<List<ShowtimeResponse>> getAvailableShowtime(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         LocalDate searchDate = date != null ? date : LocalDate.now();
         log.info("Fetching available showtime from date: {}", searchDate);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getAvailableShowtime(searchDate));
@@ -59,7 +60,7 @@ public class ShowtimeController {
 
     @GetMapping("/available/movies/{movieId}")
     @Operation(summary = "Get available showtime for a movie", description = "Returns available showtime for a specific movie from a date")
-    public ResponseObject<List<ShowtimeResponseDTO>> getAvailableShowtimeForMovie(@PathVariable Long movieId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ResponseObject<List<ShowtimeResponse>> getAvailableShowtimeForMovie(@PathVariable Long movieId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         LocalDate searchDate = date != null ? date : LocalDate.now();
         log.info("Fetching available showtime from movie id: {} from date {}", movieId, searchDate);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getAvailableShowtimeForMovie(movieId, searchDate));
@@ -67,21 +68,21 @@ public class ShowtimeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get showtime by ID", description = "Returns a showtime by its ID")
-    public ResponseObject<ShowtimeResponseDTO> getShowtimeById(@PathVariable Long id) {
+    public ResponseObject<ShowtimeResponse> getShowtimeById(@PathVariable Long id) {
         log.info("Fetching showtime with id: {}", id);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.getById(id));
     }
 
     @PostMapping()
     @Operation(summary = "Add a new showtime", description = "Create a new showtime (Admin only)")
-    public ResponseObject<ShowtimeResponseDTO> add(@Valid @RequestBody ShowtimeRequestDTO showtimeRequest) {
+    public ResponseObject<ShowtimeResponse> add(@Valid @RequestBody ShowtimeRequest showtimeRequest) {
         log.info("Create showtime: {}", showtimeRequest);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.add(showtimeRequest));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a showtime", description = "Updates an existing showtime (Admin only)")
-    public ResponseObject<ShowtimeResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ShowtimeRequestDTO showtimeDetails) {
+    public ResponseObject<ShowtimeResponse> update(@PathVariable Long id, @Valid @RequestBody ShowtimeRequest showtimeDetails) {
         log.info("Updating showtime with id: {}", id);
         return new ResponseObject<>(HttpStatus.OK, "Success", showtimeService.update(id, showtimeDetails));
     }

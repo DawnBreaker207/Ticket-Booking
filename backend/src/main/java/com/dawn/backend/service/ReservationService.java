@@ -2,22 +2,22 @@ package com.dawn.backend.service;
 
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.*;
-import com.dawn.backend.dto.response.ReservationInitResponseDTO;
-import com.dawn.backend.dto.response.ReservationResponseDTO;
+import com.dawn.backend.dto.response.ReservationInitResponse;
+import com.dawn.backend.dto.response.ReservationResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface ReservationService {
-    ResponsePage<ReservationResponseDTO> findAll(ReservationFilterDTO o, Pageable pageable);
+    ResponsePage<ReservationResponse> findAll(ReservationFilterRequest request, Pageable pageable);
 
-    ResponsePage<ReservationResponseDTO> findByUser(ReservationUserRequestDTO request, Pageable pageable);
+    ResponsePage<ReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable);
 
-    ReservationResponseDTO findOne(String id);
+    ReservationResponse findOne(String id);
 
-    ReservationInitResponseDTO initReservation(ReservationInitRequestDTO reservation);
+    ReservationInitResponse initReservation(ReservationInitRequest reservation);
 
-    void holdReservationSeats(ReservationHoldSeatRequestDTO reservation);
+    void holdReservationSeats(ReservationHoldSeatRequest reservation);
 
-    ReservationResponseDTO confirmReservation(ReservationRequestDTO reservation);
+    ReservationResponse confirmReservation(ReservationRequest reservation);
 
     void cancelReservation(String reservationId, Long userId);
 

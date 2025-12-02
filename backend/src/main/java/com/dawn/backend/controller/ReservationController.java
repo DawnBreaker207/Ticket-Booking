@@ -3,8 +3,8 @@ package com.dawn.backend.controller;
 import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.*;
-import com.dawn.backend.dto.response.ReservationInitResponseDTO;
-import com.dawn.backend.dto.response.ReservationResponseDTO;
+import com.dawn.backend.dto.response.ReservationInitResponse;
+import com.dawn.backend.dto.response.ReservationResponse;
 import com.dawn.backend.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,47 +25,47 @@ public class ReservationController {
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @Operation(summary = "Get all reservation with conditions", description = "Returns reservation with condition filters (Admin Only)")
-    public ResponseObject<ResponsePage<ReservationResponseDTO>> getAll(@ModelAttribute ReservationFilterDTO o, Pageable pageable) {
+    public ResponseObject<ResponsePage<ReservationResponse>> getAll(@ModelAttribute ReservationFilterRequest o, Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findAll(o, pageable));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get reservation by id", description = "Returns reservation by its Id (Admin Only)")
-    public ResponseObject<ReservationResponseDTO> getOne(@PathVariable String id) {
+    public ResponseObject<ReservationResponse> getOne(@PathVariable String id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findOne(id));
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get reservation by user id", description = "Returns reservation by they own Id (User Only)")
-    public ResponseObject<ResponsePage<ReservationResponseDTO>> getAllByUser(@ModelAttribute ReservationUserRequestDTO request, Pageable pageable) {
+    public ResponseObject<ResponsePage<ReservationResponse>> getAllByUser(@ModelAttribute ReservationUserRequest request, Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request, pageable));
     }
 
     @PostMapping("/init")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Init a reservation", description = "Create a reservation and return Id")
-    public ResponseObject<ReservationInitResponseDTO> reservationInit(@RequestBody ReservationInitRequestDTO reservation) {
+    public ResponseObject<ReservationInitResponse> reservationInit(@RequestBody ReservationInitRequest reservation) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.initReservation(reservation));
     }
 
     @PostMapping("/seatHold")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Choose and booking seat", description = "Selected seat place and booking it")
-    public ResponseObject<Void> reservationHoldSeat(@RequestBody ReservationHoldSeatRequestDTO o) {
+    public ResponseObject<Void> reservationHoldSeat(@RequestBody ReservationHoldSeatRequest o) {
         reservationService.holdReservationSeats(o);
         return new ResponseObject<>(HttpStatus.OK, "Success", null);
     }
 
     @PostMapping("/confirm")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Save reservation after payment ", description = "Returns reservation after booking seats and payment success")
-    public ResponseObject<ReservationResponseDTO> reservationConfirm(@RequestBody ReservationRequestDTO o) {
+    public ResponseObject<ReservationResponse> reservationConfirm(@RequestBody ReservationRequest o) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.confirmReservation(o));
     }
 
     @PostMapping("/{reservationId}/cancel")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Cancel reservation after payment ", description = "Cancel reservation after booking seats and payment failed")
     public ResponseObject<Void> reservationCancel(@PathVariable String reservationId, @RequestBody Long userId) {
         reservationService.cancelReservation(reservationId, userId);

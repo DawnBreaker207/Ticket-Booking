@@ -1,11 +1,11 @@
 package com.dawn.backend.helper;
 
-import com.dawn.backend.dto.response.UserResponseDTO;
+import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.model.User;
 
 public interface UserMappingHelper {
-    static UserResponseDTO map(final User u) {
-        return UserResponseDTO
+    static UserResponse map(final User u) {
+        return UserResponse
                 .builder()
                 .userId(u.getId())
                 .email(u.getEmail())
@@ -16,7 +16,7 @@ public interface UserMappingHelper {
                 .build();
     }
 
-    static User map(final UserResponseDTO u) {
+    static User map(final UserResponse u) {
         return User
                 .builder()
                 .id(u.getUserId())

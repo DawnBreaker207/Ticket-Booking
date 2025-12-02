@@ -1,11 +1,11 @@
 package com.dawn.backend.helper;
 
-import com.dawn.backend.dto.request.SeatRequestDTO;
-import com.dawn.backend.dto.response.SeatResponseDTO;
+import com.dawn.backend.dto.request.SeatRequest;
+import com.dawn.backend.dto.response.SeatResponse;
 import com.dawn.backend.model.Seat;
 
 public interface SeatMappingHelper {
-    static Seat map(final SeatRequestDTO seat) {
+    static Seat map(final SeatRequest seat) {
         return Seat.builder()
                 .id(seat.getId())
                 .showtime(seat.getShowtime())
@@ -15,8 +15,8 @@ public interface SeatMappingHelper {
                 .build();
     }
 
-    static SeatResponseDTO map(final Seat seat) {
-        return SeatResponseDTO.builder()
+    static SeatResponse map(final Seat seat) {
+        return SeatResponse.builder()
                 .id(seat.getId())
                 .seatNumber(seat.getSeatNumber())
                 .status(seat.getStatus())

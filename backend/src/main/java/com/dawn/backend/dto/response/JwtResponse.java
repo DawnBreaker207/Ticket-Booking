@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class JwtResponseDTO {
+public class JwtResponse {
     private String accessToken;
 
     @JsonIgnore

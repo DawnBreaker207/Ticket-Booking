@@ -1,6 +1,6 @@
 package com.dawn.backend.service.Impl;
 
-import com.dawn.backend.dto.response.ReportResponseDTO;
+import com.dawn.backend.dto.response.ReportResponse;
 import com.dawn.backend.model.Reservation;
 import com.dawn.backend.repository.ReservationRepository;
 import com.dawn.backend.service.ReportService;
@@ -31,7 +31,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReservationRepository reservationRepository;
 
     @Override
-    public ReportResponseDTO exportReport(String reportFormat) {
+    public ReportResponse exportReport(String reportFormat) {
         try {
             List<Reservation> reservations = reservationRepository.findAll();
             if (reservations.isEmpty()) {
@@ -92,7 +92,7 @@ public class ReportServiceImpl implements ReportService {
                 throw new IllegalArgumentException("Unsupported report format: " + reportFormat);
             }
 
-            return new ReportResponseDTO(reportBytes, filename, contentType);
+            return new ReportResponse(reportBytes, filename, contentType);
         } catch (JRException | IOException ex) {
             throw new RuntimeException(ex);
         }

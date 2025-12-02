@@ -2,10 +2,10 @@ package com.dawn.backend.service.Impl;
 
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.URole;
-import com.dawn.backend.dto.request.LoginRequestDTO;
-import com.dawn.backend.dto.request.RegisterRequestDTO;
-import com.dawn.backend.dto.response.JwtResponseDTO;
-import com.dawn.backend.dto.response.TokenRefreshResponseDTO;
+import com.dawn.backend.dto.request.LoginRequest;
+import com.dawn.backend.dto.request.RegisterRequest;
+import com.dawn.backend.dto.response.JwtResponse;
+import com.dawn.backend.dto.response.TokenRefreshResponse;
 import com.dawn.backend.exception.wrapper.*;
 import com.dawn.backend.model.RefreshToken;
 import com.dawn.backend.model.Role;
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegisterRequestDTO newUser) {
+    public void register(RegisterRequest newUser) {
 
         userRepository
                 .findByEmail(newUser.getEmail())
@@ -81,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public JwtResponseDTO login(LoginRequestDTO user) {
+    public JwtResponse login(LoginRequest user) {
         String identifier = user.getIdentifier();
 
         //   Detect email
@@ -100,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-        return JwtResponseDTO
+        return JwtResponse
                 .builder()
                 .userId(userDetails.getId())
                 .username(userDetails.getUsername())
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public TokenRefreshResponseDTO refreshToken(String refreshToken) {
+    public TokenRefreshResponse refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new RefreshTokenExpiredException(Message.Exception.REFRESH_TOKEN_EXPIRED);
         }
@@ -121,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String jwtCookie = jWTUtils.generateToken(user.getUsername());
-                    return TokenRefreshResponseDTO
+                    return TokenRefreshResponse
                             .builder()
                             .accessToken(jwtCookie)
                             .build();

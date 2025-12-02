@@ -1,10 +1,10 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.LoginRequestDTO;
-import com.dawn.backend.dto.request.RegisterRequestDTO;
-import com.dawn.backend.dto.response.JwtResponseDTO;
-import com.dawn.backend.dto.response.TokenRefreshResponseDTO;
+import com.dawn.backend.dto.request.LoginRequest;
+import com.dawn.backend.dto.request.RegisterRequest;
+import com.dawn.backend.dto.response.JwtResponse;
+import com.dawn.backend.dto.response.TokenRefreshResponse;
 import com.dawn.backend.service.AuthService;
 import com.dawn.backend.util.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,14 +24,14 @@ public class AuthController {
     private final JWTUtils jWTUtils;
 
     @PostMapping("/register")
-    public ResponseObject<String> register(@RequestBody RegisterRequestDTO newUser) {
+    public ResponseObject<String> register(@RequestBody RegisterRequest newUser) {
         authService.register(newUser);
         return new ResponseObject<>(HttpStatus.OK, "Success", "");
     }
 
     @PostMapping("/login")
-    public ResponseObject<JwtResponseDTO> login(@RequestBody LoginRequestDTO user) {
-        JwtResponseDTO jwt = authService.login(user);
+    public ResponseObject<JwtResponse> login(@RequestBody LoginRequest user) {
+        JwtResponse jwt = authService.login(user);
         return new ResponseObject<>(
                 HttpStatus.OK,
                 "Success",
@@ -46,8 +46,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseObject<TokenRefreshResponseDTO> refreshToken(@CookieValue("refreshToken") String refreshToken) {
-        TokenRefreshResponseDTO token = authService.refreshToken(refreshToken);
+    public ResponseObject<TokenRefreshResponse> refreshToken(@CookieValue("refreshToken") String refreshToken) {
+        TokenRefreshResponse token = authService.refreshToken(refreshToken);
         return new ResponseObject<>(HttpStatus.OK, "Success", token,
                 new HttpHeaders() {{
                     add(

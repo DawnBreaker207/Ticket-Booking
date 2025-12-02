@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class MovieResponseDTO extends AbstractMappedEntity {
+public class MovieResponse extends AbstractMappedEntity {
     private Long id;
 
     private String title;

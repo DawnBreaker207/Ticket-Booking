@@ -1,6 +1,6 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.response.UserResponseDTO;
+import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.exception.wrapper.UserNotFoundException;
 import com.dawn.backend.model.User;
 import com.dawn.backend.repository.UserRepository;
@@ -50,7 +50,7 @@ public class UserServiceTests {
                 .thenReturn(new PageImpl<>(List.of(user)));
 
         // Act
-        List<UserResponseDTO> result = userService
+        List<UserResponse> result = userService
                 .findAll(Pageable.unpaged())
                 .getContent();
 
@@ -69,7 +69,7 @@ public class UserServiceTests {
         when(userRepository
                 .findAll())
                 .thenReturn(List.of());
-        List<UserResponseDTO> result = userService
+        List<UserResponse> result = userService
                 .findAll(Pageable.unpaged())
                 .getContent();
 
@@ -88,7 +88,7 @@ public class UserServiceTests {
                 .thenReturn(Optional.of(user));
 
         // Act
-        UserResponseDTO result = userService
+        UserResponse result = userService
                 .findOne(1L);
 
         // Assert
@@ -130,7 +130,7 @@ public class UserServiceTests {
                 .thenReturn(Optional.of(user));
 
         // Act
-        UserResponseDTO result = userService
+        UserResponse result = userService
                 .findByEmail("test@gmail.com");
 
         // Assert
@@ -173,7 +173,7 @@ public class UserServiceTests {
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         //  Act
-        UserResponseDTO result = userService
+        UserResponse result = userService
                 .update(1L, updateDetails);
 
         //  Assert

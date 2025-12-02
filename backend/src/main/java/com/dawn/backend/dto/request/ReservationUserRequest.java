@@ -1,20 +1,16 @@
 package com.dawn.backend.dto.request;
 
+import com.dawn.backend.constant.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class TheaterRequestDTO  {
+public class ReservationUserRequest {
 
-    private String name;
+    Boolean isPaid;
 
-    private String location;
-
-    private Integer capacity;
-
+    ReservationStatus status;
 }

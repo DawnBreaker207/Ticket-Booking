@@ -1,6 +1,5 @@
 package com.dawn.backend.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class TokenRefreshResponseDTO {
-    private String accessToken;
+public class ReportResponse {
+    private byte[] data;
 
-    @JsonIgnore
-    private String refreshToken;
+    private String filename;
+
+    private String contentType;
 }

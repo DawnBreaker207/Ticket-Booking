@@ -1,24 +1,25 @@
 package com.dawn.backend.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class ReservationRequestDTO{
+public class ReservationInitRequest {
 
     private String reservationId;
 
-    private Long showtimeId;
-
+    @NotNull
     private Long userId;
 
-    private List<Long> seats = new ArrayList<>();
+    @NotNull
+    private Long showtimeId;
+
+    @NotNull
+    private Long theaterId;
 }

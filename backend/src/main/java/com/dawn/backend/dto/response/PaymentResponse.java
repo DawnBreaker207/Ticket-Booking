@@ -9,10 +9,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class ReportResponseDTO {
-    private byte[] data;
+public class PaymentResponse {
 
-    private String filename;
+    public String code;
 
-    private String contentType;
+    public String message;
+
+    public String paymentUrl;
+
 }

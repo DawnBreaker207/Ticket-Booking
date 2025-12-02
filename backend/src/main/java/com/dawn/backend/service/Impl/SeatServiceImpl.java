@@ -2,7 +2,7 @@ package com.dawn.backend.service.Impl;
 
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.dto.response.SeatResponseDTO;
+import com.dawn.backend.dto.response.SeatResponse;
 import com.dawn.backend.exception.wrapper.ShowtimeNotFoundException;
 import com.dawn.backend.exception.wrapper.TheaterNotFoundException;
 import com.dawn.backend.helper.SeatMappingHelper;
@@ -28,7 +28,7 @@ public class SeatServiceImpl implements SeatService {
     private final ShowtimeRepository showtimeRepository;
 
     @Override
-    public List<SeatResponseDTO> getByShowtime(Long showtimeId) {
+    public List<SeatResponse> getByShowtime(Long showtimeId) {
         log.info("Fetching seats for showtime id: {}", showtimeId);
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
@@ -59,7 +59,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<SeatResponseDTO> getAvailableSeatByShowtime(Long showtimeId) {
+    public List<SeatResponse> getAvailableSeatByShowtime(Long showtimeId) {
         log.info("Fetching available seats for showtime id: {}", showtimeId);
 
         Showtime showtime = showtimeRepository

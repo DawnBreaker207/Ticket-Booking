@@ -2,7 +2,7 @@ package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.response.UserResponseDTO;
+import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,22 +20,22 @@ public class UserController {
 
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<ResponsePage<UserResponseDTO>> getAll(Pageable pageable) {
+    public ResponseObject<ResponsePage<UserResponse>> getAll(Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseObject<UserResponseDTO> getOne(@PathVariable Long id) {
+    public ResponseObject<UserResponse> getOne(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findOne(id));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseObject<UserResponseDTO> getEmail(@PathVariable String email) {
+    public ResponseObject<UserResponse> getEmail(@PathVariable String email) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseObject<UserResponseDTO> updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
+    public ResponseObject<UserResponse> updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.updateStatus(id, status));
     }
 }

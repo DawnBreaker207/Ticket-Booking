@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TheaterRepository extends JpaRepository<Theater, Long> {
@@ -43,6 +43,6 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
             LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopTheaters(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to);
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to);
 }

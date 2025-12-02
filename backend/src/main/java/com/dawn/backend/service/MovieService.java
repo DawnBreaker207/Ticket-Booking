@@ -1,20 +1,20 @@
 package com.dawn.backend.service;
 
 import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.MovieRequestDTO;
-import com.dawn.backend.dto.response.MovieResponseDTO;
+import com.dawn.backend.dto.request.MovieRequest;
+import com.dawn.backend.dto.response.MovieResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface MovieService {
-    ResponsePage<MovieResponseDTO> findAll(MovieRequestDTO m, Pageable pageable);
+    ResponsePage<MovieResponse> findAll(MovieRequest m, Pageable pageable);
 
-    MovieResponseDTO findOne(Long id);
+    MovieResponse findOne(Long id);
 
-    MovieResponseDTO findByMovieId(String id);
+    MovieResponse findByMovieId(String id);
 
-    MovieResponseDTO create(MovieRequestDTO id);
+    MovieResponse create(MovieRequest id);
 
-    MovieResponseDTO update(Long id, MovieRequestDTO m);
+    MovieResponse update(Long id, MovieRequest m);
 
     void delete(Long id);
 }

@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TopTheaterDTO {
-    private String theaterName;
+@NoArgsConstructor
+public class MetricsResponse {
+    private Double totalRevenue;
     private Long ticketsSold;
-    private Long totalRevenue;
+    private Long activeTheaters;
+    private Double seatUtilization;
 }

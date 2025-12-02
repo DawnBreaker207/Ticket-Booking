@@ -1,8 +1,8 @@
 package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.PaymentRequestDTO;
-import com.dawn.backend.dto.response.PaymentResponseDTO;
+import com.dawn.backend.dto.request.PaymentRequest;
+import com.dawn.backend.dto.response.PaymentResponse;
 import com.dawn.backend.service.PaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/create")
-    public ResponseObject<PaymentResponseDTO> createPayment(@ModelAttribute PaymentRequestDTO req, HttpServletRequest request) {
+    public ResponseObject<PaymentResponse> createPayment(@ModelAttribute PaymentRequest req, HttpServletRequest request) {
         return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createPayment(req, request));
     }
 

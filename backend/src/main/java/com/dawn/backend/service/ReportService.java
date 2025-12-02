@@ -1,7 +1,7 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.response.ReportResponseDTO;
+import com.dawn.backend.dto.response.ReportResponse;
 
 public interface ReportService {
-    ReportResponseDTO exportReport(String reportFormat);
+    ReportResponse exportReport(String reportFormat);
 }

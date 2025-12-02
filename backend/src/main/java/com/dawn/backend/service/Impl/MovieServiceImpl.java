@@ -2,8 +2,8 @@ package com.dawn.backend.service.Impl;
 
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
-import com.dawn.backend.dto.request.MovieRequestDTO;
-import com.dawn.backend.dto.response.MovieResponseDTO;
+import com.dawn.backend.dto.request.MovieRequest;
+import com.dawn.backend.dto.response.MovieResponse;
 import com.dawn.backend.exception.wrapper.MovieExistedException;
 import com.dawn.backend.exception.wrapper.MovieNotFoundException;
 import com.dawn.backend.helper.MovieMappingHelper;
@@ -15,6 +15,8 @@ import com.dawn.backend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,15 +37,15 @@ public class MovieServiceImpl implements MovieService {
 
     //    @Cacheable(MOVIE_CACHE)
     @Override
-    public ResponsePage<MovieResponseDTO> findAll(MovieRequestDTO m, Pageable pageable) {
+    public ResponsePage<MovieResponse> findAll(MovieRequest m, Pageable pageable) {
         return new ResponsePage<>(movieRepository
                 .findAllWithFilter(m, pageable)
                 .map(MovieMappingHelper::map));
     }
 
     @Override
-//    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
-    public MovieResponseDTO findOne(Long id) {
+    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
+    public MovieResponse findOne(Long id) {
         return movieRepository
                 .findById(id)
                 .map(MovieMappingHelper::map)
@@ -51,8 +53,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-//    @Cacheable(value = MOVIE_CACHE, key = "'movieId' + #id")
-    public MovieResponseDTO findByMovieId(String id) {
+    @Cacheable(value = MOVIE_CACHE, key = "'movieId:' + #id")
+    public MovieResponse findByMovieId(String id) {
         return movieRepository
                 .findByFilmId(id)
                 .map(MovieMappingHelper::map)
@@ -62,7 +64,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
-    public MovieResponseDTO create(MovieRequestDTO m) {
+    public MovieResponse create(MovieRequest m) {
         movieRepository
                 .findByFilmId(String.valueOf(m.getFilmId()))
                 .ifPresent((movie) -> {
@@ -77,8 +79,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    @CachePut(value = MOVIE_CACHE, key = "'id:' + #id")
-    public MovieResponseDTO update(Long id, MovieRequestDTO movieDetails) {
+    @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
+    public MovieResponse update(Long id, MovieRequest movieDetails) {
 
         Movie movie = movieRepository
                 .findById(id)
@@ -101,7 +103,10 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @CacheEvict(value = MOVIE_CACHE, key = "'id:' + #id")
+    @Caching(evict = {
+            @CacheEvict(value = MOVIE_CACHE, key = "'id:' + #id"),
+            @CacheEvict(value = MOVIE_CACHE, allEntries = true)
+    })
     public void delete(Long id) {
         movieRepository
                 .findById(id)

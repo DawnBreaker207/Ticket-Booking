@@ -3,8 +3,9 @@ package com.dawn.backend.service.Impl;
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.dto.request.ShowtimeRequestDTO;
-import com.dawn.backend.dto.response.ShowtimeResponseDTO;
+import com.dawn.backend.dto.request.ShowtimeFilterRequest;
+import com.dawn.backend.dto.request.ShowtimeRequest;
+import com.dawn.backend.dto.response.ShowtimeResponse;
 import com.dawn.backend.exception.wrapper.MovieNotFoundException;
 import com.dawn.backend.exception.wrapper.ShowtimeNotFoundException;
 import com.dawn.backend.exception.wrapper.TheaterNotFoundException;
@@ -45,7 +46,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     private final SeatRepository seatRepository;
 
     @Override
-    public List<ShowtimeResponseDTO> getByDate(LocalDate date) {
+    public List<ShowtimeResponse> getByDate(LocalDate date) {
         log.info("Fetching showtime for date: {}", date);
         return showtimeRepository
                 .findByShowDate(date)
@@ -55,7 +56,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public List<ShowtimeResponseDTO> getByMovie(Long movieId) {
+    public List<ShowtimeResponse> getByMovie(Long movieId) {
         log.info("Fetching showtime for movie id: {}", movieId);
         Movie movie = movieRepository
                 .findById(movieId)
@@ -68,18 +69,20 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public ResponsePage<ShowtimeResponseDTO> getByTheater(Long theaterId, Pageable pageable) {
-        log.info("Fetching showtime for theater id: {}", theaterId);
+    public ResponsePage<ShowtimeResponse> getByTheater(ShowtimeFilterRequest req, Pageable pageable) {
+        LocalDate start = req.getStartDate() != null ? req.getStartDate() : LocalDate.now();
+        LocalDate end = req.getEndDate() != null ? req.getEndDate() : start.plusDays(30);
+        log.info("Fetching showtime for theater id: {}", req.getTheaterId());
         Theater theater = theaterRepository
-                .findById(theaterId)
+                .findById(req.getTheaterId())
                 .orElseThrow(() -> new TheaterNotFoundException(Message.Exception.THEATER_NOT_FOUND));
         return new ResponsePage<>(showtimeRepository
-                .findByTheater(theater, pageable)
+                .findByTheater(theater, start, end, pageable)
                 .map(ShowtimeMappingHelper::map));
     }
 
     @Override
-    public List<ShowtimeResponseDTO> getAvailableShowtime(LocalDate date) {
+    public List<ShowtimeResponse> getAvailableShowtime(LocalDate date) {
         log.info("Fetching available showtime from date: {}", date);
         return showtimeRepository
                 .findAvailableShowtimeFromDate(date)
@@ -89,7 +92,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public List<ShowtimeResponseDTO> getAvailableShowtimeForMovie(Long movieId, LocalDate date) {
+    public List<ShowtimeResponse> getAvailableShowtimeForMovie(Long movieId, LocalDate date) {
         log.info("Fetching available showtime for movie id: {} form date {}", movieId, date);
         return showtimeRepository
                 .findAvailableShowtimeForMovieFromDate(movieId, date)
@@ -99,7 +102,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public ShowtimeResponseDTO getById(Long id) {
+    public ShowtimeResponse getById(Long id) {
         log.info("Fetching showtime with id {}", id);
         return showtimeRepository
                 .findById(id)
@@ -109,7 +112,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     @Transactional
-    public ShowtimeResponseDTO add(ShowtimeRequestDTO showtimeRequest) {
+    public ShowtimeResponse add(ShowtimeRequest showtimeRequest) {
         log.info("Adding new showtime for movie id: {} at theater id: {}", showtimeRequest.getMovieId(), showtimeRequest.getTheaterId());
 
         Movie movie = movieRepository
@@ -152,7 +155,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     @Transactional
     @Cacheable(value = SHOWTIME_CACHE, key = "'id:' + #id")
-    public ShowtimeResponseDTO update(Long id, ShowtimeRequestDTO showtimeDetails) {
+    public ShowtimeResponse update(Long id, ShowtimeRequest showtimeDetails) {
         log.info("Updating showtime with id: {}", id);
         Showtime showtime = showtimeRepository
                 .findById(id)

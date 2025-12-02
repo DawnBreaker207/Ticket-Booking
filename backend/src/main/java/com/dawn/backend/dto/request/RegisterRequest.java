@@ -1,5 +1,6 @@
 package com.dawn.backend.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,13 +13,20 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class LoginRequestDTO {
-    @NotBlank(message = "Username or email is not mandatory")
+public class RegisterRequest {
+
+    @NotBlank(message = "Username is not mandatory")
     @Size(min = 1, max = 100)
-    private String identifier;
+    private String username;
+
+
+    @NotBlank(message = "Email is not mandatory")
+    @Email(message = "Email is not valid")
+    private String email;
 
     @NotBlank(message = "Password is not mandatory")
-    @Min(value = 6, message = "Password is required 8 characters above")
+    @Min(value = 6, message = "Password is required 8 characters above ")
     private String password;
+
 
 }

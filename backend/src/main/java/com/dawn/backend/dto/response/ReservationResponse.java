@@ -18,18 +18,18 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ReservationResponseDTO extends AbstractMappedEntity {
+public class ReservationResponse extends AbstractMappedEntity {
     private String id;
 
-    private UserResponseDTO user;
+    private UserResponse user;
 
-    private ShowtimeResponseDTO showtime;
+    private ShowtimeResponse showtime;
 
     private ReservationStatus reservationStatus;
 
     private BigDecimal totalAmount;
 
-    private List<SeatResponseDTO> seats = new ArrayList<>();
+    private List<SeatResponse> seats = new ArrayList<>();
 
     private Boolean isDeleted;
 

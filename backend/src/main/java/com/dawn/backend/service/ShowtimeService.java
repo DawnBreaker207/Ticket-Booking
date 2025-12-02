@@ -1,8 +1,9 @@
 package com.dawn.backend.service;
 
 import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.ShowtimeRequestDTO;
-import com.dawn.backend.dto.response.ShowtimeResponseDTO;
+import com.dawn.backend.dto.request.ShowtimeFilterRequest;
+import com.dawn.backend.dto.request.ShowtimeRequest;
+import com.dawn.backend.dto.response.ShowtimeResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -11,23 +12,23 @@ import java.util.List;
 public interface ShowtimeService {
 
 
-    List<ShowtimeResponseDTO> getByDate(LocalDate date);
+    List<ShowtimeResponse> getByDate(LocalDate date);
 
-    List<ShowtimeResponseDTO> getByMovie(Long movieId);
+    List<ShowtimeResponse> getByMovie(Long movieId);
 
-    ResponsePage<ShowtimeResponseDTO> getByTheater(Long theaterId, Pageable pageable);
+    ResponsePage<ShowtimeResponse> getByTheater(ShowtimeFilterRequest req, Pageable pageable);
 
-    List<ShowtimeResponseDTO> getAvailableShowtime(LocalDate date);
+    List<ShowtimeResponse> getAvailableShowtime(LocalDate date);
 
     // get available showtimes for a specific movie from a date (paginated)
     // this is what the booking page uses
-    List<ShowtimeResponseDTO> getAvailableShowtimeForMovie(Long movieId, LocalDate date);
+    List<ShowtimeResponse> getAvailableShowtimeForMovie(Long movieId, LocalDate date);
 
-    ShowtimeResponseDTO getById(Long id);
+    ShowtimeResponse getById(Long id);
 
-    ShowtimeResponseDTO add(ShowtimeRequestDTO showtime);
+    ShowtimeResponse add(ShowtimeRequest showtime);
 
-    ShowtimeResponseDTO update(Long id, ShowtimeRequestDTO showtimeDetails);
+    ShowtimeResponse update(Long id, ShowtimeRequest showtimeDetails);
 
     void delete(Long id);
 

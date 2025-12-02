@@ -3,12 +3,18 @@ package com.dawn.backend.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentRequestDTO {
-    private String reservationId;
-    private Integer amount;
-    private String paymentType;
+@SuperBuilder
+public class TheaterRequest {
+
+    private String name;
+
+    private String location;
+
+    private Integer capacity;
+
 }

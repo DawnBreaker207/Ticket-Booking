@@ -1,12 +1,12 @@
 package com.dawn.backend.helper;
 
-import com.dawn.backend.dto.response.ReservationResponseDTO;
+import com.dawn.backend.dto.response.ReservationResponse;
 import com.dawn.backend.model.Reservation;
 
 public interface ReservationMappingHelper {
-    static ReservationResponseDTO map(final Reservation reservation) {
+    static ReservationResponse map(final Reservation reservation) {
         return
-                ReservationResponseDTO
+                ReservationResponse
                         .builder()
                         .id(reservation.getId())
                         .user(UserMappingHelper.map(reservation.getUser()))

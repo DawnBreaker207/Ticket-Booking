@@ -1,11 +1,11 @@
 package com.dawn.backend.helper;
 
-import com.dawn.backend.dto.request.ShowtimeRequestDTO;
-import com.dawn.backend.dto.response.ShowtimeResponseDTO;
+import com.dawn.backend.dto.request.ShowtimeRequest;
+import com.dawn.backend.dto.response.ShowtimeResponse;
 import com.dawn.backend.model.Showtime;
 
 public interface ShowtimeMappingHelper {
-    static Showtime map(final ShowtimeRequestDTO showtime) {
+    static Showtime map(final ShowtimeRequest showtime) {
         return Showtime
                 .builder()
                 .showDate(showtime.getShowDate())
@@ -15,8 +15,8 @@ public interface ShowtimeMappingHelper {
                 .build();
     }
 
-    static ShowtimeResponseDTO map(final Showtime showtime) {
-        return ShowtimeResponseDTO
+    static ShowtimeResponse map(final Showtime showtime) {
+        return ShowtimeResponse
                 .builder()
                 .id(showtime.getId())
                 .movieId(showtime.getMovie().getId())

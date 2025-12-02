@@ -1,14 +1,14 @@
 package com.dawn.backend.helper;
 
-import com.dawn.backend.dto.request.MovieRequestDTO;
-import com.dawn.backend.dto.response.MovieResponseDTO;
+import com.dawn.backend.dto.request.MovieRequest;
+import com.dawn.backend.dto.response.MovieResponse;
 import com.dawn.backend.model.Genre;
 import com.dawn.backend.model.Movie;
 
 import java.util.stream.Collectors;
 
 public interface MovieMappingHelper {
-    static Movie map(final MovieRequestDTO m) {
+    static Movie map(final MovieRequest m) {
         return Movie.builder()
                 .title(m.getTitle())
                 .poster(m.getPoster())
@@ -21,8 +21,8 @@ public interface MovieMappingHelper {
                 .build();
     }
 
-    static MovieResponseDTO map(final Movie m) {
-        return MovieResponseDTO.builder()
+    static MovieResponse map(final Movie m) {
+        return MovieResponse.builder()
                 .id(m.getId())
                 .title(m.getTitle())
                 .poster(m.getPoster())

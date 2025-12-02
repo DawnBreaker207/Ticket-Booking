@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
@@ -21,7 +20,15 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     List<Showtime> findByMovie(Movie movie);
 
     //    Get all showtime at a theater
-    Page<Showtime> findByTheater(Theater theater, Pageable pageable);
+    @Query(value ="""
+              SELECT s FROM Showtime s
+              WHERE
+                     (:#{#theater.getId()} IS NULL OR s.theater.id = :#{#theater.getId()})
+              AND :#{#from} IS NULL
+              OR :#{#to} IS NULL
+              OR (s.showDate BETWEEN :#{#from} AND :#{#to})
+           """)
+    Page<Showtime> findByTheater(Theater theater,LocalDate from, LocalDate to, Pageable pageable);
 
     //    Find by date and movie
     List<Showtime> findByShowDateAndMovie(LocalDate date, Movie movie);
@@ -59,7 +66,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                 (:theaterId IS NULL OR s.theater_id = :theaterId)
             """, nativeQuery = true)
     Double getSeatUtilization(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
             @Param("theaterId") Long theaterId);
 }

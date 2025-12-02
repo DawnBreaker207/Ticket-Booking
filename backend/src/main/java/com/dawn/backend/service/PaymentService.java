@@ -2,8 +2,8 @@ package com.dawn.backend.service;
 
 import com.dawn.backend.config.payment.MomoConfig;
 import com.dawn.backend.config.payment.VNPayConfig;
-import com.dawn.backend.dto.request.PaymentRequestDTO;
-import com.dawn.backend.dto.response.PaymentResponseDTO;
+import com.dawn.backend.dto.request.PaymentRequest;
+import com.dawn.backend.dto.response.PaymentResponse;
 import com.dawn.backend.util.MomoUtils;
 import com.dawn.backend.util.VNPayUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +27,9 @@ public class PaymentService {
     private final MomoConfig momoConfig;
     private final RestTemplate restTemplate;
 
-    public PaymentResponseDTO createPayment(PaymentRequestDTO req, HttpServletRequest request) {
+    public PaymentResponse createPayment(PaymentRequest req, HttpServletRequest request) {
         log.info("Payment request received: {}", req);
-        PaymentResponseDTO response;
+        PaymentResponse response;
         switch (req.getPaymentType().trim().toLowerCase()) {
             case "vnpay" -> response = createVNPayPayment(req.getReservationId(), req.getAmount(), request);
             case "momo" -> response = createMomoPayment(req.getReservationId(), req.getAmount());
@@ -39,7 +39,7 @@ public class PaymentService {
         return response;
     }
 
-    private PaymentResponseDTO createVNPayPayment(String reservationId, Integer totalPrice, HttpServletRequest clientIp) {
+    private PaymentResponse createVNPayPayment(String reservationId, Integer totalPrice, HttpServletRequest clientIp) {
         Map<String, String> vnpParamsMap = VNPayConfig.getVNPayConfig();
         long amount = totalPrice * 100L;
 
@@ -57,7 +57,7 @@ public class PaymentService {
         String vnpSecureHash = VNPayUtils.hmacSHA512(VNPayConfig.getVnp_SecretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = VNPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-        return PaymentResponseDTO
+        return PaymentResponse
                 .builder()
                 .code("ok")
                 .message("success")
@@ -65,7 +65,7 @@ public class PaymentService {
                 .build();
     }
 
-    private PaymentResponseDTO createMomoPayment(String reservationId, Integer total) {
+    private PaymentResponse createMomoPayment(String reservationId, Integer total) {
         Map<String, String> momoParamsMap = momoConfig.getMomoConfig();
 
         momoParamsMap.put("orderId", reservationId);
@@ -86,7 +86,7 @@ public class PaymentService {
             throw new RuntimeException("MoMo payment failed or payUrl is null");
         }
 
-        return PaymentResponseDTO.builder()
+        return PaymentResponse.builder()
                 .code("ok")
                 .message("success")
                 .paymentUrl((String) response.get("payUrl"))

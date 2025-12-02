@@ -1,6 +1,6 @@
 package com.dawn.backend.controller;
 
-import com.dawn.backend.dto.response.ReportResponseDTO;
+import com.dawn.backend.dto.response.ReportResponse;
 import com.dawn.backend.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +20,7 @@ public class ReportController {
 
     @GetMapping("/export/{format}")
     public ResponseEntity<byte[]> generateReport(@PathVariable String format) {
-        ReportResponseDTO report = reportService.exportReport(format);
+        ReportResponse report = reportService.exportReport(format);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getFilename())

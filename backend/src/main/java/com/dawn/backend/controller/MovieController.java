@@ -2,8 +2,8 @@ package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.MovieRequestDTO;
-import com.dawn.backend.dto.response.MovieResponseDTO;
+import com.dawn.backend.dto.request.MovieRequest;
+import com.dawn.backend.dto.response.MovieResponse;
 import com.dawn.backend.service.MovieService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,30 +23,30 @@ public class MovieController {
 
     @GetMapping("")
     @RateLimiter(name = "limiter")
-    public ResponseObject<ResponsePage<MovieResponseDTO>> findAll(@ModelAttribute MovieRequestDTO m, Pageable pageable) {
+    public ResponseObject<ResponsePage<MovieResponse>> findAll(@ModelAttribute MovieRequest m, Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findAll(m, pageable));
     }
 
     @GetMapping("/{id}")
     @RateLimiter(name = "limiter")
-    public ResponseObject<MovieResponseDTO> findById(@PathVariable Long id) {
+    public ResponseObject<MovieResponse> findById(@PathVariable Long id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findOne(id));
     }
 
     @GetMapping("/filmId/{id}")
-    public ResponseObject<MovieResponseDTO> findByMovieId(@PathVariable String id) {
+    public ResponseObject<MovieResponse> findByMovieId(@PathVariable String id) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.findByMovieId(id));
     }
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<MovieResponseDTO> create(@RequestBody MovieRequestDTO m) {
+    public ResponseObject<MovieResponse> create(@RequestBody MovieRequest m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.create(m));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseObject<MovieResponseDTO> update(@PathVariable Long id, @RequestBody MovieRequestDTO m) {
+    public ResponseObject<MovieResponse> update(@PathVariable Long id, @RequestBody MovieRequest m) {
         return new ResponseObject<>(HttpStatus.OK, "Success", movieService.update(id, m));
     }
 

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +37,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             	AND (:theaterId IS NULL
             		OR s.theater_id = :theaterId)
             """, nativeQuery = true)
-    Double getTotalRevenue(@Param("from") LocalDateTime from,
-                           @Param("to") LocalDateTime to,
+    Double getTotalRevenue(@Param("from") LocalDate from,
+                           @Param("to") LocalDate to,
                            @Param("movieId") Long movieId,
                            @Param("theaterId") Long theaterId);
 
@@ -67,8 +67,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             	DATE(p.created_at)
             """, nativeQuery = true)
     List<Object[]> getRevenueOverTime(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
             @Param("theaterId") Long theaterId);
 
     @Query(value = """
@@ -88,6 +88,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             	p.method
             """, nativeQuery = true)
     List<Object[]> getPaymentDistribution(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to);
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to);
 }

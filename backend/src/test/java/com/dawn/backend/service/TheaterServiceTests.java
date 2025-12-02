@@ -1,7 +1,7 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.request.TheaterRequestDTO;
-import com.dawn.backend.dto.response.TheaterResponseDTO;
+import com.dawn.backend.dto.request.TheaterRequest;
+import com.dawn.backend.dto.response.TheaterResponse;
 import com.dawn.backend.exception.wrapper.TheaterNotFoundException;
 import com.dawn.backend.helper.TheaterMappingHelper;
 import com.dawn.backend.model.Theater;
@@ -41,9 +41,9 @@ public class TheaterServiceTests {
 
     private Theater theater;
 
-    private TheaterRequestDTO theaterRequestDTO;
+    private TheaterRequest theaterRequest;
 
-    private TheaterResponseDTO theaterResponseDTO;
+    private TheaterResponse theaterResponse;
 
     @BeforeEach
     void setUp() {
@@ -54,14 +54,14 @@ public class TheaterServiceTests {
                 .capacity(50)
                 .build();
 
-        theaterRequestDTO = TheaterRequestDTO
+        theaterRequest = TheaterRequest
                 .builder()
                 .name("Grand Cinema")
                 .location("HaNoi")
                 .capacity(50)
                 .build();
 
-        theaterResponseDTO = TheaterResponseDTO
+        theaterResponse = TheaterResponse
                 .builder()
                 .name("Grand Cinema")
                 .location("HaNoi")
@@ -83,7 +83,7 @@ public class TheaterServiceTests {
                 .thenReturn(List.of(theater));
 
         // Act
-        List<TheaterResponseDTO> result = theaterService
+        List<TheaterResponse> result = theaterService
                 .findAll(Pageable.unpaged())
                 .getContent();
 
@@ -103,7 +103,7 @@ public class TheaterServiceTests {
                 .thenReturn(Collections.emptyList());
 
         // Act
-        List<TheaterResponseDTO> result = theaterService
+        List<TheaterResponse> result = theaterService
                 .findAll(Pageable.unpaged())
                 .getContent();
 
@@ -122,12 +122,12 @@ public class TheaterServiceTests {
                 .thenReturn(Optional.of(theater));
 
         // Act
-        TheaterResponseDTO result = theaterService
+        TheaterResponse result = theaterService
                 .findOne(1L);
 
         // Assert
         assertNotNull(result);
-        assertEquals(theaterResponseDTO.getName(), result.getName());
+        assertEquals(theaterResponse.getName(), result.getName());
         verify(theaterRepository, times(1))
                 .findById(1L);
     }
@@ -173,14 +173,14 @@ public class TheaterServiceTests {
                 .thenReturn(new PageImpl<>(List.of(theater)));
 
         // Act
-        List<TheaterResponseDTO> result = theaterService
+        List<TheaterResponse> result = theaterService
                 .findByLocation("HaNoi", Pageable.unpaged())
                 .getContent();
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(theaterResponseDTO.getName(), result.get(0).getName());
+        assertEquals(theaterResponse.getName(), result.get(0).getName());
         verify(theaterRepository, times(1))
                 .findByLocationContainingIgnoreCase("HaNoi", Pageable.unpaged());
     }
@@ -193,7 +193,7 @@ public class TheaterServiceTests {
                 .thenReturn(new PageImpl<>(List.of(theater)));
 
         // Act
-        List<TheaterResponseDTO> result = theaterService
+        List<TheaterResponse> result = theaterService
                 .findByLocation("Unknown", Pageable.unpaged())
                 .getContent();
 
@@ -213,12 +213,12 @@ public class TheaterServiceTests {
                 .thenReturn(theater);
 
         // Act
-        TheaterResponseDTO result = theaterService
-                .create(theaterRequestDTO);
+        TheaterResponse result = theaterService
+                .create(theaterRequest);
 
         // Assert
         assertNotNull(result);
-        assertEquals(theaterResponseDTO.getName(), result.getName());
+        assertEquals(theaterResponse.getName(), result.getName());
         verify(theaterRepository, times(1))
                 .save(any(Theater.class));
     }
@@ -231,12 +231,12 @@ public class TheaterServiceTests {
                 .thenReturn(Optional.of(theater));
 
         // Act
-        TheaterResponseDTO result = theaterService
-                .update(1L, theaterRequestDTO);
+        TheaterResponse result = theaterService
+                .update(1L, theaterRequest);
 
         // Assert
         assertNotNull(result);
-        assertEquals(theaterResponseDTO.getName(), result.getName());
+        assertEquals(theaterResponse.getName(), result.getName());
         verify(theaterRepository, times(1))
                 .findById(1L);
         verify(theaterRepository, times(1))
@@ -253,7 +253,7 @@ public class TheaterServiceTests {
         // Act & Assert
         TheaterNotFoundException exception = assertThrows(
                 TheaterNotFoundException.class,
-                () -> theaterService.update(999L, theaterRequestDTO));
+                () -> theaterService.update(999L, theaterRequest));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(theaterRepository, times(1))

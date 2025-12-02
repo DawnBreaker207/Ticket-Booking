@@ -1,23 +1,24 @@
-package com.dawn.backend.dto.response;
+package com.dawn.backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class ReservationInitResponseDTO {
+public class ReservationRequest {
 
     private String reservationId;
 
     private Long showtimeId;
 
-    private Long ttl;
+    private Long userId;
 
-    private Instant expiredAt;
+    private List<Long> seats = new ArrayList<>();
 }
