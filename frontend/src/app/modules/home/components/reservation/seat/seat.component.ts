@@ -1,26 +1,21 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { Seat, Showtime } from '@/app/core/models/theater.model';
-import {
-  selectSeats,
-  selectSelectedSeats,
-} from '@/app/core/store/state/seat/seat.selectors';
-import { filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
-import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
-import {
-  selectPrice,
-  selectSelectedShowtime,
-} from '@/app/core/store/state/showtime/showtime.selectors';
-import { SseService } from '@/app/core/services/sse/sse.service';
-import { SeatStatus } from '@/app/core/constants/enum';
-import { StorageService } from '@/app/shared/services/storage/storage.service';
-import { ReservationRequest } from '@/app/core/models/reservation.model';
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Store} from '@ngrx/store';
+import {Seat, Showtime} from '@/app/core/models/theater.model';
+import {selectSeats, selectSelectedSeats,} from '@/app/core/store/state/seat/seat.selectors';
+import {filter, map, Subject, switchMap, take, takeUntil} from 'rxjs';
+import {SeatActions} from '@/app/core/store/state/seat/seat.actions';
+import {selectPrice, selectSelectedShowtime,} from '@/app/core/store/state/showtime/showtime.selectors';
+import {SseService} from '@/app/core/services/sse/sse.service';
+import {SeatStatus} from '@/app/core/constants/enum';
+import {StorageService} from '@/app/shared/services/storage/storage.service';
+import {ReservationRequest} from '@/app/core/models/reservation.model';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {SeatIconComponent} from '@/app/shared/components/seat/seat.component';
 
 @Component({
   selector: ' app-seat',
-  imports: [CommonModule, NzIconModule],
+  imports: [CommonModule, NzIconModule, SeatIconComponent],
   templateUrl: './seat.component.html',
   styleUrl: './seat.component.css',
 })
@@ -115,16 +110,16 @@ export class SeatComponent implements OnInit, OnDestroy {
   }
 
   getSeatClass(seat: Seat): string {
-    const base = 'w-10 h-10 rounded-sm cursor-pointer transition-all';
+    const base = 'transition-colors  duration-200 ease-in-out';
     switch (seat.status) {
       case 'BOOKED':
-        return `${base} bg-red-500 border-red-700 disabled:cursor-not-allowed disabled:hover:translate-y-0`;
+        return `${base} text-red-500 cursor-not-allowed`;
       case 'HOLD':
-        return `${base} bg-orange-500 border-orange-700 cursor-not-allowed`;
+        return `${base} text-orange-500 cursor-not-allowed`;
       case 'SELECTED':
-        return `${base} bg-blue-500 border-blue-700 text-white`;
+        return `${base} text-blue-500 cursor-pointer scale-110 drop-shadow-sm`;
       default:
-        return `${base} bg-gray-200 hover:bg-green-300`;
+        return `${base} text-gray-400 cursor-pointer hover:text-green-500 hover:scale-105`;
     }
   }
 
