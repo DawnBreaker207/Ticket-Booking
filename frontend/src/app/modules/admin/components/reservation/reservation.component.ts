@@ -37,6 +37,8 @@ import {
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { Pagination } from '@/app/core/models/common.model';
 import { Subject } from 'rxjs';
+import { NzFormLabelComponent } from 'ng-zorro-antd/form';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'app-reservation',
@@ -56,6 +58,8 @@ import { Subject } from 'rxjs';
     NzSpinComponent,
     NzAlertComponent,
     AsyncPipe,
+    NzFormLabelComponent,
+    NzTooltipDirective,
   ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.css',
