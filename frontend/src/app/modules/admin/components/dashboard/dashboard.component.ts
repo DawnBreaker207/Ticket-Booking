@@ -26,6 +26,11 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { DecimalPipe } from '@angular/common';
+import {
+  NzDropdownMenuComponent,
+  NzDropDownModule,
+} from 'ng-zorro-antd/dropdown';
+import { NzMenuDirective, NzMenuItemComponent } from 'ng-zorro-antd/menu';
 
 @Component({
   selector: 'app-dashboard',
@@ -50,6 +55,10 @@ import { DecimalPipe } from '@angular/common';
     NzDatePickerComponent,
     NzSpinModule,
     DecimalPipe,
+    NzDropdownMenuComponent,
+    NzMenuDirective,
+    NzMenuItemComponent,
+    NzDropDownModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
