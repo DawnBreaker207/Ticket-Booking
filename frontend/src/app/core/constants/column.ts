@@ -1,5 +1,5 @@
 export const headerColumns = {
-  movie: ['Poster', 'Info', 'Genre', 'Status', 'Action'],
+  movie: ['Poster', 'Info', 'Genre', 'Status', 'Actions'],
   theater: [
     '#',
     'Name',
@@ -7,21 +7,11 @@ export const headerColumns = {
     'Capacity',
     'Showtime',
     'Day Created',
-    'Action',
+    'Actions',
   ],
-  showtime: [
-    '#',
-    'Movie',
-    'Poster',
-    'Showtime',
-    'Show date',
-    'Theater',
-    'Location',
-    'Seat Available',
-    'Action',
-  ],
-  reservation: ['#', 'Status', 'Total', 'Day Create', 'Action'],
-  user: ['Info', 'Status', 'Action'],
+  showtime: ['Movie Info', 'Schedule', 'Location', 'Status', 'Actions'],
+  reservation: ['#', 'Status', 'Total', 'Day Create', 'Actions'],
+  user: ['Info', 'Status', 'Actions'],
   article: [
     'Ảnh',
     'Tiêu đề',
@@ -29,7 +19,7 @@ export const headerColumns = {
     'Tác giả',
     'Trạng thái',
     'Ngày tạo',
-    'Action',
+    'Actions',
   ],
 };
 
