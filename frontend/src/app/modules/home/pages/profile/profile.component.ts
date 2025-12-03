@@ -1,45 +1,29 @@
+import {ChangeDetectorRef, Component, HostListener, inject, OnInit,} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, ReactiveFormsModule,} from '@angular/forms';
+import {NzButtonModule} from 'ng-zorro-antd/button';
+import {NzInputModule} from 'ng-zorro-antd/input';
+import {NzFormModule} from 'ng-zorro-antd/form';
+import {NzTabPosition, NzTabsModule} from 'ng-zorro-antd/tabs';
+import {NzAvatarModule} from 'ng-zorro-antd/avatar';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {NzUploadModule} from 'ng-zorro-antd/upload';
+import {NzTagModule} from 'ng-zorro-antd/tag';
+import {NzBadgeModule} from 'ng-zorro-antd/badge';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzQRCodeModule} from 'ng-zorro-antd/qr-code';
+import {NzEmptyModule} from 'ng-zorro-antd/empty';
+import {NzTooltipModule} from 'ng-zorro-antd/tooltip';
+import {Store} from '@ngrx/store';
+import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
 import {
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  inject,
-  OnInit,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzTabPosition, NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+  BookingHistoryComponent,
+  MovieTicket
+} from '@/app/modules/home/components/profile/booking-history/booking-history.component';
+import {InfoComponent} from '@/app/modules/home/components/profile/info/info.component';
 
-interface MovieTicket {
-  id: string;
-  title: string;
-  poster: string;
-  cinema: string;
-  room: string;
-  date: string;
-  time: string;
-  seats: string[];
-  price: number;
-  status: 'Upcoming' | 'Completed' | 'Cancelled';
-}
 
 @Component({
   selector: 'app-profile',
@@ -62,6 +46,8 @@ interface MovieTicket {
     NzQRCodeModule,
     NzEmptyModule,
     NzTooltipModule,
+    BookingHistoryComponent,
+    InfoComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -70,25 +56,15 @@ export class ProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
   private msg = inject(NzMessageService);
   private cdr = inject(ChangeDetectorRef);
-
-  profileForm!: FormGroup;
+  private store = inject(Store);
+  user$ = this.store.select(selectJwt);
   isSaving: boolean = false;
-
-  tabPosition: NzTabPosition = 'left';
-
   user = {
     avatar: 'https://i.pravatar.cc/300?img=12', // Ảnh gốc (Server)
     name: 'Nguyễn Văn A',
     email: 'nguyenvana@gmail.com',
     memberLevel: 'Member',
   };
-
-  avatarPreview: string = '';
-  selectedFile: File | null = null;
-
-  isDetailVisible: boolean = false;
-  selectedTicket: MovieTicket | null = null;
-
   tickets: MovieTicket[] = [
     {
       id: 'TK-9921',
@@ -115,24 +91,15 @@ export class ProfileComponent implements OnInit {
       status: 'Completed',
     },
   ];
+  tabPosition: NzTabPosition = 'left';
 
   ngOnInit() {
-    this.avatarPreview = this.user.avatar;
     this.checkScreenSize();
-
-    this.profileForm = this.fb.group({
-      fullname: [this.user.name, [Validators.required]],
-      email: [{ value: this.user.email, disabled: true }],
-      phone: [
-        '0912345678',
-        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-      ],
-      address: ['Hà Nội, Việt Nam'],
-    });
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+
+  @HostListener('window:resize')
+  onResize() {
     this.checkScreenSize();
   }
 
@@ -140,79 +107,5 @@ export class ProfileComponent implements OnInit {
     this.tabPosition = window.innerWidth < 768 ? 'top' : 'left';
   }
 
-  onFileSelected(event: any) {
-    const input = event.target as HTMLInputElement;
 
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-
-      const isImg = file.type === 'image/png' || file.type === 'image/jpeg';
-      if (!isImg) {
-        this.msg.error('Chỉ hỗ trợ file JPG/PNG');
-        return;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.msg.error('Dung lượng ảnh phải dưới 2MB!');
-        return;
-      }
-
-      this.getBase64(file, (img: string) => {
-        this.avatarPreview = img;
-        this.selectedFile = file;
-
-        this.msg.info('Đã chọn ảnh. Bấm "Lưu thay đổi" để hoàn tất.');
-        this.cdr.markForCheck();
-      });
-    }
-  }
-
-  resetAvatar(inputElement: HTMLInputElement) {
-    this.avatarPreview = this.user.avatar;
-    this.selectedFile = null;
-    inputElement.value = '';
-    this.msg.info('Đã hủy thay đổi ảnh');
-  }
-
-  submitProfile() {
-    if (this.profileForm.valid) {
-      this.isSaving = true;
-
-      setTimeout(() => {
-        this.isSaving = false;
-
-        this.user.name = this.profileForm.get('fullname')?.value;
-
-        if (this.selectedFile) {
-          this.user.avatar = this.avatarPreview;
-          this.selectedTicket = null;
-        }
-
-        this.msg.success('Lưu thành công');
-        this.cdr.markForCheck();
-      }, 1000);
-    } else {
-      Object.values(this.profileForm.controls).forEach((control) => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-    }
-  }
-
-  openTicketDetail(ticket: MovieTicket) {
-    this.selectedTicket = ticket;
-    this.isDetailVisible = true;
-  }
-
-  closeTicketDetail() {
-    this.isDetailVisible = false;
-  }
-
-  private getBase64(img: File, callback: (img: string) => void) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  }
 }

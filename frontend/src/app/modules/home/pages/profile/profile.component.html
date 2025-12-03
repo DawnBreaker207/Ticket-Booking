@@ -9,14 +9,6 @@
   <div
     class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[600px]"
   >
-    <input
-      #fileInput
-      type="file"
-      class="hidden"
-      accept="image/png, imgae/jpeg"
-      (change)="onFileSelected($event)"
-    />
-
     <nz-tabset
       [nzTabPosition]="tabPosition"
       nzType="line"
@@ -27,210 +19,11 @@
       <nz-tab [nzTitle]="infoTitle">
         <ng-template #infoTitle>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="user"/>
+            <nz-icon nzType="idcard" nzTheme="outline"/>
             Hồ sơ cá nhân
           </div>
         </ng-template>
-
-        <div class="p-6 md:p-8 h-full overflow-y-auto max-h-[800px]">
-          <!-- Avatar Manager -->
-          <div class="mb-8 pb-8 border-b border-gray-100">
-            <h3
-              class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6"
-            >
-              Ảnh đại diện
-            </h3>
-
-            <div class="flex flex-col sm:flex-row items-center gap-8">
-              <!-- Show avatar -->
-              <div
-                class="relative shrink-0 group cursor-pointer"
-                (click)="fileInput.click()"
-              >
-                <div
-                  class="w-32 h-32 rounded-full overflow-hidden border-[4px] border-white shadow-lg bg-gray-100 ring-1 ring-gray-200 relative"
-                >
-                  @if (avatarPreview) {
-                    <img
-                      [src]="avatarPreview"
-                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      alt="Avatar"
-                    />
-                  } @else {
-                    <div
-                      class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50"
-                    >
-                      <nz-icon nzType="user" class="text-5xl"/>
-                    </div>
-                  }
-
-                  <!-- Overlay icon Camera -->
-                  <div
-                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center"
-                  >
-                    <nz-icon
-                      nzType="camera"
-                      class="text-white! text-2xl mb-1"
-                    />
-                    <span
-                      class="text-white text-[10px] font-bold uppercase tracking-wider"
-                    >
-                      Đổi ảnh
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Badge -->
-                <div
-                  class="absolute -bottom-2 right-3 z-10 pointer-events-none"
-                >
-                  <nz-tag
-                    [nzColor]="'geekblue'"
-                    class="m-0 rounded-full px-3 py-1 font-bold text-xs border-2 border-white shadow-md"
-                  >
-                    <nz-icon nzType="crown" nzTheme="fill" class="mr-1"/>
-                    {{ user.memberLevel }}
-                  </nz-tag>
-                </div>
-              </div>
-
-              <div class="flex-1 text-center sm:text-left">
-                <div class="flex flex-col sm:flex-row items-center gap-3 mb-3">
-                  <!-- Cancel button -->
-                  @if (selectedFile) {
-                    <button
-                      nz-button
-                      type="button"
-                      nzType="text"
-                      nzDanger
-                      (click)="resetAvatar(fileInput)"
-                      class="h-10 rounded-lg font-medium flex items-center gap-2"
-                    >
-                      <nz-icon nzType="undo"/>
-                      Hủy
-                    </button>
-                  }
-                </div>
-
-                <!-- Notify status -->
-                <div class="min-h-[24px]">
-                  @if (selectedFile) {
-                    <p
-                      class="text-sm text-blue-600 font-semibold animate-pulse flex items-center justify-center sm:justify-start gap-2 bg-blue-50 py-1 px-3 rounded-lg w-fit"
-                    >
-                      <nz-icon nzType="info-circle" nzTheme="fill"/>
-                      Ảnh chưa lưu. Bấm "Lưu thay đổi" bên dưới.
-                    </p>
-                  } @else {
-                    <div class="text-xs text-gray-500 space-y-1">
-                      <p>• Hỗ trợ: JPG, PNG.</p>
-                      <p>• Tối đa: 2MB.</p>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!--  Form Information  -->
-          <form
-            nz-form
-            [formGroup]="profileForm"
-            (ngSubmit)="submitProfile()"
-            nzLayout="vertical"
-          >
-            <div class="mb-6">
-              <h3
-                class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4"
-              >
-                Thông tin cơ bản
-              </h3>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <nz-form-item>
-                  <nz-form-label nzRequired class="font-semibold text-gray-700"
-                  >Họ và tên
-                  </nz-form-label>
-                  <nz-form-control nzErrorTip="Vui lòng nhập họ tên">
-                    <input
-                      nz-input
-                      formControlName="fullname"
-                      class="h-11 rounded-lg px-4 border-gray-200"
-                      placeholder="Ví dụ: Nguyễn Văn A"
-                    />
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-label nzRequired class="font-semibold text-gray-700"
-                  >Số điện thoại
-                  </nz-form-label>
-                  <nz-form-control nzErrorTip="Vui lòng nhập số điện thoại">
-                    <input
-                      nz-input
-                      formControlName="phone"
-                      class="h-11 rounded-lg px-4 border-gray-200"
-                      placeholder="09xxxxxxxx"
-                    />
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item class="md:col-span-2">
-                  <nz-form-label class="font-semibold text-gray-700"
-                  >Email
-                  </nz-form-label>
-                  <nz-form-control>
-                    <div class="relative group">
-                      <input
-                        nz-input
-                        formControlName="email"
-                        class="h-11 rounded-lg pl-10 bg-gray-50 text-gray-500 cursor-not-allowed border-gray-200"
-                      />
-                      <div class="absolute right-3 top-1/2 -translate-y-1/2">
-                        <nz-icon
-                          nzType="lock"
-                          class="text-gray-400"
-                          nz-tooltip
-                          nzTooltipTitle="Không thể thay đổi"
-                        />
-                      </div>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item class="md:col-span-2">
-                  <nz-form-label class="font-semibold text-gray-700"
-                  >Địa chỉ
-                  </nz-form-label>
-                  <nz-form-control>
-                    <textarea
-                      nz-input
-                      formControlName="address"
-                      rows="3"
-                      class="rounded-lg p-3 border-gray-200 text-base"
-                      placeholder="Nhập địa chỉ giao hàng..."
-                    ></textarea>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
-            </div>
-
-            <!--  Action bar    -->
-            <div
-              class="flex items-center justify-end gap-4 pt-6 border-t border-gray-100"
-            >
-              <button
-                nz-button
-                nzType="primary"
-                nzSize="large"
-                class="px-8 rounded-lg font-bold shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all"
-                [nzLoading]="isSaving"
-              >
-                Lưu thay đổi
-              </button>
-            </div>
-          </form>
-        </div>
+        <app-info [user]="user"/>
       </nz-tab>
 
       <!-- BOOKING HISTORY -->
@@ -239,94 +32,36 @@
           <div class="flex items-center gap-2 px-2">
             <nz-icon nzType="history"/>
             Lịch sử đặt vé
-            <nz-tag
-              class="ml-2 mr-0 rounded-full bg-gray-100 border-gray-200 text-gray-500 font-bold px-2"
-            >
-              {{ tickets.length }}
-            </nz-tag>
           </div>
         </ng-template>
-        <div class="p-6 md:p-8 h-full overflow-y-auto max-h-[800px]">
-          <h2
-            class="text-lg font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2"
-          >
-            Vé đã đặt gần đây
-          </h2>
+        <app-booking-history [tickets]="tickets"/>
+      </nz-tab>
 
-          <div class="grid grid-cols-1 gap-4">
-            @for (ticket of tickets; track ticket.id) {
-              <div
-                class="group flex flex-col sm:flex-row bg-white order border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-md transition-all duration-300"
-              >
-                <!--  Poster  -->
-                <div
-                  class="sm:w-32 h-40 sm:h-auto bg-gray-100 relative shrink-0"
-                >
-                  <img
-                    [src]="ticket.poster"
-                    [alt]="ticket.title"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-
-                <!--  Info  -->
-                <div class="flex-1 p-4 flex flex-col justify-between">
-                  <div>
-                    <div class="flex justify-between items-start">
-                      <h3 class="font-bold text-gray-900 text-lg line-clamp-1">
-                        {{ ticket.title }}
-                      </h3>
-                      <span
-                        class="text-xs font-mono text-gray-400 bg-gray-50 px-2 py-1 rounded"
-                      >#{{ ticket.id }}</span
-                      >
-                    </div>
-
-                    <div class="mt-2 space-y-1 text-sm text-gray-600">
-                      <p class="flex items-center gap-2">
-                        <nz-icon nzType="environment" class="text-gray-400"/>
-                        {{ ticket.cinema }} - {{ ticket.room }}
-                      </p>
-
-                      <p class="flex items-center gap-2">
-                        <nz-icon nzType="calendar" class="text-gray-400"/>
-                        {{ ticket.date }} -
-                        <span class="font-semibold text-primary">
-                          {{ ticket.time }}
-                        </span>
-                      </p>
-
-                      <p class="flex items-center gap-2">
-                        <nz-icon nzType="appstore" class="text-gray-400"/>
-                        Ghế: {{ ticket.seats.join(",") }}
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="mt-4 pt-3 border-t border-gray-50 flex justify-end"
-                  >
-                    <button
-                      nz-button
-                      nzType="default"
-                      nzSize="small"
-                      (click)="openTicketDetail(ticket)"
-                      class="rounded-md border-gray-200 text-gray-600 hover:text-primary hover:border-primary"
-                    >
-                      Xem chi tiết
-                    </button>
-                  </div>
-                </div>
-              </div>
-            } @empty {
-              <div
-                class="flex flex-col items-center justify-center py-12 text-gray-400"
-              >
-                <nz-empty
-                  [nzNotFoundContent]="'Chưa có lịch sử đặt vé'"
-                ></nz-empty>
-              </div>
-            }
+      <!--  MEMBERS    -->
+      <nz-tab [nzTitle]="memberTitle">
+        <ng-template #memberTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="crown" nzTheme="outline"/>
+            Thành viên
           </div>
+        </ng-template>
+        <div class="p-12 text-center">
+          <nz-empty [nzNotFoundContent]="null"></nz-empty>
+          <p class="text-gray-500">Tính năng đang phát triển</p>
+        </div>
+      </nz-tab>
+
+      <!-- VOUCHER -->
+      <nz-tab [nzTitle]="voucherTitle">
+        <ng-template #voucherTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="tags" nzTheme="outline"/>
+            Voucher
+          </div>
+        </ng-template>
+        <div class="p-12 text-center">
+          <nz-empty [nzNotFoundContent]="null"></nz-empty>
+          <p class="text-gray-500">Tính năng đang phát triển</p>
         </div>
       </nz-tab>
 
@@ -345,121 +80,5 @@
       </nz-tab>
     </nz-tabset>
   </div>
-  <!-- MODAL DETAIL -->
-  <nz-modal
-    [(nzVisible)]="isDetailVisible"
-    [nzTitle]="''"
-    [nzFooter]="null"
-    (nzOnCancel)="closeTicketDetail()"
-    [nzWidth]="400"
-    [nzCentered]="true"
-  >
-    <ng-container *nzModalContent>
-      @if (selectedTicket) {
-        <div class="relative overflow-hidden">
-          <!-- Ticket Header-->
-          <div class="text-center mb-6">
-            <h3 class="text-xl font-bold text-gray-900 leading-tight mb-1">
-              {{ selectedTicket.title }}
-            </h3>
-            <p class="text-sm text-gray-500">{{ selectedTicket.cinema }}</p>
-          </div>
 
-          <!-- Ticket Body-->
-          <div
-            class="bg-gray-50 rounded-xl p-4 border border-dashed border-gray-300 relative"
-          >
-            <!-- Vết cắt-->
-            <div
-              class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border border-gray-200"
-            ></div>
-            <div
-              class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border border-gray-200"
-            ></div>
-
-            <div class="space-y-4">
-              <div class="flex justify-between">
-                <div>
-                  <p
-                    class="text-xs text-gray-400 uppercase font-bold tracking-wider"
-                  >
-                    Ngày chiếu
-                  </p>
-                  <p class="font-semibold text-gray-800">
-                    {{ selectedTicket.date }}
-                  </p>
-                </div>
-                <div class="text-right">
-                  <p
-                    class="text-xs text-gray-400 uppercase font-bold tracking-wider"
-                  >
-                    Giờ chiếu
-                  </p>
-                  <p class="font-bold text-primary text-lg">
-                    {{ selectedTicket.time }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex justify-between">
-                <div>
-                  <p
-                    class="text-xs text-gray-400 uppercase font-bold tracking-wider"
-                  >
-                    Phòng
-                  </p>
-                  <p class="font-semibold text-gray-800">
-                    {{ selectedTicket.room }}
-                  </p>
-                </div>
-                <div class="text-right">
-                  <p
-                    class="text-xs text-gray-400 uppercase font-bold tracking-wider"
-                  >
-                    Ghế
-                  </p>
-                  <p class="font-bold text-lg">
-                    {{ selectedTicket.seats.join(",") }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-t border-dashed border-gray-300 my-4"></div>
-
-            <!--  QR Code-->
-            <div class="flex flex-col items-center gap-2">
-              <nz-qrcode
-                [nzPadding]="12"
-                [nzValue]="selectedTicket.id"
-                class="mix-blend-multiply"
-              ></nz-qrcode>
-              <p class="text-xs text-gray-400 font-mono tracking-widest mt-1">
-                ID: {{ selectedTicket.id }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Total Price-->
-          <div class="mt-6 flex justify-between items-center px-2">
-            <span class="text-gray-500 font-medium">Tổng tiền</span>
-            <span class="text-xl font-bold text-primary">{{
-                selectedTicket.price | number
-              }}</span>
-          </div>
-
-          <div class="mt-6">
-            <button
-              nz-button
-              nzBlock
-              nzType="primary"
-              (click)="closeTicketDetail()"
-            >
-              Đóng
-            </button>
-          </div>
-        </div>
-      }
-    </ng-container>
-  </nz-modal>
 </div>

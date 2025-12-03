@@ -1,0 +1,54 @@
+import {Component, input} from '@angular/core';
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzEmptyModule} from "ng-zorro-antd/empty";
+import {NzIconModule} from "ng-zorro-antd/icon";
+import {NzWaveModule} from "ng-zorro-antd/core/wave";
+import {DecimalPipe} from '@angular/common';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzQRCodeModule} from 'ng-zorro-antd/qr-code';
+import {NzTagModule} from 'ng-zorro-antd/tag';
+
+export interface MovieTicket {
+  id: string;
+  title: string;
+  poster: string;
+  cinema: string;
+  room: string;
+  date: string;
+  time: string;
+  seats: string[];
+  price: number;
+  status: 'Upcoming' | 'Completed' | 'Cancelled';
+}
+
+@Component({
+  selector: 'app-booking-history',
+  imports: [
+    NzButtonModule,
+    NzEmptyModule,
+    NzIconModule,
+    NzWaveModule,
+    DecimalPipe,
+    NzModalModule,
+    NzQRCodeModule,
+    NzTagModule
+  ],
+  templateUrl: './booking-history.component.html',
+  styleUrl: './booking-history.component.css'
+})
+export class BookingHistoryComponent {
+  tickets = input<MovieTicket[]>([]);
+  isDetailVisible: boolean = false;
+  selectedTicket: MovieTicket | null = null;
+
+
+  openTicketDetail(ticket: MovieTicket) {
+    this.selectedTicket = ticket;
+    this.isDetailVisible = true;
+  }
+
+  closeTicketDetail() {
+    this.isDetailVisible = false;
+  }
+
+}
