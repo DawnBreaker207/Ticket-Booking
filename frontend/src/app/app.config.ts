@@ -53,6 +53,7 @@ import {
 import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
+import { icons, LucideAngularModule } from 'lucide-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -91,7 +92,12 @@ export const appConfig: ApplicationConfig = {
         echarts: () => import('echarts'),
       }),
     ),
-    importProvidersFrom(CommonModule, FormsModule, ReactiveFormsModule),
+    importProvidersFrom(
+      CommonModule,
+      FormsModule,
+      ReactiveFormsModule,
+      LucideAngularModule.pick(icons),
+    ),
     provideAnimationsAsync(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
