@@ -72,7 +72,6 @@ public class TheaterServiceImpl implements TheaterService {
         theater.setName(theaterDetails.getName());
         theater.setLocation(theaterDetails.getLocation());
         theater.setCapacity(theaterDetails.getCapacity());
-        theater.markUpdated();
         return TheaterMappingHelper.map(theaterRepository.save(theater));
     }
 

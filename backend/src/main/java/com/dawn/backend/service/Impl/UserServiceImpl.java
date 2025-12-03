@@ -59,7 +59,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
         user.setEmail(userDetails.getEmail());
         user.setUsername(userDetails.getUsername());
-        user.markUpdated();
         return UserMappingHelper.map(userRepository.save(user));
     }
 
@@ -71,7 +70,6 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
         user.setIsDeleted(status);
-        user.markUpdated();
         return UserMappingHelper.map(userRepository.save(user));
     }
 }

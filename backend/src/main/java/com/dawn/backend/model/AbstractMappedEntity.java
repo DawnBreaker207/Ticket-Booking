@@ -28,20 +28,11 @@ public class AbstractMappedEntity implements Serializable {
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Column(name = "created_at", updatable = false, insertable = false)
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Column(name = "updated_at", insertable = false)
+    @Column(name = "updated_at")
     private Instant updatedAt;
-
-    public void markCreated() {
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
-    public void markUpdated() {
-        this.updatedAt = Instant.now();
-    }
 }
