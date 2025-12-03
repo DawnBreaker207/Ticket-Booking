@@ -31,9 +31,14 @@ export class ShowtimeEffects {
   loadShowtimesByTheaterId$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShowtimeActions.loadShowtimesByTheaterId),
-      switchMap(({ theaterId, page, size }) =>
+      switchMap(({ theaterId, dateRange, page, size }) =>
         this.showtimeService
-          .getShowtimeByTheater(theaterId, { page, size })
+          .getShowtimeByTheater(theaterId, {
+            page,
+            size,
+            endDate: dateRange?.dateTo,
+            startDate: dateRange?.dateFrom,
+          })
           .pipe(
             map(({ content, pagination }) =>
               ShowtimeActions.loadShowtimesByTheaterIdSuccess({

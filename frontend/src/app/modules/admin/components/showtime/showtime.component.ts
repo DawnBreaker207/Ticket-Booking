@@ -4,19 +4,16 @@ import { Store } from '@ngrx/store';
 import { headerColumns } from '@/app/core/constants/column';
 import { Showtime, Theater } from '@/app/core/models/theater.model';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
-import { NzIconDirective } from 'ng-zorro-antd/icon';
-import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
-import { NzSpaceComponent } from 'ng-zorro-antd/space';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import {
-  NzTableCellDirective,
-  NzTableComponent,
-  NzTbodyComponent,
+  NzTableModule,
   NzTheadComponent,
   NzThMeasureDirective,
-  NzTrDirective,
 } from 'ng-zorro-antd/table';
-import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { NzWaveModule } from 'ng-zorro-antd/core/wave';
 import {
   selectAllShowtimes,
   selectShowtimeError,
@@ -24,40 +21,50 @@ import {
 } from '@/app/core/store/state/showtime/showtime.selectors';
 import { FormShowtimeComponent } from '@/app/modules/admin/components/showtime/form/form.component';
 import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.actions';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { debounceTime, filter, Subject, take, takeUntil } from 'rxjs';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import dayjs from 'dayjs';
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
-import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
-import { NzFormLabelComponent } from 'ng-zorro-antd/form';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { Pagination } from '@/app/core/models/common.model';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { formatDate } from '@/app/shared/utils/formatDate';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { NzDropDownDirective, NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-showtime',
   imports: [
     DatePipe,
-    NzButtonComponent,
-    NzIconDirective,
-    NzOptionComponent,
-    NzSelectComponent,
-    NzSpaceComponent,
-    NzTableCellDirective,
-    NzTableComponent,
-    NzTbodyComponent,
+    NzButtonModule,
+    NzIconModule,
+    NzSelectModule,
+    NzSpaceModule,
     NzThMeasureDirective,
     NzTheadComponent,
-    NzTrDirective,
-    NzWaveDirective,
+    NzTableModule,
+    NzWaveModule,
     AsyncPipe,
-    NzSpinComponent,
-    NzAlertComponent,
+    NzSpinModule,
+    NzAlertModule,
     ReactiveFormsModule,
-    NzRowDirective,
-    NzColDirective,
-    NzFormLabelComponent,
+    NzFormModule,
+    FormsModule,
+    NzDatePickerModule,
+    NzTagModule,
+    NzTooltipModule,
+    NzProgressModule,
+    NzDropDownModule,
   ],
   templateUrl: './showtime.component.html',
   styleUrl: './showtime.component.css',
@@ -84,6 +91,7 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.form = this.fb.group({
       theaterId: [null],
+      dateRange: [null],
       date: [dayjs().toDate()],
     });
 
@@ -110,13 +118,17 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
   }
 
   loadData() {
-    const { theaterId, date } = this.form.value;
+    const { theaterId, date, dateRange } = this.form.value;
     if (!theaterId || !date) return;
 
     this.showtimes = [];
     this.store.dispatch(
       ShowtimeActions.loadShowtimesByTheaterId({
         theaterId: theaterId,
+        dateRange: {
+          dateFrom: dateRange ? formatDate(dateRange[0]) : undefined,
+          dateTo: dateRange ? formatDate(dateRange[1]) : undefined,
+        },
         page: this.pageIndex,
         size: this.pageSize,
       }),

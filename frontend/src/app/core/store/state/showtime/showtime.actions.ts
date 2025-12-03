@@ -4,7 +4,7 @@ import {
   Showtime,
   ShowtimeRequest,
 } from '@/app/core/models/theater.model';
-import { Pagination } from '@/app/core/models/common.model';
+import { FilterDate, Pagination } from '@/app/core/models/common.model';
 
 export const ShowtimeActions = createActionGroup({
   source: 'Showtime',
@@ -23,6 +23,7 @@ export const ShowtimeActions = createActionGroup({
 
     'Load Showtimes By Theater Id': props<{
       theaterId: number;
+      dateRange?: FilterDate;
       page: number;
       size: number;
     }>(),
