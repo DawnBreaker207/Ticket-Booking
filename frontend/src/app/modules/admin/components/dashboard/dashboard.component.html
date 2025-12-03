@@ -20,7 +20,7 @@
           [nzOptionHeightPx]="36"
           class="w-[140px]"
         >
-          <nz-option nzValue="day" nzLabel="Theo Ngày"></nz-option>
+          <nz-option nzValue="week" nzLabel="Theo Tuần"></nz-option>
           <nz-option nzValue="month" nzLabel="Theo Tháng"></nz-option>
           <nz-option nzValue="quarter" nzLabel="Theo Quý"></nz-option>
           <nz-option nzValue="year" nzLabel="Theo Năm"></nz-option>
@@ -29,8 +29,9 @@
         <!--  Dynamic Input    -->
 
         <!--  CASE DAY    -->
-        @if (filterType === "day") {
+        @if (filterType === "week") {
           <nz-date-picker
+            nzMode="week"
             [(ngModel)]="selectedDate"
             (ngModelChange)="onFilterChange()"
             [nzAllowClear]="false"
@@ -150,114 +151,36 @@
     <nz-content class="m-4">
       <nz-row nzGutter="16">
         <nz-col nzSpan="6">
-          <div
-            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-          >
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-gray-500 text-sm font-medium">Total Revenue</p>
-                <h3 class="text-2xl font-bold mt-1 text-gray-800">
-                  {{ metrics.totalRevenue | currencyFormat }}
-                </h3>
-              </div>
-              <div
-                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
-              >
-                <i-lucide [name]="DollarSign" class="text-xl"></i-lucide>
-              </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-              <span
-                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
-              >
-                <nz-icon nzType="arrow-up" /> 10.2%
-              </span>
-              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
-            </div>
-          </div>
+          <app-dashboard-item
+            title="Total Revenue"
+            [value]="
+              (metrics()?.totalRevenue ?? 0 | currencyFormat)?.toString() ?? ''
+            "
+            icon="DollarSign"
+          />
         </nz-col>
         <nz-col nzSpan="6">
-          <div
-            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-          >
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-gray-500 text-sm font-medium">Ticket Sold</p>
-                <h3 class="text-2xl font-bold mt-1 text-gray-800">
-                  {{ metrics.ticketsSold | number: "1.0-0" }}
-                </h3>
-              </div>
-              <div
-                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
-              >
-                <i-lucide [name]="Tickets" class="text-xl"></i-lucide>
-              </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-              <span
-                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
-              >
-                <nz-icon nzType="arrow-up" /> 10.2%
-              </span>
-              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
-            </div>
-          </div>
+          <app-dashboard-item
+            title="Ticket Sold"
+            [value]="
+              (metrics()?.ticketsSold || 0 | number: '1.0-0')?.toString() ?? ''
+            "
+            icon="Tickets"
+          />
         </nz-col>
         <nz-col nzSpan="6">
-          <div
-            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-          >
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-gray-500 text-sm font-medium">Active Theaters</p>
-                <h3 class="text-2xl font-bold mt-1 text-gray-800">
-                  {{ metrics.activeTheaters }}
-                </h3>
-              </div>
-              <div
-                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
-              >
-                <i-lucide [name]="Theater"></i-lucide>
-              </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-              <span
-                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
-              >
-                <nz-icon nzType="arrow-up" /> 10.2%
-              </span>
-              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
-            </div>
-          </div>
+          <app-dashboard-item
+            title="Active Theaters"
+            [value]="(metrics()?.activeTheaters || 0).toString()"
+            icon="Theater"
+          />
         </nz-col>
         <nz-col nzSpan="6">
-          <div
-            class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-          >
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-gray-500 text-sm font-medium">
-                  Seat Utilization
-                </p>
-                <h3 class="text-2xl font-bold mt-1 text-gray-800">
-                  {{ metrics.seatUtilization }}%
-                </h3>
-              </div>
-              <div
-                class="p-2.5 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"
-              >
-                <i-lucide [name]="Armchair"></i-lucide>
-              </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-              <span
-                class="text-emerald-500 font-medium flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded"
-              >
-                <nz-icon nzType="arrow-up" /> 10.2%
-              </span>
-              <span class="text-gray-400 ml-2 text-xs">vs last week</span>
-            </div>
-          </div>
+          <app-dashboard-item
+            title="Seat Utilization"
+            [value]="(metrics()?.seatUtilization || 0) + '%'"
+            icon="Armchair"
+          />
         </nz-col>
       </nz-row>
 
@@ -265,22 +188,22 @@
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="14">
           <!-- Line Chart  -->
-          <app-revenue-chart />
+          <app-revenue-chart [revenues]="revenues()" />
         </nz-col>
         <nz-col nzSpan="10">
           <!-- Pie Chart  -->
-          <app-payment-chart />
+          <app-payment-chart [payments]="payments()" />
         </nz-col>
       </nz-row>
 
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="8">
           <!-- Bar Chart  -->
-          <app-theater-chart />
+          <app-theater-chart [theaters]="theaters()" />
         </nz-col>
         <nz-col nzSpan="16">
           <!-- Bar Chart  -->
-          <app-movie-chart />
+          <app-movie-chart [movies]="movies()" />
         </nz-col>
       </nz-row>
 

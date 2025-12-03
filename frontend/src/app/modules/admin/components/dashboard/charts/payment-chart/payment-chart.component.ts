@@ -1,8 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { PaymentDistribution } from '@/app/core/models/dashboard.model';
-import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -13,24 +12,18 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   styleUrl: './payment-chart.component.css',
 })
 export class PaymentChartComponent implements OnInit {
-  dashboardService = inject(DashboardService);
+  payments = input<PaymentDistribution[]>([]);
   options!: EChartsCoreOption;
-  paymentDistribution: PaymentDistribution[] = [];
 
   ngOnInit() {
-    this.dashboardService.getPaymentDistribution().subscribe((data) => {
-      if (data) this.paymentDistribution = data;
-
-      const chartData = this.paymentDistribution.map((p) => ({
-        name: p.method,
-        value: p.amount,
-      }));
-
-      this.loadChartData(chartData);
-    });
+    const chartData = this.payments().map((p) => ({
+      name: p.method,
+      value: p.amount,
+    }));
+    this.loadChartData(chartData);
   }
 
-  loadChartData(data: any[]) {
+  loadChartData(data: { name: string; value: number }[]) {
     this.options = {
       tooltip: {
         trigger: 'item',

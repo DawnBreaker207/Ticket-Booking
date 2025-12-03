@@ -1,9 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsCoreOption } from 'echarts/core';
 import { RevenuePoint } from '@/app/core/models/dashboard.model';
-import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
-import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -14,23 +12,25 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   styleUrl: './revenue-chart.component.css',
 })
 export class RevenueChartComponent implements OnInit {
-  private dashboardService = inject(DashboardService);
-  private currency = inject(CurrencyFormatPipe);
-
+  revenues = input<RevenuePoint[]>([]);
   options!: EChartsCoreOption;
-  revenue: RevenuePoint[] = [];
 
   ngOnInit() {
-    this.dashboardService.getRevenue().subscribe((data) => {
-      if (data) this.revenue = data;
-
-      const date = this.revenue.map((r) => r.date.toString());
-      const revenue = this.revenue.map((r) => r.revenue);
-      this.loadChartData(date, revenue);
-    });
+    const { date, revenue } = this.revenues().reduce(
+      (acc, r) => {
+        acc.date.push(r.date.toString());
+        acc.revenue.push(r.revenue);
+        return acc;
+      },
+      {
+        date: [] as string[],
+        revenue: [] as number[],
+      },
+    );
+    this.loadChartData(date, revenue);
   }
 
-  loadChartData(name: string[], data: any[]) {
+  loadChartData(name: string[], data: number[]) {
     this.options = {
       tooltip: {
         trigger: 'axis',
@@ -71,10 +71,6 @@ export class RevenueChartComponent implements OnInit {
           name: 'Revenue',
           type: 'line',
           data: data,
-          label: {
-            formatter: (params: any) =>
-              this.currency.transform(params.value ?? 0),
-          },
           smooth: true,
           showSymbol: false,
           areaStyle: {

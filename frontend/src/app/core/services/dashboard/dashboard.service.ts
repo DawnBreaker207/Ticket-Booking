@@ -32,7 +32,7 @@ export class DashboardService {
       .get<ApiRes<DashboardMetrics>>(`${this.URL}/metrics`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<void>('Dashboard metrics')),
+        catchError(this.handleError<DashboardMetrics>('Dashboard metrics')),
       );
   }
 
@@ -50,7 +50,7 @@ export class DashboardService {
       .get<ApiRes<RevenuePoint[]>>(`${this.URL}/revenue`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<void>('Dashboard revenue')),
+        catchError(this.handleError<RevenuePoint[]>('Dashboard revenue')),
       );
   }
 
@@ -68,7 +68,7 @@ export class DashboardService {
       .get<ApiRes<TopMovie[]>>(`${this.URL}/top-movies`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<void>('Dashboard top movies')),
+        catchError(this.handleError<TopMovie[]>('Dashboard top movies')),
       );
   }
 
@@ -86,7 +86,7 @@ export class DashboardService {
       .get<ApiRes<TopTheater[]>>(`${this.URL}/top-theaters`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<void>('Dashboard top theater')),
+        catchError(this.handleError<TopTheater[]>('Dashboard top theater')),
       );
   }
 
@@ -107,7 +107,11 @@ export class DashboardService {
       >(`${this.URL}/payment-distribution`, { params })
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError<void>('Dashboard payment distribution')),
+        catchError(
+          this.handleError<PaymentDistribution[]>(
+            'Dashboard payment distribution',
+          ),
+        ),
       );
   }
 

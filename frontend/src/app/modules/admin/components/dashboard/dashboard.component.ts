@@ -1,36 +1,44 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { RevenueChartComponent } from '@/app/modules/admin/components/dashboard/charts/revenue-chart/revenue-chart.component';
 import { MovieChartComponent } from '@/app/modules/admin/components/dashboard/charts/movie-chart/movie-chart.component';
 import { TheaterChartComponent } from '@/app/modules/admin/components/dashboard/charts/theater-chart/theater-chart.component';
 import { PaymentChartComponent } from '@/app/modules/admin/components/dashboard/charts/payment-chart/payment-chart.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import {
-  Armchair,
-  DollarSign,
-  LucideAngularModule,
-  Theater,
-  Tickets,
-} from 'lucide-angular';
 import { TheaterTableComponent } from '@/app/modules/admin/components/dashboard/tables/theater-table/theater-table.component';
 import { MovieTableComponent } from '@/app/modules/admin/components/dashboard/tables/movie-table/movie-table.component';
 import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
-import { DashboardMetrics } from '@/app/core/models/dashboard.model';
+import {
+  DashboardMetrics,
+  PaymentDistribution,
+  RevenuePoint,
+  TopMovie,
+  TopTheater,
+} from '@/app/core/models/dashboard.model';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 import { FormsModule } from '@angular/forms';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
-import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { DecimalPipe } from '@angular/common';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import {
-  NzDropdownMenuComponent,
-  NzDropDownModule,
-} from 'ng-zorro-antd/dropdown';
-import { NzMenuDirective, NzMenuItemComponent } from 'ng-zorro-antd/menu';
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  finalize,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { formatDate } from '@/app/shared/utils/formatDate';
+import { DashboardItemComponent } from '@/app/shared/components/dashboard-item/dashboard-item.component';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,45 +46,45 @@ import { NzMenuDirective, NzMenuItemComponent } from 'ng-zorro-antd/menu';
     NzLayoutModule,
     NzSelectModule,
     NzSwitchModule,
-    NzRowDirective,
-    NzColDirective,
     NzCardComponent,
+    NzGridModule,
+    NzIconModule,
+    NzButtonModule,
+    NzDatePickerModule,
+    NzSpinModule,
     RevenueChartComponent,
     MovieChartComponent,
     TheaterChartComponent,
     PaymentChartComponent,
-    NzIconModule,
-    LucideAngularModule,
     TheaterTableComponent,
     MovieTableComponent,
     CurrencyFormatPipe,
     FormsModule,
-    NzButtonComponent,
-    NzDatePickerComponent,
-    NzSpinModule,
     DecimalPipe,
-    NzDropdownMenuComponent,
-    NzMenuDirective,
-    NzMenuItemComponent,
     NzDropDownModule,
+    NzMenuModule,
+    NzDropDownModule,
+    DashboardItemComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-  dashboardService = inject(DashboardService);
-  readonly DollarSign = DollarSign;
-  readonly Tickets = Tickets;
-  readonly Theater = Theater;
-  readonly Armchair = Armchair;
-  metrics!: DashboardMetrics;
-  isLoading = signal<boolean>(true);
-  filterType: 'day' | 'month' | 'quarter' | 'year' = 'day';
+  private dashboardService = inject(DashboardService);
+  private destroyRef = inject(DestroyRef);
 
+  isLoading = signal<boolean>(false);
+  filterType: 'week' | 'month' | 'quarter' | 'year' = 'week';
+  private filterSubject = new BehaviorSubject<any>(this.getFilterPayload());
   selectedDate: Date = new Date();
   selectedQuarterYear: number = new Date().getFullYear();
   selectedQuarter: number = Math.floor((new Date().getMonth() + 3) / 3);
 
+  metrics = signal<DashboardMetrics | null>(null);
+  revenues = signal<RevenuePoint[]>([]);
+  payments = signal<PaymentDistribution[]>([]);
+  theaters = signal<TopTheater[]>([]);
+  movies = signal<TopMovie[]>([]);
   quarters = [
     { label: 'Quý 1 (Q1)', value: 1 },
     { label: 'Quý 2 (Q2)', value: 2 },
@@ -87,39 +95,80 @@ export class DashboardComponent implements OnInit {
   years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
   ngOnInit() {
-    this.dashboardService.getMetrics().subscribe({
-      next: (data) => {
-        if (data) {
+    this.filterSubject
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => this.isLoading.set(true)),
+
+        switchMap((payload) => {
+          return combineLatest({
+            metrics: this.dashboardService.getMetrics(payload),
+            revenues: this.dashboardService.getRevenue(payload),
+            payment: this.dashboardService.getPaymentDistribution(payload),
+            theaters: this.dashboardService.getTopTheater(payload),
+            movies: this.dashboardService.getTopMovie(payload),
+          }).pipe(
+            catchError(() => {
+              return of(null);
+            }),
+            finalize(() => this.isLoading.set(false)),
+          );
+        }),
+      )
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            const { metrics, revenues, payment, theaters, movies } = res;
+            this.metrics.set(metrics);
+            this.revenues.set(revenues);
+            this.payments.set(payment);
+            this.theaters.set(theaters);
+            this.movies.set(movies);
+          }
+        },
+        error: () => {
           this.isLoading.set(false);
-          this.metrics = data;
-        }
-      },
-      error: () => {
-        this.isLoading.set(true);
-      },
-    });
+        },
+      });
+  }
+
+  getFilterPayload() {
+    let start: Date;
+    let end: Date;
+    const currentDate = this.selectedDate || new Date();
+    const startMonth = (this.selectedQuarter - 1) * 3;
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    const currentDay = currentDate.getDay();
+    const diff = currentDay === 0 ? -6 : 1 - currentDay;
+    switch (this.filterType) {
+      case 'week':
+        start = new Date(currentDate);
+        start.setDate(currentDate.getDate() + diff);
+        end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        break;
+      case 'month':
+        start = new Date(year, month, 1);
+        end = new Date(year, month + 1);
+        break;
+      case 'quarter':
+        start = new Date(this.selectedQuarterYear, startMonth, 1);
+        end = new Date(this.selectedQuarterYear, startMonth + 3, 0);
+        break;
+      case 'year':
+        start = new Date(year, 0, 1);
+        end = new Date(year, 11, 31);
+        break;
+    }
+    return {
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+    };
   }
 
   onFilterChange() {
-    let payload = {};
-
-    switch (this.filterType) {
-      case 'day':
-        payload = { type: 'day', date: this.selectedDate };
-        break;
-      case 'month':
-        payload = { type: 'month', date: this.selectedDate };
-        break;
-      case 'quarter':
-        payload = {
-          type: 'quarter',
-          year: this.selectedQuarterYear,
-          quarter: this.selectedQuarter,
-        };
-        break;
-      case 'year':
-        payload = { type: 'year', year: this.selectedDate.getFullYear() };
-        break;
-    }
+    const payload = this.getFilterPayload();
+    this.filterSubject.next(payload);
   }
 }

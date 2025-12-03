@@ -1,9 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { TopMovie } from '@/app/core/models/dashboard.model';
-import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
-import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -14,22 +12,26 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   styleUrl: './movie-chart.component.css',
 })
 export class MovieChartComponent implements OnInit {
-  private dashboardService = inject(DashboardService);
-  private currency = inject(CurrencyFormatPipe);
+  movies = input<TopMovie[]>([]);
   options!: EChartsCoreOption;
-  topMovies: TopMovie[] = [];
 
   ngOnInit() {
-    this.dashboardService.getTopMovie().subscribe((data) => {
-      if (data) this.topMovies = data;
+    const { movieName, totalRevenue } = this.movies().reduce(
+      (acc, m) => {
+        acc.movieName.push(m.movieName);
+        acc.totalRevenue.push(m.revenue);
+        return acc;
+      },
+      {
+        movieName: [] as string[],
+        totalRevenue: [] as number[],
+      },
+    );
 
-      const movieName = this.topMovies.map((m) => m.movieName);
-      const totalRevenue = this.topMovies.map((m) => m.revenue);
-      this.loadChartData(movieName, totalRevenue);
-    });
+    this.loadChartData(movieName, totalRevenue);
   }
 
-  loadChartData(name: string[], data: any[]) {
+  loadChartData(name: string[], data: number[]) {
     this.options = {
       tooltip: {
         trigger: 'axis',

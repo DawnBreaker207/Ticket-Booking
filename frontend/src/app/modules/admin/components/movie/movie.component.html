@@ -119,7 +119,7 @@
                   [alt]="item.title"
                 />
               </td>
-              <td class="px-6 py-4">
+              <td class="text-justify px-6 py-4">
                 <div class="font-bold text-gray-900 text-base">
                   {{ item.title }}
                 </div>
@@ -133,7 +133,7 @@
                   <nz-tag>{{ g }}</nz-tag>
                 }
               </td>
-              <td>
+              <td class="text-center">
                 @let tag = item.isDeleted | isDeleted;
                 <nz-tag [nzColor]="tag.color">
                   {{ tag.label }}
