@@ -1,9 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { TopTheater } from '@/app/core/models/dashboard.model';
-import { DashboardService } from '@/app/core/services/dashboard/dashboard.service';
-import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
@@ -14,23 +12,26 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   styleUrl: './theater-chart.component.css',
 })
 export class TheaterChartComponent implements OnInit {
-  private dashboardService = inject(DashboardService);
-  private currency = inject(CurrencyFormatPipe);
+  theaters = input<TopTheater[]>([]);
   options!: EChartsCoreOption;
-  topTheaters: TopTheater[] = [];
 
   ngOnInit() {
-    this.dashboardService.getTopTheater().subscribe((data) => {
-      if (data) this.topTheaters = data;
+    const { theaterName, totalRevenue } = this.theaters().reduce(
+      (acc, t) => {
+        acc.theaterName.push(t.theaterName);
+        acc.totalRevenue.push(t.totalRevenue);
+        return acc;
+      },
+      {
+        theaterName: [] as string[],
+        totalRevenue: [] as number[],
+      },
+    );
 
-      const theaterNames = this.topTheaters.map((t) => t.theaterName);
-      const totalRevenue = this.topTheaters.map((t) => t.totalRevenue);
-
-      this.loadChartData(theaterNames, totalRevenue);
-    });
+    this.loadChartData(theaterName, totalRevenue);
   }
 
-  loadChartData(name: string[], data: any[]) {
+  loadChartData(name: string[], data: number[]) {
     this.options = {
       tooltip: {
         trigger: 'item',
