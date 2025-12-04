@@ -1,29 +1,28 @@
-import {ChangeDetectorRef, Component, HostListener, inject, OnInit,} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, ReactiveFormsModule,} from '@angular/forms';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzInputModule} from 'ng-zorro-antd/input';
-import {NzFormModule} from 'ng-zorro-antd/form';
-import {NzTabPosition, NzTabsModule} from 'ng-zorro-antd/tabs';
-import {NzAvatarModule} from 'ng-zorro-antd/avatar';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
-import {NzUploadModule} from 'ng-zorro-antd/upload';
-import {NzTagModule} from 'ng-zorro-antd/tag';
-import {NzBadgeModule} from 'ng-zorro-antd/badge';
-import {NzModalModule} from 'ng-zorro-antd/modal';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzQRCodeModule} from 'ng-zorro-antd/qr-code';
-import {NzEmptyModule} from 'ng-zorro-antd/empty';
-import {NzTooltipModule} from 'ng-zorro-antd/tooltip';
-import {Store} from '@ngrx/store';
-import {selectJwt} from '@/app/core/store/state/auth/auth.selectors';
-import {
-  BookingHistoryComponent,
-  MovieTicket
-} from '@/app/modules/home/components/profile/booking-history/booking-history.component';
-import {InfoComponent} from '@/app/modules/home/components/profile/info/info.component';
-
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzTabPosition, NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { Store } from '@ngrx/store';
+import { BookingHistoryComponent } from '@/app/modules/home/components/profile/booking-history/booking-history.component';
+import { InfoComponent } from '@/app/modules/home/components/profile/info/info.component';
+import { ReservationProfile } from '@/app/core/models/reservation.model';
+import { UserProfile } from '@/app/core/models/user.model';
+import { UserService } from '@/app/core/services/user/user.service';
+import { ReservationService } from '@/app/core/services/reservation/reservation.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -53,50 +52,80 @@ import {InfoComponent} from '@/app/modules/home/components/profile/info/info.com
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private msg = inject(NzMessageService);
-  private cdr = inject(ChangeDetectorRef);
-  private store = inject(Store);
-  user$ = this.store.select(selectJwt);
   isSaving: boolean = false;
-  user = {
-    avatar: 'https://i.pravatar.cc/300?img=12', // Ảnh gốc (Server)
-    name: 'Nguyễn Văn A',
+  user$: Observable<UserProfile> = of({
+    avatar: 'https://i.pravatar.cc/300?img=12',
+    username: 'Nguyễn Văn A',
     email: 'nguyenvana@gmail.com',
-    memberLevel: 'Member',
-  };
-  tickets: MovieTicket[] = [
+    role: 'Member',
+  });
+  tickets$: Observable<ReservationProfile[]> = of([
     {
-      id: 'TK-9921',
-      title: 'Dune: Hành Tinh Cát 2',
-      poster: 'https://image.tmdb.org/t/p/w200/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
-      cinema: 'CGV Vincom',
+      reservationId: 'ORD-6A0A71A0D0EF',
+      movieTitle: 'Dune: Hành Tinh Cát 2',
+      moviePoster:
+        'https://image.tmdb.org/t/p/w200/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
+      theater: 'CGV Vincom',
       room: 'IMAX 01',
-      date: '28/11/2025',
-      time: '19:30',
+      date: '2025-11-28',
+      time: '19:30:00',
       seats: ['F12', 'F13'],
-      price: 320000,
-      status: 'Upcoming',
+      amount: 320000,
     },
     {
-      id: 'TK-8820',
-      title: 'Kung Fu Panda 4',
-      poster: 'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
-      cinema: 'Lotte Cinema',
+      reservationId: 'ORD-6A0A71A0D0EF',
+      movieTitle: 'Kung Fu Panda 4',
+      moviePoster:
+        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
+      theater: 'Lotte Cinema',
       room: 'Std 05',
-      date: '15/10/2025',
-      time: '14:00',
+      date: '2025-10-15',
+      time: '14:00:00',
       seats: ['A1'],
-      price: 150000,
-      status: 'Completed',
+      amount: 150000,
     },
-  ];
+    {
+      reservationId: 'ORD-6A0A71A0D0EF',
+      movieTitle: 'Kung Fu Panda 4',
+      moviePoster:
+        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
+      theater: 'Lotte Cinema',
+      room: 'Std 05',
+      date: '2025-10-15',
+      time: '14:00:00',
+      seats: ['A1'],
+      amount: 150000,
+    },
+    {
+      reservationId: 'ORD-6A0A71A0D0EF',
+      movieTitle: 'Kung Fu Panda 4',
+      moviePoster:
+        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
+      theater: 'Lotte Cinema',
+      room: 'Std 05',
+      date: '2025-10-15',
+      time: '14:00:00',
+      seats: ['A1'],
+      amount: 150000,
+    },
+    {
+      reservationId: 'ORD-6A0A71A0D0EF',
+      movieTitle: 'Kung Fu Panda 4',
+      moviePoster:
+        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
+      theater: 'Lotte Cinema',
+      room: 'Std 05',
+      date: '2025-10-15',
+      time: '14:00:00',
+      seats: ['A1'],
+      amount: 150000,
+    },
+  ]);
   tabPosition: NzTabPosition = 'left';
 
   ngOnInit() {
     this.checkScreenSize();
   }
-
 
   @HostListener('window:resize')
   onResize() {
@@ -106,6 +135,4 @@ export class ProfileComponent implements OnInit {
   checkScreenSize() {
     this.tabPosition = window.innerWidth < 768 ? 'top' : 'left';
   }
-
-
 }

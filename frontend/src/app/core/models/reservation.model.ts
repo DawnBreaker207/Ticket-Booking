@@ -44,3 +44,15 @@ export interface ReservationFilter extends FilterQuery, FilterSort, FilterDate {
   reservationStatus: ReservationStatus;
   totalAmount: number;
 }
+
+export interface ReservationProfile {
+  reservationId: string;
+  moviePoster: string;
+  movieTitle: string;
+  room: string;
+  date: string;
+  time: string;
+  theater: string;
+  seats: string[];
+  amount: number;
+}

@@ -1,9 +1,7 @@
 <div class="p-6 md:p-8 h-full overflow-y-auto max-h-[800px]">
   <!-- Avatar Manager -->
   <div class="mb-8 pb-8 border-b border-gray-100">
-    <h3
-      class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6"
-    >
+    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">
       Ảnh đại diện
     </h3>
     <input
@@ -32,7 +30,7 @@
             <div
               class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50"
             >
-              <nz-icon nzType="user" class="text-5xl"/>
+              <nz-icon nzType="user" class="text-5xl" />
             </div>
           }
 
@@ -40,26 +38,23 @@
           <div
             class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center"
           >
-            <nz-icon
-              nzType="camera"
-              class="text-white! text-2xl mb-1"
-            />
-            <span class="text-white text-[10px] font-bold uppercase tracking-wider">
+            <nz-icon nzType="camera" class="text-white! text-2xl mb-1" />
+            <span
+              class="text-white text-[10px] font-bold uppercase tracking-wider"
+            >
               Đổi ảnh
             </span>
           </div>
         </div>
 
         <!-- Badge -->
-        <div
-          class="absolute -bottom-2 right-3 z-10 pointer-events-none"
-        >
+        <div class="absolute -bottom-2 right-3 z-10 pointer-events-none">
           <nz-tag
             [nzColor]="'geekblue'"
             class="m-0 rounded-full px-3 py-1 font-bold text-xs border-2 border-white shadow-md"
           >
-            <nz-icon nzType="star" nzTheme="fill" class="mr-1"/>
-            {{ user().memberLevel }}
+            <nz-icon nzType="star" nzTheme="fill" class="mr-1" />
+            {{ user().role }}
           </nz-tag>
         </div>
       </div>
@@ -76,7 +71,7 @@
               (click)="resetAvatar(fileInput)"
               class="h-10 rounded-lg font-medium flex items-center gap-2"
             >
-              <nz-icon nzType="undo"/>
+              <nz-icon nzType="undo" />
               Hủy
             </button>
           }
@@ -88,7 +83,7 @@
             <p
               class="text-sm text-blue-600 font-semibold animate-pulse flex items-center justify-center sm:justify-start gap-2 bg-blue-50 py-1 px-3 rounded-lg w-fit"
             >
-              <nz-icon nzType="info-circle" nzTheme="fill"/>
+              <nz-icon nzType="info-circle" nzTheme="fill" />
               Ảnh chưa lưu. Bấm "Lưu thay đổi" bên dưới.
             </p>
           } @else {
@@ -110,16 +105,14 @@
     nzLayout="vertical"
   >
     <div class="mb-6">
-      <h3
-        class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4"
-      >
+      <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">
         Thông tin cơ bản
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
         <nz-form-item>
           <nz-form-label nzRequired class="font-semibold text-gray-700"
-          >Họ và tên
+            >Họ và tên
           </nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập họ tên">
             <input
@@ -133,7 +126,7 @@
 
         <nz-form-item>
           <nz-form-label nzRequired class="font-semibold text-gray-700"
-          >Số điện thoại
+            >Số điện thoại
           </nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập số điện thoại">
             <input
@@ -147,7 +140,7 @@
 
         <nz-form-item class="md:col-span-2">
           <nz-form-label class="font-semibold text-gray-700"
-          >Email
+            >Email
           </nz-form-label>
           <nz-form-control>
             <div class="relative group">
@@ -170,16 +163,16 @@
 
         <nz-form-item class="md:col-span-2">
           <nz-form-label class="font-semibold text-gray-700"
-          >Địa chỉ
+            >Địa chỉ
           </nz-form-label>
           <nz-form-control>
-                    <textarea
-                      nz-input
-                      formControlName="address"
-                      rows="3"
-                      class="rounded-lg p-3 border-gray-200 text-base"
-                      placeholder="Nhập địa chỉ giao hàng..."
-                    ></textarea>
+            <textarea
+              nz-input
+              formControlName="address"
+              rows="3"
+              class="rounded-lg p-3 border-gray-200 text-base"
+              placeholder="Nhập địa chỉ giao hàng..."
+            ></textarea>
           </nz-form-control>
         </nz-form-item>
       </div>

@@ -3,7 +3,16 @@ import { DateModel, IsDeleted } from '@/app/core/models/common.model';
 export interface User extends DateModel, IsDeleted {
   userId: number;
   username: string;
+  avatar: string;
   email: string;
+  role: string;
+}
+
+export interface UserProfile {
+  username: string;
+  avatar: string;
+  email: string;
+  role: string;
 }
 
 export interface RegisterRequest {

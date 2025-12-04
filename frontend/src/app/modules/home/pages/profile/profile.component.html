@@ -19,29 +19,33 @@
       <nz-tab [nzTitle]="infoTitle">
         <ng-template #infoTitle>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="idcard" nzTheme="outline"/>
+            <nz-icon nzType="idcard" nzTheme="outline" />
             Hồ sơ cá nhân
           </div>
         </ng-template>
-        <app-info [user]="user"/>
+        @if (user$ | async; as user) {
+          <app-info [user]="user" />
+        }
       </nz-tab>
 
       <!-- BOOKING HISTORY -->
       <nz-tab [nzTitle]="historyFile">
         <ng-template #historyFile>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="history"/>
+            <nz-icon nzType="history" />
             Lịch sử đặt vé
           </div>
         </ng-template>
-        <app-booking-history [tickets]="tickets"/>
+        @if (tickets$ | async; as tickets) {
+          <app-booking-history [tickets]="tickets" />
+        }
       </nz-tab>
 
       <!--  MEMBERS    -->
       <nz-tab [nzTitle]="memberTitle">
         <ng-template #memberTitle>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="crown" nzTheme="outline"/>
+            <nz-icon nzType="crown" nzTheme="outline" />
             Thành viên
           </div>
         </ng-template>
@@ -55,7 +59,7 @@
       <nz-tab [nzTitle]="voucherTitle">
         <ng-template #voucherTitle>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="tags" nzTheme="outline"/>
+            <nz-icon nzType="tags" nzTheme="outline" />
             Voucher
           </div>
         </ng-template>
@@ -69,7 +73,7 @@
       <nz-tab [nzTitle]="settingTitle">
         <ng-template #settingTitle>
           <div class="flex items-center gap-2 px-2">
-            <nz-icon nzType="setting"/>
+            <nz-icon nzType="setting" />
             Cài đặt
           </div>
         </ng-template>
@@ -80,5 +84,4 @@
       </nz-tab>
     </nz-tabset>
   </div>
-
 </div>

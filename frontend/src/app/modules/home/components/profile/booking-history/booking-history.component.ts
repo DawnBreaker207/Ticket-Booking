@@ -1,12 +1,14 @@
-import {Component, input} from '@angular/core';
-import {NzButtonModule} from "ng-zorro-antd/button";
-import {NzEmptyModule} from "ng-zorro-antd/empty";
-import {NzIconModule} from "ng-zorro-antd/icon";
-import {NzWaveModule} from "ng-zorro-antd/core/wave";
-import {DecimalPipe} from '@angular/common';
-import {NzModalModule} from 'ng-zorro-antd/modal';
-import {NzQRCodeModule} from 'ng-zorro-antd/qr-code';
-import {NzTagModule} from 'ng-zorro-antd/tag';
+import { Component, input } from '@angular/core';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzWaveModule } from 'ng-zorro-antd/core/wave';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { ReservationProfile } from '@/app/core/models/reservation.model';
+import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 
 export interface MovieTicket {
   id: string;
@@ -28,21 +30,21 @@ export interface MovieTicket {
     NzEmptyModule,
     NzIconModule,
     NzWaveModule,
-    DecimalPipe,
     NzModalModule,
     NzQRCodeModule,
-    NzTagModule
+    NzTagModule,
+    DatePipe,
+    CurrencyFormatPipe,
   ],
   templateUrl: './booking-history.component.html',
-  styleUrl: './booking-history.component.css'
+  styleUrl: './booking-history.component.css',
 })
 export class BookingHistoryComponent {
-  tickets = input<MovieTicket[]>([]);
+  tickets = input<ReservationProfile[]>([]);
   isDetailVisible: boolean = false;
-  selectedTicket: MovieTicket | null = null;
+  selectedTicket: ReservationProfile | null = null;
 
-
-  openTicketDetail(ticket: MovieTicket) {
+  openTicketDetail(ticket: ReservationProfile) {
     this.selectedTicket = ticket;
     this.isDetailVisible = true;
   }
@@ -50,5 +52,4 @@ export class BookingHistoryComponent {
   closeTicketDetail() {
     this.isDetailVisible = false;
   }
-
 }

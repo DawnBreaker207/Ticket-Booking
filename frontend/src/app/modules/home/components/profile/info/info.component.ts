@@ -1,15 +1,28 @@
-import {ChangeDetectorRef, Component, inject, input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NzButtonModule} from "ng-zorro-antd/button";
-import {NzGridModule} from "ng-zorro-antd/grid";
-import {NzFormModule} from "ng-zorro-antd/form";
-import {NzIconModule} from "ng-zorro-antd/icon";
-import {NzInputModule} from "ng-zorro-antd/input";
-import {NzTagModule} from "ng-zorro-antd/tag";
-import {NzTooltipModule} from "ng-zorro-antd/tooltip";
-import {NzWaveModule} from "ng-zorro-antd/core/wave";
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {MovieTicket} from '@/app/modules/home/components/profile/booking-history/booking-history.component';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  input,
+  OnInit,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzWaveModule } from 'ng-zorro-antd/core/wave';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { MovieTicket } from '@/app/modules/home/components/profile/booking-history/booking-history.component';
+import { UserProfile } from '@/app/core/models/user.model';
 
 @Component({
   selector: 'app-info',
@@ -23,12 +36,13 @@ import {MovieTicket} from '@/app/modules/home/components/profile/booking-history
     NzTagModule,
     NzTooltipModule,
     NzWaveModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule,
+  ],
   templateUrl: './info.component.html',
-  styleUrl: './info.component.css'
+  styleUrl: './info.component.css',
 })
-export class InfoComponent implements OnInit{
-  user = input.required<any>();
+export class InfoComponent implements OnInit {
+  user = input.required<UserProfile>();
 
   private fb = inject(FormBuilder);
   private msg = inject(NzMessageService);
@@ -46,8 +60,8 @@ export class InfoComponent implements OnInit{
 
   initializeForm() {
     this.profileForm = this.fb.group({
-      username: [this.user().name, [Validators.required]],
-      email: [{value: this.user().email, disabled: true}],
+      username: [this.user().username, [Validators.required]],
+      email: [{ value: this.user().email, disabled: true }],
       phone: [
         '0912345678',
         [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
@@ -55,7 +69,6 @@ export class InfoComponent implements OnInit{
       address: ['Hà Nội, Việt Nam'],
     });
   }
-
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -91,7 +104,6 @@ export class InfoComponent implements OnInit{
     this.msg.info('Đã hủy thay đổi ảnh');
   }
 
-
   submitProfile() {
     if (this.profileForm.valid) {
       this.isSaving = true;
@@ -99,7 +111,7 @@ export class InfoComponent implements OnInit{
       setTimeout(() => {
         this.isSaving = false;
 
-        this.user().name = this.profileForm.get('username')?.value;
+        this.user().username = this.profileForm.get('username')?.value;
 
         if (this.selectedFile) {
           this.user().avatar = this.avatarPreview;
@@ -113,7 +125,7 @@ export class InfoComponent implements OnInit{
       Object.values(this.profileForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
-          control.updateValueAndValidity({onlySelf: true});
+          control.updateValueAndValidity({ onlySelf: true });
         }
       });
     }
