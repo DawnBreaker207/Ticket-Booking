@@ -44,10 +44,12 @@ export class UserService {
   }
 
   updateStatus(id: number, status: boolean) {
-    return this.http.put<ApiRes<User>>(`${this.URL}/update/${id}`, status).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<User>('Update user status')),
-    );
+    return this.http
+      .put<ApiRes<User>>(`${this.URL}/update/${id}/status`, status)
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<User>('Update user status')),
+      );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
