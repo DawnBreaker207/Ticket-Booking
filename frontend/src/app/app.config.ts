@@ -2,6 +2,7 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   isDevMode,
+  LOCALE_ID,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -12,7 +13,11 @@ import { provideStore } from '@ngrx/store';
 import { nzIcons } from './icons-provider';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import {
+  CommonModule,
+  CurrencyPipe,
+  registerLocaleData,
+} from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -54,7 +59,9 @@ import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
 import { icons, LucideAngularModule } from 'lucide-angular';
+import localVi from '@angular/common/locales/vi';
 
+registerLocaleData(localVi);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -98,6 +105,7 @@ export const appConfig: ApplicationConfig = {
       ReactiveFormsModule,
       LucideAngularModule.pick(icons),
     ),
+    { provide: LOCALE_ID, useValue: 'vi' },
     provideAnimationsAsync(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
