@@ -1,30 +1,19 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import {
-  NzFormControlComponent,
-  NzFormDirective,
-  NzFormLabelComponent,
-} from 'ng-zorro-antd/form';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
 import {
   AsyncPipe,
   DatePipe,
-  NgClass,
   NgTemplateOutlet,
+  SlicePipe,
 } from '@angular/common';
-import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
-import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
-import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
-import {
-  NzListComponent,
-  NzListItemComponent,
-  NzListItemMetaComponent,
-} from 'ng-zorro-antd/list';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -45,35 +34,27 @@ import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.action
 import { selectSelectedShowtime } from '@/app/core/store/state/showtime/showtime.selectors';
 import { selectAllTheaters } from '@/app/core/store/state/theater/theater.selectors';
 import { selectSearchQuery } from '@/app/core/store/state/movie/movie.selectors';
-import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
-import { NzTimePickerComponent } from 'ng-zorro-antd/time-picker';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { formatDate, formatTime } from '@/app/shared/utils/formatDate';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-form',
   imports: [
-    NzFormDirective,
     ReactiveFormsModule,
-    NzRowDirective,
     DatePipe,
     FormsModule,
-    NzAvatarComponent,
-    NzColDirective,
-    NzDatePickerComponent,
-    NzFormControlComponent,
-    NzFormLabelComponent,
-    NzInputDirective,
-    NzInputGroupComponent,
-    NzListComponent,
-    NzListItemComponent,
-    NzListItemMetaComponent,
-    NgClass,
-    NzSelectComponent,
+    NzDatePickerModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
     AsyncPipe,
-    NzOptionComponent,
     NgTemplateOutlet,
-    NzTimePickerComponent,
+    NzTimePickerModule,
+    NzIconModule,
+    SlicePipe,
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.css',
