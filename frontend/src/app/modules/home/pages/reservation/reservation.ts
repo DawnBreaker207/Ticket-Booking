@@ -6,7 +6,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { PaymentService } from '@/app/core/services/payment/payment.service';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, take, tap, combineLatest } from 'rxjs';
+import { combineLatest, filter, map, take, tap } from 'rxjs';
 import {
   selectSeats,
   selectSelectedSeats,
@@ -23,10 +23,9 @@ import { ShowtimeActions } from '@/app/core/store/state/showtime/showtime.action
 import { TheaterActions } from '@/app/core/store/state/theater/theater.actions';
 import { StorageService } from '@/app/shared/services/storage/storage.service';
 import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
-import { SummaryComponent } from '@/app/modules/home/components/reservation/summary/summary.component';
-import { PaymentComponent } from '@/app/modules/home/components/reservation/payment/payment.component';
 import { ReservationRequest } from '@/app/core/models/reservation.model';
 import { ReservationActions } from '@/app/core/store/state/reservation/reservation.actions';
+import { ConfirmComponent } from '@/app/modules/home/components/reservation/confirm/confirm.component';
 
 @Component({
   selector: 'app-reservation',
@@ -38,8 +37,7 @@ import { ReservationActions } from '@/app/core/store/state/reservation/reservati
     SeatComponent,
     DetailFilmComponent,
     CommonModule,
-    SummaryComponent,
-    PaymentComponent,
+    ConfirmComponent,
   ],
   templateUrl: './reservation.html',
   styleUrl: './reservation.css',
@@ -58,7 +56,7 @@ export class ReservationComponent implements OnInit {
   totalPrice: number = 0;
   reservationId!: string;
   index = signal(0);
-  steps = signal([0, 1, 2]);
+  steps = signal([0, 1]);
 
   ngOnInit() {
     const state = this.storageService.getItem<any>('reservationState');
@@ -121,7 +119,7 @@ export class ReservationComponent implements OnInit {
         });
       return;
     }
-    if (newIndex === 3 && this.index() === 2) {
+    if (newIndex === 2 && this.index() === 1) {
       this.paymentService
         .createPayment({
           reservationId: this.reservationId,
@@ -132,8 +130,6 @@ export class ReservationComponent implements OnInit {
           window.open(res, '_self');
           this.index.set(newIndex);
         });
-    } else {
-      this.index.set(newIndex);
     }
   }
 }
