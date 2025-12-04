@@ -40,7 +40,7 @@ import { Theater } from '@/app/core/models/theater.model';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { ShowtimeModalComponent } from '@/app/modules/home/components/showtime/modal/modal.component';
 import { TheaterModalComponent } from '@/app/modules/home/components/theater/modal/theater.component';
-import { SliderComponent } from '@/app/modules/home/components/slider/slider.component';
+import { SliderComponent } from '@/app/modules/home/components/home/slider/slider.component';
 import { Router } from '@angular/router';
 import { MovieItemComponent } from '@/app/shared/components/movie-item/movie-item.component';
 
