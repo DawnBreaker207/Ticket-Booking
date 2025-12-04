@@ -8,9 +8,11 @@ import {
   ReservationFilter,
   ReservationInitRequest,
   ReservationInitResponse,
+  ReservationProfile,
   ReservationRequest,
 } from '@/app/core/models/reservation.model';
 import { formatDate, formatTime } from '@/app/shared/utils/formatDate';
+import { ReservationStatus } from '@/app/core/constants/enum';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +60,20 @@ export class ReservationService {
       map((res: any) => res.data),
       catchError(this.handleError<Reservation>('Get reservation')),
     );
+  }
+
+  getUserReservation(id: number, status: ReservationStatus = 'CONFIRMED') {
+    const params = new HttpParams().set('userId', id).set('status', status);
+    return this.http
+      .get<
+        ApiRes<ResponsePage<ReservationProfile[]>>
+      >(`${this.URL}/me`, { params })
+      .pipe(
+        map((res) => res.data.content),
+        catchError(
+          this.handleError<ReservationProfile[]>('Reservation Profile'),
+        ),
+      );
   }
 
   initReservation(reservation: ReservationInitRequest) {
