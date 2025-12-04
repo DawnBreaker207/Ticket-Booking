@@ -1,17 +1,23 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Store} from '@ngrx/store';
-import {Seat, Showtime} from '@/app/core/models/theater.model';
-import {selectSeats, selectSelectedSeats,} from '@/app/core/store/state/seat/seat.selectors';
-import {filter, map, Subject, switchMap, take, takeUntil} from 'rxjs';
-import {SeatActions} from '@/app/core/store/state/seat/seat.actions';
-import {selectPrice, selectSelectedShowtime,} from '@/app/core/store/state/showtime/showtime.selectors';
-import {SseService} from '@/app/core/services/sse/sse.service';
-import {SeatStatus} from '@/app/core/constants/enum';
-import {StorageService} from '@/app/shared/services/storage/storage.service';
-import {ReservationRequest} from '@/app/core/models/reservation.model';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {SeatIconComponent} from '@/app/shared/components/seat/seat.component';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Seat, Showtime } from '@/app/core/models/theater.model';
+import {
+  selectSeats,
+  selectSelectedSeats,
+} from '@/app/core/store/state/seat/seat.selectors';
+import { filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { SeatActions } from '@/app/core/store/state/seat/seat.actions';
+import {
+  selectPrice,
+  selectSelectedShowtime,
+} from '@/app/core/store/state/showtime/showtime.selectors';
+import { SseService } from '@/app/core/services/sse/sse.service';
+import { SeatStatus } from '@/app/core/constants/enum';
+import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { ReservationRequest } from '@/app/core/models/reservation.model';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { SeatIconComponent } from '@/app/shared/components/seat/seat.component';
 
 @Component({
   selector: ' app-seat',
