@@ -1,287 +1,361 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<!-- Created with Jaspersoft Studio -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="Report" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535"
-              leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
-              uuid="d4a1d5eb-82dd-412f-a620-202e4bdf9dba">
-    <property name="template.engine" value="tabular_template"/>
-    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
-    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-    <style name="Table">
-        <box>
-            <pen lineWidth="1.0" lineColor="#000000"/>
-            <topPen lineWidth="1.0" lineColor="#000000"/>
-            <leftPen lineWidth="1.0" lineColor="#000000"/>
-            <bottomPen lineWidth="1.0" lineColor="#000000"/>
-            <rightPen lineWidth="1.0" lineColor="#000000"/>
+              name="CinemaDashboard_Pro_Final_VND_Fixed" pageWidth="595" pageHeight="842"
+              whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c2d03372-56d1-420a-814d-506766444855">
+
+    <!-- Styles -->
+    <style name="TitleStyle" forecolor="#FFFFFF" fontName="SansSerif" fontSize="26" isBold="true"/>
+    <style name="SubtitleStyle" forecolor="#DEDEDE" fontName="SansSerif" fontSize="12" isItalic="false"/>
+    <style name="SectionHeader" mode="Opaque" backcolor="#F5F5F5" forecolor="#003366" fontName="SansSerif" fontSize="14" isBold="true">
+        <box leftPadding="10">
+            <leftPen lineWidth="4.0" lineColor="#003366"/>
         </box>
     </style>
-    <style name="Table_TH" mode="Transparent" backcolor="#FFFFFF">
-        <box>
-            <pen lineWidth="0.5" lineColor="#000000"/>
-            <topPen lineWidth="0.5" lineColor="#000000"/>
-            <leftPen lineWidth="0.5" lineColor="#000000"/>
-            <bottomPen lineWidth="0.5" lineColor="#000000"/>
-            <rightPen lineWidth="0.5" lineColor="#000000"/>
-        </box>
-    </style>
-    <style name="Table_CH" mode="Transparent" forecolor="#B89F7D" backcolor="#70A9C6">
-        <box>
-            <pen lineWidth="0.5" lineColor="#000000"/>
-            <topPen lineWidth="0.5" lineColor="#000000"/>
-            <leftPen lineWidth="0.5" lineColor="#000000"/>
-            <bottomPen lineWidth="0.5" lineColor="#000000"/>
-            <rightPen lineWidth="0.5" lineColor="#000000"/>
-        </box>
-    </style>
-    <style name="Table_TD" mode="Transparent" backcolor="#FFFFFF">
-        <box>
-            <pen lineWidth="0.5" lineColor="#000000"/>
-            <topPen lineWidth="0.5" lineColor="#000000"/>
-            <leftPen lineWidth="0.5" lineColor="#000000"/>
-            <bottomPen lineWidth="0.5" lineColor="#000000"/>
-            <rightPen lineWidth="0.5" lineColor="#000000"/>
-        </box>
-    </style>
+    <style name="CardLabel" forecolor="#666666" fontName="SansSerif" fontSize="10" isBold="true"/>
+    <style name="CardValue" forecolor="#333333" fontName="SansSerif" fontSize="16" isBold="true"/>
+    <style name="FooterText" forecolor="#999999" fontName="SansSerif" fontSize="9"/>
 
-    <subDataset name="tableDataset" uuid="2d563468-627c-4c61-b121-54c4517abf70">
-        <field name="orderId" class="java.lang.String">
-        </field>
-
-        <field name="userId" class="java.lang.Long">
-        </field>
-
-        <field name="cinemaHallId" class="java.lang.Long">
-        </field>
-
-        <field name="orderStatus" class="com.example.backend.constant.OrderStatus">
-        </field>
-
-        <field name="paymentMethod" class="com.example.backend.constant.PaymentMethod">
-        </field>
-
-        <field name="paymentStatus" class="com.example.backend.constant.PaymentStatus">
-        </field>
-
-        <field name="totalAmount" class="java.math.BigDecimal">
-        </field>
-
-        <field name="createdAt" class="java.time.Instant">
-        </field>
+    <!-- SubDatasets -->
+    <subDataset name="dsPayment" uuid="1a2b3c4d-1234-5678-90ab-cdef12345678">
+        <field name="method" class="java.lang.String"/>
+        <field name="amount" class="java.lang.Long"/>
     </subDataset>
 
-    <parameter name="REPORT_DATA" class="java.util.List"/>
+    <subDataset name="dsTopMovie" uuid="2b3c4d5e-2345-6789-01cd-ef1234567890">
+        <field name="movieName" class="java.lang.String"/>
+        <field name="revenue" class="java.lang.Long"/>
+    </subDataset>
 
-    <queryString>
-        <![CDATA[]]>
-    </queryString>
+    <subDataset name="dsRevenue" uuid="3c4d5e6f-3456-7890-12ef-1234567890ab">
+        <field name="date" class="java.util.Date"/>
+        <field name="revenue" class="java.math.BigDecimal"/>
+    </subDataset>
+
+    <!-- Parameters -->
+    <parameter name="p_TotalRevenue" class="java.lang.Double"/>
+    <parameter name="p_TicketsSold" class="java.lang.Long"/>
+    <parameter name="p_ActiveTheaters" class="java.lang.Long"/>
+    <parameter name="p_SeatUtilization" class="java.lang.Double"/>
+
+    <parameter name="ds_TopMovies" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="ds_RevenueTrend" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="ds_PaymentDist" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+
+    <queryString><![CDATA[]]></queryString>
+
+    <!-- TITLE -->
     <title>
-        <band height="72">
+        <band height="100" splitType="Stretch">
             <frame>
-                <reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699"
-                               uuid="6321f5e3-86eb-444f-acc1-8daaaa0d6c60"/>
+                <reportElement mode="Opaque" x="-20" y="-20" width="595" height="110" backcolor="#003366" uuid="4a5b6c7d-8901-2345-6789-abcdef012345"/>
                 <staticText>
-                    <reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"
-                                   uuid="9e48917a-7b59-4ffd-baad-725f45563194"/>
-                    <textElement>
-                        <font size="34" isBold="true"/>
-                    </textElement>
-                    <text><![CDATA[Report]]></text>
+                    <reportElement style="TitleStyle" x="20" y="20" width="350" height="40" uuid="5b6c7d8e-9012-3456-7890-bcdef0123456"/>
+                    <text><![CDATA[CINEMA DASHBOARD]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF"
-                                   uuid="0a399baa-bad3-4b1a-9fe3-bb1c563e6a27"/>
+                    <reportElement style="SubtitleStyle" x="20" y="60" width="350" height="20" uuid="6c7d8e9f-0123-4567-8901-cdef01234567"/>
+                    <text><![CDATA[Management Report & Analytics]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="400" y="25" width="175" height="15" forecolor="#DEDEDE" uuid="7d8e9f0a-1234-5678-9012-def012345678"/>
                     <textElement textAlignment="Right">
-                        <font size="14" isBold="false"/>
+                        <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Reservation Report]]></text>
+                    <text><![CDATA[Generated on:]]></text>
                 </staticText>
+                <textField pattern="dd/MM/yyyy, HH:mm">
+                    <reportElement x="400" y="40" width="175" height="20" forecolor="#FFFFFF" uuid="8e9f0a1b-2345-6789-0123-ef0123456789"/>
+                    <textElement textAlignment="Right">
+                        <font size="12" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+                </textField>
             </frame>
         </band>
     </title>
-    <pageHeader>
-        <band height="13"/>
-    </pageHeader>
+
+    <!-- PAGE FOOTER -->
     <pageFooter>
-        <band height="17">
-            <textField>
-                <reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6"
-                               uuid="fed27553-a6c4-4a8a-9056-2f6f2589a3e5"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-            </textField>
-            <textField evaluationTime="Report">
-                <reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6"
-                               uuid="9f5ad531-d413-49c9-874b-8b99e8150fa6"/>
-                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-            </textField>
-            <textField pattern="EEEEE dd MMMMM yyyy">
-                <reportElement x="0" y="4" width="100" height="13" uuid="fc593335-5cbf-4caf-97b3-ff897c676bde"/>
-                <textFieldExpression>
-                    <![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date())]]></textFieldExpression>
-            </textField>
+        <band height="30">
+            <frame>
+                <reportElement mode="Opaque" x="-20" y="0" width="595" height="30" backcolor="#F0F0F0" uuid="9f0a1b2c-3456-7890-1234-f01234567890"/>
+                <textField>
+                    <reportElement style="FooterText" x="20" y="8" width="200" height="15" uuid="0a1b2c3d-4567-8901-2345-0123456789ab"/>
+                    <textFieldExpression><![CDATA["© 2025 Cinema Management System"]]></textFieldExpression>
+                </textField>
+                <textField evaluationTime="Report">
+                    <reportElement style="FooterText" x="480" y="8" width="100" height="15" uuid="1b2c3d4e-5678-9012-3456-123456789abc"/>
+                    <textElement textAlignment="Right"/>
+                    <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+                </textField>
+            </frame>
         </band>
     </pageFooter>
+
+    <!-- SUMMARY -->
     <summary>
-        <band height="60" splitType="Stretch">
-            <property name="local_mesure_unitheight" value="pixel"/>
-            <componentElement>
-                <reportElement x="0" y="0" width="555" height="60" uuid="328414a7-66b1-4127-9dcc-a9b07eaabb60">
-                    <property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
-                    <property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
-                    <property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
-                </reportElement>
-                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
-                          xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-                    <datasetRun subDataset="tableDataset" uuid="141c70a8-6ef3-498e-9018-642aa2241e92">
-                        <dataSourceExpression>
-                            <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{REPORT_DATA})]]></dataSourceExpression>
-                    </datasetRun>
-                    <jr:column width="170" uuid="a14c425c-22d2-4778-a497-36ab45c26925">
-                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-                        <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
-                        <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-                            <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="170" height="30"
-                                               forecolor="#006699" backcolor="#E6E6E6"
-                                               uuid="96f95f89-e13b-4957-9df8-204c15f38860"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font size="14" isBold="true"/>
-                                </textElement>
-                                <text><![CDATA[ID]]></text>
-                            </staticText>
-                        </jr:columnHeader>
-                        <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
-                        <jr:detailCell style="Table_TD" height="30">
-                            <textField>
-                                <reportElement key="" x="0" y="0" width="170" height="30"
-                                               uuid="94ef6b3f-2a85-403d-8e02-a4e54f5824a1"/>
-                                <box leftPadding="2"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="DejaVu Sans" size="14"/>
-                                </textElement>
-                                <textFieldExpression><![CDATA[$F{orderId}]]></textFieldExpression>
-                            </textField>
-                        </jr:detailCell>
-                    </jr:column>
-                    <jr:column width="110" uuid="6fc77de8-8048-46e4-8c89-f9121a36a16f">
-                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-                        <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
-                        <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-                            <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="110" height="30"
-                                               forecolor="#006699" backcolor="#E6E6E6"
-                                               uuid="7ca719cb-ab95-45eb-a445-114db351e467"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font size="14" isBold="true"/>
-                                </textElement>
-                                <text><![CDATA[Status]]></text>
-                            </staticText>
-                        </jr:columnHeader>
-                        <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
-                        <jr:detailCell style="Table_TD" height="30">
-                            <textField>
-                                <reportElement key="" x="0" y="0" width="110" height="30"
-                                               uuid="3d3dbb84-419e-4136-914c-f72978393011"/>
-                                <box leftPadding="2"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="DejaVu Sans" size="14"/>
-                                </textElement>
-                                <textFieldExpression><![CDATA[$F{orderStatus}]]></textFieldExpression>
-                            </textField>
-                        </jr:detailCell>
-                    </jr:column>
-                    <jr:column width="100" uuid="d5f478dc-4f8c-4afe-8580-6980ab2e8451">
-                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-                        <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
-                        <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-                            <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="100" height="30"
-                                               forecolor="#006699" backcolor="#E6E6E6"
-                                               uuid="c1b4f625-15df-488a-bb89-75e46af48c96"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font size="14" isBold="true"/>
-                                </textElement>
-                                <text><![CDATA[Payment]]></text>
-                            </staticText>
-                        </jr:columnHeader>
-                        <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
-                        <jr:detailCell style="Table_TD" height="30">
-                            <textField>
-                                <reportElement key="" x="0" y="0" width="100" height="30"
-                                               uuid="705b7a7b-771c-4784-a2a1-58f56b4288fb"/>
-                                <box leftPadding="2"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="DejaVu Sans" size="14"/>
-                                </textElement>
-                                <textFieldExpression><![CDATA[$F{paymentStatus}]]></textFieldExpression>
-                            </textField>
-                        </jr:detailCell>
-                    </jr:column>
-                    <jr:column width="70" uuid="d29d2974-3c21-4168-823e-e91a545e74a9">
-                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-                        <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
-                        <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-                            <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="70" height="30" forecolor="#006699"
-                                               backcolor="#E6E6E6" uuid="a24c0a7b-ea77-4fdb-872c-31b361279d92"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font size="14" isBold="true"/>
-                                </textElement>
-                                <text><![CDATA[Total]]></text>
-                            </staticText>
-                        </jr:columnHeader>
-                        <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
-                        <jr:detailCell style="Table_TD" height="30">
-                            <textField>
-                                <reportElement key="" x="0" y="0" width="70" height="30"
-                                               uuid="51ee4fa9-e5a3-4f43-a6f0-b783c538d17f"/>
-                                <box leftPadding="2"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="DejaVu Sans" size="14"/>
-                                </textElement>
-                                <textFieldExpression>
-                                    <![CDATA[new java.text.DecimalFormat("#,###").format(new java.math.BigDecimal($F{totalAmount}.stripTrailingZeros().toPlainString()))]]></textFieldExpression>
-                            </textField>
-                        </jr:detailCell>
-                    </jr:column>
-                    <jr:column width="105" uuid="cb2de39e-d7a8-42f8-b256-7087f9b63a6b">
-                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-                        <jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
-                        <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-                            <staticText>
-                                <reportElement mode="Transparent" x="0" y="0" width="105" height="30"
-                                               forecolor="#006699" backcolor="#E6E6E6"
-                                               uuid="166385ec-f1f8-44b4-8ffa-691157b78627"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font size="14" isBold="true"/>
-                                </textElement>
-                                <text><![CDATA[Created At]]></text>
-                            </staticText>
-                        </jr:columnHeader>
-                        <jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
-                        <jr:detailCell style="Table_TD" height="30">
-                            <textField>
-                                <reportElement key="" x="0" y="0" width="105" height="30"
-                                               uuid="10a16c33-fe17-4f08-9077-5da66ae9a416"/>
-                                <box leftPadding="2"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="DejaVu Sans" size="14"/>
-                                </textElement>
-                                <textFieldExpression>
-                                    <![CDATA[
-                                $F{createdAt}.atZone(java.time.ZoneId.systemDefault())
-                                .toLocalDate()
-                                .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                    ]]>
-                                </textFieldExpression>
-                            </textField>
-                        </jr:detailCell>
-                    </jr:column>
-                </jr:table>
-            </componentElement>
+        <band height="550" splitType="Stretch">
+
+            <!-- SECTION 1: METRICS -->
+            <staticText>
+                <reportElement style="SectionHeader" x="0" y="10" width="555" height="25" uuid="2c3d4e5f-6789-0123-4567-23456789abcd"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[OVERVIEW METRICS]]></text>
+            </staticText>
+
+            <!-- Card 1: REVENUE -->
+            <frame>
+                <reportElement mode="Opaque" x="0" y="45" width="130" height="70" backcolor="#FFFFFF" uuid="3d4e5f6a-7890-1234-5678-3456789abcde"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#DDDDDD"/>
+                    <topPen lineWidth="3.0" lineColor="#2ECC71"/>
+                    <bottomPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                    <rightPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                </box>
+                <staticText>
+                    <reportElement style="CardLabel" x="10" y="10" width="110" height="20" forecolor="#27AE60" uuid="4e5f6a7b-8901-2345-6789-456789abcdef"/>
+                    <text><![CDATA[TOTAL REVENUE]]></text>
+                </staticText>
+                <textField pattern="#,##0 'VNĐ'" textAdjust="ScaleFont">
+                    <reportElement style="CardValue" x="10" y="30" width="110" height="30" uuid="5f6a7b8c-9012-3456-7890-56789abcdef0"/>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{p_TotalRevenue}]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- Card 2: Tickets -->
+            <frame>
+                <reportElement mode="Opaque" x="142" y="45" width="130" height="70" backcolor="#FFFFFF" uuid="6a7b8c9d-0123-4567-8901-6789abcdef01"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#DDDDDD"/>
+                    <topPen lineWidth="3.0" lineColor="#3498DB"/>
+                    <bottomPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                    <rightPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                </box>
+                <staticText>
+                    <reportElement style="CardLabel" x="10" y="10" width="110" height="20" forecolor="#2980B9" uuid="7b8c9d0e-1234-5678-9012-789abcdef012"/>
+                    <text><![CDATA[TICKETS SOLD]]></text>
+                </staticText>
+                <textField pattern="#,##0">
+                    <reportElement style="CardValue" x="10" y="30" width="110" height="30" uuid="8c9d0e1f-2345-6789-0123-89abcdef0123"/>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{p_TicketsSold}]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- Card 3 -->
+            <frame>
+                <reportElement mode="Opaque" x="284" y="45" width="130" height="70" backcolor="#FFFFFF" uuid="9d0e1f2a-3456-7890-1234-9abcdef01234"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#DDDDDD"/>
+                    <topPen lineWidth="3.0" lineColor="#F39C12"/>
+                    <bottomPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                    <rightPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                </box>
+                <staticText>
+                    <reportElement style="CardLabel" x="10" y="10" width="110" height="20" forecolor="#D35400" uuid="0e1f2a3b-4567-8901-2345-abcdef012345"/>
+                    <text><![CDATA[ACTIVE THEATERS]]></text>
+                </staticText>
+                <textField>
+                    <reportElement style="CardValue" x="10" y="30" width="110" height="30" uuid="1f2a3b4c-5678-9012-3456-bcdef0123456"/>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{p_ActiveTheaters}]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- Card 4 -->
+            <frame>
+                <reportElement mode="Opaque" x="425" y="45" width="130" height="70" backcolor="#FFFFFF" uuid="2a3b4c5d-6789-0123-4567-cdef01234567"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#DDDDDD"/>
+                    <topPen lineWidth="3.0" lineColor="#9B59B6"/>
+                    <bottomPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                    <rightPen lineWidth="2.0" lineColor="#EEEEEE"/>
+                </box>
+                <staticText>
+                    <reportElement style="CardLabel" x="10" y="10" width="110" height="20" forecolor="#8E44AD" uuid="3b4c5d6e-7890-1234-5678-def012345678"/>
+                    <text><![CDATA[OCCUPANCY RATE]]></text>
+                </staticText>
+                <textField pattern="#,##0.0 %">
+                    <reportElement style="CardValue" x="10" y="30" width="110" height="30" uuid="4c5d6e7f-8901-2345-6789-ef0123456789"/>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{p_SeatUtilization} / 100.0]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- SECTION 2: SALES -->
+            <staticText>
+                <reportElement style="SectionHeader" x="0" y="130" width="555" height="25" uuid="5d6e7f8a-9012-3456-7890-f01234567890"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[SALES PERFORMANCE]]></text>
+            </staticText>
+
+            <!-- Pie Chart -->
+            <frame>
+                <reportElement x="0" y="165" width="220" height="180" uuid="6e7f8a9b-0123-4567-8901-0123456789ab"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </box>
+                <staticText>
+                    <reportElement x="10" y="5" width="200" height="15" forecolor="#003366" uuid="7f8a9b0c-1234-5678-9012-123456789abc"/>
+                    <textElement>
+                        <font size="10" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Payment Methods]]></text>
+                </staticText>
+                <pieChart>
+                    <chart evaluationTime="Report">
+                        <reportElement x="5" y="25" width="210" height="150" uuid="8a9b0c1d-2345-6789-0123-23456789abcd"/>
+                        <chartTitle/>
+                        <chartSubtitle/>
+                        <chartLegend position="Bottom"/>
+                    </chart>
+                    <pieDataset>
+                        <dataset>
+                            <datasetRun subDataset="dsPayment" uuid="9b0c1d2e-3456-7890-1234-3456789abcde">
+                                <dataSourceExpression><![CDATA[$P{ds_PaymentDist}]]></dataSourceExpression>
+                            </datasetRun>
+                        </dataset>
+                        <keyExpression><![CDATA[$F{method}]]></keyExpression>
+                        <valueExpression><![CDATA[$F{amount}]]></valueExpression>
+                        <labelExpression><![CDATA[$F{method}]]></labelExpression>
+                    </pieDataset>
+                    <piePlot isCircular="true">
+                        <plot/>
+                        <itemLabel color="#000000" backgroundColor="#FFFFFF">
+                            <font size="8"/>
+                        </itemLabel>
+                    </piePlot>
+                </pieChart>
+            </frame>
+
+            <!-- Bar Chart -->
+            <frame>
+                <reportElement x="230" y="165" width="325" height="180" uuid="0c1d2e3f-4567-8901-2345-456789abcdef"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </box>
+                <staticText>
+                    <reportElement x="10" y="5" width="300" height="15" forecolor="#003366" uuid="1d2e3f4a-5678-9012-3456-56789abcdef0"/>
+                    <textElement>
+                        <font size="10" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Top 5 Movies by Revenue ]]></text>
+                </staticText>
+
+                <barChart>
+                    <chart evaluationTime="Report">
+                        <reportElement x="5" y="25" width="315" height="150" uuid="2e3f4a5b-6789-0123-4567-6789abcdef01"/>
+                        <chartTitle/>
+                        <chartSubtitle/>
+                        <chartLegend/>
+                    </chart>
+                    <categoryDataset>
+                        <dataset>
+                            <datasetRun subDataset="dsTopMovie" uuid="3f4a5b6c-7890-1234-5678-789abcdef012">
+                                <dataSourceExpression><![CDATA[$P{ds_TopMovies}]]></dataSourceExpression>
+                            </datasetRun>
+                        </dataset>
+                        <categorySeries>
+                            <seriesExpression><![CDATA["Revenue"]]></seriesExpression>
+                            <categoryExpression><![CDATA[$F{movieName}]]></categoryExpression>
+                            <valueExpression><![CDATA[$F{revenue}]]></valueExpression>
+                        </categorySeries>
+                    </categoryDataset>
+
+                    <barPlot>
+                        <plot orientation="Horizontal">
+                            <seriesColor seriesOrder="0" color="#3498DB"/>
+                        </plot>
+                        <itemLabel/>
+                        <categoryAxisFormat>
+                            <axisFormat tickLabelColor="#000000">
+                                <tickLabelFont>
+                                    <font size="8"/>
+                                </tickLabelFont>
+                            </axisFormat>
+                        </categoryAxisFormat>
+                        <valueAxisFormat>
+                            <axisFormat tickLabelColor="#000000">
+                                <tickLabelFont>
+                                    <font size="8"/>
+                                </tickLabelFont>
+                            </axisFormat>
+                        </valueAxisFormat>
+                    </barPlot>
+                </barChart>
+            </frame>
+
+            <!-- TREND -->
+            <staticText>
+                <reportElement style="SectionHeader" x="0" y="360" width="555" height="25" uuid="4a5b6c7d-8901-2345-6789-89abcdef0123"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[REVENUE TREND]]></text>
+            </staticText>
+
+            <frame>
+                <reportElement x="0" y="395" width="555" height="150" uuid="5b6c7d8e-9012-3456-7890-9abcdef01234"/>
+                <box>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </box>
+                <staticText>
+                    <reportElement x="10" y="5" width="300" height="15" forecolor="#003366" uuid="f0a1b2c3-d4e5-f6a7-b8c9-0d1e2f3a4b5c"/>
+                    <textElement><font size="10" isBold="true"/></textElement>
+                    <text><![CDATA[Daily Revenue Over Time]]></text>
+                </staticText>
+                <timeSeriesChart>
+                    <chart evaluationTime="Report">
+                        <reportElement x="5" y="20" width="545" height="120" uuid="6c7d8e9f-0123-4567-8901-abcdef012345"/>
+                        <chartTitle/>
+                        <chartSubtitle/>
+                        <chartLegend/>
+                    </chart>
+                    <timeSeriesDataset>
+                        <dataset>
+                            <datasetRun subDataset="dsRevenue" uuid="7d8e9f0a-1234-5678-9012-bcdef0123456">
+                                <dataSourceExpression><![CDATA[$P{ds_RevenueTrend}]]></dataSourceExpression>
+                            </datasetRun>
+                        </dataset>
+                        <timeSeries>
+                            <seriesExpression><![CDATA["Daily Revenue"]]></seriesExpression>
+                            <timePeriodExpression><![CDATA[$F{date}]]></timePeriodExpression>
+                            <valueExpression><![CDATA[$F{revenue}]]></valueExpression>
+                        </timeSeries>
+                    </timeSeriesDataset>
+                    <timeSeriesPlot>
+                        <plot>
+                            <seriesColor seriesOrder="0" color="#E74C3C"/>
+                        </plot>
+                        <timeAxisFormat>
+                            <axisFormat tickLabelColor="#000000">
+                                <tickLabelFont>
+                                    <font size="8"/>
+                                </tickLabelFont>
+                            </axisFormat>
+                        </timeAxisFormat>
+                        <valueAxisFormat>
+                            <axisFormat tickLabelColor="#000000">
+                                <tickLabelFont>
+                                    <font size="8"/>
+                                </tickLabelFont>
+                            </axisFormat>
+                        </valueAxisFormat>
+                    </timeSeriesPlot>
+                </timeSeriesChart>
+            </frame>
+
         </band>
     </summary>
+
 </jasperReport>
