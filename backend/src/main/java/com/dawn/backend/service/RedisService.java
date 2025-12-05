@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -93,7 +92,7 @@ public class RedisService {
             log.info("Successfully publish event {} to channel {}", event.get("event"), channel);
         } catch (Exception ex) {
             log.error("Failed to serialize event", ex);
-            throw new RedisStorageException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store seat information. Please try again");
+            throw new RedisStorageException("Failed to store seat information. Please try again");
         }
     }
 

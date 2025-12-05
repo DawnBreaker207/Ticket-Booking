@@ -3,6 +3,7 @@ package com.dawn.backend.service.Impl;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.exception.wrapper.RefreshTokenExpiredException;
 import com.dawn.backend.exception.wrapper.RefreshTokenNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.model.RefreshToken;
 import com.dawn.backend.model.User;
 import com.dawn.backend.repository.RefreshTokenRepository;
@@ -10,7 +11,6 @@ import com.dawn.backend.repository.UserRepository;
 import com.dawn.backend.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken createRefreshToken(Long userId) {
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(Message.Exception.USER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
 
         refreshTokenRepository.deleteByUser(user);
 

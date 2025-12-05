@@ -10,10 +10,8 @@ public class RefreshTokenNotFoundException extends ApiException {
     private static final long serialVersionUID = 1L;
 
     public RefreshTokenNotFoundException(String message) {
-        super(message);
+        super(HttpStatus.UNAUTHORIZED, message);
     }
 
-    public RefreshTokenNotFoundException(HttpStatus status, String message) {
-        super(status, message);
-    }
+
 }

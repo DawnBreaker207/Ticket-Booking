@@ -6,7 +6,8 @@ import com.dawn.backend.dto.request.LoginRequest;
 import com.dawn.backend.dto.request.RegisterRequest;
 import com.dawn.backend.dto.response.JwtResponse;
 import com.dawn.backend.dto.response.TokenRefreshResponse;
-import com.dawn.backend.exception.wrapper.*;
+import com.dawn.backend.exception.wrapper.ResourceAlreadyExistedException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.model.RefreshToken;
 import com.dawn.backend.model.Role;
 import com.dawn.backend.model.User;
@@ -52,13 +53,13 @@ public class AuthServiceImpl implements AuthService {
         userRepository
                 .findByEmail(newUser.getEmail())
                 .ifPresent(u -> {
-                    throw new UserEmailExistedException(Message.Exception.EMAIL_EXISTED);
+                    throw new ResourceAlreadyExistedException(Message.Exception.EMAIL_EXISTED);
                 });
 
         userRepository
                 .findByUsername(newUser.getUsername())
                 .ifPresent((u) -> {
-                    throw new UsernameExistedException(Message.Exception.USERNAME_EXISTED);
+                    throw new ResourceAlreadyExistedException(Message.Exception.USERNAME_EXISTED);
                 });
 
         User user = User
@@ -70,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
         Role userRole = roleRepository
                 .findByName(URole.USER)
-                .orElseThrow(() -> new IllegalArgumentException(Message.Exception.ROLE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
         user.setRoles(Set.of(userRole));
 
@@ -89,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
                 ? userRepository
                 .findByEmail(identifier)
                 .orElseThrow(() ->
-                        new UserEmailNotFoundException(Message.Exception.EMAIL_NOT_FOUND))
+                        new ResourceNotFoundException(Message.Exception.EMAIL_NOT_FOUND))
                 .getEmail()
                 : identifier;
         Authentication authentication = authenticationManager
@@ -114,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public TokenRefreshResponse refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
-            throw new RefreshTokenExpiredException(Message.Exception.REFRESH_TOKEN_EXPIRED);
+            throw new ResourceNotFoundException(Message.Exception.REFRESH_TOKEN_EXPIRED);
         }
         return refreshTokenService.findByToken(refreshToken)
                 .map(refreshTokenService::verifyExpiration)
@@ -126,6 +127,6 @@ public class AuthServiceImpl implements AuthService {
                             .accessToken(jwtCookie)
                             .build();
                 })
-                .orElseThrow(() -> new RefreshTokenNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.REFRESH_TOKEN_NOT_FOUND));
     }
 }

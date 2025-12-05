@@ -2,7 +2,7 @@ package com.dawn.backend.service;
 
 import com.dawn.backend.dto.request.TheaterRequest;
 import com.dawn.backend.dto.response.TheaterResponse;
-import com.dawn.backend.exception.wrapper.TheaterNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.helper.TheaterMappingHelper;
 import com.dawn.backend.model.Theater;
 import com.dawn.backend.repository.TheaterRepository;
@@ -133,15 +133,15 @@ public class TheaterServiceTests {
     }
 
     @Test
-    void findOne_GivenNullId_WhenNotFound_ThenThrowTheaterNotFoundException() {
+    void findOne_GivenNullId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(theaterRepository
                 .findById(null))
                 .thenReturn(Optional.of(theater));
 
         // Act & Assert
-        TheaterNotFoundException exception = assertThrows(
-                TheaterNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> theaterService.findOne(null));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -149,15 +149,15 @@ public class TheaterServiceTests {
     }
 
     @Test
-    void findOne_GivenInvalidId_WhenNotFound_ThenThrowTheaterNotFoundException() {
+    void findOne_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(theaterRepository
                 .findById(999L))
                 .thenReturn(Optional.of(theater));
 
         // Act & Assert
-        TheaterNotFoundException exception = assertThrows(
-                TheaterNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> theaterService.findOne(999L));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -186,7 +186,7 @@ public class TheaterServiceTests {
     }
 
     @Test
-    void findByLocation_GivenInvalidLocation_WhenNotFound_ThenThrowTheaterNotFoundException() {
+    void findByLocation_GivenInvalidLocation_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(theaterRepository
                 .findByLocationContainingIgnoreCase("Unknown", Pageable.unpaged()))
@@ -244,15 +244,15 @@ public class TheaterServiceTests {
     }
 
     @Test
-    void update_GivenInvalidId_WhenNotFound_ThenThrowTheaterNotFoundException() {
+    void update_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(theaterRepository
                 .findById(999L))
                 .thenReturn(Optional.empty());
 
         // Act & Assert
-        TheaterNotFoundException exception = assertThrows(
-                TheaterNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> theaterService.update(999L, theaterRequest));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -281,15 +281,15 @@ public class TheaterServiceTests {
     }
 
     @Test
-    void remove_GivenInvalidId_WhenNotFound_ThenThrowTheaterNotFoundException() {
+    void remove_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(theaterRepository
                 .findById(999L))
                 .thenReturn(Optional.empty());
 
         // Act & Assert
-        TheaterNotFoundException exception = assertThrows(
-                TheaterNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> theaterService.remove(999L));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(theaterRepository, times(1))

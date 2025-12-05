@@ -2,7 +2,7 @@ package com.dawn.backend.service;
 
 import com.dawn.backend.dto.request.UserRequest;
 import com.dawn.backend.dto.response.UserResponse;
-import com.dawn.backend.exception.wrapper.UserNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.model.User;
 import com.dawn.backend.repository.UserRepository;
 import com.dawn.backend.service.Impl.UserServiceImpl;
@@ -101,7 +101,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void findOne_GivenNullId_WhenNotFound_ThenThrowUserNotFoundException() {
+    public void findOne_GivenNullId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Act & Assert
         assertThrows(
                 Exception.class,
@@ -109,7 +109,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void findOne_GivenInvalidId_WhenNotFound_ThenThrowUserNotFoundException() {
+    public void findOne_GivenInvalidId_WhenNotFound_ThenThrowResouceNotFoundException() {
         // Arrange
         when(userRepository
                 .findById(1L))
@@ -117,7 +117,7 @@ public class UserServiceTests {
 
         // Act & Assert
         assertThrows(
-                UserNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> userService.findOne(1L));
         verify(userRepository, times(1))
                 .findById(1L);
@@ -143,7 +143,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void findByEmail_GivenInvalidEmail_WhenNotFound_ThenThrowUserNotFoundException() {
+    public void findByEmail_GivenInvalidEmail_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(userRepository
                 .findByEmail("test@gmail.com"))
@@ -151,7 +151,7 @@ public class UserServiceTests {
 
         // Act & Assert
         assertThrows(
-                UserNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> userService.findByEmail("test@gmail.com"));
         verify(userRepository, times(1))
                 .findByEmail("test@gmail.com");
@@ -188,7 +188,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void updateUser_GivenInvalidId_WhenNotFound_ThenThrowUserNotFoundException() {
+    public void updateUser_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         //  Arrange
         UserRequest updatedDetails = UserRequest
                 .builder()
@@ -202,7 +202,7 @@ public class UserServiceTests {
 
         // Act & Assert
         assertThrows(
-                UserNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> userService.update(1L, updatedDetails));
         verify(userRepository, times(1))
                 .findById(1L);

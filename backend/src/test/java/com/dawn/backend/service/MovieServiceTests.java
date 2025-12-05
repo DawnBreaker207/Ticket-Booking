@@ -2,8 +2,8 @@ package com.dawn.backend.service;
 
 import com.dawn.backend.dto.request.MovieRequest;
 import com.dawn.backend.dto.response.MovieResponse;
-import com.dawn.backend.exception.wrapper.MovieExistedException;
-import com.dawn.backend.exception.wrapper.MovieNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceAlreadyExistedException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.helper.MovieMappingHelper;
 import com.dawn.backend.model.Genre;
 import com.dawn.backend.model.Movie;
@@ -168,15 +168,15 @@ public class MovieServiceTests {
     }
 
     @Test
-    void findOne_GivenNullId_WhenNotFound_ThenThrowMovieNotFoundException() {
+    void findOne_GivenNullId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(movieRepository
                 .findById(null))
                 .thenReturn(Optional.of(movie));
 
         // Act & Assert
-        MovieNotFoundException exception = assertThrows(
-                MovieNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> movieService.findOne(null));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -185,15 +185,15 @@ public class MovieServiceTests {
     }
 
     @Test
-    void findOne_GivenInvalidId_WhenNotFound_ThenThrowMovieNotFoundException() {
+    void findOne_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(movieRepository
                 .findById(999L))
                 .thenReturn(Optional.of(movie));
 
         // Act & Assert
-        MovieNotFoundException exception = assertThrows(
-                MovieNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> movieService.findOne(999L));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -228,15 +228,15 @@ public class MovieServiceTests {
     }
 
     @Test
-    void findByMovieId_GivenInvalidId_WhenNotFound_ThenThrowMovieNotFoundException() {
+    void findByMovieId_GivenInvalidId_WhenNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(movieRepository
                 .findByFilmId("99999"))
                 .thenReturn(Optional.of(movie));
 
         // Act & Assert
-        MovieNotFoundException exception = assertThrows(
-                MovieNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> movieService.findByMovieId("99999"));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -299,7 +299,7 @@ public class MovieServiceTests {
     }
 
     @Test
-    void create_GivenDuplicatedFilmId_WhenExists_ThenThrowMovieExitedException() {
+    void create_GivenDuplicatedFilmId_WhenExists_ThenThrowResourceAlreadyExistedException() {
         // Arrange
         when(movieRepository
                 .findByFilmId("12345"))
@@ -307,7 +307,7 @@ public class MovieServiceTests {
 
         // Act & Assert
         assertThrows(
-                MovieExistedException.class,
+                ResourceAlreadyExistedException.class,
                 () -> movieService.create(movieRequest));
 
         verify(movieRepository, times(1))
@@ -372,7 +372,7 @@ public class MovieServiceTests {
     }
 
     @Test
-    void update_GivenInvalidId_WhenMovieNotFound_ThenThrowMovieNotFoundException() {
+    void update_GivenInvalidId_WhenMovieNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(movieRepository
                 .findById(1L))
@@ -380,7 +380,7 @@ public class MovieServiceTests {
 
         // Act & Assert
         assertThrows(
-                MovieNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> movieService.update(2L, movieRequest));
         verify(movieRepository, times(1))
                 .findById(2L);
@@ -409,7 +409,7 @@ public class MovieServiceTests {
     }
 
     @Test
-    void delete_GivenInvalidId_WhenMovieNotFound_ThenThrowMovieNotFoundException() {
+    void delete_GivenInvalidId_WhenMovieNotFound_ThenThrowResourceNotFoundException() {
         // Arrange
         when(movieRepository
                 .findById(1L))
@@ -417,7 +417,7 @@ public class MovieServiceTests {
 
         // Act & Assert
         assertThrows(
-                MovieNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> movieService.delete(1L));
         verify(movieRepository, times(1))
                 .findById(1L);

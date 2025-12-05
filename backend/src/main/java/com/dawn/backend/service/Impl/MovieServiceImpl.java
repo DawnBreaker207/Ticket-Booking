@@ -4,8 +4,8 @@ import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.dto.request.MovieRequest;
 import com.dawn.backend.dto.response.MovieResponse;
-import com.dawn.backend.exception.wrapper.MovieExistedException;
-import com.dawn.backend.exception.wrapper.MovieNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceAlreadyExistedException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.helper.MovieMappingHelper;
 import com.dawn.backend.model.Genre;
 import com.dawn.backend.model.Movie;
@@ -18,7 +18,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +50,7 @@ public class MovieServiceImpl implements MovieService {
         return movieRepository
                 .findById(id)
                 .map(MovieMappingHelper::map)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND));
     }
 
     @Override
@@ -60,7 +59,7 @@ public class MovieServiceImpl implements MovieService {
         return movieRepository
                 .findByFilmId(id)
                 .map(MovieMappingHelper::map)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class MovieServiceImpl implements MovieService {
         movieRepository
                 .findByFilmId(String.valueOf(m.getFilmId()))
                 .ifPresent((movie) -> {
-                    throw new MovieExistedException(Message.Exception.MOVIE_EXISTED);
+                    throw new ResourceAlreadyExistedException(Message.Exception.MOVIE_EXISTED);
                 });
         Set<Genre> genres = checkExistedGenre(m.getGenres());
         Movie movie = MovieMappingHelper.map(m);
@@ -91,7 +90,7 @@ public class MovieServiceImpl implements MovieService {
 
         Movie movie = movieRepository
                 .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND));
 
         Set<Genre> genres = checkExistedGenre(movieDetails.getGenres());
 
@@ -116,7 +115,7 @@ public class MovieServiceImpl implements MovieService {
     public void delete(Long id) {
         movieRepository
                 .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.MOVIE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND));
 
         movieRepository.deleteById(id);
     }

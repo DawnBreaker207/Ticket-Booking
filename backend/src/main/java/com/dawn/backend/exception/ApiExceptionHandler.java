@@ -1,8 +1,6 @@
 package com.dawn.backend.exception;
 
 import com.dawn.backend.exception.payload.ExceptionMessage;
-import com.dawn.backend.exception.wrapper.*;
-import com.dawn.backend.exception.wrapper.*;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @RestControllerAdvice
@@ -22,29 +19,10 @@ public class ApiExceptionHandler {
 
     private static final HttpStatus DEFAULT_STATUS = HttpStatus.BAD_REQUEST;
 
-    @ExceptionHandler(value = {
-            UserNotFoundException.class,
-            UserEmailExistedException.class,
-            UserEmailNotFoundException.class,
-            UserPasswordNotMatchException.class,
-            UsernameExistedException.class,
-            MovieNotFoundException.class,
-            TheaterNotFoundException.class,
-            ReservationNotFoundException.class,
-            MovieExistedException.class,
-            ForbiddenPermissionException.class,
-            ReservationExpiredException.class,
-            SeatUnavailableException.class,
-            RedisStorageException.class,
-            RefreshTokenNotFoundException.class,
-            RefreshTokenExpiredException.class,
-            RoleNotFoundException.class,
-    })
-    public <T extends RuntimeException> ResponseEntity<ExceptionMessage> handleApiRequestException(final T e) {
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ExceptionMessage> handleApiRequestException(ApiException e) {
         log.info("**ApiExceptionHandler controller, handler API request*\n");
-        final var status = (e instanceof ApiException ae && ae.getStatus() != null) ? ae.getStatus() : DEFAULT_STATUS;
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), status,
-                "#### " + e.getMessage() + "! ####"), status);
+        return buildResponse(e.getStatus(), e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,7 +33,7 @@ public class ApiExceptionHandler {
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .findFirst()
                 .orElse("Invalid request");
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
+        return buildResponse(DEFAULT_STATUS, errorMsg);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -65,14 +43,14 @@ public class ApiExceptionHandler {
                 .map(err -> err.getPropertyPath() + ": " + err.getMessage())
                 .findFirst()
                 .orElse("Invalid parameter");
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
+        return buildResponse(DEFAULT_STATUS, errorMsg);
     }
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<ExceptionMessage> handleIllegalException(final Exception ex) {
         log.warn("Invalid argument: {}", ex.getMessage());
         String errorMsg = ex.getMessage();
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), DEFAULT_STATUS, errorMsg), DEFAULT_STATUS);
+        return buildResponse(DEFAULT_STATUS, errorMsg);
     }
 
     //  403 Error
@@ -80,7 +58,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleAccessDeniedException(final Exception ex) {
         log.warn("Access denied: {}", ex.getMessage());
         String errorMsg = "You don't have permission to access this resource";
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.FORBIDDEN, errorMsg), HttpStatus.FORBIDDEN);
+        return buildResponse(HttpStatus.FORBIDDEN, errorMsg);
     }
 
     //  429 Error
@@ -88,7 +66,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleRateLimitException(final Exception ex) {
         log.warn("Too many request: {}", ex.getMessage());
         String errorMsg = "Rate limit exceeded, please try again later";
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.TOO_MANY_REQUESTS, errorMsg), HttpStatus.TOO_MANY_REQUESTS);
+        return buildResponse(HttpStatus.TOO_MANY_REQUESTS, errorMsg);
     }
 
     //  500 Error
@@ -96,7 +74,16 @@ public class ApiExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleAllException(final Exception ex) {
         log.warn("Unhandled exception: {}", ex.getMessage());
         String errorMsg = "Internal server error";
-        return new ResponseEntity<>(new ExceptionMessage(ZonedDateTime.now(ZoneId.systemDefault()), HttpStatus.INTERNAL_SERVER_ERROR, errorMsg), HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, errorMsg);
     }
 
+    private ResponseEntity<ExceptionMessage> buildResponse(HttpStatus status, String message) {
+        ExceptionMessage response = ExceptionMessage
+                .builder()
+                .timestamp(ZonedDateTime.now())
+                .status(status.value())
+                .message(message)
+                .build();
+        return new ResponseEntity<>(response, status);
+    }
 }

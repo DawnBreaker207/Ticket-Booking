@@ -10,10 +10,6 @@ public class RedisStorageException extends ApiException {
     private static final long serialVersionUID = 1L;
 
     public RedisStorageException(String message) {
-        super(message);
-    }
-
-    public RedisStorageException(HttpStatus status, String message) {
-        super(status, message);
+        super(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 }

@@ -4,16 +4,14 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 
 
-@RequiredArgsConstructor
-@Builder
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
 public class ApiException extends RuntimeException {
     private final HttpStatus status;
 
     public ApiException(String message) {
         super(message);
-        this.status = null;
+        this.status = HttpStatus.BAD_REQUEST;
     }
 
     public ApiException(HttpStatus status, String message) {

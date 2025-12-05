@@ -2,7 +2,7 @@ package com.dawn.backend.config;
 
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.URole;
-import com.dawn.backend.exception.wrapper.RoleNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.model.Role;
 import com.dawn.backend.model.User;
 import com.dawn.backend.repository.RoleRepository;
@@ -68,7 +68,7 @@ public class DataInitializer implements ApplicationRunner {
         Role role = roleRepository
                 .findByName(URole.ADMIN)
                 .orElseThrow(() ->
-                        new RoleNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+                        new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
         User user = User
                 .builder()
@@ -98,7 +98,7 @@ public class DataInitializer implements ApplicationRunner {
         Role role = roleRepository
                 .findByName(URole.USER)
                 .orElseThrow(() ->
-                        new RoleNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+                        new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
         User user = User
                 .builder()

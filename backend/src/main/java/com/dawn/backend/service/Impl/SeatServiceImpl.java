@@ -3,8 +3,7 @@ package com.dawn.backend.service.Impl;
 import com.dawn.backend.constant.Message;
 import com.dawn.backend.constant.SeatStatus;
 import com.dawn.backend.dto.response.SeatResponse;
-import com.dawn.backend.exception.wrapper.ShowtimeNotFoundException;
-import com.dawn.backend.exception.wrapper.TheaterNotFoundException;
+import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
 import com.dawn.backend.helper.SeatMappingHelper;
 import com.dawn.backend.model.Seat;
 import com.dawn.backend.model.Showtime;
@@ -32,7 +31,7 @@ public class SeatServiceImpl implements SeatService {
         log.info("Fetching seats for showtime id: {}", showtimeId);
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new ShowtimeNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
 
         log.info("Found showtime: {} for movie: {} at theater: {}",
                 showtimeId,
@@ -64,7 +63,7 @@ public class SeatServiceImpl implements SeatService {
 
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new TheaterNotFoundException(Message.Exception.THEATER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.THEATER_NOT_FOUND));
 
         List<Seat> allSeats = seatRepository.findByShowtime(showtime);
         if (allSeats.isEmpty()) {

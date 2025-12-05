@@ -11,10 +11,6 @@ public class ReservationExpiredException extends ApiException {
 
 
     public ReservationExpiredException(String message) {
-        super(message);
-    }
-
-    public ReservationExpiredException(HttpStatus status, String message) {
-        super(status, message);
+        super(HttpStatus.BAD_REQUEST, message);
     }
 }

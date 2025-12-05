@@ -10,10 +10,6 @@ public class SeatUnavailableException extends ApiException {
     private static final long serialVersionUID = 1L;
 
     public SeatUnavailableException(String message) {
-        super(message);
-    }
-
-    public SeatUnavailableException(HttpStatus status, String message) {
-        super(status, message);
+        super(HttpStatus.CONFLICT, message);
     }
 }

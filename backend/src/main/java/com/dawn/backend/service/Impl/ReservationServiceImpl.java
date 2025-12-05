@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +98,7 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository
                 .findById(id)
                 .map(ReservationMappingHelper::map)
-                .orElseThrow(() -> new ReservationNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));
     }
 
     @Override
@@ -200,11 +199,11 @@ public class ReservationServiceImpl implements ReservationService {
         //        Create reservation to save
         Showtime showtime = showtimeRepository
                 .findById(request.getShowtimeId())
-                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Showtime not found with id : " + request.getShowtimeId()));
 
         User user = userRepository
                 .findById(request.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User now found with id :" + request.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User now found with id :" + request.getUserId()));
 
         List<Seat> seatEntities = loadSeatFromDatabase(seatIds, reservationId);
 
@@ -267,7 +266,7 @@ public class ReservationServiceImpl implements ReservationService {
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
         Reservation reservationHold = getFromRedis(reservationId);
         if (!reservationHold.getUser().getId().equals(userId)) {
-            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission to confirm this reservation");
+            throw new PermissionDeniedException("You don't have permission to confirm this reservation");
         }
 
         //      Load seats from DB
@@ -280,10 +279,10 @@ public class ReservationServiceImpl implements ReservationService {
         //        Create reservation to save
         Showtime showtime = showtimeRepository
                 .findById(reservationHold.getShowtime().getId())
-                .orElseThrow(() -> new ShowtimeNotFoundException("Showtime not found with id : " + reservationHold.getShowtime().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Showtime not found with id : " + reservationHold.getShowtime().getId()));
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User now found with id :" + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User now found with id :" + userId));
 
         BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
         log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
@@ -374,7 +373,7 @@ public class ReservationServiceImpl implements ReservationService {
                     .stream()
                     .map(f -> f.seatNumber + " (hold by " + f.ownerReservationId + ")")
                     .collect(Collectors.joining((", ")));
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, "Cannot hold seats. The following seats are currently hold by other users: " + failedSeatMessage);
+            throw new SeatUnavailableException("Cannot hold seats. The following seats are currently hold by other users: " + failedSeatMessage);
         }
         return successfulSeatIds;
     }
@@ -413,7 +412,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
         if (!bookedSeats.isEmpty()) {
             String bookedSeatNumbers = String.join(", ", bookedSeats);
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, Message.Exception.SEAT_UNAVAILABLE + " " + bookedSeatNumbers);
+            throw new SeatUnavailableException(Message.Exception.SEAT_UNAVAILABLE + " " + bookedSeatNumbers);
         }
 
     }
@@ -426,7 +425,7 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         if (!unavailableSeats.isEmpty()) {
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, Message.Exception.SEAT_UNAVAILABLE + " " + String.join(", ", unavailableSeats));
+            throw new SeatUnavailableException(Message.Exception.SEAT_UNAVAILABLE + " " + String.join(", ", unavailableSeats));
         }
 
     }
@@ -435,7 +434,7 @@ public class ReservationServiceImpl implements ReservationService {
     private Reservation getFromRedis(String reservationId) {
         Map<Object, Object> data = redisService.getReservationData(reservationId);
         if (data == null || data.isEmpty()) {
-            throw new ReservationExpiredException(HttpStatus.NOT_FOUND, Message.Exception.RESERVATION_EXPIRED);
+            throw new ReservationExpiredException(Message.Exception.RESERVATION_EXPIRED);
         }
         Reservation dto = new Reservation();
         dto.setId(reservationId);
@@ -443,13 +442,13 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = safeParseLong((String) data.get("userId"), "userId");
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(Message.Exception.USER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
         dto.setUser(user);
 
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new ShowtimeNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
         dto.setShowtime(showtime);
         try {
             String seatJson = (String) data.get("seats");
@@ -463,7 +462,7 @@ public class ReservationServiceImpl implements ReservationService {
             }
         } catch (JsonProcessingException ex) {
             log.error("Error parsing seat IDs from Redis", ex);
-            throw new RedisStorageException(HttpStatus.NOT_FOUND, "Info in redis not exists or error when getting that");
+            throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
         return dto;
     }
@@ -490,27 +489,27 @@ public class ReservationServiceImpl implements ReservationService {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
             log.error("Invalid {} format in Redis: {}", fieldName, value);
-            throw new RedisStorageException(HttpStatus.BAD_REQUEST, "Invalid " + fieldName + " format in Redis");
+            throw new RedisStorageException("Invalid " + fieldName + " format in Redis");
         }
     }
 
     private void validateReservationOwnership(Map<Object, Object> reservationData, String reservationId, Long userId) {
         if (reservationData == null || reservationData.isEmpty()) {
-            throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, Message.Exception.RESERVATION_NOT_FOUND);
+            throw new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND);
         }
         String userIdStr = (String) reservationData.get("userId");
         if (!userIdStr.equals(String.valueOf(userId))) {
-            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, Message.Exception.PERMISSION_FORBIDDEN);
+            throw new PermissionDeniedException(Message.Exception.PERMISSION_FORBIDDEN);
         }
         //        Check and compare value valid
         String reservationIdStr = (String) reservationData.get("reservationId");
         if (reservationIdStr == null || !reservationIdStr.equals(reservationId)) {
-            throw new ReservationNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid reservation data");
+            throw new ResourceNotFoundException("Invalid reservation data");
         }
         //        Check user existed
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(Message
+                .orElseThrow(() -> new ResourceNotFoundException(Message
                         .Exception
                         .USER_NOT_FOUND));
     }
@@ -519,7 +518,7 @@ public class ReservationServiceImpl implements ReservationService {
         //      Validate showtime
         Showtime showtime = showtimeRepository
                 .findById(showtimeId)
-                .orElseThrow(() -> new TheaterNotFoundException(Message
+                .orElseThrow(() -> new ResourceNotFoundException(Message
                         .Exception
                         .SHOWTIME_NOT_FOUND));
         //      Check showtime is in the past
@@ -546,7 +545,7 @@ public class ReservationServiceImpl implements ReservationService {
             });
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
-            throw new RedisStorageException(HttpStatus.NOT_FOUND, "Info in redis not exists or error when getting that");
+            throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
     }
 
@@ -580,7 +579,7 @@ public class ReservationServiceImpl implements ReservationService {
     private Reservation validateUserAndGetReservation(ReservationRequest request, String reservationId) {
         Reservation dto = getFromRedis(reservationId);
         if (!dto.getUser().getId().equals(request.getUserId())) {
-            throw new ForbiddenPermissionException(HttpStatus.FORBIDDEN, "You don't have permission to confirm this reservation");
+            throw new PermissionDeniedException("You don't have permission to confirm this reservation");
         }
         return dto;
     }
@@ -627,7 +626,7 @@ public class ReservationServiceImpl implements ReservationService {
             errorMsg.append("Please select seat again");
 
             log.error("Reservation {} confirmation failed. Expired: {}, Stolen: {}", reservationId, expiredLocks, stolenLocks);
-            throw new SeatUnavailableException(HttpStatus.CONFLICT, errorMsg.toString());
+            throw new SeatUnavailableException(errorMsg.toString());
         }
 
         log.info("ALl Redis locks verified for reservation {}", reservationId);
