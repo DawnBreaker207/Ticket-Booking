@@ -2,6 +2,7 @@ package com.dawn.backend.repository;
 
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.dto.request.ReservationFilterRequest;
+import com.dawn.backend.dto.response.UserReservationResponse;
 import com.dawn.backend.model.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,52 +39,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             """)
     Page<Reservation> findAllWithFilter(ReservationFilterRequest reservation, Instant startDate, Instant endDate, Pageable pageable);
 
-    Page<Reservation> findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(Long userId, Boolean isPaid, ReservationStatus status, Pageable pageable);
 
-    @Query(value = """
-            SELECT
-            	COUNT(se.id)
-            FROM
-            	seat se
-            JOIN reservation r ON
-            	r.id = se.reservation_id
-            JOIN showtime s ON
-            	s.id = r.showtime_id
-            WHERE
-            	r.status = 'CONFIRMED'
-            	AND (:movieId IS NULL
-            		OR s.movie_id = :movieId)
-            	AND (:theaterId IS NULL
-            		OR s.theater_id = :theaterId)
-            """, nativeQuery = true)
-    Long getTicketsSold(
-            @Param("from") LocalDate from,
-            @Param("to") LocalDate to,
-            @Param("movieId") Long movieId,
-            @Param("theaterId") Long theaterId);
-
-    @Query(value = """
-            SELECT
-            	COUNT(DISTINCT s.theater_id)
-            FROM
-            	showtime s
-            JOIN reservation r ON
-            	r.showtime_id = s.id
-            WHERE
-            	r.status = 'CONFIRMED'
-                AND
-                (:from IS NULL OR r.created_at >= :from)
-                AND
-                (:to IS NULL OR r.created_at <= :to)
-            	AND (:movieId IS NULL
-            		OR s.movie_id = :movieId)
-            	AND (:theaterId IS NULL
-            		OR s.theater_id = :theaterId)
-            """, nativeQuery = true)
-    Long getActiveTheaters(
-            @Param("from") LocalDate from,
-            @Param("to") LocalDate to,
-            @Param("movieId") Long movieId,
-            @Param("theaterId") Long theaterId);
+    Page<Reservation> findAllByUserIdAndReservationStatus(Long userId, ReservationStatus status, Pageable pageable);
 }
 
