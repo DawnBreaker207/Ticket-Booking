@@ -1,13 +1,12 @@
 package com.dawn.backend.dto.response;
 
-import com.dawn.backend.model.AbstractMappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class MovieResponse extends AbstractMappedEntity {
+public class MovieResponse extends BaseResponse {
     private Long id;
 
     private String title;
@@ -29,7 +28,7 @@ public class MovieResponse extends AbstractMappedEntity {
 
     private Set<String> genres = new HashSet<>();
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private String language;
 

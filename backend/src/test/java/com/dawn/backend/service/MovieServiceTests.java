@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
+import java.time.ZoneId;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,7 +72,7 @@ public class MovieServiceTests {
                 .overview("A mind-bending thriller")
                 .poster("inception.jpg")
                 .duration(148)
-                .releaseDate(new Date())
+                .releaseDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                 .language("en")
                 .imdbId("tt1375666")
                 .genres(Set.of(actionGenre, dramaGenre))
@@ -83,7 +84,7 @@ public class MovieServiceTests {
                 .overview("A mind-bending thriller")
                 .poster("inception.jpg")
                 .duration(148)
-                .releaseDate(new Date())
+                .releaseDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                 .language("en")
                 .imdbId("tt1375666")
                 .genres(Set.of("Action", "Drama"))

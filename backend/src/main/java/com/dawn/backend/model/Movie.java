@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +53,7 @@ public class Movie extends AbstractMappedEntity {
 
     @Column(name = "release_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @Column(name = "imdb_id")
     private String imdbId;

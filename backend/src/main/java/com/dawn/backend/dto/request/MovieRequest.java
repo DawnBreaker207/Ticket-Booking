@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +38,7 @@ public class MovieRequest {
 
     @NotBlank(message = "Release Date is not mandatory")
     @Past(message = "Release Date must be in the past")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private String language;
 

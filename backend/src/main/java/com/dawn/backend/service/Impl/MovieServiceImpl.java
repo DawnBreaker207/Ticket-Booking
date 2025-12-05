@@ -31,12 +31,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
-    public static final String MOVIE_CACHE = "movie";
+    public static final String CACHE_INFO = "movie_info";
+    public static final String CACHE_LIST = "movie_list";
     private final MovieRepository movieRepository;
     private final GenreRepository genreRepository;
 
-    //    @Cacheable(MOVIE_CACHE)
+
     @Override
+    @Cacheable(value = CACHE_LIST, key = "T(java.util.Objects).hash(#m) + '-'+ #pageable.pageNumber + '-'+ #pageable.pageSize")
     public ResponsePage<MovieResponse> findAll(MovieRequest m, Pageable pageable) {
         return new ResponsePage<>(movieRepository
                 .findAllWithFilter(m, pageable)
@@ -44,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "'id:' + #id")
+    @Cacheable(value = CACHE_INFO, key = "#id")
     public MovieResponse findOne(Long id) {
         return movieRepository
                 .findById(id)
@@ -53,7 +55,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Cacheable(value = MOVIE_CACHE, key = "'movieId:' + #id")
+    @Cacheable(value = CACHE_INFO, key = "'filmId:' + #id")
     public MovieResponse findByMovieId(String id) {
         return movieRepository
                 .findByFilmId(id)
@@ -63,7 +65,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
+    @Caching(
+            put = {@CachePut(value = CACHE_INFO, key = "#result.id")},
+            evict = {@CacheEvict(value = CACHE_LIST, allEntries = true)}
+    )
     public MovieResponse create(MovieRequest m) {
         movieRepository
                 .findByFilmId(String.valueOf(m.getFilmId()))
@@ -73,13 +78,15 @@ public class MovieServiceImpl implements MovieService {
         Set<Genre> genres = checkExistedGenre(m.getGenres());
         Movie movie = MovieMappingHelper.map(m);
         movie.setGenres(genres);
-        movie.markCreated();
         return MovieMappingHelper.map(movieRepository.save(movie));
     }
 
     @Override
     @Transactional
-    @CachePut(value = MOVIE_CACHE, key = "'id:' + #result.id")
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_INFO, key = "#id"),
+            @CacheEvict(value = CACHE_LIST, allEntries = true),
+    })
     public MovieResponse update(Long id, MovieRequest movieDetails) {
 
         Movie movie = movieRepository
@@ -97,15 +104,14 @@ public class MovieServiceImpl implements MovieService {
         movie.setLanguage(movieDetails.getLanguage());
         movie.setFilmId(movieDetails.getFilmId());
         movie.setImdbId(movieDetails.getImdbId());
-        movie.markUpdated();
         return MovieMappingHelper.map(movieRepository.save(movie));
 
     }
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = MOVIE_CACHE, key = "'id:' + #id"),
-            @CacheEvict(value = MOVIE_CACHE, allEntries = true)
+            @CacheEvict(value = CACHE_INFO, key = "#id"),
+            @CacheEvict(value = CACHE_LIST, allEntries = true)
     })
     public void delete(Long id) {
         movieRepository
