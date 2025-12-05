@@ -26,7 +26,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseObject<String> register(@RequestBody RegisterRequest newUser) {
         authService.register(newUser);
-        return new ResponseObject<>(HttpStatus.OK, "Success", "");
+        return ResponseObject.success("");
     }
 
     @PostMapping("/login")

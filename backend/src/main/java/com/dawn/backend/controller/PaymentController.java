@@ -7,7 +7,6 @@ import com.dawn.backend.service.PaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,7 @@ public class PaymentController {
 
     @GetMapping("/create")
     public ResponseObject<PaymentResponse> createPayment(@ModelAttribute PaymentRequest req, HttpServletRequest request) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createPayment(req, request));
+        return ResponseObject.success(paymentService.createPayment(req, request));
     }
 
 //    @GetMapping("/vnpay-return")
