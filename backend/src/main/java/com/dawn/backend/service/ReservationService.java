@@ -4,12 +4,13 @@ import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponse;
 import com.dawn.backend.dto.response.ReservationResponse;
+import com.dawn.backend.dto.response.UserReservationResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface ReservationService {
     ResponsePage<ReservationResponse> findAll(ReservationFilterRequest request, Pageable pageable);
 
-    ResponsePage<ReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable);
+    ResponsePage<UserReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable);
 
     ReservationResponse findOne(String id);
 

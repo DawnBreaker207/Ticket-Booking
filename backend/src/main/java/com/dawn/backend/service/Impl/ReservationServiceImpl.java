@@ -8,6 +8,7 @@ import com.dawn.backend.constant.SeatStatus;
 import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponse;
 import com.dawn.backend.dto.response.ReservationResponse;
+import com.dawn.backend.dto.response.UserReservationResponse;
 import com.dawn.backend.exception.wrapper.*;
 import com.dawn.backend.helper.RedisKeyHelper;
 import com.dawn.backend.helper.ReservationMappingHelper;
@@ -62,22 +63,22 @@ public class ReservationServiceImpl implements ReservationService {
     private final RedisService redisService;
 
     @Override
-    public ResponsePage<ReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !(auth.getPrincipal() instanceof UserDetailsImpl user)) {
-            log.warn("No authenticated user found");
-            return new ResponsePage<>(Page.empty());
-        }
-        Long userId = user.getId();
+    public ResponsePage<UserReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
+//        var auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth == null || !(auth.getPrincipal() instanceof UserDetailsImpl user)) {
+//            log.warn("No authenticated user found");
+//            return new ResponsePage<>(Page.empty());
+//        }
+//        Long userId = user.getId();
 
-        log.debug("Finding reservation for user {} with isPaid={}, status={}", userId, request.getIsPaid(), request.getStatus());
+        log.debug("Finding reservation for user {} with isPaid={}, status={}", request.getUserId(), request.getStatus());
 
-        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndIsPaidAndReservationStatusOrderByCreatedAtDesc(userId, request.getIsPaid(), request.getStatus(), pageable);
+        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndReservationStatus(request.getUserId(),ReservationStatus.CONFIRMED, pageable);
 
-        log.info("Found {} reservations for user {}", reservations.getSize(), userId);
+        log.info("Found {} reservations for user {}", reservations.getSize(), request.getUserId());
 
         return new ResponsePage<>(reservations
-                .map(ReservationMappingHelper::map));
+                .map(ReservationMappingHelper::toUserResponse));
     }
 
     @Override

@@ -5,13 +5,13 @@ import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.dto.request.*;
 import com.dawn.backend.dto.response.ReservationInitResponse;
 import com.dawn.backend.dto.response.ReservationResponse;
+import com.dawn.backend.dto.response.UserReservationResponse;
 import com.dawn.backend.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +23,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @Operation(summary = "Get all reservation with conditions", description = "Returns reservation with condition filters (Admin Only)")
     public ResponseObject<ResponsePage<ReservationResponse>> getAll(@ModelAttribute ReservationFilterRequest o, Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findAll(o, pageable));
@@ -38,7 +38,7 @@ public class ReservationController {
     @GetMapping("/me")
 //    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get reservation by user id", description = "Returns reservation by they own Id (User Only)")
-    public ResponseObject<ResponsePage<ReservationResponse>> getAllByUser(@ModelAttribute ReservationUserRequest request, Pageable pageable) {
+    public ResponseObject<ResponsePage<UserReservationResponse>> getAllByUser(@ModelAttribute ReservationUserRequest request, Pageable pageable) {
         return new ResponseObject<>(HttpStatus.OK, "Success", reservationService.findByUser(request, pageable));
     }
 

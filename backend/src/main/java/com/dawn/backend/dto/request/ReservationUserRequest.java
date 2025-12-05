@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationUserRequest {
+    private Long userId;
 
-    Boolean isPaid;
-
-    ReservationStatus status;
+    private ReservationStatus status;
 }
