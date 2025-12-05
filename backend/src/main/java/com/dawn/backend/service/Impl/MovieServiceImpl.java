@@ -40,7 +40,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Cacheable(value = CACHE_LIST, key = "T(java.util.Objects).hash(#m) + '-'+ #pageable.pageNumber + '-'+ #pageable.pageSize")
     public ResponsePage<MovieResponse> findAll(MovieRequest m, Pageable pageable) {
-        return new ResponsePage<>(movieRepository
+        return ResponsePage.of(movieRepository
                 .findAllWithFilter(m, pageable)
                 .map(MovieMappingHelper::map));
     }

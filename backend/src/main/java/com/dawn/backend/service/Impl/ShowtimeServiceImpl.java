@@ -76,7 +76,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         Theater theater = theaterRepository
                 .findById(req.getTheaterId())
                 .orElseThrow(() -> new TheaterNotFoundException(Message.Exception.THEATER_NOT_FOUND));
-        return new ResponsePage<>(showtimeRepository
+        return ResponsePage.of(showtimeRepository
                 .findByTheater(theater, start, end, pageable)
                 .map(ShowtimeMappingHelper::map));
     }

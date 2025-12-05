@@ -28,7 +28,7 @@ public class TheaterServiceImpl implements TheaterService {
     @Override
 //    @Cacheable(value = THEATER_CACHE)
     public ResponsePage<TheaterResponse> findAll(Pageable pageable) {
-        return new ResponsePage<>(
+        return ResponsePage.of(
                 theaterRepository
                         .findAll(pageable)
                         .map(TheaterMappingHelper::map));
@@ -38,7 +38,7 @@ public class TheaterServiceImpl implements TheaterService {
 //    @Cacheable(value = THEATER_CACHE, key = "'location:' + #location")
     public ResponsePage<TheaterResponse> findByLocation(String location, Pageable pageable) {
         log.info("Search theater by location {}", location);
-        return new ResponsePage<>(theaterRepository
+        return ResponsePage.of(theaterRepository
                 .findByLocationContainingIgnoreCase(location, pageable)
                 .map(TheaterMappingHelper::map)
         );

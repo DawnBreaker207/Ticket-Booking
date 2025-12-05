@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,11 +72,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         log.debug("Finding reservation for user {} with isPaid={}, status={}", request.getUserId(), request.getStatus());
 
-        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndReservationStatus(request.getUserId(),ReservationStatus.CONFIRMED, pageable);
+        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndReservationStatus(request.getUserId(), ReservationStatus.CONFIRMED, pageable);
 
         log.info("Found {} reservations for user {}", reservations.getSize(), request.getUserId());
 
-        return new ResponsePage<>(reservations
+        return ResponsePage.of(reservations
                 .map(ReservationMappingHelper::toUserResponse));
     }
 
@@ -90,7 +89,7 @@ public class ReservationServiceImpl implements ReservationService {
         Instant startDate = start.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Instant endDate = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
 
-        return new ResponsePage<>(reservationRepository
+        return ResponsePage.of(reservationRepository
                 .findAllWithFilter(req, startDate, endDate, pageable)
                 .map(ReservationMappingHelper::map));
     }

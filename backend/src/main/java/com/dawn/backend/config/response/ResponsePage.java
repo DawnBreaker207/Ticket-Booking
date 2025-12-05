@@ -16,12 +16,18 @@ public class ResponsePage<T> {
 
     Pagination pagination;
 
+    public static <T> ResponsePage<T> of(Page<T> page){
+        return new ResponsePage<>(page);
+    }
+
     public ResponsePage(Page<T> page) {
         this.content = page.getContent();
         this.pagination = new Pagination(
                 page.getPageable().getPageNumber(),
                 page.getPageable().getPageSize(),
-                page.getTotalElements());
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     @Data
@@ -31,6 +37,6 @@ public class ResponsePage<T> {
         Integer pageNumber;
         Integer pageSize;
         Long totalElements;
-
+        Integer totalPages;
     }
 }

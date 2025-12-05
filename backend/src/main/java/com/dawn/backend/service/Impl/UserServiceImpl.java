@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
 //    @Cacheable(value = USER_CACHE)
     public ResponsePage<UserResponse> findAll(Pageable pageable) {
-        return new ResponsePage<>(
+        return ResponsePage.of(
                 userRepository
                         .findAll(pageable)
                         .map(UserMappingHelper::map));
