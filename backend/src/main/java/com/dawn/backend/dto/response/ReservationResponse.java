@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ReservationResponse extends AbstractMappedEntity {
+public class ReservationResponse extends BaseResponse {
     private String id;
 
     private UserResponse user;
