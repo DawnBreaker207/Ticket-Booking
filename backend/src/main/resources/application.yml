@@ -19,7 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  #    show-sql: true
+#    show-sql: true
   sql:
     init:
       mode: never
@@ -46,6 +46,8 @@ spring:
           min-idle: 0
   cache:
     type: redis
+    redis:
+      time-to-live: 60000
   # Mail Properties
   mail:
     host: ${MAIL_HOST}
@@ -56,10 +58,10 @@ logging:
   level:
     org:
       springframework:
-        security: TRACE
-        web:
-          client:
-            RestTemplate: DEBUG
+#        security: TRACE
+#        web:
+#          client:
+#            RestTemplate: DEBUG
         boot:
           autoconfigure:
             jdbc: debug
