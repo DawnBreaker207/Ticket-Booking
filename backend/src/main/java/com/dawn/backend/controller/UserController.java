@@ -2,6 +2,7 @@ package com.dawn.backend.controller;
 
 import com.dawn.backend.config.response.ResponseObject;
 import com.dawn.backend.config.response.ResponsePage;
+import com.dawn.backend.dto.request.UserRequest;
 import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,8 +35,13 @@ public class UserController {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.findByEmail(email));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/{id}/status")
     public ResponseObject<UserResponse> updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
         return new ResponseObject<>(HttpStatus.OK, "Success", userService.updateStatus(id, status));
+    }
+
+    @PutMapping("/update/{id}/profile")
+    public ResponseObject<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserRequest req) {
+        return new ResponseObject<>(HttpStatus.OK, "Success", userService.update(id, req));
     }
 }

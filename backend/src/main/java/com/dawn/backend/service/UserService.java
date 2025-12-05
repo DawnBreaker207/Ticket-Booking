@@ -1,8 +1,8 @@
 package com.dawn.backend.service;
 
 import com.dawn.backend.config.response.ResponsePage;
+import com.dawn.backend.dto.request.UserRequest;
 import com.dawn.backend.dto.response.UserResponse;
-import com.dawn.backend.model.User;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
@@ -10,7 +10,7 @@ public interface UserService {
 
     UserResponse findOne(Long id);
 
-    UserResponse update(Long id, User userDetails);
+    UserResponse update(Long id, UserRequest userDetails);
 
     UserResponse updateStatus(Long id, Boolean status);
 

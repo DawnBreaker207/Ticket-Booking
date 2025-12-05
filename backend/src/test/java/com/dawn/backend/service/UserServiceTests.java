@@ -1,5 +1,6 @@
 package com.dawn.backend.service;
 
+import com.dawn.backend.dto.request.UserRequest;
 import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.exception.wrapper.UserNotFoundException;
 import com.dawn.backend.model.User;
@@ -159,10 +160,10 @@ public class UserServiceTests {
     @Test
     public void updateUser_GivenValidIdAndDetails_WhenUpdated_ThenReturnUpdatedUserDto() {
         //  Arrange
-        User updateDetails = User
+        UserRequest updateDetails = UserRequest
                 .builder()
                 .username("updatedUser")
-                .email("updated@gmail.com")
+                .avatar("updated@gmail.com")
                 .build();
 
         when(userRepository
@@ -189,10 +190,10 @@ public class UserServiceTests {
     @Test
     public void updateUser_GivenInvalidId_WhenNotFound_ThenThrowUserNotFoundException() {
         //  Arrange
-        User updatedDetails = User
+        UserRequest updatedDetails = UserRequest
                 .builder()
                 .username("updatedUser")
-                .email("updated@gmail.com")
+                .avatar("updated@gmail.com")
                 .build();
 
         when(userRepository

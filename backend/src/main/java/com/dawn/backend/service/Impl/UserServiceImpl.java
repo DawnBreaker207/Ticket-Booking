@@ -2,10 +2,10 @@ package com.dawn.backend.service.Impl;
 
 import com.dawn.backend.config.response.ResponsePage;
 import com.dawn.backend.constant.Message;
+import com.dawn.backend.dto.request.UserRequest;
 import com.dawn.backend.dto.response.UserResponse;
 import com.dawn.backend.exception.wrapper.UserNotFoundException;
 import com.dawn.backend.helper.UserMappingHelper;
-import com.dawn.backend.model.User;
 import com.dawn.backend.repository.UserRepository;
 import com.dawn.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -53,12 +53,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @CachePut(value = USER_CACHE, key = "'id:' + #id")
-    public UserResponse update(Long id, User userDetails) {
+    public UserResponse update(Long id, UserRequest userDetails) {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, Message.Exception.USER_NOT_FOUND));
-        user.setEmail(userDetails.getEmail());
         user.setUsername(userDetails.getUsername());
+        user.setAvatar(userDetails.getAvatar());
         return UserMappingHelper.map(userRepository.save(user));
     }
 
