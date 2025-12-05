@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class SeatResponse extends AbstractMappedEntity {
+public class SeatResponse extends BaseResponse {
 
     private Long id;
 

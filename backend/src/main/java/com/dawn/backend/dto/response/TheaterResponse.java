@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class TheaterResponse extends AbstractMappedEntity {
+public class TheaterResponse extends BaseResponse {
     private Long id;
 
     private String name;

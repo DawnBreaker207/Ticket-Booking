@@ -16,7 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ShowtimeResponse extends AbstractMappedEntity {
+public class ShowtimeResponse extends BaseResponse {
 
     private Long id;
     private Long movieId;
