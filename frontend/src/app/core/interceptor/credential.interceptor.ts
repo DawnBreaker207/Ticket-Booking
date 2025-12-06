@@ -1,5 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { USE_HEADER } from '@/app/core/constants/context-token.model';
+import { USE_HEADER } from '@core/constants/context-token.model';
 
 export const CredentialInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.context.get(USE_HEADER)) {

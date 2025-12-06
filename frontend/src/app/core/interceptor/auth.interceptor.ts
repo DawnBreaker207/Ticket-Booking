@@ -4,12 +4,12 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { SKIP_AUTH } from '@/app/core/constants/context-token.model';
 import { Store } from '@ngrx/store';
-import { AuthActions } from '@/app/core/store/state/auth/auth.actions';
-import { StorageService } from '@/app/shared/services/storage/storage.service';
+import { StorageService } from '@core/services/storage/storage.service';
+import { SKIP_AUTH } from '@core/constants/context-token.model';
+import { AuthActions } from '@core/auth/auth.actions';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);

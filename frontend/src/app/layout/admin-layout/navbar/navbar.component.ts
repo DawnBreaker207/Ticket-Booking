@@ -1,0 +1,40 @@
+import { Component, input, output } from '@angular/core';
+import { NzBadgeComponent } from 'ng-zorro-antd/badge';
+import {
+  NzBreadCrumbComponent,
+  NzBreadCrumbItemComponent,
+} from 'ng-zorro-antd/breadcrumb';
+import {
+  NzDropDownDirective,
+  NzDropdownMenuComponent,
+} from 'ng-zorro-antd/dropdown';
+import { NzHeaderComponent } from 'ng-zorro-antd/layout';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { ProfileMenuComponent } from '@shared/components/profile-menu/profile-menu.component';
+import { Breadcrumb } from '../admin-layout.component';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-navbar',
+  imports: [
+    NzBadgeComponent,
+    NzBreadCrumbComponent,
+    NzBreadCrumbItemComponent,
+    NzDropDownDirective,
+    NzDropdownMenuComponent,
+    NzHeaderComponent,
+    NzIconDirective,
+    ProfileMenuComponent,
+    RouterLink,
+  ],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css',
+})
+export class NavbarComponent {
+  breadcrumbs = input<Breadcrumb[]>([]);
+  isCollapsed = input<boolean>(true);
+  toggleCollapsed = output<boolean>();
+  toggleCollapse() {
+    this.toggleCollapsed.emit(!this.isCollapsed());
+  }
+}

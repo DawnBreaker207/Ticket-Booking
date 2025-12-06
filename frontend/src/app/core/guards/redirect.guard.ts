@@ -1,7 +1,7 @@
 import { CanActivateChildFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthService } from '@/app/core/services/auth/auth.service';
-import { Role } from '@/app/core/constants/enum';
+import { AuthService } from '@core/auth/auth.service';
+import { Role } from '@core/constants/enum';
 
 export const RedirectGuard: CanActivateChildFn = (route, state) => {
   const router = inject(Router);
