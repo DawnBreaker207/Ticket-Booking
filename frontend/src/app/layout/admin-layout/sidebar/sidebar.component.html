@@ -1,0 +1,62 @@
+<nz-sider
+  nzCollapsible
+  [nzCollapsed]="isCollapsed()"
+  [nzTrigger]="null"
+  nzWidth="256px"
+  nzBreakpoint="lg"
+  [nzCollapsedWidth]="0"
+  nzTheme="light"
+  class="shadow-md z-20 h-full border-r border-gray-100 hidden md:block overflow-y-auto"
+>
+  <div
+    class="h-16 flex items-center justify-center border-b border-gray-100 sticky top-0 bg-white z-10"
+  >
+    <a routerLink="/" class="flex items-center gap-2 text-decoration-none">
+      <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary" />
+      @if (!isCollapsed()) {
+        <h1
+          class="text-xl font-bold tracking-wide text-gray-800 m-0 animate-fade-in"
+        >
+          CINE <span class="text-primary">ADMIN</span>
+        </h1>
+      }
+    </a>
+  </div>
+
+  <ul
+    class="border-r-0 py-4"
+    nz-menu
+    nzTheme="light"
+    nzMode="inline"
+    [nzInlineCollapsed]="isCollapsed()"
+  >
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/dashboard']">
+      <nz-icon nzType="dashboard" nzTheme="outline" />
+      <span>Thống Kê</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/movie']">
+      <nz-icon nzType="video-camera" nzTheme="outline" />
+      <span>Phim</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/theater']">
+      <nz-icon nzType="shop" nzTheme="outline" />
+      <span>Rạp Chiếu</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/showtime']">
+      <nz-icon nzType="calendar" nzTheme="outline" />
+      <span>Suất Chiếu</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/reservation']">
+      <nz-icon nzType="ordered-list" nzTheme="outline" />
+      <span>Vé đã đặt</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/user']">
+      <nz-icon nzType="user" nzTheme="outline" />
+      <span>Người dùng</span>
+    </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/article']">
+      <nz-icon nzType="form" nzTheme="outline" />
+      <span>Bài viết</span>
+    </li>
+  </ul>
+</nz-sider>

@@ -1,25 +1,25 @@
 import { Routes } from '@angular/router';
-import { AdminGuard } from '@/app/core/guards/admin.guard';
-import { RedirectGuard } from '@/app/core/guards/redirect.guard';
+import { RedirectGuard } from '@core/guards/redirect.guard';
+import { AdminGuard } from '@core/guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  {
-    path: '',
-    canActivateChild: [RedirectGuard],
-    loadChildren: () =>
-      import('./modules/home/home.module').then((m) => m.HomeModule),
-  },
+  { path: '', redirectTo: 'client', pathMatch: 'full' },
+  // {
+  //   path: '',
+  //   // canActivateChild: [RedirectGuard],
+  //   loadChildren: () =>
+  //     import('./features/client/client.routes').then((m) => m.CLIENT_ROUTES),
+  // },
   {
     path: 'admin',
-    canActivateChild: [AdminGuard],
+    // canActivateChild: [AdminGuard],
     loadChildren: () =>
-      import('./modules/admin/admin-module').then((m) => m.AdminModule),
+      import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
     path: 'errors',
     loadChildren: () =>
-      import('./modules/error/error.module').then((m) => m.ErrorModule),
+      import('./features/error/error.routes').then((m) => m.ERROR_ROUTES),
   },
   { path: '**', redirectTo: 'errors/404' },
 ];

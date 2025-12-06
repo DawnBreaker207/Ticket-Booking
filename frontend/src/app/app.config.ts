@@ -22,44 +22,41 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideEffects } from '@ngrx/effects';
-import { AuthInterceptor } from './core/interceptor/auth.interceptor';
-import { CredentialInterceptor } from './core/interceptor/credential.interceptor';
-import { ErrorInterceptor } from '@/app/core/interceptor/error.interceptor';
-import {
-  authFeatureKey,
-  authReducer,
-} from '@/app/core/store/state/auth/auth.reducers';
-import { AuthEffects } from '@/app/core/store/state/auth/auth.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import {
-  reservationFeatureKey,
-  reservationReducer,
-} from '@/app/core/store/state/reservation/reservation.reducers';
-import { ReservationEffects } from '@/app/core/store/state/reservation/reservation.effects';
-import {
-  theaterFeatureKey,
-  theaterReducer,
-} from '@/app/core/store/state/theater/theater.reducers';
-import { TheaterEffects } from '@/app/core/store/state/theater/theater.effects';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { icons, LucideAngularModule } from 'lucide-angular';
+import localVi from '@angular/common/locales/vi';
+import { CurrencyFormatPipe } from '@shared/pipes/currency-format.pipe';
+import { AuthInterceptor } from '@core/interceptor/auth.interceptor';
+import { CredentialInterceptor } from '@core/interceptor/credential.interceptor';
+import { ErrorInterceptor } from '@core/interceptor/error.interceptor';
+import { authFeatureKey, authReducer } from '@core/auth/auth.reducers';
 import {
   movieFeatureKey,
   movieReducer,
-} from '@/app/core/store/state/movie/movie.reducers';
+} from '@domain/movie/data-access/movie.reducers';
+import {
+  theaterFeatureKey,
+  theaterReducer,
+} from '@domain/theater/data-access/theater.reducers';
 import {
   showtimeFeatureKey,
   showtimeReducer,
-} from '@/app/core/store/state/showtime/showtime.reducers';
-import { MovieEffects } from '@/app/core/store/state/movie/movie.effects';
-import { ShowtimeEffects } from '@/app/core/store/state/showtime/showtime.effects';
+} from '@domain/showtime/data-access/showtime.reducers';
+import {
+  reservationFeatureKey,
+  reservationReducer,
+} from '@domain/reservation/data-access/reservation.reducers';
 import {
   seatFeatureKey,
   seatReducer,
-} from '@/app/core/store/state/seat/seat.reducers';
-import { SeatEffects } from '@/app/core/store/state/seat/seat.effects';
-import { NgxEchartsModule } from 'ngx-echarts';
-import { CurrencyFormatPipe } from '@/app/core/pipes/currency-format-pipe';
-import { icons, LucideAngularModule } from 'lucide-angular';
-import localVi from '@angular/common/locales/vi';
+} from '@domain/seat/data-access/seat.reducers';
+import { AuthEffects } from '@core/auth/auth.effects';
+import { MovieEffects } from '@domain/movie/data-access/movie.effects';
+import { TheaterEffects } from '@domain/theater/data-access/theater.effects';
+import { ShowtimeEffects } from '@domain/showtime/data-access/showtime.effects';
+import { ReservationEffects } from '@domain/reservation/data-access/reservation.effects';
+import { SeatEffects } from '@domain/seat/data-access/seat.effects';
 
 registerLocaleData(localVi);
 export const appConfig: ApplicationConfig = {

@@ -1,6 +1,6 @@
 import { inject, Injectable, NgZone } from '@angular/core';
-import { environment } from '@/environments/environment';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',

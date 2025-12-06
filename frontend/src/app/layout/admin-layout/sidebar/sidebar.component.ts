@@ -1,0 +1,22 @@
+import { Component, input, output } from '@angular/core';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzMenuDirective, NzMenuItemComponent } from 'ng-zorro-antd/menu';
+import { NzSiderComponent } from 'ng-zorro-antd/layout';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-sidebar',
+  imports: [
+    NzIconDirective,
+    NzMenuDirective,
+    NzMenuItemComponent,
+    NzSiderComponent,
+    RouterLink,
+  ],
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.css',
+})
+export class SidebarComponent {
+  isCollapsed = input<boolean>(true);
+  triggerCollapsed = output<boolean>();
+}

@@ -1,0 +1,36 @@
+<nz-result
+  class="bg-background max-w-lg mx-auto rounded-lg p-8"
+  [nzIcon]="Icon"
+  [nzTitle]="Title"
+  [nzSubTitle]="Subtitle">
+  <div nz-result-extra>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="round"
+      (click)="goToHomePage()">
+      Home Page
+    </button>
+  </div>
+</nz-result>
+
+<ng-template #Title>
+  <h1 class="ant-result-title text-4xl font-bold">
+    Oops! Server Error
+  </h1>
+</ng-template>
+
+<ng-template #Subtitle>
+  <h1 class="ant-result-subtitle text-sm">
+    Please try again later. If the issue persists, feel free to contact us for
+    assistance.
+  </h1>
+</ng-template>
+
+<ng-template #Icon>
+  <img
+    src="assets/illustrations/500.svg"
+    alt="500 Server Error Illustration"
+    class="w-full h-full"
+  />
+</ng-template>

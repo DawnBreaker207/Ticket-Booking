@@ -1,9 +1,9 @@
 import { CanActivateChildFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { ToastService } from '@/app/shared/services/toast/toast.service';
 import { of } from 'rxjs';
-import { AuthService } from '@/app/core/services/auth/auth.service';
-import { Role } from '@/app/core/constants/enum';
+import { ToastService } from '@core/services/toast/toast.service';
+import { AuthService } from '@core/auth/auth.service';
+import { Role } from '@core/constants/enum';
 
 export const AdminGuard: CanActivateChildFn = (childRoute, state) => {
   const toast = inject(ToastService);
