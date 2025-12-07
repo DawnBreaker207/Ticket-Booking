@@ -161,13 +161,9 @@
 
             <div class="border-t border-dashed border-gray-300 my-4"></div>
 
-            <!--  QR Code-->
+            <!--  Barcode-->
             <div class="flex flex-col items-center gap-2">
-              <nz-qrcode
-                [nzPadding]="12"
-                [nzValue]="selectedTicket.reservationId"
-                class="mix-blend-multiply"
-              ></nz-qrcode>
+              <app-barcode [value]="selectedTicket.reservationId" />
               <p class="text-xs text-gray-400 font-mono tracking-widest mt-1">
                 ID: {{ selectedTicket.reservationId }}
               </p>

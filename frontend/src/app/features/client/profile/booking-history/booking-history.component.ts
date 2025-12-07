@@ -9,6 +9,7 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { CurrencyFormatPipe } from '@shared/pipes/currency-format.pipe';
 import { ReservationProfile } from '@domain/reservation/models/reservation.model';
+import { BarcodeComponent } from '@shared/components/barcode/barcode.component';
 
 export interface MovieTicket {
   id: string;
@@ -35,6 +36,7 @@ export interface MovieTicket {
     NzTagModule,
     DatePipe,
     CurrencyFormatPipe,
+    BarcodeComponent,
   ],
   templateUrl: './booking-history.component.html',
   styleUrl: './booking-history.component.css',
