@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import {Theater} from '@domain/theater/models/theater.model';
-import {Pagination} from '@core/models/common.model';
-import {TheaterActions} from '@domain/theater/data-access/theater.actions';
+import { Theater } from '@domain/theater/models/theater.model';
+import { Pagination } from '@core/models/common.model';
+import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 
 export const theaterFeatureKey = 'theaterKey';
 

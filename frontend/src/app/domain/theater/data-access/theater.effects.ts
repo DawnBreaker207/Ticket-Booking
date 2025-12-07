@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import {TheaterService} from '@domain/theater/data-access/theater.service';
-import {StorageService} from '@core/services/storage/storage.service';
-import {TheaterActions} from '@domain/theater/data-access/theater.actions';
+import { TheaterService } from '@domain/theater/data-access/theater.service';
+import { StorageService } from '@core/services/storage/storage.service';
+import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 
 @Injectable()
 export class TheaterEffects {

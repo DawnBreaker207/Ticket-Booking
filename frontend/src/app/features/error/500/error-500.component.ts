@@ -1,18 +1,13 @@
-import {Component, inject} from '@angular/core';
-import {Router} from '@angular/router';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzResultModule,} from 'ng-zorro-antd/result';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {CommonModule} from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-error-500',
-  imports: [
-    CommonModule,
-    NzButtonModule,
-    NzResultModule,
-    NzIconModule
-  ],
+  imports: [CommonModule, NzButtonModule, NzResultModule, NzIconModule],
   templateUrl: './error-500.component.html',
   styleUrl: './error-500.component.css',
 })

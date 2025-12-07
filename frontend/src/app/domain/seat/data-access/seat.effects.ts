@@ -1,8 +1,8 @@
-import {inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {catchError, map, of, switchMap} from 'rxjs';
-import {SeatActions} from '@domain/seat/data-access/seat.actions';
-import {SeatService} from '@domain/seat/data-access/seat.service';
+import { inject, Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { SeatActions } from '@domain/seat/data-access/seat.actions';
+import { SeatService } from '@domain/seat/data-access/seat.service';
 
 @Injectable()
 export class SeatEffects {

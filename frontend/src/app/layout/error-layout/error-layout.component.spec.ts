@@ -8,9 +8,8 @@ describe('ErrorLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ErrorLayoutComponent]
-    })
-    .compileComponents();
+      imports: [ErrorLayoutComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorLayoutComponent);
     component = fixture.componentInstance;

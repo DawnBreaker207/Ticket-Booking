@@ -1,17 +1,22 @@
-import {Component, effect, ElementRef, signal, viewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzInputModule} from 'ng-zorro-antd/input';
-import {NzAvatarModule} from 'ng-zorro-antd/avatar';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzFloatButtonModule} from 'ng-zorro-antd/float-button';
-
+import {
+  Component,
+  effect,
+  ElementRef,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzFloatButtonModule } from 'ng-zorro-antd/float-button';
 
 interface Message {
   content: string;
   sender: 'user' | 'bot';
-  time: Date
+  time: Date;
 }
 
 @Component({
@@ -23,19 +28,23 @@ interface Message {
     NzInputModule,
     NzAvatarModule,
     NzIconModule,
-    NzFloatButtonModule
+    NzFloatButtonModule,
   ],
   templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css'
+  styleUrl: './chat.component.css',
 })
 export class ChatComponent {
   scrollBottom = viewChild<ElementRef>('scrollBottom');
 
   isOpen = signal<boolean>(false);
   inputValue = signal<string>('');
-  messages = signal<Message[]>([{
-    content: 'Chào bạn! Đây là chat box', sender: 'bot', time: new Date()
-  }]);
+  messages = signal<Message[]>([
+    {
+      content: 'Chào bạn! Đây là chat box',
+      sender: 'bot',
+      time: new Date(),
+    },
+  ]);
 
   constructor() {
     effect(() => {
@@ -48,23 +57,29 @@ export class ChatComponent {
   }
 
   toggleChat() {
-    this.isOpen.update(v => !v);
+    this.isOpen.update((v) => !v);
   }
 
   sendMessage() {
     const text = this.inputValue().trim();
     if (!text) return;
 
-    this.messages.update(prev => [...prev, {content: text, sender: 'user', time: new Date()}]);
+    this.messages.update((prev) => [
+      ...prev,
+      { content: text, sender: 'user', time: new Date() },
+    ]);
     this.inputValue.set('');
 
     setTimeout(() => {
-      this.messages.update(prev => [...prev, {
-        content: `Bot nhận được: "${text}"`,
-        sender: 'bot',
-        time: new Date()
-      }])
-    }, 800)
+      this.messages.update((prev) => [
+        ...prev,
+        {
+          content: `Bot nhận được: "${text}"`,
+          sender: 'bot',
+          time: new Date(),
+        },
+      ]);
+    }, 800);
   }
 
   scrollToBottom() {

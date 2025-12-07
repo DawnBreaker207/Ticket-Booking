@@ -1,16 +1,25 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterOutlet,} from '@angular/router';
-import {filter} from 'rxjs';
-import {NzContentComponent, NzFooterComponent, NzLayoutModule,} from 'ng-zorro-antd/layout';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzMenuModule} from 'ng-zorro-antd/menu';
-import {NzAvatarModule} from 'ng-zorro-antd/avatar';
-import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
-import {NzBadgeModule} from 'ng-zorro-antd/badge';
-import {NzBreadCrumbModule} from 'ng-zorro-antd/breadcrumb';
-import {SidebarComponent} from './sidebar/sidebar.component';
-import {NavbarComponent} from './navbar/navbar.component';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
+import { filter } from 'rxjs';
+import {
+  NzContentComponent,
+  NzFooterComponent,
+  NzLayoutModule,
+} from 'ng-zorro-antd/layout';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface Breadcrumb {
   label: string;
@@ -49,7 +58,8 @@ export class AdminLayoutComponent implements OnInit {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef))
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
         this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
       });
@@ -87,7 +97,7 @@ export class AdminLayoutComponent implements OnInit {
       // Chỉ lấy những route có data.breadcrumb
       const label = child.snapshot.data['breadcrumb'];
       if (label) {
-        breadcrumbs.push({label, url});
+        breadcrumbs.push({ label, url });
       }
 
       return this.createBreadcrumbs(child, url, breadcrumbs);

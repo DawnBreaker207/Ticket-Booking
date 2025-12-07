@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import {Showtime} from '@domain/showtime/models/showtime.model';
-import {Pagination} from '@core/models/common.model';
-import {ShowtimeActions} from '@domain/showtime/data-access/showtime.actions';
+import { Showtime } from '@domain/showtime/models/showtime.model';
+import { Pagination } from '@core/models/common.model';
+import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 
 export const showtimeFeatureKey = 'showtimeKey';
 

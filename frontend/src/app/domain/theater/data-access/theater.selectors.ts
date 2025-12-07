@@ -1,5 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import {theaterFeatureKey, TheaterState} from '@domain/theater/data-access/theater.reducers';
+import {
+  theaterFeatureKey,
+  TheaterState,
+} from '@domain/theater/data-access/theater.reducers';
 
 export const selectTheaterState =
   createFeatureSelector<TheaterState>(theaterFeatureKey);

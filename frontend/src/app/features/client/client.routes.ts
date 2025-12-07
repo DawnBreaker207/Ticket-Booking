@@ -6,6 +6,7 @@ import { AuthComponent } from '@features/auth/auth';
 import { AuthGuard } from '@core/guards/auth.guard';
 import { ReservationComponent } from '@features/client/reservation/reservation.component';
 import { PaymentResultComponent } from '@features/client/reservation/components/payment-result/payment-result.component';
+import { ProfileComponent } from '@features/client/profile/profile.component';
 
 export const CLIENT_ROUTES: Routes = [
   {
@@ -16,6 +17,7 @@ export const CLIENT_ROUTES: Routes = [
         path: 'client',
         component: HomeComponent,
       },
+      { path: 'profile', component: ProfileComponent },
       { path: 'movie/detail/:id', component: DetailComponent },
       { path: 'login', component: AuthComponent },
       {

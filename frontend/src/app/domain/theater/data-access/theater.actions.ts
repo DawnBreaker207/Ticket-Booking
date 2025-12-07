@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import {Theater, TheaterRequest} from '@domain/theater/models/theater.model';
-import {Pagination} from '@core/models/common.model';
+import { Theater, TheaterRequest } from '@domain/theater/models/theater.model';
+import { Pagination } from '@core/models/common.model';
 
 export const TheaterActions = createActionGroup({
   source: 'Schedule',

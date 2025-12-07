@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import {Seat} from '@domain/seat/models/seat.model';
+import { Seat } from '@domain/seat/models/seat.model';
 
 export const SeatActions = createActionGroup({
   source: 'Seat',
