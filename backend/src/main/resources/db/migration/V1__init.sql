@@ -180,3 +180,22 @@ CREATE TABLE IF NOT EXISTS refresh_token
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS article
+(
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title      VARCHAR(255) NOT NULL,
+    slug       VARCHAR(255) NOT NULL UNIQUE,
+    summary    TEXT,
+    thumbnail  VARCHAR(255),
+    content    LONGTEXT,
+    author_id  BIGINT,
+    status     ENUM ('DRAFT', 'PUBLISHED','ARCHIVED') DEFAULT 'DRAFT',
+    views      BIGINT                                 DEFAULT 0,
+    is_deleted BOOLEAN                                DEFAULT FALSE,
+    created_at DATETIME     NOT NULL                  DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     NOT NULL                  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_article_author FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE SET NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
