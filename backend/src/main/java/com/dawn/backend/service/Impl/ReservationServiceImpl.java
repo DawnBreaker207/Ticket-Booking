@@ -102,6 +102,33 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public ReservationInitResponse restoreReservation(String reservationId) {
+        log.info("Restore reservation with id: {}", reservationId);
+        Long ttl = redisService.getReservationTtl(reservationId);
+
+        if (ttl == null || ttl <= 0) {
+            log.warn("Reservation {} not found or expired in Redis", reservationId);
+            throw new ResourceNotFoundException(Message.Exception.RESERVATION_EXPIRED);
+        }
+
+        Map<Object, Object> reservation = redisService.getReservationData(reservationId);
+
+        if (reservation == null || reservation.isEmpty()) {
+            throw new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND);
+        }
+
+        String showtimeIdStr = (String) reservation.get("showtimeId");
+        Instant expiredAt = Instant.now().plusSeconds(ttl);
+
+        return ReservationInitResponse.builder()
+                .reservationId(reservationId)
+                .showtimeId(Long.valueOf(showtimeIdStr))
+                .ttl(ttl)
+                .expiredAt(expiredAt)
+                .build();
+    }
+
+    @Override
     public ReservationInitResponse initReservation(ReservationInitRequest o) {
         log.info("Initializing reservation for user {} at showtime {}", o.getUserId(), o.getShowtimeId());
 

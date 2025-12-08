@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -30,6 +31,10 @@ public class RedisService {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
         redisTemplate.opsForHash().putAll(key, data);
         redisTemplate.expire(key, ttl);
+    }
+
+    public Long getReservationTtl(String reservationId) {
+        return redisTemplate.getExpire(RedisKeyHelper.reservationHoldKey(reservationId), TimeUnit.SECONDS);
     }
 
     public Map<Object, Object> getReservationData(String reservationId) {

@@ -14,6 +14,8 @@ public interface ReservationService {
 
     ReservationResponse findOne(String id);
 
+    ReservationInitResponse restoreReservation(String id);
+
     ReservationInitResponse initReservation(ReservationInitRequest reservation);
 
     void holdReservationSeats(ReservationHoldSeatRequest reservation);
