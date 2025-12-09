@@ -8,11 +8,13 @@
         <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.dawn</groupId>
-    <artifactId>backend</artifactId>
+    <groupId>com.dawn.backend</groupId>
+    <artifactId>dawn-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>Backend</name>
     <description>Ticket Booking System</description>
+
     <url/>
     <licenses>
         <license/>
@@ -167,6 +169,15 @@
         </dependency>
 
     </dependencies>
+
+    <modules>
+        <module>dawn-common</module>
+        <module>dawn-identity</module>
+        <module>dawn-catalog</module>
+        <module>dawn-cinema</module>
+        <module>dawn-booking</module>
+        <module>dawn-payment</module>
+    </modules>
 
     <build>
         <plugins>
