@@ -1,6 +1,7 @@
-package com.dawn.backend.dto.request;
+package com.dawn.catalog.dto.request;
 
-import com.dawn.backend.constant.ArticleStatus;
+
+import com.dawn.common.constant.ArticleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

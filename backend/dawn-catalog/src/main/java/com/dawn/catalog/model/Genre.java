@@ -1,5 +1,6 @@
-package com.dawn.backend.model;
+package com.dawn.catalog.model;
 
+import com.dawn.common.model.AbstractMappedEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,8 +1,7 @@
-package com.dawn.backend.service;
+package com.dawn.catalog.service;
 
-import com.dawn.backend.dto.request.ArticleRequest;
-import com.dawn.backend.dto.response.ArticleResponse;
-import com.dawn.backend.model.Article;
+import com.dawn.catalog.dto.request.ArticleRequest;
+import com.dawn.catalog.dto.response.ArticleResponse;
 
 import java.util.List;
 

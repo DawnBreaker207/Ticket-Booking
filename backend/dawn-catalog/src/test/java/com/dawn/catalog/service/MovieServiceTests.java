@@ -1,15 +1,15 @@
-package com.dawn.backend.service;
+package com.dawn.catalog.service;
 
-import com.dawn.backend.dto.request.MovieRequest;
-import com.dawn.backend.dto.response.MovieResponse;
-import com.dawn.backend.exception.wrapper.ResourceAlreadyExistedException;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.MovieMappingHelper;
-import com.dawn.backend.model.Genre;
-import com.dawn.backend.model.Movie;
-import com.dawn.backend.repository.GenreRepository;
-import com.dawn.backend.repository.MovieRepository;
-import com.dawn.backend.service.Impl.MovieServiceImpl;
+import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.catalog.dto.response.MovieResponse;
+import com.dawn.catalog.helper.MovieMappingHelper;
+import com.dawn.catalog.model.Genre;
+import com.dawn.catalog.model.Movie;
+import com.dawn.catalog.repository.GenreRepository;
+import com.dawn.catalog.repository.MovieRepository;
+import com.dawn.catalog.service.Impl.MovieServiceImpl;
+import com.dawn.common.exception.wrapper.ResourceAlreadyExistedException;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

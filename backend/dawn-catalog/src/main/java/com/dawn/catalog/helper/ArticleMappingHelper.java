@@ -1,8 +1,9 @@
-package com.dawn.backend.helper;
+package com.dawn.catalog.helper;
 
-import com.dawn.backend.dto.request.ArticleRequest;
-import com.dawn.backend.dto.response.ArticleResponse;
-import com.dawn.backend.model.Article;
+
+import com.dawn.catalog.dto.request.ArticleRequest;
+import com.dawn.catalog.dto.response.ArticleResponse;
+import com.dawn.catalog.model.Article;
 
 public interface ArticleMappingHelper {
     static Article map(final ArticleRequest req) {

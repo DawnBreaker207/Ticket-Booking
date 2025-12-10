@@ -1,7 +1,7 @@
-package com.dawn.backend.repository;
+package com.dawn.catalog.repository;
 
-import com.dawn.backend.dto.request.MovieRequest;
-import com.dawn.backend.model.Movie;
+import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.catalog.model.Movie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

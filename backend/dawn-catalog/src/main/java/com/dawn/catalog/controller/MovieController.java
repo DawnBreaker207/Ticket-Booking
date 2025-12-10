@@ -1,10 +1,10 @@
-package com.dawn.backend.controller;
+package com.dawn.catalog.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.MovieRequest;
-import com.dawn.backend.dto.response.MovieResponse;
-import com.dawn.backend.service.MovieService;
+import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.catalog.dto.response.MovieResponse;
+import com.dawn.catalog.service.MovieService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.config.response.ResponsePage;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

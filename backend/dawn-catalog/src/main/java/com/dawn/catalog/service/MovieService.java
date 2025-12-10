@@ -1,8 +1,8 @@
-package com.dawn.backend.service;
+package com.dawn.catalog.service;
 
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.MovieRequest;
-import com.dawn.backend.dto.response.MovieResponse;
+import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.catalog.dto.response.MovieResponse;
+import com.dawn.common.config.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface MovieService {

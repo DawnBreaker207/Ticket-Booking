@@ -1,12 +1,12 @@
-package com.dawn.backend.service.Impl;
+package com.dawn.catalog.service.Impl;
 
-import com.dawn.backend.dto.request.ArticleRequest;
-import com.dawn.backend.dto.response.ArticleResponse;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.ArticleMappingHelper;
-import com.dawn.backend.model.Article;
-import com.dawn.backend.repository.ArticleRepository;
-import com.dawn.backend.service.ArticleService;
+import com.dawn.catalog.dto.request.ArticleRequest;
+import com.dawn.catalog.dto.response.ArticleResponse;
+import com.dawn.catalog.helper.ArticleMappingHelper;
+import com.dawn.catalog.model.Article;
+import com.dawn.catalog.repository.ArticleRepository;
+import com.dawn.catalog.service.ArticleService;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.request;
+package com.dawn.catalog.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

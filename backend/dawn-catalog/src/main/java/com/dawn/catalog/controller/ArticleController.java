@@ -1,9 +1,9 @@
-package com.dawn.backend.controller;
+package com.dawn.catalog.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.ArticleRequest;
-import com.dawn.backend.dto.response.ArticleResponse;
-import com.dawn.backend.service.ArticleService;
+import com.dawn.catalog.dto.request.ArticleRequest;
+import com.dawn.catalog.dto.response.ArticleResponse;
+import com.dawn.catalog.service.ArticleService;
+import com.dawn.common.config.response.ResponseObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

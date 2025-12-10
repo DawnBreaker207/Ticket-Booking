@@ -1,6 +1,8 @@
-package com.dawn.backend.model;
+package com.dawn.catalog.model;
 
-import com.dawn.backend.constant.ArticleStatus;
+import com.dawn.common.constant.ArticleStatus;
+import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.identity.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;

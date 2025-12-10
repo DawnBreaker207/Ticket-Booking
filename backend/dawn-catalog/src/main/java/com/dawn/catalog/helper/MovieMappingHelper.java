@@ -1,9 +1,10 @@
-package com.dawn.backend.helper;
+package com.dawn.catalog.helper;
 
-import com.dawn.backend.dto.request.MovieRequest;
-import com.dawn.backend.dto.response.MovieResponse;
-import com.dawn.backend.model.Genre;
-import com.dawn.backend.model.Movie;
+
+import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.catalog.dto.response.MovieResponse;
+import com.dawn.catalog.model.Genre;
+import com.dawn.catalog.model.Movie;
 
 import java.util.stream.Collectors;
 

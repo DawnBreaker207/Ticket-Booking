@@ -1,6 +1,7 @@
-package com.dawn.backend.dto.response;
+package com.dawn.catalog.dto.response;
 
-import com.dawn.backend.constant.ArticleStatus;
+import com.dawn.common.constant.ArticleStatus;
+import com.dawn.common.dto.response.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
