@@ -1,4 +1,4 @@
-package com.dawn.backend.service;
+package com.dawn.report.service;
 
 import com.dawn.backend.dto.response.ReportResponse;
 

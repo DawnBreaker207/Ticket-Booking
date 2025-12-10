@@ -1,11 +1,11 @@
-package com.dawn.backend.service.Impl;
+package com.dawn.report.service.Impl;
 
-import com.dawn.backend.dto.response.ReportResponse;
-import com.dawn.backend.dto.response.dashboard.PaymentDistribution;
-import com.dawn.backend.dto.response.dashboard.RevenuePointResponse;
-import com.dawn.backend.dto.response.dashboard.TopMovieResponse;
-import com.dawn.backend.repository.DashboardRepository;
-import com.dawn.backend.service.ReportService;
+import com.dawn.report.dto.response.PaymentDistribution;
+import com.dawn.report.dto.response.ReportResponse;
+import com.dawn.report.dto.response.RevenuePointResponse;
+import com.dawn.report.dto.response.TopMovieResponse;
+import com.dawn.report.repository.DashboardRepository;
+import com.dawn.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;

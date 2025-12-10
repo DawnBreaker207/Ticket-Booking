@@ -1,7 +1,7 @@
-package com.dawn.backend.controller;
+package com.dawn.report.controller;
 
-import com.dawn.backend.dto.response.ReportResponse;
-import com.dawn.backend.service.ReportService;
+import com.dawn.report.dto.response.ReportResponse;
+import com.dawn.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
