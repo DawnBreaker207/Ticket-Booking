@@ -1,7 +1,6 @@
 package com.dawn.backend.dto.response;
 
 import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.model.AbstractMappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
