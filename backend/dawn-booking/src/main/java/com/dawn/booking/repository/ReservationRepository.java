@@ -2,7 +2,6 @@ package com.dawn.backend.repository;
 
 import com.dawn.backend.constant.ReservationStatus;
 import com.dawn.backend.dto.request.ReservationFilterRequest;
-import com.dawn.backend.dto.response.UserReservationResponse;
 import com.dawn.backend.model.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
