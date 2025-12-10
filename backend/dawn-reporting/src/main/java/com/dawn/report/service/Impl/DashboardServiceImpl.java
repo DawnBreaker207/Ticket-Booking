@@ -1,9 +1,9 @@
-package com.dawn.backend.service.Impl;
+package com.dawn.report.service.Impl;
 
-import com.dawn.backend.dto.request.DashboardFilterRequest;
-import com.dawn.backend.dto.response.dashboard.*;
-import com.dawn.backend.repository.DashboardRepository;
-import com.dawn.backend.service.DashboardService;
+import com.dawn.report.dto.request.DashboardFilterRequest;
+import com.dawn.report.dto.response.*;
+import com.dawn.report.repository.DashboardRepository;
+import com.dawn.report.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,8 @@
-package com.dawn.backend.service;
+package com.dawn.report.service;
 
-import com.dawn.backend.dto.request.DashboardFilterRequest;
-import com.dawn.backend.dto.response.dashboard.*;
+
+import com.dawn.report.dto.request.DashboardFilterRequest;
+import com.dawn.report.dto.response.*;
 
 import java.util.List;
 

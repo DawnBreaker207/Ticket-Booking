@@ -1,9 +1,10 @@
-package com.dawn.backend.repository;
+package com.dawn.report.repository;
 
-import com.dawn.backend.dto.response.dashboard.PaymentDistribution;
-import com.dawn.backend.dto.response.dashboard.RevenuePointResponse;
-import com.dawn.backend.dto.response.dashboard.TopMovieResponse;
-import com.dawn.backend.dto.response.dashboard.TopTheaterResponse;
+
+import com.dawn.report.dto.response.PaymentDistribution;
+import com.dawn.report.dto.response.RevenuePointResponse;
+import com.dawn.report.dto.response.TopMovieResponse;
+import com.dawn.report.dto.response.TopTheaterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

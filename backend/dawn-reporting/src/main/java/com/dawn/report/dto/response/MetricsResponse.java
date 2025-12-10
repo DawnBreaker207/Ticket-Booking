@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.response.dashboard;
+package com.dawn.report.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

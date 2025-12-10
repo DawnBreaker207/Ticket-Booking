@@ -1,9 +1,9 @@
-package com.dawn.backend.controller;
+package com.dawn.report.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.DashboardFilterRequest;
-import com.dawn.backend.dto.response.dashboard.*;
-import com.dawn.backend.service.DashboardService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.report.dto.request.DashboardFilterRequest;
+import com.dawn.report.dto.response.*;
+import com.dawn.report.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
