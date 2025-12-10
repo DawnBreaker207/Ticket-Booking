@@ -1,13 +1,13 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.constant.Message;
-import com.dawn.backend.dto.request.UserRequest;
-import com.dawn.backend.dto.response.UserResponse;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.UserMappingHelper;
-import com.dawn.backend.repository.UserRepository;
-import com.dawn.backend.service.UserService;
+import com.dawn.common.config.response.ResponsePage;
+import com.dawn.common.constant.Message;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.identity.dto.request.UserRequest;
+import com.dawn.identity.dto.response.UserResponse;
+import com.dawn.identity.helper.UserMappingHelper;
+import com.dawn.identity.repository.UserRepository;
+import com.dawn.identity.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;

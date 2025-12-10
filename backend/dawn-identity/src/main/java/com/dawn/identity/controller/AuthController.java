@@ -1,12 +1,12 @@
 package com.dawn.identity.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.LoginRequest;
-import com.dawn.backend.dto.request.RegisterRequest;
-import com.dawn.backend.dto.response.JwtResponse;
-import com.dawn.backend.dto.response.TokenRefreshResponse;
-import com.dawn.backend.service.AuthService;
-import com.dawn.backend.util.JWTUtils;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.identity.dto.request.LoginRequest;
+import com.dawn.identity.dto.request.RegisterRequest;
+import com.dawn.identity.dto.response.JwtResponse;
+import com.dawn.identity.dto.response.TokenRefreshResponse;
+import com.dawn.identity.service.AuthService;
+import com.dawn.identity.utils.JWTUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

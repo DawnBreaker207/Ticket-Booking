@@ -1,10 +1,10 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.backend.constant.Message;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.model.User;
-import com.dawn.backend.model.UserDetailsImpl;
-import com.dawn.backend.repository.UserRepository;
+import com.dawn.common.constant.Message;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.identity.model.User;
+import com.dawn.identity.model.UserDetailsImpl;
+import com.dawn.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

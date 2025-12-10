@@ -1,7 +1,7 @@
 package com.dawn.identity.model;
 
-import com.dawn.backend.constant.URole;
-import com.dawn.backend.model.AbstractMappedEntity;
+import com.dawn.common.constant.URole;
+import com.dawn.common.model.AbstractMappedEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

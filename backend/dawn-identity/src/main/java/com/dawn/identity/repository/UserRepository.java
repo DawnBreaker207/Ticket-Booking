@@ -1,7 +1,7 @@
 package com.dawn.identity.repository;
 
-import com.dawn.backend.constant.URole;
-import com.dawn.backend.model.User;
+import com.dawn.common.constant.URole;
+import com.dawn.identity.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

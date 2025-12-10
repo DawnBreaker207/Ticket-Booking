@@ -1,7 +1,7 @@
 package com.dawn.identity.config.security;
 
-import com.dawn.backend.service.Impl.UserDetailsServiceImpl;
-import com.dawn.backend.util.JWTUtils;
+import com.dawn.identity.service.Impl.UserDetailsServiceImpl;
+import com.dawn.identity.utils.JWTUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

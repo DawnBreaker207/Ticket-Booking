@@ -1,12 +1,12 @@
 package com.dawn.identity.config;
 
-import com.dawn.backend.constant.Message;
-import com.dawn.backend.constant.URole;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.model.Role;
-import com.dawn.backend.model.User;
-import com.dawn.backend.repository.RoleRepository;
-import com.dawn.backend.repository.UserRepository;
+import com.dawn.common.constant.Message;
+import com.dawn.common.constant.URole;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.identity.model.Role;
+import com.dawn.identity.model.User;
+import com.dawn.identity.repository.RoleRepository;
+import com.dawn.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

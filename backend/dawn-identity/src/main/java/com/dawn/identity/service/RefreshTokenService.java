@@ -1,6 +1,7 @@
 package com.dawn.identity.service;
 
-import com.dawn.backend.model.RefreshToken;
+
+import com.dawn.identity.model.RefreshToken;
 
 import java.util.Optional;
 

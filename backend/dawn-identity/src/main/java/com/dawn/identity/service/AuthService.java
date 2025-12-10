@@ -1,9 +1,10 @@
 package com.dawn.identity.service;
 
-import com.dawn.backend.dto.request.LoginRequest;
-import com.dawn.backend.dto.request.RegisterRequest;
-import com.dawn.backend.dto.response.JwtResponse;
-import com.dawn.backend.dto.response.TokenRefreshResponse;
+
+import com.dawn.identity.dto.request.LoginRequest;
+import com.dawn.identity.dto.request.RegisterRequest;
+import com.dawn.identity.dto.response.JwtResponse;
+import com.dawn.identity.dto.response.TokenRefreshResponse;
 
 public interface AuthService {
 

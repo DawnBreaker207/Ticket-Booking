@@ -1,7 +1,7 @@
 package com.dawn.identity.config.security.handler;
 
-import com.dawn.backend.model.UserDetailsImpl;
-import com.dawn.backend.service.RefreshTokenService;
+import com.dawn.identity.model.UserDetailsImpl;
+import com.dawn.identity.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

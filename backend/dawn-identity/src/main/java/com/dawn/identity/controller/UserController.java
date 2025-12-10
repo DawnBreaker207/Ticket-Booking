@@ -1,10 +1,10 @@
 package com.dawn.identity.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.UserRequest;
-import com.dawn.backend.dto.response.UserResponse;
-import com.dawn.backend.service.UserService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.config.response.ResponsePage;
+import com.dawn.identity.dto.request.UserRequest;
+import com.dawn.identity.dto.response.UserResponse;
+import com.dawn.identity.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

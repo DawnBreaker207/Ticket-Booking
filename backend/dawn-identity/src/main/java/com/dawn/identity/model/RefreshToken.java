@@ -1,6 +1,5 @@
 package com.dawn.identity.model;
 
-import com.dawn.backend.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

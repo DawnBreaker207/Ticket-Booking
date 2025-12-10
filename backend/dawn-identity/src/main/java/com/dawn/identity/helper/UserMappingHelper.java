@@ -1,8 +1,9 @@
 package com.dawn.identity.helper;
 
-import com.dawn.backend.dto.request.UserRequest;
-import com.dawn.backend.dto.response.UserResponse;
-import com.dawn.backend.model.User;
+
+import com.dawn.identity.dto.request.UserRequest;
+import com.dawn.identity.dto.response.UserResponse;
+import com.dawn.identity.model.User;
 
 public interface UserMappingHelper {
     static UserResponse map(final User u) {

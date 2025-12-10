@@ -1,6 +1,6 @@
 package com.dawn.identity.dto.response;
 
-import com.dawn.backend.dto.response.BaseResponse;
+import com.dawn.common.dto.response.BaseResponse;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

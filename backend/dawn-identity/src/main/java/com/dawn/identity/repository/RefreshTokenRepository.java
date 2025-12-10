@@ -1,7 +1,7 @@
-package com.dawn.backend.repository;
+package com.dawn.identity.repository;
 
-import com.dawn.backend.model.RefreshToken;
-import com.dawn.backend.model.User;
+import com.dawn.identity.model.RefreshToken;
+import com.dawn.identity.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
