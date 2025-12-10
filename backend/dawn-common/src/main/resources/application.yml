@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: dawn-common
+server:
+  port: 8888
+# Swagger config
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+spring:
+  application:
+    name: ticket-booking
+  # Database config
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # JPA config
+  jpa:
+    hibernate:
+      ddl-auto: none
+  #    show-sql: true
+  sql:
+    init:
+      mode: never
+      schema-locations: classpath:db/migration
+      data-locations: classpath:db/migration
+  # Config Flyway
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: false
+    baseline-on-migrate: true
+  # Config Redis
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 60000
+      repositories:
+        enabled: true
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000
+  # Mail Properties
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+logging:
+  level:
+    org:
+      springframework:
+        #        security: TRACE
+        #        web:
+        #          client:
+        #            RestTemplate: DEBUG
+        boot:
+          autoconfigure:
+            jdbc: debug
+  #Config Payment
+payment:
+  # VNPay
+  VNPay:
+    url: ${VNPAY_URL}
+    tmnCode: ${VNPAY_TMN_CODE}
+    secretKey: ${VNPAY_SECRET_KEY}
+    returnUrl: ${VNPAY_RETURN_URL}
+    version: ${VNPAY_VERSION}
+    command: ${VNPAY_COMMAND}
+    orderType: ${VNPAY_ORDER_TYPE}
+  # Momo
+  Momo:
+    url: ${MOMO_URL}
+    partnerCode: ${MOMO_PARTNER_CODE}
+    accessKey: ${MOMO_ACCESS_KEY}
+    secretKey: ${MOMO_SECRET_KEY}
+    returnUrl: ${MOMO_RETURN_URL}
+    notifyUrl: ${MOMO_IPN_URL}
+    orderType: ${MOMO_ORDER_TYPE}
+#Config JWT
+dawn:
+  app:
+    jwtCookieName: ${JWT_COOKIE_NAME}
+    jwtRefreshCookieName: ${JWT_COOKIE_REFRESH_NAME}
+    jwtSecret: ${JWT_SECRET}
+    jwtExpirationsMs: ${JWT_EXPIRATION}
+    jwtRefreshExpirationsMs: ${JWT_REFRESH_EXPIRATION}
+    setup:
+      admin:
+        username: ${ADMIN_USERNAME}
+        email: ${ADMIN_EMAIL}
+        password: ${ADMIN_PASSWORD}
+      user:
+        username: ${USER_USERNAME}
+        email: ${USER_EMAIL}
+        password: ${USER_PASSWORD}
+#Config Rate Limiter
+resilience4j:
+  ratelimiter:
+    instances:
+      limiter:
+        limit-for-period: 100
+        limit-refresh-period: 1m
+        timeout-duration: 1s
