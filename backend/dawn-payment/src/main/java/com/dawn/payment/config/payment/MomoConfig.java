@@ -1,4 +1,4 @@
-package com.dawn.backend.config.payment;
+package com.dawn.payment.config.payment;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

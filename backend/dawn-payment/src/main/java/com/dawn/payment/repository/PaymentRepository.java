@@ -1,7 +1,7 @@
-package com.dawn.backend.repository;
+package com.dawn.payment.repository;
 
-import com.dawn.backend.model.Payment;
-import com.dawn.backend.model.Reservation;
+import com.dawn.booking.model.Reservation;
+import com.dawn.payment.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

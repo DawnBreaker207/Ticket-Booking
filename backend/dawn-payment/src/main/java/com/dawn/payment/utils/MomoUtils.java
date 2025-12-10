@@ -1,6 +1,6 @@
-package com.dawn.backend.util;
+package com.dawn.payment.utils;
 
-import com.dawn.backend.config.payment.MomoConfig;
+import com.dawn.payment.config.payment.MomoConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

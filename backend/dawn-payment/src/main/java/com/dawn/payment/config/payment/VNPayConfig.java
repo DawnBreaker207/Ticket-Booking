@@ -1,6 +1,6 @@
-package com.dawn.backend.config.payment;
+package com.dawn.payment.config.payment;
 
-import com.dawn.backend.util.VNPayUtils;
+import com.dawn.payment.utils.VNPayUtils;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

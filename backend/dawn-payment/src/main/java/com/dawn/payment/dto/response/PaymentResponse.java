@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.response;
+package com.dawn.payment.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

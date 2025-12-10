@@ -1,9 +1,9 @@
-package com.dawn.backend.controller;
+package com.dawn.payment.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.dto.request.PaymentRequest;
-import com.dawn.backend.dto.response.PaymentResponse;
-import com.dawn.backend.service.PaymentService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.payment.dto.request.PaymentRequest;
+import com.dawn.payment.dto.response.PaymentResponse;
+import com.dawn.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
