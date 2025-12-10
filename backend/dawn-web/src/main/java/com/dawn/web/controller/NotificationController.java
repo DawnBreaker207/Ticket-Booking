@@ -1,7 +1,7 @@
-package com.dawn.backend.controller;
+package com.dawn.web.controller;
 
-import com.dawn.backend.helper.RedisKeyHelper;
-import com.dawn.backend.service.NotificationService;
+import com.dawn.common.helper.RedisKeyHelper;
+import com.dawn.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -36,7 +36,7 @@ public class NotificationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CACHE_CONTROL, "no-store");
         headers.add(HttpHeaders.CONNECTION, "keep-alive");
-        SseEmitter emitter =  notificationService.subscribe(RedisKeyHelper
+        SseEmitter emitter = notificationService.subscribe(RedisKeyHelper
                 .showtimeChannel(showtimeId), clientId);
         return ResponseEntity
                 .ok()
