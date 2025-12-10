@@ -1,14 +1,14 @@
-package com.dawn.backend.service.Impl;
+package com.dawn.cinema.service.Impl;
 
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.constant.Message;
-import com.dawn.backend.dto.request.TheaterRequest;
-import com.dawn.backend.dto.response.TheaterResponse;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.TheaterMappingHelper;
-import com.dawn.backend.model.Theater;
-import com.dawn.backend.repository.TheaterRepository;
-import com.dawn.backend.service.TheaterService;
+import com.dawn.cinema.dto.request.TheaterRequest;
+import com.dawn.cinema.dto.response.TheaterResponse;
+import com.dawn.cinema.helper.TheaterMappingHelper;
+import com.dawn.cinema.model.Theater;
+import com.dawn.cinema.repository.TheaterRepository;
+import com.dawn.cinema.service.TheaterService;
+import com.dawn.common.config.response.ResponsePage;
+import com.dawn.common.constant.Message;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;

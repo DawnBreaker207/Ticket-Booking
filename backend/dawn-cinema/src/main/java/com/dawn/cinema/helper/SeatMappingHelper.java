@@ -1,8 +1,8 @@
-package com.dawn.backend.helper;
+package com.dawn.cinema.helper;
 
-import com.dawn.backend.dto.request.SeatRequest;
-import com.dawn.backend.dto.response.SeatResponse;
-import com.dawn.backend.model.Seat;
+import com.dawn.cinema.dto.request.SeatRequest;
+import com.dawn.cinema.dto.response.SeatResponse;
+import com.dawn.cinema.model.Seat;
 
 public interface SeatMappingHelper {
     static Seat map(final SeatRequest seat) {

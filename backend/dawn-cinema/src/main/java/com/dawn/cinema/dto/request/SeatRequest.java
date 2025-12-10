@@ -1,8 +1,8 @@
-package com.dawn.backend.dto.request;
+package com.dawn.cinema.dto.request;
 
-import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.model.Reservation;
-import com.dawn.backend.model.Showtime;
+import com.dawn.booking.model.Reservation;
+import com.dawn.cinema.model.Showtime;
+import com.dawn.common.constant.SeatStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
-package com.dawn.backend.service;
+package com.dawn.cinema.service;
 
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.TheaterRequest;
-import com.dawn.backend.dto.response.TheaterResponse;
+import com.dawn.cinema.dto.request.TheaterRequest;
+import com.dawn.cinema.dto.response.TheaterResponse;
+import com.dawn.common.config.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface TheaterService {

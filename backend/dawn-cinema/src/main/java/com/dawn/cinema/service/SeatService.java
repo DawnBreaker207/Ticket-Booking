@@ -1,8 +1,8 @@
-package com.dawn.backend.service;
+package com.dawn.cinema.service;
 
-import com.dawn.backend.dto.response.SeatResponse;
-import com.dawn.backend.model.Seat;
-import com.dawn.backend.model.Showtime;
+import com.dawn.cinema.dto.response.SeatResponse;
+import com.dawn.cinema.model.Seat;
+import com.dawn.cinema.model.Showtime;
 
 import java.util.List;
 

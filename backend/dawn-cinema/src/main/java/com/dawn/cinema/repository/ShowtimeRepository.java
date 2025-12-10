@@ -1,8 +1,8 @@
-package com.dawn.backend.repository;
+package com.dawn.cinema.repository;
 
-import com.dawn.backend.model.Movie;
-import com.dawn.backend.model.Showtime;
-import com.dawn.backend.model.Theater;
+import com.dawn.catalog.model.Movie;
+import com.dawn.cinema.model.Showtime;
+import com.dawn.cinema.model.Theater;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,7 +29,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                   OR (s.showDate BETWEEN :#{#from} AND :#{#to})
               )
            """)
-    Page<Showtime> findByTheater(Theater theater,LocalDate from, LocalDate to, Pageable pageable);
+    Page<Showtime> findByTheater(Theater theater, LocalDate from, LocalDate to, Pageable pageable);
 
     //    Find by date and movie
     List<Showtime> findByShowDateAndMovie(LocalDate date, Movie movie);

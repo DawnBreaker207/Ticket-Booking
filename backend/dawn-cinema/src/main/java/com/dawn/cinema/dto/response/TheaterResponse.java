@@ -1,6 +1,6 @@
-package com.dawn.backend.dto.response;
+package com.dawn.cinema.dto.response;
 
-import com.dawn.backend.model.AbstractMappedEntity;
+import com.dawn.common.dto.response.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

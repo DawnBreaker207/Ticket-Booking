@@ -1,15 +1,15 @@
-package com.dawn.backend.service.Impl;
+package com.dawn.cinema.service.Impl;
 
-import com.dawn.backend.constant.Message;
-import com.dawn.backend.constant.SeatStatus;
-import com.dawn.backend.dto.response.SeatResponse;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.SeatMappingHelper;
-import com.dawn.backend.model.Seat;
-import com.dawn.backend.model.Showtime;
-import com.dawn.backend.repository.SeatRepository;
-import com.dawn.backend.repository.ShowtimeRepository;
-import com.dawn.backend.service.SeatService;
+import com.dawn.cinema.dto.response.SeatResponse;
+import com.dawn.cinema.helper.SeatMappingHelper;
+import com.dawn.cinema.model.Seat;
+import com.dawn.cinema.model.Showtime;
+import com.dawn.cinema.repository.SeatRepository;
+import com.dawn.cinema.repository.ShowtimeRepository;
+import com.dawn.cinema.service.SeatService;
+import com.dawn.common.constant.Message;
+import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

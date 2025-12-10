@@ -1,8 +1,8 @@
-package com.dawn.backend.helper;
+package com.dawn.cinema.helper;
 
-import com.dawn.backend.dto.request.TheaterRequest;
-import com.dawn.backend.dto.response.TheaterResponse;
-import com.dawn.backend.model.Theater;
+import com.dawn.cinema.dto.request.TheaterRequest;
+import com.dawn.cinema.dto.response.TheaterResponse;
+import com.dawn.cinema.model.Theater;
 
 import java.util.Collections;
 import java.util.Optional;

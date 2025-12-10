@@ -1,11 +1,11 @@
-package com.dawn.backend.controller;
+package com.dawn.cinema.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.ShowtimeFilterRequest;
-import com.dawn.backend.dto.request.ShowtimeRequest;
-import com.dawn.backend.dto.response.ShowtimeResponse;
-import com.dawn.backend.service.ShowtimeService;
+import com.dawn.cinema.dto.request.ShowtimeFilterRequest;
+import com.dawn.cinema.dto.request.ShowtimeRequest;
+import com.dawn.cinema.dto.response.ShowtimeResponse;
+import com.dawn.cinema.service.ShowtimeService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.config.response.ResponsePage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

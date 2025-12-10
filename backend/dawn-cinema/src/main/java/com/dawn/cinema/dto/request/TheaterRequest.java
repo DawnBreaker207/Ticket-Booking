@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.request;
+package com.dawn.cinema.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

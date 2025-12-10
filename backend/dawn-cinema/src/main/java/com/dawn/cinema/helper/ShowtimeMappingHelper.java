@@ -1,8 +1,8 @@
-package com.dawn.backend.helper;
+package com.dawn.cinema.helper;
 
-import com.dawn.backend.dto.request.ShowtimeRequest;
-import com.dawn.backend.dto.response.ShowtimeResponse;
-import com.dawn.backend.model.Showtime;
+import com.dawn.cinema.dto.request.ShowtimeRequest;
+import com.dawn.cinema.dto.response.ShowtimeResponse;
+import com.dawn.cinema.model.Showtime;
 
 public interface ShowtimeMappingHelper {
     static Showtime map(final ShowtimeRequest showtime) {

@@ -1,5 +1,6 @@
-package com.dawn.backend.model;
+package com.dawn.cinema.model;
 
+import com.dawn.common.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
