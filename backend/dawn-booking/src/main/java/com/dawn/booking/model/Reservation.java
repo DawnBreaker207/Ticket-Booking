@@ -1,6 +1,10 @@
-package com.dawn.backend.model;
+package com.dawn.booking.model;
 
-import com.dawn.backend.constant.ReservationStatus;
+import com.dawn.cinema.model.Seat;
+import com.dawn.cinema.model.Showtime;
+import com.dawn.common.constant.ReservationStatus;
+import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.identity.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,10 @@
-package com.dawn.backend.dto.response;
+package com.dawn.booking.dto.response;
 
-import com.dawn.backend.constant.ReservationStatus;
+import com.dawn.cinema.dto.response.SeatResponse;
+import com.dawn.cinema.dto.response.ShowtimeResponse;
+import com.dawn.common.constant.ReservationStatus;
+import com.dawn.common.dto.response.BaseResponse;
+import com.dawn.identity.dto.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,12 +1,12 @@
-package com.dawn.backend.controller;
+package com.dawn.booking.controller;
 
-import com.dawn.backend.config.response.ResponseObject;
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.*;
-import com.dawn.backend.dto.response.ReservationInitResponse;
-import com.dawn.backend.dto.response.ReservationResponse;
-import com.dawn.backend.dto.response.UserReservationResponse;
-import com.dawn.backend.service.ReservationService;
+import com.dawn.booking.dto.request.*;
+import com.dawn.booking.dto.response.ReservationInitResponse;
+import com.dawn.booking.dto.response.ReservationResponse;
+import com.dawn.booking.dto.response.UserReservationResponse;
+import com.dawn.booking.service.ReservationService;
+import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.config.response.ResponsePage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

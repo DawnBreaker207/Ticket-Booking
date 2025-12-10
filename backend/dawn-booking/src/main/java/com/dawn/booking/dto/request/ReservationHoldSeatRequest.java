@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.request;
+package com.dawn.booking.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

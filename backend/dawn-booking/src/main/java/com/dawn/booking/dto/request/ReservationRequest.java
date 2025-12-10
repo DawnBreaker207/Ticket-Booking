@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.request;
+package com.dawn.booking.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

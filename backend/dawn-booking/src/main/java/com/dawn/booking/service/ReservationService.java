@@ -1,10 +1,10 @@
-package com.dawn.backend.service;
+package com.dawn.booking.service;
 
-import com.dawn.backend.config.response.ResponsePage;
-import com.dawn.backend.dto.request.*;
-import com.dawn.backend.dto.response.ReservationInitResponse;
-import com.dawn.backend.dto.response.ReservationResponse;
-import com.dawn.backend.dto.response.UserReservationResponse;
+import com.dawn.booking.dto.request.*;
+import com.dawn.booking.dto.response.ReservationInitResponse;
+import com.dawn.booking.dto.response.ReservationResponse;
+import com.dawn.booking.dto.response.UserReservationResponse;
+import com.dawn.common.config.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface ReservationService {

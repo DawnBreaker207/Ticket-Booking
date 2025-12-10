@@ -1,9 +1,12 @@
-package com.dawn.backend.helper;
+package com.dawn.booking.helper;
 
-import com.dawn.backend.dto.response.ReservationResponse;
-import com.dawn.backend.dto.response.UserReservationResponse;
-import com.dawn.backend.model.Reservation;
-import com.dawn.backend.model.Seat;
+import com.dawn.booking.dto.response.ReservationResponse;
+import com.dawn.booking.dto.response.UserReservationResponse;
+import com.dawn.booking.model.Reservation;
+import com.dawn.cinema.helper.SeatMappingHelper;
+import com.dawn.cinema.helper.ShowtimeMappingHelper;
+import com.dawn.cinema.model.Seat;
+import com.dawn.identity.helper.UserMappingHelper;
 
 public interface ReservationMappingHelper {
 
@@ -29,7 +32,7 @@ public interface ReservationMappingHelper {
 
     }
 
-    static UserReservationResponse toUserResponse(final Reservation reservation){
+    static UserReservationResponse toUserResponse(final Reservation reservation) {
         return UserReservationResponse.builder()
                 .reservationId(reservation.getId())
                 .movieTitle(reservation.getShowtime().getMovie().getTitle())

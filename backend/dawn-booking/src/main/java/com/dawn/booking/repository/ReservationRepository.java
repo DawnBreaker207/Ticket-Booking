@@ -1,13 +1,12 @@
-package com.dawn.backend.repository;
+package com.dawn.booking.repository;
 
-import com.dawn.backend.constant.ReservationStatus;
-import com.dawn.backend.dto.request.ReservationFilterRequest;
-import com.dawn.backend.model.Reservation;
+import com.dawn.booking.dto.request.ReservationFilterRequest;
+import com.dawn.booking.model.Reservation;
+import com.dawn.common.constant.ReservationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;

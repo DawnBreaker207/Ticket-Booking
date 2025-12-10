@@ -1,4 +1,4 @@
-package com.dawn.backend.util;
+package com.dawn.booking.utils;
 
 import java.util.UUID;
 
