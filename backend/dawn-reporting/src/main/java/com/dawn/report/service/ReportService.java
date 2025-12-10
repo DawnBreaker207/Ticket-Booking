@@ -1,6 +1,7 @@
 package com.dawn.report.service;
 
-import com.dawn.backend.dto.response.ReportResponse;
+
+import com.dawn.report.dto.response.ReportResponse;
 
 public interface ReportService {
     ReportResponse exportReport(String reportFormat);
