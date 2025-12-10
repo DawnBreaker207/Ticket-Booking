@@ -1,6 +1,6 @@
-package com.dawn.backend.config.redis;
+package com.dawn.common.config.redis;
 
-import com.dawn.backend.service.NotificationService;
+import com.dawn.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;

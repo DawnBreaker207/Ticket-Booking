@@ -1,4 +1,4 @@
-package com.dawn.backend.config.redis;
+package com.dawn.common.config.redis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

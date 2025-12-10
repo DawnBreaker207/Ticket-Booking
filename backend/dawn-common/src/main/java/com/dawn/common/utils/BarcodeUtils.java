@@ -1,4 +1,4 @@
-package com.dawn.backend.util;
+package com.dawn.common.utils;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageConfig;

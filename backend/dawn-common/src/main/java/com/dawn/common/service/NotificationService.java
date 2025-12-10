@@ -1,6 +1,6 @@
-package com.dawn.backend.service;
+package com.dawn.common.service;
 
-import com.dawn.backend.util.BarcodeUtils;
+import com.dawn.common.utils.BarcodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
-package com.dawn.backend.service;
+package com.dawn.common.service;
 
-import com.dawn.backend.config.redis.RedisPublisher;
-import com.dawn.backend.exception.wrapper.RedisStorageException;
-import com.dawn.backend.helper.RedisKeyHelper;
+import com.dawn.common.config.redis.RedisPublisher;
+import com.dawn.common.exception.wrapper.RedisStorageException;
+import com.dawn.common.helper.RedisKeyHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

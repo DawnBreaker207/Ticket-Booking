@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.response;
+package com.dawn.common.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

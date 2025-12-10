@@ -1,4 +1,4 @@
-package com.dawn.backend.dto.request;
+package com.dawn.common.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.AssertTrue;

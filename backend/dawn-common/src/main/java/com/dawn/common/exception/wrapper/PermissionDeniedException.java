@@ -1,6 +1,6 @@
-package com.dawn.backend.exception.wrapper;
+package com.dawn.common.exception.wrapper;
 
-import com.dawn.backend.exception.ApiException;
+import com.dawn.common.exception.ApiException;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serial;

@@ -1,4 +1,4 @@
-package com.dawn.backend.exception;
+package com.dawn.common.exception;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;

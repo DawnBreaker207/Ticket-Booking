@@ -1,6 +1,6 @@
-package com.dawn.backend.exception;
+package com.dawn.common.exception;
 
-import com.dawn.backend.exception.payload.ExceptionMessage;
+import com.dawn.common.exception.payload.ExceptionMessage;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

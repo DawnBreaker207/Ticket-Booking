@@ -1,4 +1,4 @@
-package com.dawn.backend.helper;
+package com.dawn.common.helper;
 
 public interface RedisKeyHelper {
     static String reservationHoldKey(final String reservationId) {
