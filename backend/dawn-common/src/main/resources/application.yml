@@ -12,6 +12,12 @@ springdoc:
 spring:
   application:
     name: ticket-booking
+  # RabbitMQ config
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: username
+    password: password
   # Database config
   datasource:
     url: ${SPRING_DATASOURCE_URL}
@@ -110,7 +116,7 @@ dawn:
         username: ${USER_USERNAME}
         email: ${USER_EMAIL}
         password: ${USER_PASSWORD}
-#Config Cloudinary
+  #Config Cloudinary
   cloudinary:
     folderName: ${CLOUDINARY_FOLDER_NAME}
     cloudName: ${CLOUDINARY_CLOUD_NAME}
