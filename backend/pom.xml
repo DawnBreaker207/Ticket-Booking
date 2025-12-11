@@ -35,6 +35,7 @@
         <zxing.version>3.5.3</zxing.version>
         <resilience4j.version>2.3.0</resilience4j.version>
         <jasperreports.version>6.20.6</jasperreports.version>
+        <cloudinary.version>1.39.0</cloudinary.version>
     </properties>
     <dependencies>
         <!--  Tools   -->
@@ -149,6 +150,11 @@
                 <groupId>com.google.zxing</groupId>
                 <artifactId>javase</artifactId>
                 <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudinary</groupId>
+                <artifactId>cloudinary-http44</artifactId>
+                <version>${cloudinary.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
