@@ -41,6 +41,13 @@ services:
     networks:
       - booking-net
     command: ['redis-server', '--notify-keyspace-events', 'Ex']
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    restart: no
+    ports:
+      - '5672:5672'
+      - '15672:15672'
   server:
     container_name: booking-ticket
     image: booking-ticket:latest
@@ -86,6 +93,11 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+      ###   Cloudinary Config
+      CLOUDINARY_FOLDER_NAME: ${FOLDER_NAME}
+      CLOUDINARY_CLOUD_NAME: ${CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${API_KEY}
+      CLOUDINARY_API_SECRET: ${API_SECRET}
     build:
       context: ../backend
       dockerfile: Dockerfile
