@@ -31,21 +31,19 @@ public class SecurityConfig {
 
     private final RoleAccessHandler roleAccessHandler;
 
+    private final PasswordEncoder passwordEncoder;
+
     private final SignOutHandler signOutHandler;
 
     private final AuthTokenFilter authTokenFilter;
 
     private final CorsConfig corsConfig;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         var authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        authBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authBuilder.build();
     }
 

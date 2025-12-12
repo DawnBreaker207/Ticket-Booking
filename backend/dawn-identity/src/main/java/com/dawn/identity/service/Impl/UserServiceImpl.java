@@ -1,11 +1,15 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.common.config.response.ResponsePage;
+import com.dawn.api.identity.service.UserClientService;
 import com.dawn.common.constant.Message;
+import com.dawn.common.constant.URole;
+import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.helper.UserMappingHelper;
+import com.dawn.identity.model.Role;
+import com.dawn.identity.repository.RoleRepository;
 import com.dawn.identity.repository.UserRepository;
 import com.dawn.identity.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserClientService {
     public static final String USER_CACHE = "user";
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Override
 //    @Cacheable(value = USER_CACHE)
@@ -70,5 +75,23 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
         user.setIsDeleted(status);
         return UserMappingHelper.map(userRepository.save(user));
+    }
+
+    @Override
+    public boolean existsByRolesName(String roleName) {
+        Role role = roleRepository
+                .findByName(URole.ADMIN)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+        return userRepository.existsByRolesName(role.getName());
+    }
+
+    @Override
+    public boolean findByRoleName(String roleName) {
+        roleRepository
+                .findByName(URole.ADMIN)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
+        return true;
     }
 }

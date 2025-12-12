@@ -1,4 +1,4 @@
-package com.dawn.web.config;
+package com.dawn.identity.config;
 
 import com.dawn.common.constant.Message;
 import com.dawn.common.constant.URole;
