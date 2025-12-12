@@ -86,6 +86,11 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+      ###   Cloudinary Config
+      CLOUDINARY_FOLDER_NAME: ${FOLDER_NAME}
+      CLOUDINARY_CLOUD_NAME: ${CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${API_KEY}
+      CLOUDINARY_API_SECRET: ${API_SECRET}
     build:
       context: ../backend
       dockerfile: Dockerfile
