@@ -1,8 +1,8 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.api.identity.service.UserClientService;
+import com.dawn.api.identity.dto.RoleDTO;
+import com.dawn.api.identity.dto.UserDTO;
 import com.dawn.common.constant.Message;
-import com.dawn.common.constant.URole;
 import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.dto.request.UserRequest;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService, UserClientService {
+public class UserServiceImpl implements UserService {
     public static final String USER_CACHE = "user";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -55,6 +55,13 @@ public class UserServiceImpl implements UserService, UserClientService {
     }
 
     @Override
+    public UserDTO findWithEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserMappingHelper::mapDto)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
+    }
+
+    @Override
     @Transactional
     @CachePut(value = USER_CACHE, key = "'id:' + #id")
     public UserResponse update(Long id, UserRequest userDetails) {
@@ -80,18 +87,21 @@ public class UserServiceImpl implements UserService, UserClientService {
     @Override
     public boolean existsByRolesName(String roleName) {
         Role role = roleRepository
-                .findByName(URole.ADMIN)
+                .findByName(roleName)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
         return userRepository.existsByRolesName(role.getName());
     }
 
     @Override
-    public boolean findByRoleName(String roleName) {
-        roleRepository
-                .findByName(URole.ADMIN)
+    public RoleDTO findByRoleName(String roleName) {
+        Role role = roleRepository
+                .findByName(roleName)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
-        return true;
+        return RoleDTO
+                .builder()
+                .name(role.getName())
+                .build();
     }
 }
