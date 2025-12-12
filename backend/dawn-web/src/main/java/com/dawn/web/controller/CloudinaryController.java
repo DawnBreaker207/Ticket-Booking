@@ -1,6 +1,6 @@
 package com.dawn.web.controller;
 
-import com.dawn.common.service.CloudinaryService;
+import com.dawn.web.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

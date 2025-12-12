@@ -1,4 +1,4 @@
-package com.dawn.common.service;
+package com.dawn.web.service;
 
 import com.dawn.common.utils.BarcodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;

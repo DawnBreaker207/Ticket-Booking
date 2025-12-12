@@ -1,4 +1,4 @@
-package com.dawn.common.config;
+package com.dawn.web.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;

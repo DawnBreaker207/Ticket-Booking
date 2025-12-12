@@ -1,4 +1,4 @@
-package com.dawn.common.config;
+package com.dawn.web.config;
 
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Value;
