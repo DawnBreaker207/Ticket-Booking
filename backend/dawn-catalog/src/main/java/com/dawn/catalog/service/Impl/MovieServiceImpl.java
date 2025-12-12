@@ -1,6 +1,7 @@
 package com.dawn.catalog.service.Impl;
 
 import com.dawn.catalog.dto.request.MovieRequest;
+import com.dawn.api.catalog.dto.MovieDTO;
 import com.dawn.catalog.dto.response.MovieResponse;
 import com.dawn.catalog.helper.MovieMappingHelper;
 import com.dawn.catalog.model.Genre;
@@ -46,7 +47,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Cacheable(value = CACHE_INFO, key = "#id")
-    public MovieResponse findOne(Long id) {
+    public MovieDTO findOne(Long id) {
+        Movie existed = movieRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND));
+        return MovieMappingHelper.mapDto(existed);
+    }
+
+    @Override
+    @Cacheable(value = CACHE_INFO, key = "#id")
+    public MovieResponse findById(Long id) {
         return movieRepository
                 .findById(id)
                 .map(MovieMappingHelper::map)

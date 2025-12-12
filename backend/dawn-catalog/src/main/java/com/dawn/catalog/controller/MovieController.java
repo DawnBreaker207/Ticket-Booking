@@ -29,7 +29,7 @@ public class MovieController {
     @GetMapping("/{id}")
     @RateLimiter(name = "limiter")
     public ResponseObject<MovieResponse> findById(@PathVariable Long id) {
-        return ResponseObject.success(movieService.findOne(id));
+        return ResponseObject.success(movieService.findById(id));
     }
 
     @GetMapping("/filmId/{id}")

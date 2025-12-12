@@ -1,16 +1,17 @@
 package com.dawn.catalog.service;
 
+import com.dawn.api.catalog.service.MovieClientService;
 import com.dawn.catalog.dto.request.MovieRequest;
 import com.dawn.catalog.dto.response.MovieResponse;
 import com.dawn.common.dto.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
-public interface MovieService {
+public interface MovieService extends MovieClientService {
     ResponsePage<MovieResponse> findAll(MovieRequest m, Pageable pageable);
 
-    MovieResponse findOne(Long id);
-
     MovieResponse findByMovieId(String id);
+
+    MovieResponse findById(Long id);
 
     MovieResponse create(MovieRequest id);
 
