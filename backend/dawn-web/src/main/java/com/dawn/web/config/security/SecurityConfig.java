@@ -1,9 +1,9 @@
-package com.dawn.identity.config.security;
+package com.dawn.web.config.security;
 
-import com.dawn.identity.config.security.handler.AuthEntryPointJwt;
-import com.dawn.identity.config.security.handler.RoleAccessHandler;
-import com.dawn.identity.config.security.handler.SignOutHandler;
 import com.dawn.identity.service.Impl.UserDetailsServiceImpl;
+import com.dawn.web.config.security.handler.AuthEntryPointJwt;
+import com.dawn.web.config.security.handler.RoleAccessHandler;
+import com.dawn.web.config.security.handler.SignOutHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

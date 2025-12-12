@@ -1,7 +1,7 @@
 package com.dawn.identity.controller;
 
-import com.dawn.common.config.response.ResponseObject;
-import com.dawn.common.config.response.ResponsePage;
+import com.dawn.common.dto.response.ResponseObject;
+import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.service.UserService;

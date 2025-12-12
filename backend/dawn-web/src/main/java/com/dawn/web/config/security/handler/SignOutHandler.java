@@ -1,4 +1,4 @@
-package com.dawn.identity.config.security.handler;
+package com.dawn.web.config.security.handler;
 
 import com.dawn.identity.model.UserDetailsImpl;
 import com.dawn.identity.service.RefreshTokenService;

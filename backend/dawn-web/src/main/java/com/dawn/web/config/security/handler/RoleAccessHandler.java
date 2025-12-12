@@ -1,6 +1,6 @@
-package com.dawn.identity.config.security.handler;
+package com.dawn.web.config.security.handler;
 
-import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.dto.response.ResponseObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

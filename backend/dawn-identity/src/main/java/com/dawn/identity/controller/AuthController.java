@@ -1,6 +1,6 @@
 package com.dawn.identity.controller;
 
-import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.identity.dto.request.LoginRequest;
 import com.dawn.identity.dto.request.RegisterRequest;
 import com.dawn.identity.dto.response.JwtResponse;
