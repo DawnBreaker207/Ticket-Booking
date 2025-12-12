@@ -3,7 +3,7 @@ package com.dawn.catalog.controller;
 import com.dawn.catalog.dto.request.ArticleRequest;
 import com.dawn.catalog.dto.response.ArticleResponse;
 import com.dawn.catalog.service.ArticleService;
-import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.dto.response.ResponseObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
