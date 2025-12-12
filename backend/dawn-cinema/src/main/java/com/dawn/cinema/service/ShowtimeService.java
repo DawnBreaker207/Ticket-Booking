@@ -3,7 +3,7 @@ package com.dawn.cinema.service;
 import com.dawn.cinema.dto.request.ShowtimeFilterRequest;
 import com.dawn.cinema.dto.request.ShowtimeRequest;
 import com.dawn.cinema.dto.response.ShowtimeResponse;
-import com.dawn.common.config.response.ResponsePage;
+import com.dawn.common.dto.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;

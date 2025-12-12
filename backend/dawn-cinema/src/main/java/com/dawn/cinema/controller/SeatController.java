@@ -2,7 +2,7 @@ package com.dawn.cinema.controller;
 
 import com.dawn.cinema.dto.response.SeatResponse;
 import com.dawn.cinema.service.SeatService;
-import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.dto.response.ResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
