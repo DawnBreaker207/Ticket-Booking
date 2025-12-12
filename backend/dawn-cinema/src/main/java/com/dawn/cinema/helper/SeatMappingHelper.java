@@ -11,7 +11,6 @@ public interface SeatMappingHelper {
                 .showtime(seat.getShowtime())
                 .seatNumber(seat.getSeatNumber())
                 .status(seat.getStatus())
-                .reservation(seat.getReservation())
                 .build();
     }
 

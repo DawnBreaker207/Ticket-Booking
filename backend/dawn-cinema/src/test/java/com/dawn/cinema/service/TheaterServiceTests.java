@@ -1,12 +1,12 @@
 package com.dawn.backend.service;
 
-import com.dawn.backend.dto.request.TheaterRequest;
-import com.dawn.backend.dto.response.TheaterResponse;
-import com.dawn.backend.exception.wrapper.ResourceNotFoundException;
-import com.dawn.backend.helper.TheaterMappingHelper;
-import com.dawn.backend.model.Theater;
-import com.dawn.backend.repository.TheaterRepository;
-import com.dawn.backend.service.Impl.TheaterServiceImpl;
+import com.dawn.cinema.dto.request.TheaterRequest;
+import com.dawn.cinema.dto.response.TheaterResponse;
+import com.dawn.cinema.helper.TheaterMappingHelper;
+import com.dawn.cinema.model.Theater;
+import com.dawn.cinema.repository.TheaterRepository;
+import com.dawn.cinema.service.Impl.TheaterServiceImpl;
+import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

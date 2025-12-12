@@ -4,7 +4,7 @@ import com.dawn.booking.dto.request.*;
 import com.dawn.booking.dto.response.ReservationInitResponse;
 import com.dawn.booking.dto.response.ReservationResponse;
 import com.dawn.booking.dto.response.UserReservationResponse;
-import com.dawn.common.config.response.ResponsePage;
+import com.dawn.common.dto.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface ReservationService {

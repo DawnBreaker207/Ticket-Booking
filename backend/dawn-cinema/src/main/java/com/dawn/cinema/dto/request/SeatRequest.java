@@ -1,6 +1,5 @@
 package com.dawn.cinema.dto.request;
 
-import com.dawn.booking.model.Reservation;
 import com.dawn.cinema.model.Showtime;
 import com.dawn.common.constant.SeatStatus;
 import lombok.AllArgsConstructor;
@@ -21,6 +20,4 @@ public class SeatRequest {
     private String seatNumber;
 
     private SeatStatus status;
-
-    private Reservation reservation;
 }

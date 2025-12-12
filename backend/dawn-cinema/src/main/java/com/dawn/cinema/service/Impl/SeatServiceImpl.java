@@ -35,7 +35,7 @@ public class SeatServiceImpl implements SeatService {
 
         log.info("Found showtime: {} for movie: {} at theater: {}",
                 showtimeId,
-                showtime.getMovie() != null ? showtime.getMovie().getTitle() : "unknown",
+                showtime.getMovieId() != null ? showtime.getMovieId() : "unknown",
                 showtime.getTheater() != null ? showtime.getTheater().getName() : "unknown");
 
         List<Seat> seats = seatRepository.findByShowtime(showtime);

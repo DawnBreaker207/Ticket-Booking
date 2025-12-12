@@ -16,23 +16,23 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     List<Showtime> findByShowDate(LocalDate date);
 
     //    Get all showtime for a movie
-    List<Showtime> findByMovie(Movie movie);
+    List<Showtime> findByMovieId(Long movieId);
 
     //    Get all showtime at a theater
-    @Query(value ="""
-              SELECT s FROM Showtime s
-              WHERE
-                 (:#{#theater.getId()} IS NULL OR s.theater.id = :#{#theater.getId()})
-              AND (
-                  :#{#from} IS NULL
-                  OR :#{#to} IS NULL
-                  OR (s.showDate BETWEEN :#{#from} AND :#{#to})
-              )
-           """)
+    @Query(value = """
+               SELECT s FROM Showtime s
+               WHERE
+                  (:#{#theater.getId()} IS NULL OR s.theater.id = :#{#theater.getId()})
+               AND (
+                   :#{#from} IS NULL
+                   OR :#{#to} IS NULL
+                   OR (s.showDate BETWEEN :#{#from} AND :#{#to})
+               )
+            """)
     Page<Showtime> findByTheater(Theater theater, LocalDate from, LocalDate to, Pageable pageable);
 
     //    Find by date and movie
-    List<Showtime> findByShowDateAndMovie(LocalDate date, Movie movie);
+    List<Showtime> findByShowDateAndMovieId(LocalDate date, Long movieId);
 
     //    Find by date and theater
     List<Showtime> findByShowDateAndTheater(LocalDate date, Theater theater);
@@ -42,6 +42,6 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     List<Showtime> findAvailableShowtimeFromDate(LocalDate date);
 
     //    Find available showtime for a specific movie from date
-    @Query("SELECT s FROM Showtime s WHERE s.movie.id = :movieId AND s.showDate >= :date AND s.availableSeats > 0")
-    List<Showtime> findAvailableShowtimeForMovieFromDate(Long movieId, LocalDate date);
+//    @Query("SELECT s FROM Showtime s WHERE s.movieId = :movieId AND s.showDate >= :date AND s.availableSeats > 0")
+//    List<Showtime> findAvailableShowtimeForMovieFromDate(Long movieId, LocalDate date);
 }

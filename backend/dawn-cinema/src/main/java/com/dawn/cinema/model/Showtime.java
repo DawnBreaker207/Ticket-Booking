@@ -1,18 +1,17 @@
 package com.dawn.cinema.model;
 
-import com.dawn.booking.model.Reservation;
-import com.dawn.catalog.model.Movie;
 import com.dawn.common.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Hidden
 @Entity
@@ -28,9 +27,8 @@ public class Showtime extends AbstractMappedEntity {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
+    @Column(name = "movie_id", nullable = false)
+    private Long movieId;
 
     @ManyToOne
     @JoinColumn(name = "theater_id", nullable = false)
@@ -50,12 +48,4 @@ public class Showtime extends AbstractMappedEntity {
 
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats;
-
-    //    All seats from this showtime
-    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
-    private List<Seat> seats = new ArrayList<>();
-
-    //    All reservations for this showtime
-    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
-    private List<Reservation> reservations = new ArrayList<>();
 }

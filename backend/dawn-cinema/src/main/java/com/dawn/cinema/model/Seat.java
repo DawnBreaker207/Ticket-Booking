@@ -1,6 +1,5 @@
 package com.dawn.cinema.model;
 
-import com.dawn.booking.model.Reservation;
 import com.dawn.common.constant.SeatStatus;
 import com.dawn.common.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -37,8 +36,4 @@ public class Seat extends AbstractMappedEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private SeatStatus status = SeatStatus.AVAILABLE;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
 }

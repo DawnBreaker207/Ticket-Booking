@@ -19,15 +19,11 @@
         </dependency>
         <dependency>
             <groupId>com.dawn.backend</groupId>
+            <artifactId>dawn-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dawn.backend</groupId>
             <artifactId>dawn-catalog</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-identity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-booking</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

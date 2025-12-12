@@ -1,5 +1,6 @@
 package com.dawn.cinema.helper;
 
+import com.dawn.api.catalog.dto.MovieDTO;
 import com.dawn.cinema.dto.request.ShowtimeRequest;
 import com.dawn.cinema.dto.response.ShowtimeResponse;
 import com.dawn.cinema.model.Showtime;
@@ -15,13 +16,13 @@ public interface ShowtimeMappingHelper {
                 .build();
     }
 
-    static ShowtimeResponse map(final Showtime showtime) {
+    static ShowtimeResponse map(final Showtime showtime, MovieDTO movie) {
         return ShowtimeResponse
                 .builder()
                 .id(showtime.getId())
-                .movieId(showtime.getMovie().getId())
-                .movieTitle(showtime.getMovie().getTitle())
-                .moviePosterUrl(showtime.getMovie().getPoster())
+                .movieId(movie.getId())
+                .movieTitle(movie.getTitle())
+                .moviePosterUrl(movie.getPoster())
                 .theaterId(showtime.getTheater().getId())
                 .theaterName(showtime.getTheater().getName())
                 .theaterLocation(showtime.getTheater().getLocation())
