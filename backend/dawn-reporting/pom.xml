@@ -17,17 +17,10 @@
             <groupId>com.dawn.backend</groupId>
             <artifactId>dawn-common</artifactId>
         </dependency>
+        <!--  Export Report      -->
         <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-catalog</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-cinema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-booking</artifactId>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
