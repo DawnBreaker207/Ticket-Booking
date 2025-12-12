@@ -66,7 +66,7 @@ public class DataInitializer implements ApplicationRunner {
         }
 
         Role role = roleRepository
-                .findByName(URole.ADMIN)
+                .findByName(URole.ADMIN.toString())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
@@ -96,7 +96,7 @@ public class DataInitializer implements ApplicationRunner {
             return;
         }
         Role role = roleRepository
-                .findByName(URole.USER)
+                .findByName(URole.USER.toString())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
