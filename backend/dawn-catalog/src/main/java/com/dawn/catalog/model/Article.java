@@ -2,7 +2,6 @@ package com.dawn.catalog.model;
 
 import com.dawn.common.constant.ArticleStatus;
 import com.dawn.common.model.AbstractMappedEntity;
-import com.dawn.identity.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,9 +33,8 @@ public class Article extends AbstractMappedEntity {
     @Column(name = "content")
     private String content;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
 
     @Column(name = "status")
     private ArticleStatus status;

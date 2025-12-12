@@ -155,7 +155,7 @@ public class MovieServiceTests {
 
         // Act
         MovieResponse result = movieService
-                .findOne(1L);
+                .findById(1L);
 
         // Assert
         assertNotNull(result);

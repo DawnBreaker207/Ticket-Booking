@@ -25,7 +25,6 @@ public interface ArticleMappingHelper {
                 .slug(req.getSlug())
                 .summary(req.getSummary())
                 .content(req.getContent())
-                .author(req.getAuthor().getUsername())
                 .status(req.getStatus())
                 .views(req.getViews())
                 .isDeleted(req.getIsDeleted())
