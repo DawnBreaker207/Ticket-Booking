@@ -1,7 +1,7 @@
 package com.dawn.web.controller;
 
 import com.dawn.common.helper.RedisKeyHelper;
-import com.dawn.web.service.NotificationService;
+import com.dawn.booking.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

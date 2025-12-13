@@ -1,6 +1,5 @@
-package com.dawn.web.config.redis;
+package com.dawn.booking.service;
 
-import com.dawn.web.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;

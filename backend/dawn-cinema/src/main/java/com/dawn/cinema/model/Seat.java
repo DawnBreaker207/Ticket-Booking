@@ -33,6 +33,9 @@ public class Seat extends AbstractMappedEntity {
     @Column(name = "seat_number")
     private String seatNumber;
 
+    @Column(name = "reservation_id")
+    private String reservationId;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private SeatStatus status = SeatStatus.AVAILABLE;

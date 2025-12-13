@@ -10,4 +10,6 @@ public interface UserClientService {
     RoleDTO findByRoleName(String roleName);
 
     UserDTO findWithEmail(String email);
+
+    UserDTO findById(Long id);
 }

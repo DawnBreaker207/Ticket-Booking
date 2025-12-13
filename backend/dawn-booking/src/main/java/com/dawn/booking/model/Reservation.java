@@ -1,18 +1,13 @@
 package com.dawn.booking.model;
 
-import com.dawn.cinema.model.Seat;
-import com.dawn.cinema.model.Showtime;
 import com.dawn.common.constant.ReservationStatus;
 import com.dawn.common.model.AbstractMappedEntity;
-import com.dawn.identity.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Hidden
 @Entity
@@ -27,13 +22,11 @@ public class Reservation extends AbstractMappedEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "showtime_id", nullable = false)
-    private Showtime showtime;
+    @Column(name = "showtime_id", nullable = false)
+    private Long showtimeId;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,9 +34,6 @@ public class Reservation extends AbstractMappedEntity {
 
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
-
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Seat> seats = new ArrayList<>();
 
     @Column(name = "is_paid")
     @Builder.Default

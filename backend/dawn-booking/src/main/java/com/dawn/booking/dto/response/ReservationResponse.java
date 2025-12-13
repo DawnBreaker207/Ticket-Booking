@@ -1,10 +1,7 @@
 package com.dawn.booking.dto.response;
 
-import com.dawn.cinema.dto.response.SeatResponse;
-import com.dawn.cinema.dto.response.ShowtimeResponse;
 import com.dawn.common.constant.ReservationStatus;
 import com.dawn.common.dto.response.BaseResponse;
-import com.dawn.identity.dto.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,15 +21,15 @@ import java.util.List;
 public class ReservationResponse extends BaseResponse {
     private String id;
 
-    private UserResponse user;
+    private Long userId;
 
-    private ShowtimeResponse showtime;
+    private Long showtimeId;
 
     private ReservationStatus reservationStatus;
 
     private BigDecimal totalAmount;
 
-    private List<SeatResponse> seats = new ArrayList<>();
+    private List<String> seats = new ArrayList<>();
 
     private Boolean isDeleted;
 

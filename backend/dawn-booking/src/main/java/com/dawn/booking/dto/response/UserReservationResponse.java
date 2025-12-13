@@ -20,7 +20,7 @@ public class UserReservationResponse {
 
     private String movieTitle;
 
-    private String showtime;
+    private Long showtime;
 
     private LocalDate date;
 

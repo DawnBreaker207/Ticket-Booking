@@ -11,4 +11,5 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
     //  Find theaters by location (city, area, etc)
     Page<Theater> findByLocationContainingIgnoreCase(String location, Pageable pageable);
 
+    Theater findByName(String theaterName);
 }

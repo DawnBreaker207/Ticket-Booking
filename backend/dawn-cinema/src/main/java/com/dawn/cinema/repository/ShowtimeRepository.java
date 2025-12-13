@@ -1,6 +1,5 @@
 package com.dawn.cinema.repository;
 
-import com.dawn.catalog.model.Movie;
 import com.dawn.cinema.model.Showtime;
 import com.dawn.cinema.model.Theater;
 import org.springframework.data.domain.Page;

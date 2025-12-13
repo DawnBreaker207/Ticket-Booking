@@ -37,6 +37,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO findById(Long id) {
+        return userRepository
+                .findById(id)
+                .map(UserMappingHelper::mapDto)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
+    }
+
+
+    @Override
     @Cacheable(value = USER_CACHE, key = "'id:' + #id")
     public UserResponse findOne(Long id) {
         return userRepository
@@ -60,6 +69,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserMappingHelper::mapDto)
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
     }
+
 
     @Override
     @Transactional

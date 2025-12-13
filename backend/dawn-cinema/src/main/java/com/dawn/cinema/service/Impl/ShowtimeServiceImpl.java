@@ -2,6 +2,7 @@ package com.dawn.cinema.service.Impl;
 
 import com.dawn.api.catalog.dto.MovieDTO;
 import com.dawn.api.catalog.service.MovieClientService;
+import com.dawn.api.cinema.dto.ShowtimeDTO;
 import com.dawn.cinema.dto.request.ShowtimeFilterRequest;
 import com.dawn.cinema.dto.request.ShowtimeRequest;
 import com.dawn.cinema.dto.response.ShowtimeResponse;
@@ -122,6 +123,46 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                     return ShowtimeMappingHelper.map(showtime, movie);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
+    }
+
+    @Override
+    public ShowtimeDTO findById(Long id) {
+        return showtimeRepository
+                .findById(id)
+                .map(ShowtimeMappingHelper::mapDto)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
+    }
+
+    @Override
+    public ShowtimeDTO save(ShowtimeDTO showtimeRequest) {
+        MovieDTO movie = movieService
+                .findOne(showtimeRequest.getMovieId());
+
+        Theater theater = theaterRepository.findByName(showtimeRequest.getTheaterName());
+
+        //        All seat available at first
+        Showtime showtime = Showtime
+                .builder()
+                .movieId(movie.getId())
+                .theater(theater)
+                .showDate(showtimeRequest.getShowDate())
+                .showTime(showtimeRequest.getShowTime())
+                .totalSeats(theater.getCapacity())
+                .availableSeats(theater.getCapacity())
+                .price(showtimeRequest.getPrice())
+                .build();
+
+
+        Showtime savedShowtime = showtimeRepository.save(showtime);
+        log.info("Saved showtime with ID: {}", savedShowtime.getPrice());
+
+//        Create and saved seats
+        List<Seat> seats = createSeats(savedShowtime);
+        seatRepository.saveAll(seats);
+
+
+        log.info("Created {} seats for showtime ID: {}", seats.size(), savedShowtime.getId());
+        return ShowtimeMappingHelper.mapDto(savedShowtime);
     }
 
     @Override
@@ -251,5 +292,4 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         return seats;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.dawn.cinema.service.Impl;
 
+import com.dawn.api.cinema.dto.SeatDTO;
 import com.dawn.cinema.dto.response.SeatResponse;
 import com.dawn.cinema.helper.SeatMappingHelper;
 import com.dawn.cinema.model.Seat;
@@ -81,6 +82,43 @@ public class SeatServiceImpl implements SeatService {
                 .stream()
                 .map(SeatMappingHelper::map)
                 .toList();
+    }
+
+
+    @Override
+    public List<SeatDTO> findByIdWithLock(List<Long> seatIds) {
+        return seatRepository
+                .findByIdWithLock(seatIds)
+                .stream()
+                .map(SeatMappingHelper::mapDto)
+                .toList();
+    }
+
+    @Override
+    public List<SeatDTO> findAllById(List<Long> seatIds) {
+        return seatRepository
+                .findAllById(seatIds)
+                .stream()
+                .map(SeatMappingHelper::mapDto)
+                .toList();
+    }
+
+    @Override
+    public List<Long> findAllByReservationId(String reservationId) {
+        return seatRepository
+                .findAllByReservationId(reservationId)
+                .stream()
+                .map(Seat::getId)
+                .toList();
+    }
+
+    @Override
+    public void saveAllSeat(List<SeatDTO> seats) {
+        List<Seat> saveSeats = seats
+                .stream()
+                .map(SeatMappingHelper::map)
+                .toList();
+        seatRepository.saveAll(saveSeats);
     }
 
     @Override

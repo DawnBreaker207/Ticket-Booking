@@ -1,9 +1,12 @@
 package com.dawn.cinema.helper;
 
 import com.dawn.api.catalog.dto.MovieDTO;
+import com.dawn.api.cinema.dto.ShowtimeDTO;
 import com.dawn.cinema.dto.request.ShowtimeRequest;
 import com.dawn.cinema.dto.response.ShowtimeResponse;
 import com.dawn.cinema.model.Showtime;
+
+import java.math.BigDecimal;
 
 public interface ShowtimeMappingHelper {
     static Showtime map(final ShowtimeRequest showtime) {
@@ -33,6 +36,19 @@ public interface ShowtimeMappingHelper {
                 .availableSeats(showtime.getAvailableSeats())
                 .createdAt(showtime.getCreatedAt())
                 .updatedAt(showtime.getUpdatedAt())
+                .build();
+    }
+
+    static ShowtimeDTO mapDto(final Showtime showtime) {
+        return ShowtimeDTO
+                .builder()
+                .id(showtime.getId())
+                .price(showtime.getPrice())
+                .movieId(showtime.getMovieId())
+                .theaterName(showtime.getTheater().getName())
+                .showDate(showtime.getShowDate())
+                .showTime(showtime.getShowTime())
+                .availableSeats(showtime.getAvailableSeats())
                 .build();
     }
 }

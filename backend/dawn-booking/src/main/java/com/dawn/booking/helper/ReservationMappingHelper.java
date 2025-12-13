@@ -1,12 +1,12 @@
 package com.dawn.booking.helper;
 
+import com.dawn.api.catalog.dto.MovieDTO;
+import com.dawn.api.cinema.dto.ShowtimeDTO;
 import com.dawn.booking.dto.response.ReservationResponse;
 import com.dawn.booking.dto.response.UserReservationResponse;
 import com.dawn.booking.model.Reservation;
-import com.dawn.cinema.helper.SeatMappingHelper;
-import com.dawn.cinema.helper.ShowtimeMappingHelper;
-import com.dawn.cinema.model.Seat;
-import com.dawn.identity.helper.UserMappingHelper;
+
+import java.util.List;
 
 public interface ReservationMappingHelper {
 
@@ -15,15 +15,11 @@ public interface ReservationMappingHelper {
                 ReservationResponse
                         .builder()
                         .id(reservation.getId())
-                        .user(UserMappingHelper.map(reservation.getUser()))
-                        .showtime(ShowtimeMappingHelper.map(reservation.getShowtime()))
+                        .userId(reservation.getUserId())
+                        .showtimeId(reservation.getShowtimeId())
                         .reservationStatus(reservation.getReservationStatus())
                         .totalAmount(reservation.getTotalAmount())
-                        .seats(reservation
-                                .getSeats()
-                                .stream()
-                                .map(SeatMappingHelper::map)
-                                .toList())
+//                        .seats(seats)
                         .isDeleted(reservation.getIsDeleted())
                         .isPaid(reservation.getIsPaid())
                         .createdAt(reservation.getCreatedAt())
@@ -35,13 +31,13 @@ public interface ReservationMappingHelper {
     static UserReservationResponse toUserResponse(final Reservation reservation) {
         return UserReservationResponse.builder()
                 .reservationId(reservation.getId())
-                .movieTitle(reservation.getShowtime().getMovie().getTitle())
-                .moviePoster(reservation.getShowtime().getMovie().getPoster())
-                .showtime(reservation.getShowtime().getShowTime().toString())
-                .date(reservation.getShowtime().getShowDate())
-                .time(reservation.getShowtime().getShowTime())
-                .theater(reservation.getShowtime().getTheater().getName())
-                .seats(reservation.getSeats().stream().map(Seat::getSeatNumber).toList())
+//                .movieTitle(movie.getTitle())
+//                .moviePoster(movie.getPoster())
+//                .showtime(showtime.getId())
+//                .date(showtime.getShowDate())
+//                .time(showtime.getShowTime())
+//                .theater(showtime.getTheaterName())
+//                .seats(seats)
                 .amount(reservation.getTotalAmount().intValue())
                 .build();
     }

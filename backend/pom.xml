@@ -92,16 +92,14 @@
             </dependency>
             <dependency>
                 <groupId>com.dawn.backend</groupId>
-                <artifactId>dawn-payment</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.dawn.backend</groupId>
                 <artifactId>dawn-booking</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.dawn.backend</groupId>
+                <artifactId>dawn-payment</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- API Document Packs-->
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -177,8 +175,8 @@
         <module>dawn-catalog</module>
         <module>dawn-cinema</module>
         <module>dawn-booking</module>
-        <module>dawn-payment</module>
         <module>dawn-reporting</module>
+        <module>dawn-payment</module>
     </modules>
     <build>
         <plugins>

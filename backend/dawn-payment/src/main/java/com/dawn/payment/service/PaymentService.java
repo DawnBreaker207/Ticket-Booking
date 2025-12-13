@@ -24,7 +24,9 @@ import java.util.UUID;
 public class PaymentService {
 
     private final VNPayConfig VNPayConfig;
+
     private final MomoConfig momoConfig;
+
     private final RestTemplate restTemplate;
 
     public PaymentResponse createPayment(PaymentRequest req, HttpServletRequest request) {
