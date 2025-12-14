@@ -1,6 +1,6 @@
 package com.dawn.payment.controller;
 
-import com.dawn.common.config.response.ResponseObject;
+import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.payment.dto.request.PaymentRequest;
 import com.dawn.payment.dto.response.PaymentResponse;
 import com.dawn.payment.service.PaymentService;

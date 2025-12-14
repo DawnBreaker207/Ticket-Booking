@@ -7,19 +7,18 @@ import com.dawn.payment.dto.response.PaymentResponse;
 import com.dawn.payment.utils.MomoUtils;
 import com.dawn.payment.utils.VNPayUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class PaymentService {
 
@@ -27,7 +26,16 @@ public class PaymentService {
 
     private final MomoConfig momoConfig;
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
+
+    public PaymentService(
+            VNPayConfig VNPayConfig,
+            MomoConfig momoConfig,
+            @Qualifier("baseRestClient") RestClient.Builder builder) {
+        this.VNPayConfig = VNPayConfig;
+        this.momoConfig = momoConfig;
+        this.restClient = builder.build();
+    }
 
     public PaymentResponse createPayment(PaymentRequest req, HttpServletRequest request) {
         log.info("Payment request received: {}", req);
@@ -80,10 +88,12 @@ public class PaymentService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, Object> response = restTemplate.postForObject(
-                momoConfig.getMomo_PayUrl() + "/create",
-                new HttpEntity<>(momoParamsMap, headers),
-                Map.class);
+        Map<String, Object> response = restClient.post()
+                .uri(momoConfig.getMomo_PayUrl() + "/create")
+                .body(momoParamsMap)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
         if (response == null || response.get("payUrl") == null) {
             throw new RuntimeException("MoMo payment failed or payUrl is null");
         }

@@ -1,6 +1,5 @@
 package com.dawn.payment.model;
 
-import com.dawn.booking.model.Reservation;
 import com.dawn.common.constant.PaymentStatus;
 import com.dawn.common.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
