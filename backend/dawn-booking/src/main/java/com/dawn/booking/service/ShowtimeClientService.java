@@ -1,6 +1,7 @@
-package com.dawn.api.cinema.service;
+package com.dawn.booking.service;
 
-import com.dawn.api.cinema.dto.ShowtimeDTO;
+
+import com.dawn.booking.dto.response.ShowtimeDTO;
 
 public interface ShowtimeClientService {
     ShowtimeDTO findById(Long id);

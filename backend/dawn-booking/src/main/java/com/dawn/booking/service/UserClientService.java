@@ -1,7 +1,8 @@
-package com.dawn.api.identity.service;
+package com.dawn.booking.service;
 
-import com.dawn.api.identity.dto.RoleDTO;
-import com.dawn.api.identity.dto.UserDTO;
+
+import com.dawn.booking.dto.response.RoleDTO;
+import com.dawn.booking.dto.response.UserDTO;
 
 public interface UserClientService {
 

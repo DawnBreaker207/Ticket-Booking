@@ -15,8 +15,6 @@ import java.time.Instant;
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
     @Query(value = """
               SELECT DISTINCT r FROM Reservation AS r
-                   LEFT JOIN FETCH r.userId AS u
-                   LEFT JOIN FETCH r.showtimeId AS st
                    WHERE
                          (:#{#reservation.getQuery()} IS NULL OR r.id LIKE CONCAT('%', :#{#reservation.getQuery()}, '%') )
                          AND (:#{#reservation.getReservationStatus()} IS NULL OR r.reservationStatus = :#{#reservation.getReservationStatus()})

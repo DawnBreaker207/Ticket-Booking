@@ -1,6 +1,5 @@
-package com.dawn.api.identity.dto;
+package com.dawn.booking.dto.response;
 
-import com.dawn.common.constant.URole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class RoleDTO {
-    private URole name;
+public class UserDTO {
+    private Long id;
+
+    private String username;
+
+    private String email;
+
 }

@@ -1,4 +1,4 @@
-package com.dawn.api.cinema.dto;
+package com.dawn.booking.dto.response;
 
 import com.dawn.common.constant.SeatStatus;
 import lombok.AllArgsConstructor;

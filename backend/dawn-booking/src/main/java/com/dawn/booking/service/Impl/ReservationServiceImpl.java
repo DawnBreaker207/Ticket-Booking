@@ -1,23 +1,11 @@
 package com.dawn.booking.service.Impl;
 
-import com.dawn.api.catalog.dto.MovieDTO;
-import com.dawn.api.catalog.service.MovieClientService;
-import com.dawn.api.cinema.dto.SeatDTO;
-import com.dawn.api.cinema.dto.ShowtimeDTO;
-import com.dawn.api.cinema.service.SeatClientService;
-import com.dawn.api.cinema.service.ShowtimeClientService;
-import com.dawn.api.identity.dto.UserDTO;
-import com.dawn.api.identity.service.UserClientService;
 import com.dawn.booking.dto.request.*;
-import com.dawn.booking.dto.response.ReservationInitResponse;
-import com.dawn.booking.dto.response.ReservationResponse;
-import com.dawn.booking.dto.response.UserReservationResponse;
+import com.dawn.booking.dto.response.*;
 import com.dawn.booking.helper.ReservationMappingHelper;
 import com.dawn.booking.model.Reservation;
 import com.dawn.booking.repository.ReservationRepository;
-import com.dawn.booking.service.NotificationService;
-import com.dawn.booking.service.RedisService;
-import com.dawn.booking.service.ReservationService;
+import com.dawn.booking.service.*;
 import com.dawn.booking.utils.ReservationUtils;
 import com.dawn.common.constant.Message;
 import com.dawn.common.constant.ReservationStatus;
@@ -58,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ShowtimeClientService showtimeService;
 
-    private final MovieClientService movieService;
+    private final MovieClientBookingService movieService;
 
     private final NotificationService notificationService;
 
@@ -77,7 +65,14 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Found {} reservations for user {}", reservations.getSize(), request.getUserId());
 
         return ResponsePage.of(reservations
-                .map(ReservationMappingHelper::toUserResponse));
+                .map(reservation -> {
+                    ShowtimeDTO showtime = showtimeService.findById(reservation.getShowtimeId());
+
+                    MovieDTO movie = movieService.findOne(showtime.getMovieId());
+
+                    List<SeatDTO> seats = seatService.findAllByReservationId(reservation.getId());
+                    return ReservationMappingHelper.toUserResponse(reservation, movie, showtime, seats);
+                }));
     }
 
     @Override
@@ -91,15 +86,21 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ResponsePage.of(reservationRepository
                 .findAllWithFilter(req, startDate, endDate, pageable)
-                .map(ReservationMappingHelper::map));
+                .map(reservation -> {
+                    List<SeatDTO> seats = seatService.findAllByReservationId(reservation.getId());
+                    return ReservationMappingHelper.map(reservation, seats);
+                }));
     }
 
     @Override
     public ReservationResponse findOne(String id) {
-        return reservationRepository
+        Reservation reservation = reservationRepository
                 .findById(id)
-                .map(ReservationMappingHelper::map)
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));
+
+        List<SeatDTO> seats = seatService.findAllByReservationId(reservation.getId());
+
+        return ReservationMappingHelper.map(reservation, seats);
     }
 
     @Override
@@ -279,7 +280,7 @@ public class ReservationServiceImpl implements ReservationService {
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
 
         log.info("Successfully confirmed reservation: {} with {} seats", reservation.getId(), seatEntities.size());
-        return ReservationMappingHelper.map(savedReservation);
+        return ReservationMappingHelper.map(savedReservation, seatEntities);
     }
 
     @Override
@@ -315,7 +316,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .userId(user.getId())
                 .showtimeId(showtime.getId())
                 .reservationStatus(ReservationStatus.CANCELED)
-//                .seats(seatEntities)
                 .totalAmount(total)
                 .isPaid(false)
                 .isDeleted(false)
@@ -595,12 +595,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     private List<Long> extractSeatIds(Reservation dto) {
         //      Load seats from DB
-        List<Long> seatIds = seatService.findAllByReservationId(dto.getId());
+        List<SeatDTO> seatIds = seatService.findAllByReservationId(dto.getId());
         if (seatIds.isEmpty()) {
             log.warn("No seats to release for reservation {}", dto.getId());
             throw new IllegalStateException(Message.Exception.NO_SEAT_SELECTED);
         }
-        return seatIds;
+        return seatIds
+                .stream()
+                .map(SeatDTO::getId)
+                .toList();
     }
 
     private void validateSeatLocks(String redisKey, String reservationId, List<Long> seatIds) {

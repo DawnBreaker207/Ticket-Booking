@@ -1,4 +1,4 @@
-package com.dawn.api.cinema.dto;
+package com.dawn.booking.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
