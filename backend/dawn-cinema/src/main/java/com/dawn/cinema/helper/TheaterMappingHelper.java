@@ -4,9 +4,6 @@ import com.dawn.cinema.dto.request.TheaterRequest;
 import com.dawn.cinema.dto.response.TheaterResponse;
 import com.dawn.cinema.model.Theater;
 
-import java.util.Collections;
-import java.util.Optional;
-
 public interface TheaterMappingHelper {
     static Theater map(final TheaterRequest theater) {
         return Theater

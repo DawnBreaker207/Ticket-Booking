@@ -1,10 +1,8 @@
 package com.dawn.cinema.service.Impl;
 
-import com.dawn.api.catalog.dto.MovieDTO;
-import com.dawn.api.catalog.service.MovieClientService;
-import com.dawn.api.cinema.dto.ShowtimeDTO;
 import com.dawn.cinema.dto.request.ShowtimeFilterRequest;
 import com.dawn.cinema.dto.request.ShowtimeRequest;
+import com.dawn.cinema.dto.response.MovieDTO;
 import com.dawn.cinema.dto.response.ShowtimeResponse;
 import com.dawn.cinema.helper.ShowtimeMappingHelper;
 import com.dawn.cinema.model.Seat;
@@ -13,6 +11,7 @@ import com.dawn.cinema.model.Theater;
 import com.dawn.cinema.repository.SeatRepository;
 import com.dawn.cinema.repository.ShowtimeRepository;
 import com.dawn.cinema.repository.TheaterRepository;
+import com.dawn.cinema.service.MovieClientCinemaService;
 import com.dawn.cinema.service.ShowtimeService;
 import com.dawn.common.constant.Message;
 import com.dawn.common.constant.SeatStatus;
@@ -38,7 +37,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     private final ShowtimeRepository showtimeRepository;
 
-    private final MovieClientService movieService;
+    private final MovieClientCinemaService movieService;
 
     private final TheaterRepository theaterRepository;
 
@@ -60,7 +59,6 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<ShowtimeResponse> getByMovie(Long movieId) {
         log.info("Fetching showtime for movie id: {}", movieId);
-
         return showtimeRepository
                 .findByMovieId(movieId)
                 .stream()
@@ -123,46 +121,6 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                     return ShowtimeMappingHelper.map(showtime, movie);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
-    }
-
-    @Override
-    public ShowtimeDTO findById(Long id) {
-        return showtimeRepository
-                .findById(id)
-                .map(ShowtimeMappingHelper::mapDto)
-                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND));
-    }
-
-    @Override
-    public ShowtimeDTO save(ShowtimeDTO showtimeRequest) {
-        MovieDTO movie = movieService
-                .findOne(showtimeRequest.getMovieId());
-
-        Theater theater = theaterRepository.findByName(showtimeRequest.getTheaterName());
-
-        //        All seat available at first
-        Showtime showtime = Showtime
-                .builder()
-                .movieId(movie.getId())
-                .theater(theater)
-                .showDate(showtimeRequest.getShowDate())
-                .showTime(showtimeRequest.getShowTime())
-                .totalSeats(theater.getCapacity())
-                .availableSeats(theater.getCapacity())
-                .price(showtimeRequest.getPrice())
-                .build();
-
-
-        Showtime savedShowtime = showtimeRepository.save(showtime);
-        log.info("Saved showtime with ID: {}", savedShowtime.getPrice());
-
-//        Create and saved seats
-        List<Seat> seats = createSeats(savedShowtime);
-        seatRepository.saveAll(seats);
-
-
-        log.info("Created {} seats for showtime ID: {}", seats.size(), savedShowtime.getId());
-        return ShowtimeMappingHelper.mapDto(savedShowtime);
     }
 
     @Override

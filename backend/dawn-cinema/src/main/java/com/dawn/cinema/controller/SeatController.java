@@ -1,5 +1,6 @@
 package com.dawn.cinema.controller;
 
+import com.dawn.cinema.dto.request.SeatRequest;
 import com.dawn.cinema.dto.response.SeatResponse;
 import com.dawn.cinema.service.SeatService;
 import com.dawn.common.dto.response.ResponseObject;
@@ -39,5 +40,26 @@ public class SeatController {
     public ResponseObject<List<SeatResponse>> createSeatsForShowtime(@PathVariable Long showtimeId) {
         log.info("Manually creating seats for showtime id: {}", showtimeId);
         return ResponseObject.success(seatService.getAvailableSeatByShowtime(showtimeId));
+    }
+
+    @GetMapping("/locks")
+    public ResponseObject<List<SeatResponse>> findSeatByIdWithLock(@RequestBody List<Long> seatIds) {
+        return ResponseObject.success(seatService.findByIdWithLock(seatIds));
+    }
+
+    @GetMapping("/all/id")
+    public ResponseObject<List<SeatResponse>> findAllSeatById(@RequestBody List<Long> seatIds) {
+        return ResponseObject.success(seatService.findAllById(seatIds));
+    }
+
+    @GetMapping("/reservation/{reservationId}")
+    public ResponseObject<List<SeatResponse>> findAllSeatByReservationId(@PathVariable String reservationId) {
+        return ResponseObject.success(seatService.findAllByReservationId(reservationId));
+    }
+
+    @PostMapping("/saveAll")
+    public ResponseObject<Void> saveAllSeat(@RequestBody List<SeatRequest> seats) {
+        seatService.saveAllSeat(seats);
+        return ResponseObject.deleted();
     }
 }
