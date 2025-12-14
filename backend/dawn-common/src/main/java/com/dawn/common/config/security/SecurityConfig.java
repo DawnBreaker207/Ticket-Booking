@@ -1,11 +1,11 @@
 package com.dawn.common.config.security;
 
-import com.dawn.identity.service.Impl.UserDetailsServiceImpl;
 import com.dawn.common.config.security.handler.AuthEntryPointJwt;
 import com.dawn.common.config.security.handler.RoleAccessHandler;
 import com.dawn.common.config.security.handler.SignOutHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,13 +26,9 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsService;
-
     private final AuthEntryPointJwt unauthorizedHandler;
 
     private final RoleAccessHandler roleAccessHandler;
-
-    private final PasswordEncoder passwordEncoder;
 
     private final SignOutHandler signOutHandler;
 
@@ -40,10 +38,19 @@ public class SecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    @ConditionalOnBean(UserDetailsService.class)
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http,
+            PasswordEncoder passwordEncoder,
+            UserDetailsService userDetailsService) throws Exception {
         var authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authBuilder.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
