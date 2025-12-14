@@ -3,10 +3,12 @@ package com.dawn.booking.service.Impl;
 import com.dawn.booking.dto.response.MovieDTO;
 import com.dawn.booking.service.MovieClientBookingService;
 import com.dawn.common.constant.Message;
+import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -25,12 +27,18 @@ public class MovieClientBookingServiceImpl implements MovieClientBookingService 
 
     @Override
     public MovieDTO findOne(Long id) {
-        return restClient
+        ResponseObject<MovieDTO> response = restClient
                 .get()
                 .uri("/movies/{id}", id)
                 .retrieve().onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
                 })
-                .body(MovieDTO.class);
+                .body(new ParameterizedTypeReference<>() {
+                });
+
+        if (response != null && response.getBody().getData() != null) {
+            return response.getBody().getData();
+        }
+        throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
     }
 }
