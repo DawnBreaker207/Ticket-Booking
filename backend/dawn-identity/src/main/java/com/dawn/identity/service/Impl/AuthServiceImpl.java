@@ -4,6 +4,7 @@ import com.dawn.common.constant.Message;
 import com.dawn.common.constant.URole;
 import com.dawn.common.exception.wrapper.ResourceAlreadyExistedException;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.utils.JWTUtils;
 import com.dawn.identity.dto.request.LoginRequest;
 import com.dawn.identity.dto.request.RegisterRequest;
 import com.dawn.identity.dto.response.JwtResponse;
@@ -16,17 +17,18 @@ import com.dawn.identity.repository.RoleRepository;
 import com.dawn.identity.repository.UserRepository;
 import com.dawn.identity.service.AuthService;
 import com.dawn.identity.service.RefreshTokenService;
-import com.dawn.identity.utils.JWTUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -97,9 +99,20 @@ public class AuthServiceImpl implements AuthService {
                 .authenticate(
                         new UsernamePasswordAuthenticationToken(loginKey, user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jWTUtils.generateToken(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<String> roles = userDetails
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(role -> role.contains("_")
+                        ? role.split("_")[1]
+                        : role)
+                .toList();
+
+        String jwt = jWTUtils.generateToken(userDetails.getUsername(), userDetails.getEmail(), roles);
+
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return JwtResponse
                 .builder()

@@ -1,7 +1,5 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.api.identity.dto.RoleDTO;
-import com.dawn.api.identity.dto.UserDTO;
 import com.dawn.common.constant.Message;
 import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
@@ -37,15 +35,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long id) {
-        return userRepository
-                .findById(id)
-                .map(UserMappingHelper::mapDto)
-                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
-    }
-
-
-    @Override
     @Cacheable(value = USER_CACHE, key = "'id:' + #id")
     public UserResponse findOne(Long id) {
         return userRepository
@@ -60,13 +49,6 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByEmail(email)
                 .map(UserMappingHelper::map)
-                .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
-    }
-
-    @Override
-    public UserDTO findWithEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(UserMappingHelper::mapDto)
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.USER_NOT_FOUND));
     }
 
@@ -104,12 +86,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RoleDTO findByRoleName(String roleName) {
+    public Role findByRoleName(String roleName) {
         Role role = roleRepository
                 .findByName(roleName)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
-        return RoleDTO
+        return Role
                 .builder()
                 .name(role.getName())
                 .build();

@@ -4,6 +4,7 @@ import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
+import com.dawn.identity.model.Role;
 import com.dawn.identity.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -43,4 +44,15 @@ public class UserController {
     public ResponseObject<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserRequest req) {
         return ResponseObject.success(userService.update(id, req));
     }
+
+    @GetMapping("/role/{roleName}")
+    public ResponseObject<Role> getRoleName(@PathVariable String roleName) {
+        return ResponseObject.success(userService.findByRoleName(roleName));
+    }
+
+    @GetMapping("/role/existed/{roleName}")
+    public ResponseObject<Boolean> checkExistsByRoleName(@PathVariable String roleName) {
+        return ResponseObject.success(userService.existsByRolesName(roleName));
+    }
+
 }
