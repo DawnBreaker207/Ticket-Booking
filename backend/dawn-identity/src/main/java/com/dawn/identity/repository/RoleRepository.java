@@ -1,7 +1,6 @@
 package com.dawn.identity.repository;
 
 
-import com.dawn.common.constant.URole;
 import com.dawn.identity.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

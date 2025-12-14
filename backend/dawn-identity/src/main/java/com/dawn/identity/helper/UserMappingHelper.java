@@ -5,6 +5,8 @@ import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.model.User;
 
+import java.util.stream.Collectors;
+
 public interface UserMappingHelper {
     static UserResponse map(final User u) {
         return UserResponse
@@ -15,7 +17,12 @@ public interface UserMappingHelper {
                 .createdAt(u.getCreatedAt())
                 .updatedAt(u.getUpdatedAt())
                 .avatar(u.getAvatar())
-                .role(u.getRoles().toString())
+                .role(u
+                        .getRoles()
+                        .stream()
+                        .map(role -> role.getName().name())
+                        .collect(Collectors.toSet())
+                )
                 .isDeleted(u.getIsDeleted())
                 .build();
     }

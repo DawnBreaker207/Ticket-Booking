@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 
 @Data
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class UserResponse extends BaseResponse {
 
     private String email;
 
-    private String role;
+    private Set<String> role;
 
     private Boolean isDeleted;
 }
