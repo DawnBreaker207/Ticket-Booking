@@ -127,3 +127,5 @@ resilience4j:
         limit-for-period: 100
         limit-refresh-period: 1m
         timeout-duration: 1s
+service:
+  url: http://localhost:8888/api/v1
