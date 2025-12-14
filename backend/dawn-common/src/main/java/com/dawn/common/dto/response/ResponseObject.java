@@ -1,13 +1,28 @@
 package com.dawn.common.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+@Getter
 public class ResponseObject<T> extends ResponseEntity<ResponseObject.Payload<T>> {
+
+    public ResponseObject(
+            @JsonProperty("code") int code,
+            @JsonProperty("message") String message,
+            @JsonProperty("data") T data
+    ) {
+        super(new Payload<>(code, message, data), HttpStatus.valueOf(code == 0 ? 200 : code));
+    }
+
+    public T getData() {
+        return getBody() != null ? getBody().getData() : null;
+    }
 
     public ResponseObject(HttpStatusCode code, String message, T data) {
         super(new Payload<>(code.value(), message, data), code);

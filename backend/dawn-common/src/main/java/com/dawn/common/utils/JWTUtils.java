@@ -1,24 +1,21 @@
-package com.dawn.identity.utils;
+package com.dawn.common.utils;
 
-import com.dawn.identity.model.UserDetailsImpl;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -60,20 +57,25 @@ public class JWTUtils {
                 .getSubject();
     }
 
-    public String generateToken(Authentication authentication) {
-        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = Jwts
+                .parser()
+                .verifyWith(key())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
+        return claims.get("roles", List.class);
+    }
+
+
+    public String generateToken(String username, String email, List<String> roles) {
         return Jwts
                 .builder()
-                .subject(user.getUsername())
+                .subject(username)
                 .issuedAt(new Date())
-                .claim("email", user.getEmail())
-                .claim("roles", user
-                        .getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .map((authority) -> authority.split("_")[1])
-                        .toList())
+                .claim("email", email)
+                .claim("roles", roles)
                 .expiration(new Date((new Date().getTime() + jwtExpirations)))
                 .signWith(key())
                 .compact();

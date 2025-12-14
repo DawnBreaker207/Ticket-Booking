@@ -2,9 +2,9 @@ package com.dawn.common.config.security;
 
 import com.dawn.common.config.security.handler.AuthEntryPointJwt;
 import com.dawn.common.config.security.handler.RoleAccessHandler;
-import com.dawn.common.config.security.handler.SignOutHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -30,12 +31,12 @@ public class SecurityConfig {
 
     private final RoleAccessHandler roleAccessHandler;
 
-    private final SignOutHandler signOutHandler;
-
-    private final AuthTokenFilter authTokenFilter;
-
     private final CorsConfig corsConfig;
 
+    @Autowired(required = false)
+    private final LogoutHandler logoutHandler;
+
+    private final AuthTokenFilter authTokenFilter;
 
     @Bean
     @ConditionalOnBean(UserDetailsService.class)
@@ -93,7 +94,7 @@ public class SecurityConfig {
 
     private void configLogout(LogoutConfigurer<HttpSecurity> config) {
         config.logoutUrl("/api/v1/auth/logout")
-                .addLogoutHandler(signOutHandler)
+                .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler(
                         (req, res, auth) ->
                                 res.setStatus(HttpServletResponse.SC_NO_CONTENT)
