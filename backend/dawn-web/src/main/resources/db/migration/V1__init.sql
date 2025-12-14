@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     email      VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
     avatar     VARCHAR(255),
+    address    VARCHAR(50),
+    phone      VARCHAR(50),
     is_deleted BOOLEAN               DEFAULT FALSE,
     created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

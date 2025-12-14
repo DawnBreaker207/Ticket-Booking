@@ -34,6 +34,12 @@ public class User extends AbstractMappedEntity {
     @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",

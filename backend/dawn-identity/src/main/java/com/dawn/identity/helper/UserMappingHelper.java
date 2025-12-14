@@ -17,6 +17,8 @@ public interface UserMappingHelper {
                 .createdAt(u.getCreatedAt())
                 .updatedAt(u.getUpdatedAt())
                 .avatar(u.getAvatar())
+                .address(u.getAddress())
+                .phone(u.getPhone())
                 .role(u
                         .getRoles()
                         .stream()
@@ -32,6 +34,8 @@ public interface UserMappingHelper {
                 .builder()
                 .username(u.getUsername())
                 .avatar(u.getAvatar())
+                .address(u.getAddress())
+                .phone(u.getPhone())
                 .build();
     }
 }
