@@ -1,6 +1,5 @@
-package com.dawn.web.exception;
+package com.dawn.common.exception;
 
-import com.dawn.common.exception.ApiException;
 import com.dawn.common.exception.payload.ExceptionMessage;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.ConstraintViolationException;

@@ -1,4 +1,4 @@
-package com.dawn.web.config;
+package com.dawn.common.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

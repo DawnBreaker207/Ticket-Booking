@@ -1,9 +1,9 @@
-package com.dawn.web.config.security;
+package com.dawn.common.config.security;
 
 import com.dawn.identity.service.Impl.UserDetailsServiceImpl;
-import com.dawn.web.config.security.handler.AuthEntryPointJwt;
-import com.dawn.web.config.security.handler.RoleAccessHandler;
-import com.dawn.web.config.security.handler.SignOutHandler;
+import com.dawn.common.config.security.handler.AuthEntryPointJwt;
+import com.dawn.common.config.security.handler.RoleAccessHandler;
+import com.dawn.common.config.security.handler.SignOutHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

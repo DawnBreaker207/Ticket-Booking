@@ -1,4 +1,4 @@
-package com.dawn.web.config;
+package com.dawn.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +21,16 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.addPathPrefix("/api/v1", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
-    @Bean
-    public RestClient restClient(RestClient.Builder builder) {
+    @Bean("baseRestClient")
+    public RestClient.Builder restClient() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10_000);
         factory.setReadTimeout(10_000);
 
-        return builder
+        return RestClient
+                .builder()
                 .requestFactory(factory)
-                .build();
+                .defaultHeader("Content-Type", "application/json");
     }
 
 }

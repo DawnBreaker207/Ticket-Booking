@@ -1,4 +1,4 @@
-package com.dawn.web.config;
+package com.dawn.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

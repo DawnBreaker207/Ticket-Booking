@@ -1,4 +1,4 @@
-package com.dawn.web.config.security;
+package com.dawn.common.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

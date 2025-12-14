@@ -1,4 +1,4 @@
-package com.dawn.web.config.security.handler;
+package com.dawn.common.config.security.handler;
 
 import com.dawn.common.dto.response.ResponseObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
