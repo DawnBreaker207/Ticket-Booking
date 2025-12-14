@@ -67,11 +67,6 @@
             </dependency>
             <dependency>
                 <groupId>com.dawn.backend</groupId>
-                <artifactId>dawn-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dawn.backend</groupId>
                 <artifactId>dawn-identity</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -170,7 +165,6 @@
     <modules>
         <module>dawn-web</module>
         <module>dawn-common</module>
-        <module>dawn-api</module>
         <module>dawn-identity</module>
         <module>dawn-catalog</module>
         <module>dawn-cinema</module>
