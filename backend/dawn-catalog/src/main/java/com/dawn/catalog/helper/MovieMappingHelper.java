@@ -1,7 +1,6 @@
 package com.dawn.catalog.helper;
 
 
-import com.dawn.api.catalog.dto.MovieDTO;
 import com.dawn.catalog.dto.request.MovieRequest;
 import com.dawn.catalog.dto.response.MovieResponse;
 import com.dawn.catalog.model.Genre;
@@ -42,14 +41,6 @@ public interface MovieMappingHelper {
                 .isDeleted(m.getIsDeleted())
                 .createdAt(m.getCreatedAt())
                 .updatedAt(m.getUpdatedAt())
-                .build();
-    }
-
-    static MovieDTO mapDto(final Movie m) {
-        return MovieDTO.builder()
-                .id(m.getId())
-                .title(m.getTitle())
-                .poster(m.getPoster())
                 .build();
     }
 }

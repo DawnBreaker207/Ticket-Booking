@@ -1,1 +1,3 @@
-spring.application.name=dawn-catalog
+spring:
+  application:
+    name: dawn-catalog

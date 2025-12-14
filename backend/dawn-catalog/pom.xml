@@ -23,10 +23,6 @@
             <groupId>com.dawn.backend</groupId>
             <artifactId>dawn-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.dawn.backend</groupId>
-            <artifactId>dawn-api</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

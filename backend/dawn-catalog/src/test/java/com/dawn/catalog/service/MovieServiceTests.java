@@ -177,7 +177,7 @@ public class MovieServiceTests {
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
-                () -> movieService.findOne(null));
+                () -> movieService.findById(null));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(movieRepository, times(1))
@@ -194,7 +194,7 @@ public class MovieServiceTests {
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
-                () -> movieService.findOne(999L));
+                () -> movieService.findById(999L));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(movieRepository, times(1))
