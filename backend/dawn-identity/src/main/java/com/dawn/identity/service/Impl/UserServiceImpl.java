@@ -1,6 +1,7 @@
 package com.dawn.identity.service.Impl;
 
 import com.dawn.common.constant.Message;
+import com.dawn.common.constant.URole;
 import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.dto.request.UserRequest;
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByRolesName(String roleName) {
         Role role = roleRepository
-                .findByName(roleName)
+                .findByName(URole.valueOf(roleName))
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
         return userRepository.existsByRolesName(role.getName());
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Role findByRoleName(String roleName) {
         Role role = roleRepository
-                .findByName(roleName)
+                .findByName(URole.valueOf(roleName))
                 .orElseThrow(() ->
                         new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
         return Role

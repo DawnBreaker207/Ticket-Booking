@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         Role userRole = roleRepository
-                .findByName(URole.USER.toString())
+                .findByName(URole.USER)
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.ROLE_NOT_FOUND));
 
         user.setRoles(Set.of(userRole));
