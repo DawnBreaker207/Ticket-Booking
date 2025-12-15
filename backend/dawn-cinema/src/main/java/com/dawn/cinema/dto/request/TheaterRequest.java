@@ -1,0 +1,20 @@
+package com.dawn.cinema.dto.request;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class TheaterRequest {
+
+    private String name;
+
+    private String location;
+
+    private Integer capacity;
+
+}

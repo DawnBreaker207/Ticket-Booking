@@ -1,0 +1,233 @@
+<nz-layout class="min-h-screen bg-gray-50">
+  <nz-header
+    class="bg-white! p-0! shadow-sm border-b border-gray-200 sticky top-0 z-50"
+  >
+    <div
+      class="h-16 px-6 flex items-center justify-between flex-nowrap gap-4 w-full"
+    >
+      <!--  Filter  -->
+      <div class="flex flex-1 items-center gap-3 min-w-0">
+        <span
+          class="font-bold text-gray-700 mr-2 flex items-center gap-2 shrink-0"
+        >
+          <nz-icon nzType="filter" nzTheme="outline" /> Filter:
+        </span>
+
+        <!-- Times  -->
+        <nz-select
+          [(ngModel)]="filterType"
+          (ngModelChange)="onFilterChange()"
+          [nzOptionHeightPx]="36"
+          class="w-[140px]"
+        >
+          <nz-option nzValue="week" nzLabel="Theo Tuần"></nz-option>
+          <nz-option nzValue="month" nzLabel="Theo Tháng"></nz-option>
+          <nz-option nzValue="quarter" nzLabel="Theo Quý"></nz-option>
+          <nz-option nzValue="year" nzLabel="Theo Năm"></nz-option>
+        </nz-select>
+
+        <!--  Dynamic Input    -->
+
+        <!--  CASE DAY    -->
+        @if (filterType === "week") {
+          <nz-date-picker
+            nzMode="week"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="dd/MM/yyyy"
+            class="w-[200px]"
+          >
+          </nz-date-picker>
+        }
+
+        <!--  CASE MONTH   -->
+        @if (filterType === "month") {
+          <nz-date-picker
+            nzMode="month"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="MM/yyyy"
+            class="w-[200px]"
+          >
+          </nz-date-picker>
+        }
+
+        <!--   CASE QUARTER   -->
+        @if (filterType === "quarter") {
+          <div
+            class="flex items-center gap-2 bg-gray-50 px-2 rounded border border-gray-200 h-[32px]"
+          >
+            <!--  SELECT QUARTER  -->
+            <nz-select
+              [(ngModel)]="selectedQuarter"
+              (ngModelChange)="onFilterChange()"
+              class="w-[120px] bg-transparent"
+              nzPlaceHolder="Quý"
+            >
+              @for (q of quarters; track q.value) {
+                <nz-option [nzLabel]="q.label" [nzValue]="q.value"></nz-option>
+              }
+            </nz-select>
+            <span class="text-gray-400"></span>
+
+            <!--  SELECT YEAR OF QUARTER -->
+            <nz-select
+              [(ngModel)]="selectedQuarterYear"
+              (ngModelChange)="onFilterChange()"
+              class="w-[90px]"
+            >
+              @for (y of years; track y) {
+                <nz-option [nzValue]="y" [nzLabel]="y"></nz-option>
+              }
+            </nz-select>
+          </div>
+        }
+
+        <!--   CASE YEAR   -->
+        @if (filterType === "year") {
+          <nz-date-picker
+            nzMode="year"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onFilterChange()"
+            [nzAllowClear]="false"
+            nzFormat="yyyy"
+            class="w-[120px]"
+          >
+          </nz-date-picker>
+        }
+
+        <!--   Refresh Button   -->
+        <button
+          nz-button
+          nzType="text"
+          (click)="onFilterChange()"
+          title="Làm mới dữ liệu"
+        >
+          <nz-icon nzType="reload" />
+        </button>
+      </div>
+
+      <!-- RIGHT: SETTING OPTIONS   -->
+      <div class="flex items-center gap-4 shrink-0 ml-4">
+        <div
+          class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 h-[32px] rounded-full border border-gray-100 whitespace-nowrap"
+        >
+          <span class="text-sm font-medium">Realtime Updates</span>
+          <nz-switch nzSize="small"></nz-switch>
+        </div>
+
+        <button
+          nz-button
+          nz-dropdown
+          [nzDropdownMenu]="exportMenu"
+          class="flex items-center gap-2"
+        >
+          <nz-icon nzType="download" />
+          Export
+        </button>
+        <nz-dropdown-menu #exportMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item>
+              <nz-icon nzType="file-pdf" class="mr-2 text-red-500" />
+              PDF
+            </li>
+            <li nz-menu-item>
+              <nz-icon nzType="file-excel" class="mr-2 text-green-500" />
+              Excel
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </div>
+  </nz-header>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center h-full">
+      <nz-spin nzSimple />
+    </div>
+  } @else {
+    <nz-content class="m-4">
+      <nz-row nzGutter="16">
+        <nz-col nzSpan="6">
+          <app-dashboard-item
+            title="Total Revenue"
+            [value]="
+              (metrics()?.totalRevenue ?? 0 | currencyFormat)?.toString() ?? ''
+            "
+            icon="DollarSign"
+          />
+        </nz-col>
+        <nz-col nzSpan="6">
+          <app-dashboard-item
+            title="Ticket Sold"
+            [value]="
+              (metrics()?.ticketsSold || 0 | number: '1.0-0')?.toString() ?? ''
+            "
+            icon="Tickets"
+          />
+        </nz-col>
+        <nz-col nzSpan="6">
+          <app-dashboard-item
+            title="Active Theaters"
+            [value]="(metrics()?.activeTheaters || 0).toString()"
+            icon="Theater"
+          />
+        </nz-col>
+        <nz-col nzSpan="6">
+          <app-dashboard-item
+            title="Seat Utilization"
+            [value]="(metrics()?.seatUtilization || 0) + '%'"
+            icon="Armchair"
+          />
+        </nz-col>
+      </nz-row>
+
+      <!-- Chart-->
+      <nz-row nzGutter="16" class="mt-4">
+        <nz-col nzSpan="14">
+          <!-- Line Chart  -->
+          <app-revenue-chart [revenues]="revenues()" />
+        </nz-col>
+        <nz-col nzSpan="10">
+          <!-- Pie Chart  -->
+          <app-payment-chart [payments]="payments()" />
+        </nz-col>
+      </nz-row>
+
+      <nz-row nzGutter="16" class="mt-4">
+        <nz-col nzSpan="8">
+          <!-- Bar Chart  -->
+          <app-theater-chart [theaters]="theaters()" />
+        </nz-col>
+        <nz-col nzSpan="16">
+          <!-- Bar Chart  -->
+          <app-movie-chart [movies]="movies()" />
+        </nz-col>
+      </nz-row>
+
+      <!-- Tables-->
+      <nz-row nzGutter="16" class="mt-4">
+        <nz-col nzSpan="12">
+          <nz-card>
+            <div class="font-bold text-xl">Theater Performance</div>
+            <div style="height: 300px">
+              <!-- Table-->
+              <app-theater-table />
+            </div>
+          </nz-card>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-card>
+            <div class="font-bold text-xl">Movie Insights</div>
+            <div style="height: 300px">
+              <!-- Table-->
+              <app-movie-table />
+            </div>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+    </nz-content>
+  }
+</nz-layout>

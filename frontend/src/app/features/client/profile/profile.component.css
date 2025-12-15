@@ -1,0 +1,66 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Style cho Tab Left */
+:host ::ng-deep .ant-tabs-left > .ant-tabs-nav .ant-tabs-tab {
+  padding: 14px 24px;
+  text-align: left;
+  justify-content: flex-start;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin: 0 0 4px 0;
+  border-radius: 8px;
+  color: #4b5563;
+}
+
+:host ::ng-deep .ant-tabs-left > .ant-tabs-nav .ant-tabs-tab:hover {
+  background-color: #f9fafb;
+  color: #2563eb;
+}
+
+:host ::ng-deep .ant-tabs-left > .ant-tabs-nav .ant-tabs-tab-active {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+:host ::ng-deep .ant-tabs-nav-wrap {
+  border-right: none !important;
+}
+
+:host ::ng-deep .ant-tabs-left > .ant-tabs-content-holder {
+  border-left: 1px solid #f3f4f6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  :host ::ng-deep .ant-tabs-top > .ant-tabs-nav .ant-tabs-tab {
+    padding: 12px 16px;
+    margin: 0;
+  }
+
+  :host ::ng-deep .ant-tabs-content-holder {
+    border-left: none;
+    border-top: 1px solid #f3f4f6;
+  }
+}
+
+:host ::ng-deep .ant-tabs-ink-bar {
+  visibility: hidden;
+}

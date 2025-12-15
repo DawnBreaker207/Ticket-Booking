@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 0; /* Fix lỗi khoảng trắng thừa */
+}
+svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

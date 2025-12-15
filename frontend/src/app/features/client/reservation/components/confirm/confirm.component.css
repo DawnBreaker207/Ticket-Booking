@@ -1,0 +1,10 @@
+:host ::ng-deep .ant-radio-wrapper {
+  width: 100%;
+  white-space: normal;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .ant-radio-wrapper span:nth-child(2) {
+  width: 100%;
+}

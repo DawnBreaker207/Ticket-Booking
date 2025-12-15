@@ -1,0 +1,104 @@
+#version: '4'
+
+networks:
+  booking-net:
+    driver: bridge
+
+services:
+  # Database
+  mysql:
+    container_name: mysql
+    image: mysql:8.4.5
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - '${MYSQL_PORT}:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u',
+          'root',
+          '-pmysql',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - booking-net
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - '${REDIS_PORT}:6379'
+    networks:
+      - booking-net
+    command: ['redis-server', '--notify-keyspace-events', 'Ex']
+  server:
+    container_name: booking-ticket
+    image: booking-ticket:latest
+    environment:
+      ###   Spring DB Config
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      ###   Payment Config
+      # VNPay Config
+      VNPAY_URL: ${VNPAY_URL}
+      VNPAY_TMN_CODE: ${VNPAY_TMN_CODE}
+      VNPAY_SECRET_KEY: ${VNPAY_SECRET_KEY}
+      VNPAY_RETURN_URL: ${VNPAY_RETURN_URL}
+      VNPAY_VERSION: ${VNPAY_VERSION}
+      VNPAY_COMMAND: ${VNPAY_COMMAND}
+      VNPAY_ORDER_TYPE: ${VNPAY_ORDER_TYPE}
+      # Momo Config
+      MOMO_URL: ${MOMO_URL}
+      MOMO_PARTNER_CODE: ${MOMO_PARTNER_CODE}
+      MOMO_ACCESS_KEY: ${MOMO_ACCESS_KEY}
+      MOMO_SECRET_KEY: ${MOMO_SECRET_KEY}
+      MOMO_RETURN_URL: ${MOMO_RETURN_URL}
+      MOMO_IPN_URL: ${MOMO_IPN_URL}
+      MOMO_ORDER_TYPE: ${MOMO_ORDER_TYPE}
+      ###   Default account
+      # Admin
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      # User
+      USER_USERNAME: ${USER_USERNAME}
+      USER_EMAIL: ${USER_EMAIL}
+      USER_PASSWORD: ${USER_PASSWORD}
+      ###   Mailtrap Config
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      ###   Refresh Token Config
+      JWT_COOKIE_NAME: ${JWT_COOKIE_NAME}
+      JWT_COOKIE_REFRESH_NAME: ${JWT_COOKIE_REFRESH_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+      ###   Cloudinary Config
+      CLOUDINARY_FOLDER_NAME: ${FOLDER_NAME}
+      CLOUDINARY_CLOUD_NAME: ${CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${API_KEY}
+      CLOUDINARY_API_SECRET: ${API_SECRET}
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - '${SPRING_PORT}:8888'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - booking-net

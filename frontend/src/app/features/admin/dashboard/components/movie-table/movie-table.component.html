@@ -1,0 +1,20 @@
+<nz-table nzTemplateMode>
+  <thead>
+    <th>Theater</th>
+    <th>Tickets</th>
+    <th>Revenue</th>
+    <th>Seat Utilization</th>
+    <th>Cancellation</th>
+  </thead>
+  <tbody>
+    @for (item of data; track item) {
+      <tr>
+        <td>{{ item.theater }}</td>
+        <td>{{ item.tickets }}</td>
+        <td>{{ item.revenue }}</td>
+        <td>{{ item.seat }}</td>
+        <td>{{ item.cancel }}</td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

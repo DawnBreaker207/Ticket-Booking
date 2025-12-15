@@ -1,0 +1,68 @@
+<div class="w-full bg-[url('/assets/bg-slider.png')] bg-repeat-x h-full">
+  <div
+    class="max-w-5xl mx-auto mt-6 overflow-hidden shadow-2xl bg-black border-2 border-gray-300"
+  >
+    <nz-carousel
+      nzAutoPlay
+      nzEffect="fade"
+      [nzAutoPlaySpeed]="5000"
+      [nzEnableSwipe]="true"
+      class="w-full"
+    >
+      @for (banner of banners; track banner.title) {
+        <div nz-carousel-content class="relative h-[500px] md:h[600px] w-full">
+          <!-- Background Image -->
+          <div
+            class="absolute inset-0 bg-cover bg-center pointer-events-none"
+            [style.backgroundImage]="'url(' + banner.image + ')'"
+          ></div>
+
+          <!-- Overlay Gradient -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 pointer-events-none"
+          ></div>
+
+          <!-- Content -->
+          <div
+            class="absolute inset-0 flex flex-col justify-end p-8 md:p-12 lg:p-16"
+          >
+            <div class="max-w-3xl">
+              <h1
+                class="text-gray-200! text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg leading-tight"
+              >
+                {{ banner.title }}
+              </h1>
+
+              <p
+                class="text-gray-200 text-base md:text-xl max-w-2xl line-clamp-2 mb-8 drop-shadow-md"
+              >
+                {{ banner.desc }}
+              </p>
+
+              <div class="flex items-center gap-4">
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  class="h-12 px-8 rounded-full font-bold text-base flex items-center gap-2 border-none bg-primary hover:bg-blue-600"
+                >
+                  <nz-icon nzType="barcode" />
+                  Book Ticket
+                </button>
+                <button
+                  nz-button
+                  nzType="default"
+                  nzSize="large"
+                  class="h-12 px-8 rounded-full font-bold text-base flex items-center gap-2 border-2 border-white text-white hover:text-primary hover:border-primary"
+                >
+                  <nz-icon nzType="play-circle" />
+                  Watch Trailer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </nz-carousel>
+  </div>
+</div>
