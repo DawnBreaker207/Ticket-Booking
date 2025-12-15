@@ -5,7 +5,7 @@
       <!-- Backdrop Image -->
       <div
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-        [style.backgroundImage]="'url(' + movie.poster + ')'"
+        [style.backgroundImage]="'url(' + movie.backdrop + ')'"
       ></div>
       <div
         class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/80 to-transparent"
@@ -42,7 +42,9 @@
           >
             {{ movie.title }}
           </h1>
-          <p class="text-xl text-gray-400 italic md-4">{{ movie.title }}</p>
+          <p class="text-xl text-gray-400 italic md-4">
+            {{ movie.originalTitle }}
+          </p>
 
           <!--    Genres  -->
           <div class="flex items-center gap-6 mb-6">
@@ -105,9 +107,15 @@
                   </span>
                 </div>
                 <div>
+                  <strong>Quốc gia:</strong>
+                  <span class="text-white ml-2">
+                    {{ movie.country }}
+                  </span>
+                </div>
+                <div>
                   <strong>Ngôn ngữ</strong>
                   <span class="text-white ml-2">
-                    Tiếng Anh (Phụ đề Tiếng Việt)
+                    {{ movie.language }}
                   </span>
                 </div>
               </div>
