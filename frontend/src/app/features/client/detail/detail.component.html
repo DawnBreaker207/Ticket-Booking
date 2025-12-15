@@ -1,0 +1,170 @@
+@if (movie$ | async; as movie) {
+  <div class="min-h-screen bg-[#0f172a] text-white font-sans pb-20">
+    <!-- HERO SECTION -->
+    <div class="relative w-full h-[600px] overflow-hidden group">
+      <!-- Backdrop Image -->
+      <div
+        class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+        [style.backgroundImage]="'url(' + movie.backdrop + ')'"
+      ></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/80 to-transparent"
+      ></div>
+
+      <!--  Content  -->
+      <div
+        class="relative container mx-auto px-4 h-full flex items-end pb-12 gap-8"
+      >
+        <!--  Poster  -->
+        <div
+          class="hidden md:block w-64 rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 shrink-0 transform translate-y-16"
+        >
+          <img
+            [src]="movie.poster"
+            [alt]="movie.title"
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <!--   Info  -->
+        <div class="flex-1 mb-4">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-gray-300 text-sm">{{
+              movie.releaseDate | date: "dd/MM/yyy"
+            }}</span>
+            <span class="text-gray-300 text-sm"
+              >• {{ movie.duration }} phút</span
+            >
+          </div>
+
+          <h1
+            class="text-4xl md:text-6xl font-extrabold text-white! md-2 leading-tight"
+          >
+            {{ movie.title }}
+          </h1>
+          <p class="text-xl text-gray-400 italic md-4">
+            {{ movie.originalTitle }}
+          </p>
+
+          <!--    Genres  -->
+          <div class="flex items-center gap-6 mb-6">
+            <div class="flex gap-2">
+              @for (genre of movie.genres; track genre) {
+                <nz-tag
+                  [nzColor]="'transparent'"
+                  class="border border-gray-500 text-gray-300 rounded-full px-3"
+                >
+                  {{ genre }}
+                </nz-tag>
+              }
+            </div>
+          </div>
+
+          <!--  Action Buttons    -->
+          <div class="flex gap-4">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              class="bg-red-600 border-none hover:bg-red-700 font-bold! px-8 rounded-full shadow-lg shadow-red-600/30"
+            >
+              Đặt vé ngay
+            </button>
+
+            <button
+              nz-button
+              nzType="default"
+              nzSize="large"
+              class="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md rounded-full px-6"
+            >
+              <nz-icon nzType="play-circle" nzTheme="fill" class="mr-2" />
+              Xem Trailer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT & SIDEBAR -->
+    <div class="container mx-auto px-4 mt-20 flex flex-col lg:flex-row gap-10">
+      <!-- LEFT COLUMN -->
+      <div class="w-full lg:w-full space-y-8">
+        <!--  Detail Info  -->
+        <div
+          class="bg-[#1e293b] rounded-2xl p-6 shadow-xl border border-white/5"
+        >
+          <nz-tabset [nzTabBarGutter]="20" nzType="card" class="custom-tabs">
+            <!--  Content -->
+            <nz-tab nzTitle="Nội dung phim">
+              <p class="text-gray-300 leading-relaxed text-lg">
+                {{ movie.overview }}
+              </p>
+              <div class="mt-6 grid grid-cols-2 gap-4 text-sm text-gray-400">
+                <div>
+                  <strong>Khởi chiếu:</strong>
+                  <span class="text-white ml-2">
+                    {{ movie.releaseDate | date: "dd/MM/yyyy" }}
+                  </span>
+                </div>
+                <div>
+                  <strong>Quốc gia:</strong>
+                  <span class="text-white ml-2">
+                    {{ movie.country }}
+                  </span>
+                </div>
+                <div>
+                  <strong>Ngôn ngữ</strong>
+                  <span class="text-white ml-2">
+                    {{ movie.language }}
+                  </span>
+                </div>
+              </div>
+            </nz-tab>
+            <!--  Review  -->
+            <nz-tab [nzTitle]="'Đánh giá (' + reviews.length + ')'">
+              <div class="space-y-6">
+                @for (review of reviews; track review.user) {
+                  <div
+                    class="flex gap-4 border-b border-gray-700 pb-4 last:border-0"
+                  >
+                    <nz-avatar
+                      [nzSrc]="review.avatar"
+                      nzSize="large"
+                    ></nz-avatar>
+                    <div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="font-bold text-white">{{
+                          review.user
+                        }}</span>
+                        <nz-rate
+                          [ngModel]="review.rating"
+                          nzDisabled
+                          class="text-xs"
+                        ></nz-rate>
+                      </div>
+                      <p class="text-gray-300 text-sm">{{ review.comment }}</p>
+                      <span class="text-xs text-gray-500 mt-1 block">{{
+                        review.date
+                      }}</span>
+                    </div>
+                  </div>
+                }
+                <button
+                  nz-button
+                  nzBlock
+                  nzType="dashed"
+                  class="text-gray-400 hover:text-white border-gray-600"
+                >
+                  Viết đánh giá của bạn
+                </button>
+              </div>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <!--      <div class="w-full lg:w-[30%] space-y-8"></div>-->
+    </div>
+  </div>
+}

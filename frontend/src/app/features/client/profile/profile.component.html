@@ -1,0 +1,87 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+  <!-- HEADER -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Tài khoản của tôi</h1>
+    <p class="text-gray-500">Quản lý thông tin và lịch sử đặt vé</p>
+  </div>
+
+  <!-- CONTAINER -->
+  <div
+    class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[600px]"
+  >
+    <nz-tabset
+      [nzTabPosition]="tabPosition"
+      nzType="line"
+      nzSize="large"
+      class="h-full custom-tabs"
+    >
+      <!-- INFO  -->
+      <nz-tab [nzTitle]="infoTitle">
+        <ng-template #infoTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="idcard" nzTheme="outline" />
+            Hồ sơ cá nhân
+          </div>
+        </ng-template>
+        @if (user$ | async; as user) {
+          <app-info [user]="user" />
+        }
+      </nz-tab>
+
+      <!-- BOOKING HISTORY -->
+      <nz-tab [nzTitle]="historyFile">
+        <ng-template #historyFile>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="history" />
+            Lịch sử đặt vé
+          </div>
+        </ng-template>
+        @if (tickets$ | async; as tickets) {
+          <app-booking-history [tickets]="tickets" />
+        }
+      </nz-tab>
+
+      <!--  MEMBERS    -->
+      <nz-tab [nzTitle]="memberTitle">
+        <ng-template #memberTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="crown" nzTheme="outline" />
+            Thành viên
+          </div>
+        </ng-template>
+        <div class="p-12 text-center">
+          <nz-empty [nzNotFoundContent]="null"></nz-empty>
+          <p class="text-gray-500">Tính năng đang phát triển</p>
+        </div>
+      </nz-tab>
+
+      <!-- VOUCHER -->
+      <nz-tab [nzTitle]="voucherTitle">
+        <ng-template #voucherTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="tags" nzTheme="outline" />
+            Voucher
+          </div>
+        </ng-template>
+        <div class="p-12 text-center">
+          <nz-empty [nzNotFoundContent]="null"></nz-empty>
+          <p class="text-gray-500">Tính năng đang phát triển</p>
+        </div>
+      </nz-tab>
+
+      <!-- SETTINGS -->
+      <nz-tab [nzTitle]="settingTitle">
+        <ng-template #settingTitle>
+          <div class="flex items-center gap-2 px-2">
+            <nz-icon nzType="setting" />
+            Cài đặt
+          </div>
+        </ng-template>
+        <div class="p-12 text-center">
+          <nz-empty [nzNotFoundContent]="null"></nz-empty>
+          <p class="text-gray-500">Tính năng đang phát triển</p>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

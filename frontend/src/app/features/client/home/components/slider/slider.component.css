@@ -1,0 +1,16 @@
+::ng-deep .ant-carousel .slick-dots li button {
+  height: 4px;
+  background: #fff;
+  opacity: 0.5;
+}
+
+::ng-deep .ant-carousel .slick-dots li.slick-active button {
+  opacity: 1;
+  width: 24px;
+  background: #1890ff;
+}
+
+[nz-carousel-content] {
+  height: 28rem;
+  overflow: hidden;
+}

@@ -1,0 +1,308 @@
+<div class="min-h-screen flex bg-white font-sans">
+  <!-- LEFT SIDE: IMAGE & BRANDING  -->
+  <div class="hidden lg:flex lg:w-1/2 relative bg-gray-900 overflow-hidden">
+    <!--  Background Image  -->
+    <div
+      class="absolute inset-0 bg-[url('https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg')] bg-cover bg-center opacity-60"
+    ></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-gray-900/50"
+    ></div>
+    <!-- Content Overlay  -->
+    <div
+      class="relative z-10 w-full flex flex-col justify-between p-12 text-white"
+    >
+      <div>
+        <a
+          routerLink="/"
+          class="flex items-center gap-2 text-decoration-none w-fit"
+        >
+          <nz-icon nzType="shop" nzTheme="fill" class="text-4xl text-primary" />
+          <span class="text-3xl font-bold tracking-tighter"
+            >CINE<span class="text-primary">PLEX</span></span
+          >
+        </a>
+      </div>
+
+      <div class="mb-8">
+        <h1 class="text-5xl text-gray-300! fond-bold mb-4 leading-tight">
+          Magic of Cinema <br />
+          at your fingertips.
+        </h1>
+        <p class="text-lg text-gray-300 max-w-md">
+          Book tickets for the latest blockbusters, enjoy exclusive popcorn
+          deals, and experience the best visual quality.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE: AUTH FORMS  -->
+  <div
+    class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 overflow-y-auto"
+  >
+    <div class="max-w-[400px] w-full fade-in">
+      <!--  LOGO ON MOBILE ONLY  -->
+      <div class="lg:hidden text-center mb-8">
+        <a routerLink="/" class="inline-flex items-center gap-2">
+          <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary" />
+          <span class="text-2xl font-bold text-gray-900"
+            >CINE <span class="text-primary">PLEX</span></span
+          >
+        </a>
+      </div>
+
+      <!-- LOGIN FORM -->
+      @if (activeTab() === "login") {
+        <ng-container *nzStringTemplateOutlet="loginTpl"></ng-container>
+      } @else {
+        <ng-container *nzStringTemplateOutlet="registerTpl"></ng-container>
+      }
+
+      <!-- REGISTER FORM    -->
+      <ng-template #registerTpl>
+        <div class="mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            Create Account 🚀
+          </h2>
+          <p class="text-gray-500">
+            Join us to book tickets and get exclusive offers.
+          </p>
+        </div>
+
+        <form
+          nz-form
+          [formGroup]="formRegister"
+          (ngSubmit)="submitRegister()"
+          nzLayout="vertical"
+        >
+          <nz-form-item class="mb-5">
+            <nz-form-label nzRequired>Full Name</nz-form-label>
+            <nz-form-control nzErrorTip="What should we call you?">
+              <nz-input-group
+                nzPrefixIcon="user"
+                nzSize="large"
+                class="rounded-lg"
+              >
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="username"
+                  placeholder="John Doe"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item class="mb-5">
+            <nz-form-label nzRequired>Email Address</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter a valid email">
+              <nz-input-group
+                nzPrefixIcon="mail"
+                nzSize="large"
+                class="rounded-lg"
+              >
+                <input
+                  nz-input
+                  type="email"
+                  formControlName="email"
+                  placeholder="name@example.com"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <nz-form-item class="mb-5">
+              <nz-form-label nzRequired>Password</nz-form-label>
+              <nz-form-control nzErrorTip="Password required!">
+                <nz-input-group
+                  nzPrefixIcon="lock"
+                  nzSize="large"
+                  class="rounded-lg"
+                >
+                  <input
+                    nz-input
+                    type="password"
+                    formControlName="password"
+                    placeholder="••••••••"
+                  />
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item class="mb-5">
+              <nz-form-label nzRequired>Confirm</nz-form-label>
+              <nz-form-control [nzErrorTip]="confirmErrorTpl">
+                <nz-input-group
+                  nzPrefixIcon="lock"
+                  nzSize="large"
+                  class="rounded-lg"
+                >
+                  <input
+                    nz-input
+                    type="password"
+                    formControlName="confirmPassword"
+                    placeholder="••••••••"
+                  />
+                </nz-input-group>
+                <ng-template #confirmErrorTpl let-control>
+                  @if (control.hasError("required")) {
+                    <ng-container>Required!</ng-container>
+                  }
+                  @if (control.hasError("confirm")) {
+                    <ng-container>Not match!</ng-container>
+                  }
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <button
+            nz-button
+            nzType="primary"
+            nzBlock
+            nzSize="large"
+            [nzLoading]="isRegisterLoading"
+            class="font-bold h-12 text-base rounded-lg mb-6"
+          >
+            Register Account
+          </button>
+        </form>
+
+        <div class="text-center text-gray-600">
+          Already have an account?
+          <a
+            (click)="toggleMode()"
+            class="font-bold text-primary hover:underline cursor-pointer ml-1"
+            >Sign in here</a
+          >
+        </div>
+      </ng-template>
+
+      <ng-template #loginTpl>
+        <div class="mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back 👋</h2>
+          <p class="text-gray-500">
+            Enter your credentials to access your account.
+          </p>
+        </div>
+
+        <form
+          nz-form
+          [formGroup]="formLogin"
+          (ngSubmit)="submitLogin()"
+          nzLayout="vertical"
+        >
+          <nz-form-item class="mb-5">
+            <nz-form-label nzRequired>Email Address or Username</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter a valid name!">
+              <nz-input-group
+                nzPrefixIcon="mail"
+                nzSize="large"
+                class="rounded-lg"
+              >
+                <input
+                  nz-input
+                  type="email"
+                  formControlName="identifier"
+                  placeholder="name@example.com"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item class="mb-2">
+            <nz-form-label nzRequired>Password</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter you password!">
+              <nz-input-group
+                nzPrefixIcon="lock"
+                [nzSuffix]="suffixTemplate"
+                nzSize="large"
+                class="rounded-lg"
+              >
+                <input
+                  nz-input
+                  [type]="passwordVisible ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="••••••••"
+                />
+              </nz-input-group>
+              <ng-template #suffixTemplate>
+                <nz-icon
+                  [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                  (click)="passwordVisible = !passwordVisible"
+                  class="cursor-pointer text-gray-400"
+                />
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+
+          <div class="flex items-center justify-between mb-6">
+            <label nz-checkbox formControlName="remember">Remember me</label>
+            <a
+              class="text-sm font-semibold text-primary hover:text-blue-700 hober:underline cursor-pointer"
+              >Forgot password?</a
+            >
+          </div>
+
+          <button
+            nz-button
+            nzType="primary"
+            nzBlock
+            nzSize="large"
+            [nzLoading]="isLoginLoading"
+            class="font-bold h-12 text-base rounded-lg mb-6"
+          >
+            Sign In to Account
+          </button>
+        </form>
+
+        <div class="text-center text-gray-600">
+          Not a member yet?
+          <a
+            (click)="toggleMode()"
+            class="font-bold text-primary hover:underline cursor-pointer ml-1"
+            >Create an account</a
+          >
+        </div>
+      </ng-template>
+
+      <!--  SOCIAL LOGIN  -->
+      <div class="mt-8">
+        <div class="relative mb-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500 font-medium"
+              >Or continue with</span
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            type="button"
+            class="flex items-center justify-center w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all"
+          >
+            <nz-icon nzType="google" class="mr-2 text-xl text-red-500" />
+            Google
+          </button>
+
+          <button
+            type="button"
+            class="flex items-center justify-center w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all"
+          >
+            <nz-icon
+              nzType="facebook"
+              nzTheme="fill"
+              class="mr-2 text-xl text-blue-500"
+            />
+            Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

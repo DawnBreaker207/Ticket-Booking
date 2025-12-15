@@ -1,0 +1,184 @@
+<form nz-form [formGroup]="form" class="w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:mt-10">
+    <!--  Poster-->
+    <div class="lg:col-span-4">
+      <nz-form-item>
+        <nz-form-control>
+          <div
+            class="w-full aspect-[2/3] bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 overflow-hidden relative group flex items-center justify-center"
+          >
+            @if (form.get("moviePosterUrl")?.value) {
+              <img
+                [src]="
+                  form.get('moviePosterUrl')?.value ||
+                  'https://via.placeholder.com/150x200'
+                "
+                class="w-full h-full object-cover block"
+                alt=""
+              />
+            } @else {
+              <div
+                class="flex flex-col items-center justify-center text-gray-400"
+              >
+                <nz-icon nzType="picture" class="text-4xl mb-2 opacity-50" />
+                <span class="text-xs font-semibold uppercase tracking-wider"
+                  >No Image</span
+                >
+              </div>
+            }
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="lg:col-span-8 flex flex-col gap-4">
+      <!--  Search Movie    -->
+      <div class="relative z-20">
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired class="font-bold text-gray-700"
+            >Chọn phim</nz-form-label
+          >
+          <nz-form-control>
+            <nz-input-group
+              nzPrefixIcon="search"
+              class="rounded-lg h-10 shadow-sm"
+            >
+              <input
+                nz-input
+                placeholder="Tìm kiếm"
+                style="width: 500px"
+                [formControl]="searchCtrl"
+                class="h-full border-none focus:shadow-none"
+              />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <ng-container *ngTemplateOutlet="searchDropdown"></ng-container>
+      </div>
+
+      <!--   DATE & TIME   -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired class="font-semibold"
+            >Ngày chiếu</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Vui lòng chọn ngày">
+            <nz-date-picker
+              nzSize="default"
+              class="w-full rounded-lg h-10"
+              nzFormat="dd-MM-yyyy"
+              formControlName="showDate"
+              [nzDisabled]="mode === 'view'"
+            ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired class="font-semibold"
+            >Show time</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Vui lòng chọn giờ">
+            <nz-time-picker
+              nzSize="default"
+              class="w-full rounded-lg h-10"
+              nzFormat="HH:mm"
+              formControlName="showTime"
+              [nzDisabled]="mode === 'view'"
+            >
+            </nz-time-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <nz-form-item>
+        <nz-form-label nzRequired class="font-semibold"
+          >Rạp chiếu</nz-form-label
+        >
+        <nz-form-control nzErrorTip="Vui lòng chọn rạp">
+          <nz-select
+            formControlName="theaterId"
+            [nzDisabled]="mode === 'view'"
+            nzPlaceHolder="Chọn rạp chiếu"
+            class="rounded-lg h-10 w-full"
+          >
+            @for (theater of theaters$ | async; track theater.id) {
+              <nz-option [nzLabel]="theater.name" [nzValue]="theater.id">
+              </nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!--   PRICE & SEATS   -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired class="font-semibold">Giá vé</nz-form-label>
+          <nz-form-control nzErrorTip="Chọn giá vé">
+            <nz-select
+              formControlName="price"
+              [nzDisabled]="mode === 'view'"
+              nzPlaceHolder="Chọn mệnh giá"
+              class="rounded-lg"
+            >
+              <nz-option [nzLabel]="'50,000đ'" [nzValue]="50000"></nz-option>
+              <nz-option [nzLabel]="'100,000đ'" [nzValue]="100000"></nz-option>
+              <nz-option [nzLabel]="'150,000đ'" [nzValue]="150000"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired class="font-semibold"
+            >Tổng số ghế</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Chọn số ghế">
+            <nz-select
+              formControlName="totalSeats"
+              [nzDisabled]="mode === 'view'"
+              nzPlaceHolder="Chọn số lượng"
+              class="rounded-lg"
+            >
+              <nz-option [nzLabel]="'40 ghế'" [nzValue]="40"></nz-option>
+              <nz-option [nzLabel]="'50 ghế'" [nzValue]="50"></nz-option>
+              <nz-option [nzLabel]="'60 ghế'" [nzValue]="60"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </div>
+</form>
+
+<ng-template #searchDropdown>
+  @if (searchResults() && searchResults().length > 0) {
+    <div
+      class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-80 overflow-y-auto z-50 animate-fade-in"
+    >
+      <ul class="py-2 m-0 list-none">
+        @for (movie of searchResults(); track movie.id) {
+          <li
+            (click)="selectedMovie()"
+            class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex gap-4 items-center border-b border-gray-50 last:border-0 transition-colors"
+            [class.bg-blue-50]="selectedMovie()?.id === movie.id"
+          >
+            <img
+              [src]="movie.poster || 'https://via.placeholder.com/150x200'"
+              alt=""
+              class="w-10 h-14 object-cover rounded bg-gray-200 shrink-0"
+            />
+            <!--  Info   -->
+            <div class="">
+              <p class="font-bold text-gray-800 text-sm mb-0.5">
+                {{ movie.title }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ movie.releaseDate | date: "yyyy" }} •
+                {{ movie.overview | slice: 0 : 50 }}
+              </p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</ng-template>

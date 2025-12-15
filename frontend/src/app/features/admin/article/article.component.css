@@ -1,0 +1,32 @@
+:host ::ng-deep .ant-table {
+  background: transparent;
+  color: white;
+}
+
+:host ::ng-deep .ant-table-thead > tr > th {
+  background: #0f172a;
+  color: #94a3b8;
+  border-bottom: 1px solid #334155;
+}
+
+:host ::ng-deep .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #334155;
+  color: #cbd5e1;
+}
+
+:host ::ng-deep .ant-table-tbody > tr:hover > td {
+  background: #334155 !important;
+}
+
+:host ::ng-deep .ant-drawer-header {
+  background: #0f172a;
+  border-bottom: 1px solid #334155;
+}
+
+:host ::ng-deep .ant-drawer-title {
+  color: white;
+}
+
+:host ::ng-deep .ant-drawer-close {
+  color: white;
+}
