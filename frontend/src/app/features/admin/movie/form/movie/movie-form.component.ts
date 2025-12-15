@@ -119,11 +119,14 @@ export class FormMovieComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.fb.group({
       id: [''],
-      poster: [''],
       title: [''],
+      originalTitle: [''],
+      poster: [''],
+      backdrop: [''],
       overview: [''],
       duration: [null],
       language: [''],
+      country: [''],
       genres: [[]],
       releaseDate: [null],
       imdbId: [''],
@@ -145,10 +148,13 @@ export class FormMovieComponent implements OnInit, OnDestroy {
   private patchFormValue(movie: Movie) {
     this.form.patchValue({
       title: movie.title,
+      originalTitle: movie.originalTitle,
       poster: movie.poster,
+      backdrop: movie.backdrop,
       overview: movie.overview,
       duration: movie.duration,
       language: movie.language,
+      country: movie.country,
       genres: movie.genres,
       releaseDate: movie.releaseDate,
       imdbId: movie.imdbId,
@@ -219,6 +225,9 @@ export class FormMovieComponent implements OnInit, OnDestroy {
             poster_path: movie.poster_path
               ? `${this.imageBase}/${movie.poster_path}`
               : '',
+            backdrop_path: movie.backdrop_path
+              ? `${this.imageBase}/${movie.backdrop_path}`
+              : '',
             genres: movie.genres
               ? movie.genres.map((g: any) => g.name.replace(/^Phim\s/i, ''))
               : [],
@@ -230,10 +239,13 @@ export class FormMovieComponent implements OnInit, OnDestroy {
           next: (result: any) => {
             this.form.patchValue({
               title: result.title,
+              originalTitle: result.original_title,
               poster: result.poster_path,
+              backdrop: result.backdrop_path,
               overview: result.overview,
               duration: result.runtime,
               language: result.original_language,
+              country: result.origin_country[0],
               genres: result.genres,
               releaseDate: result.release_date,
               imdbId: result.imdb_id,

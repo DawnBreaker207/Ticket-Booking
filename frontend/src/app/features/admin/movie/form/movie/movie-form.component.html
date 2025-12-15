@@ -6,8 +6,8 @@
         <!-- Movie Title & Auto-fill Button -->
         <nz-form-item class="mb-6">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Movie Title</nz-form-label
-          >
+            >Movie Title
+          </nz-form-label>
           <nz-form-control nzErrorTip="Required">
             <div class="flex items-center gap-2">
               <input
@@ -66,6 +66,20 @@
         </div>
 
         <nz-form-item class="mb-0">
+          <nz-form-label nzRequired>Backdrop</nz-form-label>
+          <nz-form-control nzErrorTip="Enter backdrop">
+            <input
+              type="text"
+              nz-input
+              formControlName="backdrop"
+              placeholder="e.g 120"
+              class="rounded-lg h-11"
+              [readOnly]="mode === 'view'"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="mb-0">
           <nz-form-label nzRequired>Language</nz-form-label>
           <nz-form-control nzErrorTip="Enter language">
             <nz-select
@@ -77,6 +91,35 @@
               <nz-option nzLabel="English" nzValue="en"></nz-option>
               <nz-option nzLabel="Vietnamese" nzValue="vi"></nz-option>
             </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired>Country</nz-form-label>
+          <nz-form-control nzErrorTip="Enter Country">
+            <nz-select
+              formControlName="country"
+              nzPlaceHolder="Select Country"
+              [nzDisabled]="mode === 'view'"
+              class="rounded-lg h-11 flex items-center"
+            >
+              <nz-option nzLabel="America" nzValue="US"></nz-option>
+              <nz-option nzLabel="Vietnam" nzValue="VI"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="mb-0">
+          <nz-form-label nzRequired>Original Title</nz-form-label>
+          <nz-form-control nzErrorTip="Enter original title">
+            <input
+              type="text"
+              nz-input
+              formControlName="originalTitle"
+              placeholder="e.g 120"
+              class="rounded-lg h-11"
+              [readOnly]="mode === 'view'"
+            />
           </nz-form-control>
         </nz-form-item>
 
@@ -96,8 +139,8 @@
         <!-- Description -->
         <nz-form-item class="flex-1 mb-0">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Description</nz-form-label
-          >
+            >Description
+          </nz-form-label>
           <nz-form-control nzErrorTip="Enter description" class="h-full">
             <textarea
               nz-input
@@ -115,8 +158,8 @@
       <div class="lg:col-span-4 space-y-6">
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Poster URL</nz-form-label
-          >
+            >Poster URL
+          </nz-form-label>
           <nz-form-control nzErrorTip="Required">
             <input
               nz-input

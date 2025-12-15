@@ -101,8 +101,11 @@ export class HomeComponent implements OnInit, OnDestroy {
           return {
             id: showtime.movieId as number,
             title: showtime.movieTitle || 'Unknown',
+            originalTitle: '',
             poster: showtime.moviePosterUrl || '',
             overview: '',
+            country: '',
+            backdrop: '',
             duration: 0,
             genres: [],
             releaseDate: new Date(),
