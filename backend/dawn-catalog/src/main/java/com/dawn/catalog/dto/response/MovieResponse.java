@@ -23,7 +23,11 @@ public class MovieResponse extends BaseResponse {
 
     private String title;
 
+    private String originalTitle;
+
     private String poster;
+
+    private String backdrop;
 
     private String overview;
 
@@ -34,6 +38,8 @@ public class MovieResponse extends BaseResponse {
     private LocalDate releaseDate;
 
     private String language;
+
+    private String country;
 
     private String imdbId;
 

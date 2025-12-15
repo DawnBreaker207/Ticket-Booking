@@ -1,7 +1,6 @@
 package com.dawn.catalog.model;
 
 
-import com.dawn.catalog.model.Genre;
 import com.dawn.common.model.AbstractMappedEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,8 +32,14 @@ public class Movie extends AbstractMappedEntity {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "original_title")
+    private String originalTitle;
+
     @Column(name = "poster")
     private String poster;
+
+    @Column(name = "backdrop")
+    private String backdrop;
 
     @Column(name = "overview")
     private String overview;
@@ -44,6 +49,9 @@ public class Movie extends AbstractMappedEntity {
 
     @Column(name = "language")
     private String language;
+
+    @Column(name = "country")
+    private String country;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

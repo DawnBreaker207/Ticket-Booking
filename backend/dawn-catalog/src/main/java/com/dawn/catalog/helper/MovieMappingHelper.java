@@ -12,13 +12,16 @@ public interface MovieMappingHelper {
     static Movie map(final MovieRequest m) {
         return Movie.builder()
                 .title(m.getTitle())
+                .originalTitle(m.getOriginalTitle())
                 .poster(m.getPoster())
+                .backdrop(m.getBackdrop())
                 .overview(m.getOverview())
                 .duration(m.getDuration())
                 .releaseDate(m.getReleaseDate())
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
                 .language(m.getLanguage())
+                .country(m.getCountry())
                 .build();
     }
 
@@ -26,7 +29,9 @@ public interface MovieMappingHelper {
         return MovieResponse.builder()
                 .id(m.getId())
                 .title(m.getTitle())
+                .originalTitle(m.getOriginalTitle())
                 .poster(m.getPoster())
+                .backdrop(m.getBackdrop())
                 .overview(m.getOverview())
                 .duration(m.getDuration())
                 .genres(m
@@ -38,6 +43,7 @@ public interface MovieMappingHelper {
                 .imdbId(m.getImdbId())
                 .filmId(m.getFilmId())
                 .language(m.getLanguage())
+                .country(m.getCountry())
                 .isDeleted(m.getIsDeleted())
                 .createdAt(m.getCreatedAt())
                 .updatedAt(m.getUpdatedAt())

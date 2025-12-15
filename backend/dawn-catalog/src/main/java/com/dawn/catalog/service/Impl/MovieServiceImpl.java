@@ -95,12 +95,15 @@ public class MovieServiceImpl implements MovieService {
         Set<Genre> genres = checkExistedGenre(movieDetails.getGenres());
 
         movie.setTitle(movieDetails.getTitle());
+        movie.setOriginalTitle(movieDetails.getOriginalTitle());
         movie.setPoster(movieDetails.getPoster());
+        movie.setBackdrop(movieDetails.getBackdrop());
         movie.setOverview(movieDetails.getOverview());
         movie.setDuration(movieDetails.getDuration());
         movie.setGenres(genres);
         movie.setReleaseDate(movieDetails.getReleaseDate());
         movie.setLanguage(movieDetails.getLanguage());
+        movie.setCountry(movieDetails.getCountry());
         movie.setFilmId(movieDetails.getFilmId());
         movie.setImdbId(movieDetails.getImdbId());
         return MovieMappingHelper.map(movieRepository.save(movie));

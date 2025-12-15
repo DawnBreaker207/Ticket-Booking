@@ -22,9 +22,12 @@ public class MovieRequest {
     @Size(min = 1, max = 100, message = "Required characters")
     private String title;
 
+    private String originalTitle;
 
     @NotBlank(message = "Poster is not mandatory")
     private String poster;
+
+    private String backdrop;
 
     @NotBlank(message = "Overview is not mandatory")
     private String overview;
@@ -42,7 +45,9 @@ public class MovieRequest {
 
     private String language;
 
-    @NotBlank(message = "Imdb ID is not mandatory")
+    private String country;
+
+    @NotBlank(message = "IMDB ID is not mandatory")
     private String imdbId;
 
     @NotBlank(message = "Film ID is not mandatory")
