@@ -4,53 +4,74 @@
 
 SET SESSION cte_max_recursion_depth = 1000;
 SET
-@now := NOW();
+    @now := NOW();
 
 -- =====================================================
 -- 1) TẠO LỊCH CHIẾU (SHOWTIME) CHO 3 THÁNG
 -- =====================================================
 INSERT
-IGNORE INTO showtime (movie_id, theater_id, show_date, show_time, price, total_seats, available_seats)
+    IGNORE
+INTO showtime (movie_id, theater_id, show_date, show_time, price, total_seats, available_seats)
 WITH RECURSIVE
-days AS (
-    SELECT DATE('2025-09-01') AS d
-    UNION ALL
-    SELECT DATE_ADD(d, INTERVAL 1 DAY)
-    FROM days
-    WHERE d <= '2025-12-31'
-),
-times AS (
-    SELECT '10:00:00' AS show_time
-    UNION ALL SELECT '14:00:00'
-    UNION ALL SELECT '18:00:00'
-    UNION ALL SELECT '21:00:00'
-),
-movie_theater AS (
-    SELECT 1 AS movie_id, 1 AS theater_id
-    UNION ALL SELECT 1, 2
-    UNION ALL SELECT 2, 3
-    UNION ALL SELECT 2, 4
-    UNION ALL SELECT 3, 5
-    UNION ALL SELECT 4, 1
-    UNION ALL SELECT 5, 2
-    UNION ALL SELECT 5, 3
-    UNION ALL SELECT 6, 4
-    UNION ALL SELECT 7, 5
-    UNION ALL SELECT 1, 3
-    UNION ALL SELECT 2, 5
-    UNION ALL SELECT 3, 1
-    UNION ALL SELECT 3, 2
-    UNION ALL SELECT 8, 1
-    UNION ALL SELECT 8, 2
-    UNION ALL SELECT 9, 3
-    UNION ALL SELECT 9, 4
-    UNION ALL SELECT 10, 5
-    UNION ALL SELECT 5, 1
-    UNION ALL SELECT 6, 2
-    UNION ALL SELECT 6, 5
-    UNION ALL SELECT 7, 3
-    UNION ALL SELECT 4, 4
-)
+    days AS (SELECT DATE('2025-09-01') AS d
+             UNION ALL
+             SELECT DATE_ADD(d, INTERVAL 1 DAY)
+             FROM days
+             WHERE d < '2025-12-31'),
+    times AS (SELECT '10:00:00' AS show_time
+              UNION ALL
+              SELECT '14:00:00'
+              UNION ALL
+              SELECT '18:00:00'
+              UNION ALL
+              SELECT '21:00:00'),
+    movie_theater AS (SELECT 1 AS movie_id, 1 AS theater_id
+                      UNION ALL
+                      SELECT 1, 2
+                      UNION ALL
+                      SELECT 2, 3
+                      UNION ALL
+                      SELECT 2, 4
+                      UNION ALL
+                      SELECT 3, 5
+                      UNION ALL
+                      SELECT 4, 1
+                      UNION ALL
+                      SELECT 5, 2
+                      UNION ALL
+                      SELECT 5, 3
+                      UNION ALL
+                      SELECT 6, 4
+                      UNION ALL
+                      SELECT 7, 5
+                      UNION ALL
+                      SELECT 1, 3
+                      UNION ALL
+                      SELECT 2, 5
+                      UNION ALL
+                      SELECT 3, 1
+                      UNION ALL
+                      SELECT 3, 2
+                      UNION ALL
+                      SELECT 8, 1
+                      UNION ALL
+                      SELECT 8, 2
+                      UNION ALL
+                      SELECT 9, 3
+                      UNION ALL
+                      SELECT 9, 4
+                      UNION ALL
+                      SELECT 10, 5
+                      UNION ALL
+                      SELECT 5, 1
+                      UNION ALL
+                      SELECT 6, 2
+                      UNION ALL
+                      SELECT 6, 5
+                      UNION ALL
+                      SELECT 7, 3
+                      UNION ALL
+                      SELECT 4, 4)
 SELECT m.movie_id,
        m.theater_id,
        d.d                                                                                 AS show_date,
@@ -61,13 +82,12 @@ SELECT m.movie_id,
 FROM movie_theater m
          CROSS JOIN days d
          CROSS JOIN times t
-WHERE MONTH (d.d) = CASE
-    WHEN m.movie_id BETWEEN 1
-  AND 3 THEN 9
-    WHEN m.movie_id BETWEEN 4
-  AND 7 THEN 10
-    ELSE 11
-END;
+WHERE MONTH(d.d) = CASE
+                       WHEN m.movie_id IN (1, 2, 3) THEN 9
+                       WHEN m.movie_id IN (4, 5) THEN 10
+                       WHEN m.movie_id IN (6, 7, 8) THEN 11
+                       ELSE 12
+    END;
 
 -- =====================================================
 -- 2) TẠO GHẾ NGỒI
@@ -121,16 +141,22 @@ WHERE NOT EXISTS (SELECT 1
 -- 3) TẠO USER MẪU
 -- =====================================================
 INSERT
-IGNORE INTO users (id, username, email, password, avatar, created_at, updated_at)
-VALUES
-(1, 'user1', 'user1@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG', 'https://i.pravatar.cc/300?img=12', @now, @now),
-(2, 'user2', 'user2@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG', 'https://i.pravatar.cc/300?img=12', @now, @now),
-(3, 'user3', 'user3@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG', 'https://i.pravatar.cc/300?img=12', @now, @now),
-(4, 'user4', 'user4@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG', 'https://i.pravatar.cc/300?img=12', @now, @now),
-(5, 'user5', 'user5@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG', 'https://i.pravatar.cc/300?img=12', @now, @now);
+    IGNORE
+INTO users (id, username, email, password, avatar, created_at, updated_at)
+VALUES (1, 'user1', 'user1@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG',
+        'https://i.pravatar.cc/300?img=12', @now, @now),
+       (2, 'user2', 'user2@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG',
+        'https://i.pravatar.cc/300?img=12', @now, @now),
+       (3, 'user3', 'user3@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG',
+        'https://i.pravatar.cc/300?img=12', @now, @now),
+       (4, 'user4', 'user4@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG',
+        'https://i.pravatar.cc/300?img=12', @now, @now),
+       (5, 'user5', 'user5@example.com', '$2a$10$8.4/JMOOazc6T4OQ0kMSiupd3MEqjl2nLNnfo0w17znlyF2sXeVMG',
+        'https://i.pravatar.cc/300?img=12', @now, @now);
 
 INSERT
-IGNORE INTO user_role (user_id, role_id)
+    IGNORE
+INTO user_role (user_id, role_id)
 SELECT id, 1
 FROM users
 WHERE id BETWEEN 1 AND 5;
@@ -158,9 +184,9 @@ WHERE s.status = 'BOOKED'
 -- CẬP NHẬT SEAT.RESERVATION_ID THEO RESERVATION THỰC TẾ
 UPDATE seat s
     JOIN reservation r
-ON s.showtime_id = r.showtime_id
-    AND ((ABS(CRC32(CONCAT(s.showtime_id, s.seat_number))) MOD 5) + 1) = r.user_id
-    SET s.reservation_id = r.id
+    ON s.showtime_id = r.showtime_id
+        AND ((ABS(CRC32(CONCAT(s.showtime_id, s.seat_number))) MOD 5) + 1) = r.user_id
+SET s.reservation_id = r.id
 WHERE s.status = 'BOOKED';
 
 -- =====================================================
