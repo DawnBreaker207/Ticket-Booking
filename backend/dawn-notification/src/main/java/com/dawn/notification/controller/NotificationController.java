@@ -1,7 +1,8 @@
-package com.dawn.web.controller;
+package com.dawn.notification.controller;
 
+import com.dawn.common.dto.request.BookingNotificationEvent;
 import com.dawn.common.helper.RedisKeyHelper;
-import com.dawn.booking.service.NotificationService;
+import com.dawn.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,16 +19,18 @@ public class NotificationController {
 
     @GetMapping("/mail/test")
     public void sendEmail() {
-        notificationService.sendEmail(
-                "ngotunganh207@gmail.com",
-                "Ngo Tung Anh",
-                "ORD-D4DAAD940C10",
-                "Overlord",
-                "Thanh Xuan",
-                "11/10/2025 12:00:00",
-                "A2,A3",
-                "11/10/2025 12:00:00",
-                "100000"
+        notificationService.sendEmail(BookingNotificationEvent
+                .builder()
+                .to("ngotunganh207@gmail.com")
+                .name("Ngo Tung Anh")
+                .reservationId("ORD-D4DAAD940C10")
+                .movieName("Overlord")
+                .theaterName("Thanh Xuan")
+                .showtimeSession("11/10/2025 12:00:00")
+                .seats("A2,A3")
+                .paymentTime("11/10/2025 12:00:00")
+                .total("100000")
+                .build()
         );
     }
 

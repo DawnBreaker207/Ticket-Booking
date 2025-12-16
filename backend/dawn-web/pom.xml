@@ -45,6 +45,10 @@
         </dependency>
         <dependency>
             <groupId>com.dawn.backend</groupId>
+            <artifactId>dawn-notification</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dawn.backend</groupId>
             <artifactId>dawn-payment</artifactId>
         </dependency>
 
