@@ -37,8 +37,8 @@ public class SeatClientServiceImpl implements SeatClientService {
                 })
                 .body(new ParameterizedTypeReference<>() {
                 });
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         return Collections.emptyList();
     }
@@ -46,8 +46,9 @@ public class SeatClientServiceImpl implements SeatClientService {
     @Override
     public List<SeatDTO> findAllById(List<Long> seatIds) {
         ResponseObject<List<SeatDTO>> response = restClient
-                .get()
-                .uri("/seats/all/id", seatIds)
+                .post()
+                .uri("/seats/all/id")
+                .body(seatIds)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
@@ -55,8 +56,8 @@ public class SeatClientServiceImpl implements SeatClientService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         return Collections.emptyList();
     }
@@ -73,8 +74,8 @@ public class SeatClientServiceImpl implements SeatClientService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         return Collections.emptyList();
     }

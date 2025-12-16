@@ -8,7 +8,6 @@ public interface SeatClientService {
 
     List<SeatDTO> findByIdWithLock(List<Long> seatIds);
 
-
     List<SeatDTO> findAllById(List<Long> seatIds);
 
     List<SeatDTO> findAllByReservationId(String reservationId);
