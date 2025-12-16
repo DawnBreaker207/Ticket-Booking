@@ -11,12 +11,16 @@ import com.dawn.cinema.service.SeatService;
 import com.dawn.common.constant.Message;
 import com.dawn.common.constant.SeatStatus;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +90,7 @@ public class SeatServiceImpl implements SeatService {
 
 
     @Override
+    @Transactional
     public List<SeatResponse> findByIdWithLock(List<Long> seatIds) {
         return seatRepository
                 .findByIdWithLock(seatIds)
@@ -113,12 +118,20 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public void saveAllSeat(List<SeatRequest> seats) {
-        List<Seat> saveSeats = seats
-                .stream()
-                .map(SeatMappingHelper::map)
-                .toList();
-        seatRepository.saveAll(saveSeats);
+    public void saveAllSeat(List<SeatRequest> seatRequests) {
+        if (seatRequests == null || seatRequests.isEmpty()) {
+            return;
+        }
+        List<Long> seatIds = seatRequests.stream().map(SeatRequest::getId).toList();
+        List<Seat> existingSeats = seatRepository.findAllById(seatIds);
+        Map<Long, SeatRequest> requestMap = seatRequests.stream().collect(Collectors.toMap(SeatRequest::getId, Function.identity()));
+
+        for (Seat seat : existingSeats) {
+            SeatRequest request = requestMap.get(seat.getId());
+                seat.setStatus(request.getStatus());
+        }
+
+        seatRepository.saveAll(existingSeats);
     }
 
     @Override
