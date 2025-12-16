@@ -29,8 +29,9 @@ public class SeatClientServiceImpl implements SeatClientService {
     @Override
     public List<SeatDTO> findByIdWithLock(List<Long> seatIds) {
         ResponseObject<List<SeatDTO>> response = restClient
-                .get()
-                .uri("/seats/locks", seatIds)
+                .post()
+                .uri("/seats/locks")
+                .body(seatIds)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);

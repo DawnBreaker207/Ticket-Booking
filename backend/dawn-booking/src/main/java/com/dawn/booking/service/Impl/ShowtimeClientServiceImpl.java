@@ -44,8 +44,9 @@ public class ShowtimeClientServiceImpl implements ShowtimeClientService {
     @Override
     public ShowtimeDTO save(ShowtimeDTO showtime) {
         ResponseObject<ShowtimeDTO> response = restClient
-                .post()
-                .uri("/showtime", showtime)
+                .put()
+                .uri("/showtime/{id}", showtime.getId())
+                .body(showtime)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);

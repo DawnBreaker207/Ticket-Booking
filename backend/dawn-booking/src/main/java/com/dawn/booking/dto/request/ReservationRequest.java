@@ -5,9 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +16,4 @@ public class ReservationRequest {
     private Long showtimeId;
 
     private Long userId;
-
-    private List<Long> seats = new ArrayList<>();
 }

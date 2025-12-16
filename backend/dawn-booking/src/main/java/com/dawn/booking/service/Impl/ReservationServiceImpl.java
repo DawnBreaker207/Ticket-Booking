@@ -8,11 +8,14 @@ import com.dawn.booking.repository.ReservationRepository;
 import com.dawn.booking.service.*;
 import com.dawn.booking.utils.ReservationUtils;
 import com.dawn.common.constant.Message;
+import com.dawn.common.constant.RabbitMQConstants;
 import com.dawn.common.constant.ReservationStatus;
 import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.dto.request.BookingNotificationEvent;
 import com.dawn.common.dto.response.ResponsePage;
 import com.dawn.common.exception.wrapper.*;
 import com.dawn.common.helper.RedisKeyHelper;
+import com.dawn.notification.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +55,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final NotificationService notificationService;
 
-//    private final PaymentRepository paymentRepository;
+    private final PaymentClientService paymentService;
+
+    private final RabbitTemplate rabbitTemplate;
 
     private final ObjectMapper mapper;
 
@@ -215,36 +222,36 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public ReservationResponse confirmReservation(ReservationRequest request) {
         log.info("Confirming reservation: {}", request.getReservationId());
-
         //        Get reservation id from redis
         String reservationId = request.getReservationId();
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
 
-        Reservation dto = validateUserAndGetReservation(request, reservationId);
+        ReservationResponse cachedData = getFromRedis(reservationId);
 
-        List<Long> seatIds = extractSeatIds(dto);
+        if (request.getUserId() == null || !cachedData.getUserId().equals(request.getUserId())) {
+            throw new PermissionDeniedException("User mismatch or invalid user");
+        }
+
+        log.info("Reservation hold get info: {}", cachedData);
+        List<Long> seatIds = cachedData.getSeatsIds();
+        if (seatIds == null || seatIds.isEmpty()) {
+            throw new IllegalStateException(Message.Exception.NO_SEAT_SELECTED);
+        }
 
         validateSeatLocks(redisKey, reservationId, seatIds);
         //        Create reservation to save
-        ShowtimeDTO showtime = showtimeService.findById(request.getShowtimeId());
-
-        MovieDTO movie = movieService.findOne(showtime.getMovieId());
-
-        UserDTO user = userService.findById(request.getUserId());
-
         List<SeatDTO> seatEntities = loadSeatFromDatabase(seatIds, reservationId);
-
         validateSeatsStillAvailable(seatEntities);
+
         log.info("All {} seats verified as available in DB for reservation {}", seatEntities.size(), reservationId);
-
-
+        ShowtimeDTO showtime = showtimeService.findById(request.getShowtimeId());
         BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
         log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
 
         Reservation reservation = Reservation
                 .builder()
                 .id(request.getReservationId())
-                .userId(user.getId())
+                .userId(cachedData.getUserId())
                 .showtimeId(showtime.getId())
                 .reservationStatus(ReservationStatus.CONFIRMED)
                 .totalAmount(total)
@@ -256,26 +263,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         updateSeatsAndShowtime(seatEntities, savedReservation);
 
-//        if (ReservationStatus.CONFIRMED.equals(reservation.getReservationStatus())) {
-//            var payment = updatePayment(reservation, true);
-//            notificationService.sendEmail(
-//                    user.getEmail(),
-//                    user.getUsername(),
-//                    reservationId,
-//                    movie.getTitle(),
-//                    showtime.getTheaterName(),
-//                    LocalDateTime
-//                            .of(showtime.getShowDate(), showtime.getShowTime())
-//                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
-//                    seatEntities.stream().map(Seat::getSeatNumber).collect(Collectors.joining(",")),
-//                    LocalDateTime.ofInstant(payment.getCreatedAt(), ZoneId.of("Asia/Ho_Chi_Minh"))
-//                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-//                    ,
-//                    reservation.getTotalAmount().toString()
-//            );
-//        } else {
-//            updatePayment(reservation, false);
-//        }
+        handlePaymentAndNotification(savedReservation, showtime, seatEntities);
 
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
 
@@ -290,20 +278,20 @@ public class ReservationServiceImpl implements ReservationService {
 
         //        Get reservation id from redis
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
-        Reservation reservationHold = getFromRedis(reservationId);
-        if (!reservationHold.getUserId().equals(userId)) {
+        ReservationResponse cachedData = getFromRedis(reservationId);
+        if (!cachedData.getUserId().equals(userId)) {
             throw new PermissionDeniedException("You don't have permission to confirm this reservation");
         }
 
         //      Load seats from DB
-        List<Long> seatIds = extractSeatIds(reservationHold);
-
-        deleteSeatLocks(seatIds, redisKey);
-
+        List<Long> seatIds = cachedData.getSeatsIds();
+        if (seatIds != null && !seatIds.isEmpty()) {
+            deleteSeatLocks(seatIds, redisKey);
+        }
         //        Take seat from request
         List<SeatDTO> seatEntities = seatService.findByIdWithLock(seatIds);
         //        Create reservation to save
-        ShowtimeDTO showtime = showtimeService.findById(reservationHold.getShowtimeId());
+        ShowtimeDTO showtime = showtimeService.findById(cachedData.getShowtimeId());
         UserDTO user = userService.findById(userId);
 
         BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
@@ -452,36 +440,34 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     //    Get data from redis
-    private Reservation getFromRedis(String reservationId) {
+    private ReservationResponse getFromRedis(String reservationId) {
         Map<Object, Object> data = redisService.getReservationData(reservationId);
         if (data == null || data.isEmpty()) {
             throw new ReservationExpiredException(Message.Exception.RESERVATION_EXPIRED);
         }
-        Reservation dto = new Reservation();
-        dto.setId(reservationId);
+
 
         Long userId = safeParseLong((String) data.get("userId"), "userId");
-        UserDTO user = userService.findById(userId);
-        dto.setUserId(user.getId());
-
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
-        ShowtimeDTO showtime = showtimeService.findById(showtimeId);
-        dto.setShowtimeId(showtime.getId());
+        List<Long> seatIds = Collections.emptyList();
         try {
             String seatJson = (String) data.get("seats");
-            List<Long> seatIds = mapper.readValue(seatJson, new TypeReference<>() {
-            });
-            if (!seatIds.isEmpty()) {
-//                List<SeatDTO> seats = seatService.findAllById(seatIds);
-//                dto.setSeats(seats);
-            } else {
-//                dto.setSeats(new ArrayList<>());
+            if (seatJson != null) {
+                seatIds = mapper.readValue(seatJson, new TypeReference<>() {
+                });
             }
         } catch (JsonProcessingException ex) {
             log.error("Error parsing seat IDs from Redis", ex);
             throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
-        return dto;
+        return ReservationResponse
+                .builder()
+                .id(reservationId)
+                .userId(userId)
+                .showtimeId(showtimeId)
+                .seatsIds(seatIds)
+                .seats(Collections.emptyList())
+                .build();
     }
 
     //        Clean up Redis
@@ -584,28 +570,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     //    Reservation private method
-
-    private Reservation validateUserAndGetReservation(ReservationRequest request, String reservationId) {
-        Reservation dto = getFromRedis(reservationId);
-        if (!dto.getUserId().equals(request.getUserId())) {
-            throw new PermissionDeniedException("You don't have permission to confirm this reservation");
-        }
-        return dto;
-    }
-
-    private List<Long> extractSeatIds(Reservation dto) {
-        //      Load seats from DB
-        List<SeatDTO> seatIds = seatService.findAllByReservationId(dto.getId());
-        if (seatIds.isEmpty()) {
-            log.warn("No seats to release for reservation {}", dto.getId());
-            throw new IllegalStateException(Message.Exception.NO_SEAT_SELECTED);
-        }
-        return seatIds
-                .stream()
-                .map(SeatDTO::getId)
-                .toList();
-    }
-
     private void validateSeatLocks(String redisKey, String reservationId, List<Long> seatIds) {
         List<Long> expiredLocks = new ArrayList<>();
         List<Long> stolenLocks = new ArrayList<>();
@@ -670,24 +634,50 @@ public class ReservationServiceImpl implements ReservationService {
         showtimeService.save(showtime);
     }
 
-//    private Payment updatePayment(Reservation reservation, Boolean success) {
-//        PaymentStatus status = success ? PaymentStatus.PAID : PaymentStatus.CANCELED;
-//        paymentRepository.findByReservation(reservation)
-//                .filter(p -> p.getStatus() == PaymentStatus.PAID)
-//                .ifPresent((payment) -> {
-//                    throw new IllegalStateException(Message.Exception.PAYMENT_COMPLETE);
-//                });
-//
-//        Payment payment = Payment
-//                .builder()
-//                .reservation(reservation)
-//                .paymentIntentId(reservation.getId())
-//                .amount(reservation.getTotalAmount())
-//                .status(status)
-//                .createdAt(Instant.now())
-//                .build();
-//        return paymentRepository.save(payment);
-//    }
+    private void handlePaymentAndNotification(Reservation reservation, ShowtimeDTO showtime, List<SeatDTO> seats) {
+        PaymentDTO payment = paymentService.updatePayment(PaymentRequestDTO
+                .builder()
+                .reservationId(reservation.getId())
+                .totalAmount(reservation.getTotalAmount())
+                .isSuccess(true)
+                .build());
+
+        try {
+
+            UserDTO user = userService.findById(reservation.getUserId());
+            MovieDTO movie = movieService.findOne(showtime.getMovieId());
+
+            String seatNumbers = seats.stream().map(SeatDTO::getSeatNumber).collect(Collectors.joining(","));
+
+            String paymentTimeStr = LocalDateTime
+                    .ofInstant(payment.getCreatedAt(), ZoneId.of("Asia/Ho_Chi_Minh"))
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+            String showtimeStr = LocalDateTime
+                    .of(showtime.getShowDate(), showtime.getShowTime())
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+            BookingNotificationEvent event = BookingNotificationEvent
+                    .builder()
+                    .to(user.getEmail())
+                    .name(user.getUsername())
+                    .reservationId(reservation.getId())
+                    .movieName(movie.getTitle())
+                    .theaterName(showtime.getTheaterName())
+                    .showtimeSession(showtimeStr)
+                    .seats(seatNumbers)
+                    .paymentTime(paymentTimeStr)
+                    .total(reservation.getTotalAmount().toString())
+                    .build();
+
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConstants.EXCHANGE_NOTIFY,
+                    RabbitMQConstants.ROUTING_KEY_NOTIFY,
+                    event);
+        } catch (Exception e) {
+            log.error("Failed to send notification for reservation {} ", reservation.getId(), e);
+        }
+    }
 
     @Getter
     @AllArgsConstructor

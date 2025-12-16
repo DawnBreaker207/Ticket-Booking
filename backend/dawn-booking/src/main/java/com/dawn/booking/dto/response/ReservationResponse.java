@@ -2,10 +2,8 @@ package com.dawn.booking.dto.response;
 
 import com.dawn.common.constant.ReservationStatus;
 import com.dawn.common.dto.response.BaseResponse;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -29,7 +27,12 @@ public class ReservationResponse extends BaseResponse {
 
     private BigDecimal totalAmount;
 
+    @Builder.Default
     private List<String> seats = new ArrayList<>();
+
+    @JsonIgnore
+    @Builder.Default
+    private List<Long> seatsIds = new ArrayList<>();
 
     private Boolean isDeleted;
 
