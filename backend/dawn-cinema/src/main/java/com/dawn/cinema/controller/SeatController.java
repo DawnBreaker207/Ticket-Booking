@@ -47,7 +47,7 @@ public class SeatController {
         return ResponseObject.success(seatService.findByIdWithLock(seatIds));
     }
 
-    @GetMapping("/all/id")
+    @PostMapping("/all/id")
     public ResponseObject<List<SeatResponse>> findAllSeatById(@RequestBody List<Long> seatIds) {
         return ResponseObject.success(seatService.findAllById(seatIds));
     }
