@@ -41,6 +41,14 @@ services:
     networks:
       - booking-net
     command: ['redis-server', '--notify-keyspace-events', 'Ex']
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - booking-net
   server:
     container_name: booking-ticket
     image: booking-ticket:latest

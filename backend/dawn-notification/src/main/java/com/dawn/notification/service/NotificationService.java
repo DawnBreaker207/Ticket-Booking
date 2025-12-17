@@ -1,10 +1,13 @@
-package com.dawn.booking.service;
+package com.dawn.notification.service;
 
+import com.dawn.common.constant.RabbitMQConstants;
+import com.dawn.common.dto.request.BookingNotificationEvent;
 import com.dawn.common.utils.BarcodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -183,35 +186,26 @@ public class NotificationService {
         }
     }
 
-    public void sendEmail(
-            String to,
-            String name,
-            String reservationId,
-            String movieName,
-            String theaterName,
-            String showtimeSession,
-            String seats,
-            String paymentTime,
-            String total
-    ) {
+    @RabbitListener(queues = RabbitMQConstants.QUEUE_NOTIFY)
+    public void sendEmail(BookingNotificationEvent event) {
         log.info("Got message from reservation");
-        String barcodeBase64 = BarcodeUtils.generateCode128(reservationId, 300, 100);
+        String barcodeBase64 = BarcodeUtils.generateCode128(event.getReservationId(), 300, 100);
 
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
             messageHelper.setFrom("demo@gmail.com");
-            messageHelper.setTo(to);
+            messageHelper.setTo(event.getTo());
             messageHelper.setSubject("[Thông tin vé phim] - Đặt vé trực tuyến thành công / Your online ticket purchase has been successful");
 
             Context context = new Context();
-            context.setVariable("name", name);
-            context.setVariable("reservationId", reservationId);
-            context.setVariable("movieName", movieName);
-            context.setVariable("theaterName", theaterName);
-            context.setVariable("showtimeSession", showtimeSession);
-            context.setVariable("seats", seats);
-            context.setVariable("paymentTime", paymentTime);
-            context.setVariable("total", total);
+            context.setVariable("name", event.getName());
+            context.setVariable("reservationId", event.getReservationId());
+            context.setVariable("movieName", event.getMovieName());
+            context.setVariable("theaterName", event.getTheaterName());
+            context.setVariable("showtimeSession", event.getShowtimeSession());
+            context.setVariable("seats", event.getSeats());
+            context.setVariable("paymentTime", event.getPaymentTime());
+            context.setVariable("total", event.getTotal());
             context.setVariable("barcode", barcodeBase64);
 
             String html = templateEngine.process("email", context);

@@ -1,5 +1,6 @@
 package com.dawn.common.config;
 
+import com.dawn.common.constant.RabbitMQConstants;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,18 +11,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String QUEUE_NOTIFY = "notification_queue";
-    public static final String EXCHANGE_NOTIFY = "notification_exchange";
-    public static final String ROUTING_KEY_NOTIFY = "notification_routing_key";
 
     @Bean
     public Queue queue() {
-        return new Queue(QUEUE_NOTIFY);
+        return new Queue(RabbitMQConstants.QUEUE_NOTIFY);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NOTIFY);
+        return new TopicExchange(RabbitMQConstants.EXCHANGE_NOTIFY);
     }
 
     @Bean
@@ -29,7 +27,7 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(queue)
                 .to(exchange)
-                .with(ROUTING_KEY_NOTIFY);
+                .with(RabbitMQConstants.ROUTING_KEY_NOTIFY);
     }
 
     @Bean
