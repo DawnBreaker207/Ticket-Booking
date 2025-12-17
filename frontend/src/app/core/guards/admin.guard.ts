@@ -1,6 +1,5 @@
 import { CanActivateChildFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { of } from 'rxjs';
 import { ToastService } from '@core/services/toast/toast.service';
 import { AuthService } from '@core/auth/auth.service';
 import { Role } from '@core/constants/enum';
@@ -19,6 +18,7 @@ export const AdminGuard: CanActivateChildFn = (childRoute, state) => {
     });
     return router.parseUrl('/login');
   }
+
   if (!authService.hasRole(Role.ADMIN.toString())) {
     toast.createNotification({
       type: 'error',
@@ -29,5 +29,5 @@ export const AdminGuard: CanActivateChildFn = (childRoute, state) => {
     return router.parseUrl('/home');
   }
 
-  return of(true);
+  return true;
 };
