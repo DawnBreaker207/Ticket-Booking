@@ -13,6 +13,7 @@ import com.dawn.payment.service.PaymentService;
 import com.dawn.payment.utils.MomoUtils;
 import com.dawn.payment.utils.VNPayUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -60,6 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
         return response;
     }
 
+    @Transactional
     public Payment updatePayment(PaymentUpdateRequest request) {
         PaymentStatus status = request.getIsSuccess() ? PaymentStatus.PAID : PaymentStatus.CANCELED;
         paymentRepository.findByReservationId(request.getReservationId())
@@ -76,7 +78,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .status(status)
                 .createdAt(Instant.now())
                 .build();
-        return paymentRepository.save(payment);
+        return paymentRepository.saveAndFlush(payment);
     }
 
     private PaymentResponse createVNPayPayment(String reservationId, Integer totalPrice, HttpServletRequest clientIp) {
