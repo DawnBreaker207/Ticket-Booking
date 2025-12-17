@@ -42,12 +42,12 @@ public class SeatController {
         return ResponseObject.success(seatService.getAvailableSeatByShowtime(showtimeId));
     }
 
-    @GetMapping("/locks")
+    @PostMapping("/locks")
     public ResponseObject<List<SeatResponse>> findSeatByIdWithLock(@RequestBody List<Long> seatIds) {
         return ResponseObject.success(seatService.findByIdWithLock(seatIds));
     }
 
-    @GetMapping("/all/id")
+    @PostMapping("/all/id")
     public ResponseObject<List<SeatResponse>> findAllSeatById(@RequestBody List<Long> seatIds) {
         return ResponseObject.success(seatService.findAllById(seatIds));
     }

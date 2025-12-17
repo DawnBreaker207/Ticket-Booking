@@ -15,7 +15,7 @@ public class SeatRequest {
 
     private Long id;
 
-    private Showtime showtime;
+    private Long showtimeId;
 
     private String seatNumber;
 

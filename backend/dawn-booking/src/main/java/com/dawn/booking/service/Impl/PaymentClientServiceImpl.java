@@ -1,7 +1,8 @@
 package com.dawn.booking.service.Impl;
 
-import com.dawn.booking.dto.response.ShowtimeDTO;
-import com.dawn.booking.service.ShowtimeClientService;
+import com.dawn.booking.dto.request.PaymentRequestDTO;
+import com.dawn.booking.dto.response.PaymentDTO;
+import com.dawn.booking.service.PaymentClientService;
 import com.dawn.common.constant.Message;
 import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
@@ -15,44 +16,29 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @Slf4j
-public class ShowtimeClientServiceImpl implements ShowtimeClientService {
+public class PaymentClientServiceImpl implements PaymentClientService {
 
     private final RestClient restClient;
 
-    public ShowtimeClientServiceImpl(
+    public PaymentClientServiceImpl(
             @Qualifier("baseRestClient") RestClient.Builder builder,
             @Value("${service.url}") String url) {
         this.restClient = builder.baseUrl(url).build();
     }
 
     @Override
-    public ShowtimeDTO findById(Long id) {
-        ResponseObject<ShowtimeDTO> response = restClient
-                .get()
-                .uri("/showtime/{id}", id)
-                .retrieve().onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                    throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
-                })
-                .body(new ParameterizedTypeReference<>() {
-                });
-        if (response != null && response.getData() != null) {
-            return response.getData();
-        }
-        throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
-    }
-
-    @Override
-    public ShowtimeDTO save(ShowtimeDTO showtime) {
-        ResponseObject<ShowtimeDTO> response = restClient
-                .put()
-                .uri("/showtime/{id}", showtime.getId())
-                .body(showtime)
+    public PaymentDTO updatePayment(PaymentRequestDTO request) {
+        ResponseObject<PaymentDTO> response = restClient
+                .post()
+                .uri("/payment/update")
+                .body(request)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
                 })
                 .body(new ParameterizedTypeReference<>() {
                 });
+
         if (response != null && response.getData() != null) {
             return response.getData();
         }

@@ -49,8 +49,8 @@ public class UserClientServiceImpl implements UserClientService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
     }
@@ -66,8 +66,8 @@ public class UserClientServiceImpl implements UserClientService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
     }
@@ -83,8 +83,8 @@ public class UserClientServiceImpl implements UserClientService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        if (response != null && response.getBody().getData() != null) {
-            return response.getBody().getData();
+        if (response != null && response.getData() != null) {
+            return response.getData();
         }
         throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
     }

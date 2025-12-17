@@ -2,15 +2,14 @@ package com.dawn.payment.controller;
 
 import com.dawn.common.dto.response.ResponseObject;
 import com.dawn.payment.dto.request.PaymentRequest;
+import com.dawn.payment.dto.request.PaymentUpdateRequest;
 import com.dawn.payment.dto.response.PaymentResponse;
-import com.dawn.payment.service.PaymentService;
+import com.dawn.payment.model.Payment;
+import com.dawn.payment.service.Impl.PaymentServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payment")
@@ -18,11 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    private final PaymentServiceImpl paymentService;
 
     @GetMapping("/create")
     public ResponseObject<PaymentResponse> createPayment(@ModelAttribute PaymentRequest req, HttpServletRequest request) {
         return ResponseObject.success(paymentService.createPayment(req, request));
+    }
+
+    @PostMapping("/update")
+    public ResponseObject<Payment> updatePayment(@RequestBody PaymentUpdateRequest request) {
+        return ResponseObject.success(paymentService.updatePayment(request));
     }
 
 //    @GetMapping("/vnpay-return")
