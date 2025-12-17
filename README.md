@@ -735,12 +735,14 @@ All API responses follow a consistent format:
     "code": 200,
     "message": "Success",
     "data": {
-      content: ["Response data here"],
-      pagination: {
-        pageNumber: 0,
-        pageSize: 20,
-        totalElements: 10,
-        totalPages: 1
+      "content": [
+        "Response data here"
+      ],
+      "pagination": {
+        "pageNumber": 0
+        "pageSize": 20
+        "totalElements": 10
+        "totalPages": 1
       }
     }
   }
