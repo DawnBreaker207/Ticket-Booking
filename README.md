@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎬 Ticket-Booking - Movie Reservation System
+# 🎬 CinePlex - Movie Reservation System
 
 **A modern, secure, and scalable RESTful API for theater seats reservations**
 
@@ -21,6 +21,9 @@
 - Barcode Generator: ZXing
 - Email Service: Spring Mail
 - Utilities: Lombok
+- Upload Image: Cloudinary
+- Ratelimiter: Resilience4j Ratelimiter
+- Message Queue: RabbitMQ
 
 ## 🛠 Installation
 
@@ -33,15 +36,16 @@
 1. **Get the source code**
 
 ```bash
-git clone https://github.com/DawnBreaker207/Ticket-Booking
-cd Ticket-Booking
+git clone https://github.com/DawnBreaker207/CinePlex
+cd CinePlex
 ```
 
 2. **Configure System**
 
-For more information about VNPay config check out [here](https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html)
+For more information about:
 
-If you don't have account, register [here](https://sandbox.vnpayment.vn/devreg)
+- VNPay config: Check out [here](https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html). If you don't have account, register [here](https://sandbox.vnpayment.vn/devreg)
+- Test mail config: Check out [here](https://mailtrap.io/)
 
 Create an `.env` file based on the `.example.env` with the following:
 
@@ -78,6 +82,22 @@ ADMIN_PASSWORD=admin
 USER_USERNAME=user
 USER_EMAIL=user@gmail.com
 USER_PASSWORD=user
+###   Mailtrap Config
+MAIL_HOST=
+MAIL_PORT=
+MAIL_USERNAME=
+MAIL_PASSWORD=
+###   Refresh Token Config
+JWT_COOKIE_NAME=
+JWT_COOKIE_REFRESH_NAME=
+JWT_SECRET=
+JWT_EXPIRATION=
+JWT_REFRESH_EXPIRATION=
+### Config Cloudinary
+FOLDER_NAME=
+CLOUD_NAME=
+API_KEY=
+API_SECRET=
 ```
 
 The connection URL format:
@@ -129,11 +149,14 @@ The system automatically creates two users on startup:
 ### API Categories
 
 <p align="center">
- <a href="#-authentication">
+  <a href="#-authentication">
     <img src="https://img.shields.io/badge/🔑_Authentication-4_Endpoints-4a4e69?style=flat-square" alt="Authentication: 4 Endpoints">
   </a>
   <a href="#-movies">
     <img src="https://img.shields.io/badge/🎬_Movies-6_Endpoints-4a4e69?style=flat-square" alt="Movies: 6 Endpoints">
+  </a>
+   <a href="#-users">
+    <img src="https://img.shields.io/badge/🧑_Users-6_Endpoints-4a4e69?style=flat-square" alt="Users: 6 Endpoints">
   </a>
 </p>
 <p align="center">
@@ -144,12 +167,29 @@ The system automatically creates two users on startup:
     <img src="https://img.shields.io/badge/📅_Showtimes-8_Endpoints-4a4e69?style=flat-square" alt="Showtimes: 8 Endpoints">
   </a>
   <a href="#-seats">
-    <img src="https://img.shields.io/badge/💺_Seats-2_Endpoints-4a4e69?style=flat-square" alt="Seats: 2 Endpoints">
+    <img src="https://img.shields.io/badge/💺_Seats-3_Endpoints-4a4e69?style=flat-square" alt="Seats: 3 Endpoints">
   </a>
 </p>
 <p align="center">
+  <a href="#-payment">
+    <img src="https://img.shields.io/badge/💳_Payments-3_Endpoints-4a4e69?style=flat-square" alt="Payments: 3 Endpoints">
+  </a>
   <a href="#-reservations">
-    <img src="https://img.shields.io/badge/🎟️_Reservations-6_Endpoints-4a4e69?style=flat-square" alt="Reservations: 6 Endpoints">
+    <img src="https://img.shields.io/badge/🎟️_Reservations-8_Endpoints-4a4e69?style=flat-square" alt="Reservations: 8 Endpoints">
+  </a>
+</p>
+<p align="center">
+<a href="#-report">
+    <img src="https://img.shields.io/badge/📈_Report-1_Endpoint-4a4e69?style=flat-square" alt="Report: 1 Endpoint">
+  </a>
+  <a href="#-upload">
+    <img src="https://img.shields.io/badge/📤_Upload-1_Endpoint-4a4e69?style=flat-square" alt="Upload: 1 Endpoint">
+  </a>
+   <a href="#-articles">
+    <img src="https://img.shields.io/badge/📝_Articles-5_Endpoint-4a4e69?style=flat-square" alt="Articles: 5 Endpoint">
+  </a>
+  <a href="#-dashboard">
+    <img src="https://img.shields.io/badge/📊_Dashboard-5_Endpoints-4a4e69?style=flat-square" alt="Dashboard: 5 Endpoints">
   </a>
 </p>
 
@@ -185,7 +225,7 @@ The system automatically creates two users on startup:
   </tr>
   <tr>
     <td><code>POST</code></td>
-    <td><code>/api/v1/auth/refreshToken</code></td>
+    <td><code>/api/v1/auth/refresh-token</code></td>
     <td>Get JWT access token</td>
     <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
   </tr>
@@ -381,6 +421,84 @@ The system automatically creates two users on startup:
     <td>Get available seats</td>
     <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
   </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/seats/reservation/{reservation}</code></td>
+    <td>Get all seat by reservation ID</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+</tbody>
+</table>
+
+### 📝 Article
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/article</code></td>
+    <td>Get all article</td>
+    <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/article/{id}</code></td>
+    <td>Get article by ID</td>
+    <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
+  </tr>
+  <tr>
+    <td><code>POST</code></td>
+    <td><code>/api/v1/article</code></td>
+    <td>Add article</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+    <tr>
+    <td><code>PUT</code></td>
+    <td><code>/api/v1/article/{id}</code></td>
+    <td>Update article</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+    <tr>
+    <td><code>DELETE</code></td>
+    <td><code>/api/v1/article/{id}</code></td>
+    <td>Delete article</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+</tbody>
+</table>
+
+### 💳 Payment
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/payment/create</code></td>
+    <td>Create payment 3rd API URL</td>
+    <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
+  </tr>
+    <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/payment/update</code></td>
+    <td>Update payment</td>
+    <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
+  </tr>
 </tbody>
 </table>
 
@@ -406,6 +524,24 @@ The system automatically creates two users on startup:
     <td><code>GET</code></td>
     <td><code>/api/v1/reservation/{id}</code></td>
     <td>Get reservation by ID</td>
+    <td>
+      <img src="https://img.shields.io/badge/Owner-495057?style=flat-square" alt="Owner"> 
+      <img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin">
+    </td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/reservation/me</code></td>
+    <td>Get own reservation by ID</td>
+    <td>
+      <img src="https://img.shields.io/badge/Owner-495057?style=flat-square" alt="Owner"> 
+      <img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin">
+    </td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/reservation/{id}/restore</code></td>
+    <td>Get restore reservation</td>
     <td>
       <img src="https://img.shields.io/badge/Owner-495057?style=flat-square" alt="Owner"> 
       <img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin">
@@ -438,16 +574,177 @@ The system automatically creates two users on startup:
 </tbody>
 </table>
 
+### 📊 Dashboard
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/dashboard/metrics</code></td>
+    <td>Get dashboard metrics</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/dashboard/revenue</code></td>
+    <td>Get dashboard revenue</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+   <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/dashboard/top-movies</code></td>
+    <td>Get top 5 movie</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/dashboard/top-theaters</code></td>
+    <td>Get top 5 theater</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+    <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/dashboard/payment-distribution</code></td>
+    <td>Get payment distribution</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+</tbody>
+</table>
+
+### 📈 Report
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/report/export/{format}</code></td>
+    <td>Export report</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+</tbody>
+</table>
+
+### 📤 Upload
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/cloudinary/upload</code></td>
+    <td>Upload to cloudinary</td>
+    <td><img src="https://img.shields.io/badge/Public-6c757d?style=flat-square" alt="Public"></td>
+  </tr>
+</tbody>
+</table>
+
+### 🧑 Users
+
+<table>
+<thead>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+    <th>Access</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/user</code></td>
+    <td>Get all user</td>
+    <td><img src="https://img.shields.io/badge/Admin-343a40?style=flat-square" alt="Admin"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/role/{roleName}</code></td>
+    <td>Get user role</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/user/{id}</code></td>
+    <td>Get user by ID</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+  <tr>
+    <td><code>GET</code></td>
+    <td><code>/api/v1/user/email/{email}</code></td>
+    <td>Get user by email</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+  <tr>
+    <td><code>PUT</code></td>
+    <td><code>/api/v1/user/update/{id}/status</code></td>
+    <td>Update user by status</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+  <tr>
+    <td><code>PUT</code></td>
+    <td><code>/api/v1/user/update/{id}/profile</code></td>
+    <td>Update user by id</td>
+    <td><img src="https://img.shields.io/badge/Authenticated-4a4e69?style=flat-square" alt="Authenticated"></td>
+  </tr>
+</tbody>
+</table>
+
 ## 📖 Documentation
 
 ### Response format
 
 All API responses follow a consistent format:
 
+- Normal
+
 ```json
   {
     "code": 200,
     "message": "Success",
     "data": {"Response data here"}
+  }
+```
+
+- With Page
+
+```json
+  {
+    "code": 200,
+    "message": "Success",
+    "data": {
+      content: [
+        "Response data here"
+
+      ],
+      pagination: {
+        pageNumber: 0
+        pageSize: 20
+        totalElements: 10
+        totalPages: 1
+      }
+    }
   }
 ```
