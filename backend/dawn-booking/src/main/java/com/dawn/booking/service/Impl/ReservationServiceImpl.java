@@ -27,7 +27,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -219,7 +219,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ReservationResponse confirmReservation(ReservationRequest request) {
         log.info("Confirming reservation: {}", request.getReservationId());
         //        Get reservation id from redis
@@ -645,8 +645,10 @@ public class ReservationServiceImpl implements ReservationService {
         try {
 
             UserDTO user = userService.findById(reservation.getUserId());
+            log.info("Get user from reservation: {}", user);
+            log.info("Get showtime from reservation: {}", showtime);
             MovieDTO movie = movieService.findOne(showtime.getMovieId());
-
+            log.info("Get movie from reservation: {}", movie);
             String seatNumbers = seats.stream().map(SeatDTO::getSeatNumber).collect(Collectors.joining(","));
 
             String paymentTimeStr = LocalDateTime

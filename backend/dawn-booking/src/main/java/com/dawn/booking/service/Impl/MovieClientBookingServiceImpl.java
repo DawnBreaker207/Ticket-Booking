@@ -29,7 +29,7 @@ public class MovieClientBookingServiceImpl implements MovieClientBookingService 
     public MovieDTO findOne(Long id) {
         ResponseObject<MovieDTO> response = restClient
                 .get()
-                .uri("/movies/{id}", id)
+                .uri("/movie/{id}", id)
                 .retrieve().onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.MOVIE_NOT_FOUND);
                 })
