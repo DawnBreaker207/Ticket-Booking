@@ -735,9 +735,8 @@ All API responses follow a consistent format:
     "code": 200,
     "message": "Success",
     "data": {
-      content: [
+      "content": [
         "Response data here"
-
       ],
       "pagination": {
         "pageNumber": 0
