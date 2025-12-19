@@ -55,5 +55,4 @@ export const ADMIN_ROUTES: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'errors/404' },
 ];

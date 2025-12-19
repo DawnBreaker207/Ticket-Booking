@@ -28,7 +28,6 @@ import { icons, LucideAngularModule } from 'lucide-angular';
 import localVi from '@angular/common/locales/vi';
 import { CurrencyFormatPipe } from '@shared/pipes/currency-format.pipe';
 import { AuthInterceptor } from '@core/interceptor/auth.interceptor';
-import { CredentialInterceptor } from '@core/interceptor/credential.interceptor';
 import { ErrorInterceptor } from '@core/interceptor/error.interceptor';
 import { authFeatureKey, authReducer } from '@core/auth/auth.reducers';
 import {
@@ -65,13 +64,7 @@ export const appConfig: ApplicationConfig = {
     CurrencyPipe,
     CurrencyFormatPipe,
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(
-      withInterceptors([
-        AuthInterceptor,
-        CredentialInterceptor,
-        ErrorInterceptor,
-      ]),
-    ),
+    provideHttpClient(withInterceptors([AuthInterceptor, ErrorInterceptor])),
     provideRouter(routes),
     provideNzIcons(nzIcons),
     provideNzI18n(en_US),

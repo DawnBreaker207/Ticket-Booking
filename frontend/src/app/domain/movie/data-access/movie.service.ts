@@ -9,7 +9,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiRes, ResponsePage } from '@core/models/common.model';
 import { Movie, MovieRequest } from '@domain/movie/models/movie.model';
-import { SKIP_AUTH, USE_HEADER } from '@core/constants/context-token.model';
+import { SKIP_AUTH, USE_HEADER } from '@core/constants/http-context.tokens';
 
 @Injectable({
   providedIn: 'root',
