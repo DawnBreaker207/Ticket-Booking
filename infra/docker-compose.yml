@@ -50,8 +50,8 @@ services:
     networks:
       - booking-net
   server:
-    container_name: booking-ticket
-    image: booking-ticket:latest
+    container_name: backend
+    image: backend:latest
     environment:
       ###   Spring DB Config
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
@@ -112,8 +112,8 @@ services:
       - booking-net
     # Client
   client:
-    container_name: booking-client
-    image: booking-client:latest
+    container_name: frontend
+    image: frontend:latest
     build:
       context: ../frontend
       dockerfile: Dockerfile
