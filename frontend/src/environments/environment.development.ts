@@ -1,5 +1,5 @@
 export const environment = {
-  apiUrl: 'http://localhost:8888/api/v1',
+  apiUrl: '/api/v1',
   tmbd: {
     apiUrl: 'https://api.themoviedb.org/3',
     imageUrl: 'https://image.tmdb.org/t/p/original',
