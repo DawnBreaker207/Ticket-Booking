@@ -11,7 +11,7 @@ import {
 } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { StorageService } from '@core/services/storage/storage.service';
-import { SKIP_AUTH } from '@core/constants/http-context.tokens';
+import { SKIP_AUTH, USE_HEADER } from '@core/constants/http-context.tokens';
 import { AuthActions } from '@core/auth/auth.actions';
 
 let isRefreshing = false;
@@ -24,15 +24,22 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = storageService.getItem('accessToken');
   const skipAuth = req.context.get(SKIP_AUTH);
+  const useHeader = req.context.get(USE_HEADER);
 
-  let modifiedReq = req.clone({ withCredentials: true });
+  let modifiedReq = req;
+  const checkApi = req.url.startsWith('/api');
+
+  if (checkApi) {
+    modifiedReq = req.clone({ withCredentials: true });
+  }
+
   if (token && !skipAuth) {
     modifiedReq = modifiedReq.clone({
       setHeaders: { Authorization: `Bearer ${token}` },
     });
   }
 
-  if (skipAuth) {
+  if (skipAuth || useHeader) {
     return next(modifiedReq);
   }
 
