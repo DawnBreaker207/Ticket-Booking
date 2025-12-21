@@ -5,17 +5,18 @@
     <div class="text-3xl font-bold text-gray-900">Quản lý người dùng</div>
   </div>
 
-  <nz-spin [nzSpinning]="isLoading()">
+  <app-loading [isLoading]="userStore.loading()">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
       <nz-table
-        [nzData]="userList"
+        [nzData]="userStore.users()"
         nzShowPagination
         [nzFrontPagination]="false"
-        [nzTotal]="pagination?.totalElements || 0"
+        [nzTotal]="userStore.pagination()?.totalElements || 0"
         [nzPageIndex]="pageIndex"
         [nzPageSize]="pageSize"
+        (nzQueryParams)="onQueryParamsChange($event)"
         [nzShowSizeChanger]="true"
       >
         <thead>
@@ -26,7 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of userList; track item.userId) {
+          @for (item of userStore.users(); track item.userId) {
             <tr
               class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
             >
@@ -57,5 +58,5 @@
         </tbody>
       </nz-table>
     </div>
-  </nz-spin>
+  </app-loading>
 </div>
