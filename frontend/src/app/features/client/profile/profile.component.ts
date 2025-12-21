@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -18,8 +18,10 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { Observable, of } from 'rxjs';
 import { BookingHistoryComponent } from '@features/client/profile/booking-history/booking-history.component';
 import { InfoComponent } from '@features/client/profile/info/info.component';
-import { UserProfile } from '@domain/user/models/user.model';
 import { ReservationProfile } from '@domain/reservation/models/reservation.model';
+import { UserStore } from '@domain/user/data-access/user.store';
+import { Store } from '@ngrx/store';
+import { selectUserId } from '@core/auth/auth.selectors';
 
 @Component({
   selector: 'app-profile',
@@ -49,13 +51,8 @@ import { ReservationProfile } from '@domain/reservation/models/reservation.model
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  isSaving: boolean = false;
-  user$: Observable<UserProfile> = of({
-    avatar: 'https://i.pravatar.cc/300?img=12',
-    username: 'Nguyễn Văn A',
-    email: 'nguyenvana@gmail.com',
-    role: 'Member',
-  });
+  private store = inject(Store);
+  readonly userStore = inject(UserStore);
   tickets$: Observable<ReservationProfile[]> = of([
     {
       reservationId: 'ORD-6A0A71A0D0EF',
@@ -122,6 +119,11 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.checkScreenSize();
+    const userId = this.store.selectSignal(selectUserId)();
+
+    if (userId !== undefined && userId !== null) {
+      this.userStore.loadUser(userId);
+    }
   }
 
   @HostListener('window:resize')
