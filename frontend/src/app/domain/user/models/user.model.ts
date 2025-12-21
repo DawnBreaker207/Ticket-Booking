@@ -5,13 +5,18 @@ export interface User extends DateModel, IsDeleted {
   username: string;
   avatar: string;
   email: string;
+  phone: string;
+  address: string;
   role: string;
 }
 
 export interface UserProfile {
+  userId: number;
   username: string;
   avatar: string;
   email: string;
+  phone: string;
+  address: string;
   role: string;
 }
 

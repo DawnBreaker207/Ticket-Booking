@@ -3,7 +3,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '@env/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ReservationFilter } from '@domain/reservation/models/reservation.model';
-import { User } from '@domain/user/models/user.model';
+import { User, UserProfile } from '@domain/user/models/user.model';
 import { ApiRes, ResponsePage } from '@core/models/common.model';
 
 @Injectable({
@@ -41,6 +41,15 @@ export class UserService {
       map((res) => res.data),
       catchError(this.handleError<User>('Get users')),
     );
+  }
+
+  updateInfo(id: number, info: UserProfile) {
+    return this.http
+      .put<ApiRes<User>>(`${this.URL}/update/${id}/profile`, info)
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<User>('Update user status')),
+      );
   }
 
   updateStatus(id: number, status: boolean) {
