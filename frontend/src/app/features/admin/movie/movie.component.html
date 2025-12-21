@@ -83,7 +83,7 @@
       <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
     </nz-select>
   </div>
-  <nz-spin [nzSpinning]="loading$ | async">
+  <app-loading [isLoading]="loading$ | async">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
@@ -182,7 +182,7 @@
         </tbody>
       </nz-table>
     </div>
-  </nz-spin>
+  </app-loading>
   @let error = error$ | async;
   @if (error) {
     <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>

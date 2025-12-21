@@ -45,8 +45,8 @@
 
       <nz-form-item>
         <nz-form-label class="font-semibold text-gray-700"
-          >Khoảng thời gian</nz-form-label
-        >
+          >Khoảng thời gian
+        </nz-form-label>
         <nz-form-control>
           <nz-range-picker
             class="w-full"
@@ -66,7 +66,7 @@
   </div>
 
   <!-- TABLE -->
-  <nz-spin [nzSpinning]="loading$ | async">
+  <app-loading [isLoading]="loading$ | async">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
@@ -236,7 +236,7 @@
         </tbody>
       </nz-table>
     </div>
-  </nz-spin>
+  </app-loading>
   @let error = error$ | async;
   @if (error) {
     <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>

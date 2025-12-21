@@ -39,6 +39,7 @@ import { PaymentChartComponent } from '@features/admin/dashboard/components/paym
 import { TheaterChartComponent } from '@features/admin/dashboard/components/theater-chart/theater-chart.component';
 import { MovieChartComponent } from '@features/admin/dashboard/components/movie-chart/movie-chart.component';
 import { RevenueChartComponent } from '@features/admin/dashboard/components/revenue-chart/revenue-chart.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -65,6 +66,7 @@ import { RevenueChartComponent } from '@features/admin/dashboard/components/reve
     NzMenuModule,
     NzDropDownModule,
     DashboardItemComponent,
+    LoadingComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

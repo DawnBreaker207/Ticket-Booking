@@ -42,6 +42,7 @@ import { selectAllTheaters } from '@domain/theater/data-access/theater.selectors
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { formatDate } from '@shared/utils/date.helper';
 import { FormShowtimeComponent } from '@features/admin/showtime/form/showtime-form.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-showtime',
@@ -66,6 +67,7 @@ import { FormShowtimeComponent } from '@features/admin/showtime/form/showtime-fo
     NzTooltipModule,
     NzProgressModule,
     NzDropDownModule,
+    LoadingComponent,
   ],
   templateUrl: './showtime.component.html',
   styleUrl: './showtime.component.css',

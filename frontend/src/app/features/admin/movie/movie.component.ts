@@ -32,6 +32,7 @@ import { Movie } from '@domain/movie/models/movie.model';
 import { Pagination } from '@core/models/common.model';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { FormMovieComponent } from '@features/admin/movie/form/movie/movie-form.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-movie',
@@ -54,6 +55,7 @@ import { FormMovieComponent } from '@features/admin/movie/form/movie/movie-form.
     NzAlertComponent,
     NzSpinModule,
     IsDeletedPipe,
+    LoadingComponent,
   ],
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',

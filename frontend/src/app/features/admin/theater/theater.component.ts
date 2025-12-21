@@ -10,7 +10,6 @@ import { NzSpaceComponent } from 'ng-zorro-antd/space';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { Store } from '@ngrx/store';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { headerColumns } from '@core/constants/column';
 import {
   selectAllTheaters,
@@ -21,6 +20,7 @@ import { Theater } from '@domain/theater/models/theater.model';
 import { Pagination } from '@core/models/common.model';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { FormTheaterComponent } from '@features/admin/theater/form/theater-form.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-theater',
@@ -35,7 +35,7 @@ import { FormTheaterComponent } from '@features/admin/theater/form/theater-form.
     ReactiveFormsModule,
     AsyncPipe,
     NzAlertComponent,
-    NzSpinComponent,
+    LoadingComponent,
   ],
   providers: [NzModalService],
   templateUrl: './theater.component.html',

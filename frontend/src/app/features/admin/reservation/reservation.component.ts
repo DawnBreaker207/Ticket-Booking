@@ -12,7 +12,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { saveAs } from 'file-saver';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { Store } from '@ngrx/store';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { Subject } from 'rxjs';
 import { NzFormLabelComponent } from 'ng-zorro-antd/form';
@@ -35,6 +34,7 @@ import { headerColumns } from '@core/constants/column';
 import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
 import { formatDate } from '@shared/utils/date.helper';
 import { FormReservationComponent } from '@features/admin/reservation/form/reservation-form.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-reservation',
@@ -51,11 +51,11 @@ import { FormReservationComponent } from '@features/admin/reservation/form/reser
     NzTagModule,
     StatusTagsPipe,
     NzDropDownModule,
-    NzSpinComponent,
     NzAlertComponent,
     AsyncPipe,
     NzFormLabelComponent,
     NzTooltipDirective,
+    LoadingComponent,
   ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.css',

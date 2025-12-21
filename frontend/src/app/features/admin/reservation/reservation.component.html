@@ -38,8 +38,8 @@
         <!--  Search  -->
         <div class="lg:col-span-1">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tìm kiếm</nz-form-label
-          >
+            >Tìm kiếm
+          </nz-form-label>
           <nz-input-group nzPrefixIcon="search" class="w-full rounded-lg">
             <input formControlName="query" nz-input placeholder="Mã đơn" />
           </nz-input-group>
@@ -48,8 +48,8 @@
         <!--  Status  -->
         <div class="">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Trạng thái đơn</nz-form-label
-          >
+            >Trạng thái đơn
+          </nz-form-label>
           <nz-select
             formControlName="reservationStatus"
             class="w-full"
@@ -65,8 +65,8 @@
         <!--  Day filter -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Ngày tạo đơn</nz-form-label
-          >
+            >Ngày tạo đơn
+          </nz-form-label>
           <nz-range-picker
             formControlName="dateRange"
             class="w-full"
@@ -76,8 +76,8 @@
         <!--  Total Amount -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tổng tiền</nz-form-label
-          >
+            >Tổng tiền
+          </nz-form-label>
           <nz-input-group nzPrefixIcon="dollar" class="w-full rounded-lg">
             <input
               formControlName="totalAmount"
@@ -92,8 +92,8 @@
         <!--  Sort  -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Sắp xếp theo</nz-form-label
-          >
+            >Sắp xếp theo
+          </nz-form-label>
           <nz-select formControlName="sortBy" class="w-full">
             <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
             <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
@@ -124,7 +124,7 @@
   </div>
 
   <!--  TABLE -->
-  <nz-spin [nzSpinning]="loading$ | async">
+  <app-loading [isLoading]="loading$ | async">
     @if (reservation$ | async; as reservations) {
       <div
         class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
@@ -214,7 +214,7 @@
         </nz-table>
       </div>
     }
-  </nz-spin>
+  </app-loading>
 
   @let error = error$ | async;
   @if (error) {
