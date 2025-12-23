@@ -7,28 +7,6 @@
       <h1 class="text-3xl font-bold text-gray-900">Quản lý đơn đặt</h1>
       <p class="text-gray-500 text-sm mt-1">Theo dõi và xử lý các đơn đặt vé</p>
     </div>
-    <!--  EXPORT   -->
-    <button
-      nz-button
-      nz-dropdown
-      [nzDropdownMenu]="exportMenu"
-      class="flex items-center gap-2 bg-white border-gray-300 text-gray-700 font-medium hover:text-primary hover:border-primary shadow-sm"
-    >
-      <nz-icon nzType="download" />
-      Xuất báo cáo
-    </button>
-    <nz-dropdown-menu #exportMenu="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="exportReport('pdf')">
-          <nz-icon nzType="file-pdf" class="mr-2 text-red-500" />
-          PDF
-        </li>
-        <li nz-menu-item (click)="exportReport('excel')">
-          <nz-icon nzType="file-excel" class="mr-2 text-green-500" />
-          Excel
-        </li>
-      </ul>
-    </nz-dropdown-menu>
   </div>
 
   <!--  FILTER -->
@@ -124,21 +102,22 @@
   </div>
 
   <!--  TABLE -->
-  <app-loading [isLoading]="loading$ | async">
-    @if (reservation$ | async; as reservations) {
+  @let errorMsg = error();
+  @let pag = pagination();
+  <app-loading [isLoading]="loading()">
+    @if (reservations(); as reservations) {
       <div
         class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
       >
         <nz-table
           [nzData]="reservations"
-          nzShowPagination
           [nzFrontPagination]="false"
-          [nzTotal]="(pagination$ | async)?.totalElements || 0"
-          [nzPageIndex]="pageIndex"
-          [nzPageSize]="pageSize"
+          [nzTotal]="pag?.totalElements || 0"
+          [nzPageIndex]="(pag?.pageNumber ?? 0) + 1"
+          [nzPageSize]="pag?.pageSize ?? 10"
           [nzShowSizeChanger]="true"
-          (nzPageIndexChange)="onPageChange($event)"
-          (nzPageSizeChange)="onSizeChange($event)"
+          nzShowPagination
+          (nzQueryParams)="onQueryParamsChange($event)"
         >
           <thead class="bg-gray-50">
             <tr>
@@ -216,12 +195,11 @@
     }
   </app-loading>
 
-  @let error = error$ | async;
-  @if (error) {
+  @if (errorMsg) {
     <div class="fixed bottom-5 right-5 z-50">
       <nz-alert
         nzType="error"
-        [nzMessage]="error"
+        [nzMessage]="errorMsg"
         nzShowIcon
         nzCloseable
         class="shadow-lg"

@@ -1,35 +1,28 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { NzTableModule } from 'ng-zorro-antd/table';
+import { Component, inject, OnInit } from '@angular/core';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { saveAs } from 'file-saver';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { Store } from '@ngrx/store';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
-import { Subject } from 'rxjs';
 import { NzFormLabelComponent } from 'ng-zorro-antd/form';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { StatusTagsPipe } from '@shared/pipes/status-tags.pipe';
-import { ReportService } from '@core/services/report/report.service';
 import {
   selectPaginationReservation,
+  selectReservationError,
+  selectReservationLoading,
   selectReservations,
 } from '@domain/reservation/data-access/reservation.selectors';
-import {
-  selectMovieLoading,
-  selectMoviesError,
-} from '@domain/movie/data-access/movie.selectors';
 import { ReservationStatus } from '@core/constants/enum';
-import { Reservation } from '@domain/reservation/models/reservation.model';
-import { Pagination } from '@core/models/common.model';
 import { headerColumns } from '@core/constants/column';
 import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
 import { formatDate } from '@shared/utils/date.helper';
@@ -52,7 +45,6 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
     StatusTagsPipe,
     NzDropDownModule,
     NzAlertComponent,
-    AsyncPipe,
     NzFormLabelComponent,
     NzTooltipDirective,
     LoadingComponent,
@@ -61,38 +53,23 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
   styleUrl: './reservation.component.css',
   providers: [NzModalService],
 })
-export class ReservationComponent implements OnInit, OnDestroy {
+export class ReservationComponent implements OnInit {
   form!: FormGroup;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private modalService = inject(NzModalService);
-  private reportService = inject(ReportService);
 
-  reservation$ = this.store.select(selectReservations);
-  pagination$ = this.store.select(selectPaginationReservation);
-  loading$ = this.store.select(selectMovieLoading);
-  error$ = this.store.select(selectMoviesError);
-
-  private destroy$ = new Subject<void>();
-  reservationStatus: ReservationStatus[] = ['CREATED', 'CONFIRMED', 'CANCELED'];
-  pageIndex = 1;
-  pageSize = 10;
-
-  reservationList: readonly Reservation[] = [];
-  pagination: Pagination | null = null;
+  reservations = this.store.selectSignal(selectReservations);
+  pagination = this.store.selectSignal(selectPaginationReservation);
+  loading = this.store.selectSignal(selectReservationLoading);
+  error = this.store.selectSignal(selectReservationError);
 
   headerColumn = headerColumns.reservation;
+  reservationStatus: ReservationStatus[] = ['CONFIRMED', 'CANCELED'];
 
   ngOnInit() {
     this.initialForm();
-    this.loadData();
-  }
-
-  loadData() {
-    this.store.dispatch(
-      ReservationActions.loadReservations({ filter: this.getFilter() }),
-    );
   }
 
   initialForm() {
@@ -106,39 +83,33 @@ export class ReservationComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getFilter() {
-    const formValue = this.form.value;
+  private getFilter(pageIndex: number, pageSize: number) {
+    const { query, userId, reservationStatus, dateRange, totalAmount, sortBy } =
+      this.form.value;
+    console.log(dateRange);
     return {
-      query: formValue.query || undefined,
-      userId: formValue.userId || undefined,
-      reservationStatus: formValue.reservationStatus || undefined,
-      dateFrom: formValue.dateRange
-        ? formatDate(formValue.dateRange[0])
-        : undefined,
-      dateTo: formValue.dateRange
-        ? formatDate(formValue.dateRange[1])
-        : undefined,
-      totalAmount: formValue.totalAmount || undefined,
-      sortBy: formValue.sortBy,
-      page: this.pageIndex - 1,
-      size: this.pageSize,
+      query: query.trim() || undefined,
+      userId: userId || undefined,
+      reservationStatus: reservationStatus || undefined,
+      startDate: dateRange?.[0] ? formatDate(dateRange[0]) : undefined,
+      endDate: dateRange?.[1] ? formatDate(dateRange[1]) : undefined,
+      totalAmount: totalAmount || undefined,
+      sortBy: sortBy,
+      page: pageIndex - 1,
+      size: pageSize,
     };
   }
 
-  onPageChange(page: number) {
-    this.pageIndex = page;
-    this.loadData();
-  }
-
   onSubmit() {
-    this.pageIndex = 1;
-    this.loadData();
+    const currentSize = this.pagination()?.pageSize ?? 10;
+    this.loadData(1, currentSize);
   }
 
-  onSizeChange(size: number) {
-    this.pageSize = size;
-    this.pageIndex = 1;
-    this.loadData();
+  private loadData(page: number, size: number) {
+    const filter = this.getFilter(page, size);
+    this.store.dispatch(
+      ReservationActions.loadReservations({ filter: filter }),
+    );
   }
 
   openModal(reservationId: string) {
@@ -156,21 +127,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   clearFilter() {
-    this.form.reset();
-    this.pageIndex = 1;
-    this.pageSize = 10;
-    this.loadData();
+    this.form.reset({ sortBy: 'newest' });
+    this.onSubmit();
   }
 
-  exportReport(type: string) {
-    this.reportService.downloadReport(type).subscribe((res) => {
-      const ext = type === 'excel' ? 'xlsx' : type;
-      saveAs(res, `report.${ext}`);
-    });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const { pageIndex, pageSize } = params;
+    this.loadData(pageIndex, pageSize);
   }
 }

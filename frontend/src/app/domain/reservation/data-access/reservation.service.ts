@@ -10,7 +10,7 @@ import {
   ReservationProfile,
   ReservationRequest,
 } from '@domain/reservation/models/reservation.model';
-import { formatDate, formatTime } from '@shared/utils/date.helper';
+import { formatDate } from '@shared/utils/date.helper';
 import { ApiRes, ResponsePage } from '@core/models/common.model';
 import { ReservationStatus } from '@core/constants/enum';
 
@@ -32,9 +32,9 @@ export class ReservationService {
     params = params.set('page', page.toString());
     params = params.set('size', size.toString());
 
-    const startDate = formatDate(filter?.dateFrom);
-    const endDate = formatTime(filter?.dateTo);
-    filter = { ...filter, dateFrom: startDate, dateTo: endDate };
+    const startDate = formatDate(filter?.startDate);
+    const endDate = formatDate(filter?.endDate);
+    filter = { ...filter, startDate: startDate, endDate: endDate };
 
     if (filter) {
       Object.keys(filter).forEach((key) => {
