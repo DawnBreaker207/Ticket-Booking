@@ -6,11 +6,11 @@ import { environment } from '@env/environment';
   providedIn: 'root',
 })
 export class ReportService {
-  URL = `${environment.apiUrl}/export`;
+  URL = `${environment.apiUrl}/report`;
   private http = inject(HttpClient);
 
   downloadReport(type: string) {
-    return this.http.get(`${this.URL}/report/${type}`, {
+    return this.http.get(`${this.URL}/export/${type}`, {
       responseType: 'blob',
     });
   }
