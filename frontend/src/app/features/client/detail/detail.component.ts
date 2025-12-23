@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AsyncPipe, DatePipe } from '@angular/common';
-import { map, switchMap } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import { map, switchMap, take } from 'rxjs';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -12,11 +12,12 @@ import { NzRateModule } from 'ng-zorro-antd/rate';
 import { FormsModule } from '@angular/forms';
 import { selectMovieById } from '@domain/movie/data-access/movie.selectors';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-detail',
   imports: [
-    AsyncPipe,
     DatePipe,
     NzTagModule,
     NzButtonModule,
@@ -25,6 +26,7 @@ import { MovieActions } from '@domain/movie/data-access/movie.actions';
     NzAvatarModule,
     NzRateModule,
     FormsModule,
+    LoadingComponent,
   ],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.css',
@@ -32,6 +34,8 @@ import { MovieActions } from '@domain/movie/data-access/movie.actions';
 export class DetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private store = inject(Store);
+
+  private params$ = this.route.params.pipe(map((p) => +p['id']));
 
   reviews = [
     {
@@ -49,14 +53,25 @@ export class DetailComponent implements OnInit {
       date: '03/03/2025',
     },
   ];
-  movieId$ = this.route.params.pipe(map((params) => +params['id']));
-  movie$ = this.movieId$.pipe(
-    switchMap((id) => this.store.select(selectMovieById(id))),
+  movie = toSignal(
+    this.params$.pipe(
+      switchMap((id) => this.store.select(selectMovieById(id))),
+    ),
   );
 
   ngOnInit() {
-    this.movieId$.subscribe((id) => {
-      this.store.dispatch(MovieActions.loadMovie({ id }));
-    });
+    this.params$
+      .pipe(
+        take(1),
+        switchMap((id) =>
+          this.store.select(selectMovieById(id)).pipe(
+            take(1),
+            map((m) => ({ id, movie: m })),
+          ),
+        ),
+      )
+      .subscribe(({ id }) => {
+        this.store.dispatch(MovieActions.loadMovie({ id }));
+      });
   }
 }

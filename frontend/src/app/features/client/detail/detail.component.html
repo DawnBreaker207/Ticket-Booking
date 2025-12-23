@@ -1,4 +1,4 @@
-@if (movie$ | async; as movie) {
+@if (movie(); as movie) {
   <div class="min-h-screen bg-[#0f172a] text-white font-sans pb-20">
     <!-- HERO SECTION -->
     <div class="relative w-full h-[600px] overflow-hidden group">
@@ -167,4 +167,6 @@
       <!--      <div class="w-full lg:w-[30%] space-y-8"></div>-->
     </div>
   </div>
+} @else {
+  <app-loading />
 }
