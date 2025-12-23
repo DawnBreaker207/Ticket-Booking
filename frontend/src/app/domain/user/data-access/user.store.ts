@@ -136,20 +136,26 @@ export const UserStore = signalStore(
 
     updateUserStatus: rxMethod<{ id: number; isDeleted: boolean }>(
       pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
+        tap(({ id, isDeleted }) => {
+          patchState(store, (state) => ({
+            users: state.users.map((u) =>
+              u.userId === id ? { ...u, isDeleted: isDeleted } : u,
+            ),
+            error: null,
+          }));
+        }),
         switchMap(({ id, isDeleted }) =>
           userService.updateStatus(id, isDeleted).pipe(
             tapResponse({
-              next: () => {
+              next: () => {},
+              error: (error: any) => {
                 patchState(store, (state) => ({
                   users: state.users.map((u) =>
-                    u.userId === id ? { ...u, isDeleted: isDeleted } : u,
+                    u.userId === id ? { ...u, isDeleted: !isDeleted } : u,
                   ),
-                  loading: false,
+                  error,
                 }));
               },
-              error: (error: any) =>
-                patchState(store, { error, loadingDetails: false }),
             }),
           ),
         ),

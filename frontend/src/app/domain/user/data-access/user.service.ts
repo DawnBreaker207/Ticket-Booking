@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ReservationFilter } from '@domain/reservation/models/reservation.model';
@@ -61,10 +61,10 @@ export class UserService {
       );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation') {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
-      return of(result as T);
+      return throwError(() => error);
     };
   }
 }
