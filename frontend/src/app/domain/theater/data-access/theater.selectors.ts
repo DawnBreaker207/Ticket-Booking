@@ -28,6 +28,11 @@ export const selectSelectedTheaterId = createSelector(
   (state) => state.selectedTheaterId,
 );
 
+export const selectPaginationTheater = createSelector(
+  selectTheaterState,
+  (state) => state.pagination,
+);
+
 // Loading state selector
 export const selectTheaterLoading = createSelector(
   selectTheaterState,
