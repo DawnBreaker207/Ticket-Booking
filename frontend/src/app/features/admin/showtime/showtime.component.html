@@ -36,7 +36,7 @@
             nzAllowClear
             formControlName="theaterId"
           >
-            @for (t of theaters; track t.id) {
+            @for (t of theaters(); track t.id) {
               <nz-option [nzLabel]="t.name" [nzValue]="t.id"></nz-option>
             }
           </nz-select>
@@ -58,7 +58,7 @@
       </nz-form-item>
 
       <div class="flex gap-2">
-        <button nz-button nzType="default" (click)="form.reset()">
+        <button nz-button nzType="default" (click)="resetForm()">
           <nz-icon nzType="reload" />
         </button>
       </div>
@@ -66,18 +66,21 @@
   </div>
 
   <!-- TABLE -->
-  <app-loading [isLoading]="loading$ | async">
+  @let errorMsg = error();
+  @let pag = pagination();
+  <app-loading [isLoading]="loading()">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
       <nz-table
-        [nzData]="showtimes"
-        nzShowPagination
+        [nzData]="showtimes()"
         [nzFrontPagination]="false"
-        [nzTotal]="pagination?.totalElements || 0"
-        [nzPageIndex]="pageIndex"
-        [nzPageSize]="pageSize"
+        [nzTotal]="pag?.totalElements || 0"
+        [nzPageIndex]="(pag?.pageNumber ?? 0) + 1"
+        [nzPageSize]="pag?.pageSize ?? 10"
         [nzShowSizeChanger]="true"
+        nzShowPagination
+        (nzQueryParams)="onQueryParamsChange($event)"
       >
         <thead>
           <tr>
@@ -93,7 +96,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of showtimes; track item.id) {
+          @for (item of showtimes(); track item.id) {
             <tr
               class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
             >
@@ -237,9 +240,8 @@
       </nz-table>
     </div>
   </app-loading>
-  @let error = error$ | async;
-  @if (error) {
-    <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
+  @if (errorMsg) {
+    <nz-alert nzType="error" [nzMessage]="errorMsg" nzShowIcon nzCloseable>
     </nz-alert>
   }
 </div>

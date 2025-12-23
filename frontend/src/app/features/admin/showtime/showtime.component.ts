@@ -1,27 +1,27 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Store } from '@ngrx/store';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import {
   NzTableModule,
+  NzTableQueryParams,
   NzTheadComponent,
   NzThMeasureDirective,
 } from 'ng-zorro-antd/table';
 import { NzWaveModule } from 'ng-zorro-antd/core/wave';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
-import { debounceTime, filter, Subject, take, takeUntil } from 'rxjs';
+import { filter, take } from 'rxjs';
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import dayjs from 'dayjs';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTagModule } from 'ng-zorro-antd/tag';
@@ -30,19 +30,18 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import {
   selectAllShowtimes,
+  selectPaginationShowtime,
   selectShowtimeError,
   selectShowtimeLoading,
 } from '@domain/showtime/data-access/showtime.selectors';
 import { headerColumns } from '@core/constants/column';
-import { Showtime } from '@domain/showtime/models/showtime.model';
-import { Pagination } from '@core/models/common.model';
-import { Theater } from '@domain/theater/models/theater.model';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { selectAllTheaters } from '@domain/theater/data-access/theater.selectors';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { formatDate } from '@shared/utils/date.helper';
 import { FormShowtimeComponent } from '@features/admin/showtime/form/showtime-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-showtime',
@@ -56,7 +55,6 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
     NzTheadComponent,
     NzTableModule,
     NzWaveModule,
-    AsyncPipe,
     NzSpinModule,
     NzAlertModule,
     ReactiveFormsModule,
@@ -73,80 +71,62 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
   styleUrl: './showtime.component.css',
   providers: [NzModalService],
 })
-export class ShowtimeComponent implements OnInit, OnDestroy {
+export class ShowtimeComponent implements OnInit {
   private modalService = inject(NzModalService);
   private store = inject(Store);
-  private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
 
-  loading$ = this.store.select(selectShowtimeLoading);
-  error$ = this.store.select(selectShowtimeError);
+  showtimes = this.store.selectSignal(selectAllShowtimes);
+  theaters = this.store.selectSignal(selectAllTheaters);
+  pagination = this.store.selectSignal(selectPaginationShowtime);
+  loading = this.store.selectSignal(selectShowtimeLoading);
+  error = this.store.selectSignal(selectShowtimeError);
 
   headerColumn = headerColumns.showtime;
   form!: FormGroup;
-  showtimes: readonly Showtime[] = [];
-  pagination: Pagination | null = null;
-  theaters: Theater[] = [];
 
-  pageIndex = 1;
-  pageSize = 10;
+  constructor() {
+    this.initForm();
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadData(1));
+  }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      theaterId: [null],
-      dateRange: [null],
-      date: [dayjs().toDate()],
-    });
-
     this.store.dispatch(TheaterActions.loadTheaters({ page: 0, size: 10 }));
     this.store
       .select(selectAllTheaters)
       .pipe(
         filter((t) => t.length > 0),
         take(1),
-        takeUntil(this.destroy$),
       )
       .subscribe((theaters) => {
-        this.theaters = theaters;
-
-        if (!this.form.value.theaterId) {
+        if (!this.form.get('theaterId')?.value) {
           this.form.patchValue({ theaterId: theaters[0].id });
         }
-
-        this.loadData();
       });
-    this.form.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.loadData());
   }
 
-  loadData() {
-    const { theaterId, date, dateRange } = this.form.value;
-    if (!theaterId || !date) return;
-
-    this.showtimes = [];
+  loadData(pageIndex: number, pageSize?: number) {
+    const { theaterId, dateRange } = this.form.value;
+    if (!theaterId) return;
+    const size = pageSize ?? this.pagination()?.pageSize ?? 10;
     this.store.dispatch(
       ShowtimeActions.loadShowtimesByTheaterId({
         theaterId: theaterId,
         dateRange: {
-          dateFrom: dateRange ? formatDate(dateRange[0]) : undefined,
-          dateTo: dateRange ? formatDate(dateRange[1]) : undefined,
+          startDate: dateRange ? formatDate(dateRange[0]) : undefined,
+          endDate: dateRange ? formatDate(dateRange[1]) : undefined,
         },
-        page: this.pageIndex,
-        size: this.pageSize,
+        page: pageIndex - 1,
+        size: size,
       }),
     );
+  }
 
-    this.store
-      .select(selectAllShowtimes)
-      .pipe(
-        filter((showtimes) => !!showtimes && showtimes.length >= 0),
-        debounceTime(100),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((showtimes) => {
-        this.showtimes = showtimes;
-      });
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const { pageIndex, pageSize } = params;
+    this.loadData(pageIndex, pageSize);
   }
 
   openModal(mode: 'add' | 'edit' | 'view', id?: number) {
@@ -161,8 +141,9 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzKeyboard: true,
       nzFooter:
-        mode !== 'view'
-          ? [
+        mode === 'view'
+          ? null
+          : [
               {
                 label: 'Confirm',
                 type: 'primary',
@@ -175,20 +156,26 @@ export class ShowtimeComponent implements OnInit, OnDestroy {
                   }
                 },
               },
-            ]
-          : null,
+            ],
     });
   }
 
   onDelete(id: number) {
     this.store.dispatch(ShowtimeActions.deleteShowtime({ id }));
-    this.store.select(selectAllShowtimes).subscribe((data) => {
-      this.showtimes = data;
-    });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  resetForm() {
+    this.form.reset();
+    const theaters = this.theaters();
+    if (theaters.length > 0) {
+      this.form.patchValue({ theaterId: theaters[0].id });
+    }
+  }
+
+  private initForm() {
+    this.form = this.fb.group({
+      theaterId: [null],
+      dateRange: [null],
+    });
   }
 }

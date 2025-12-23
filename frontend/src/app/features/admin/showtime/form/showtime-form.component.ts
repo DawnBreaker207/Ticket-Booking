@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import {
   FormBuilder,
@@ -6,12 +13,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  AsyncPipe,
-  DatePipe,
-  NgTemplateOutlet,
-  SlicePipe,
-} from '@angular/common';
+import { DatePipe, SlicePipe } from '@angular/common';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
@@ -19,11 +21,10 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import {
   debounceTime,
+  distinctUntilChanged,
   filter,
   map,
-  of,
   Subject,
-  switchMap,
   take,
   takeUntil,
 } from 'rxjs';
@@ -31,14 +32,18 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { selectAllTheaters } from '@domain/theater/data-access/theater.selectors';
-import { selectSearchQuery } from '@domain/movie/data-access/movie.selectors';
-import { MovieService } from '@domain/movie/data-access/movie.service';
+import { selectAllMovies } from '@domain/movie/data-access/movie.selectors';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { selectSelectedShowtime } from '@domain/showtime/data-access/showtime.selectors';
 import { Movie } from '@domain/movie/models/movie.model';
 import { Showtime } from '@domain/showtime/models/showtime.model';
-import { formatDate, formatTime } from '@shared/utils/date.helper';
+import {
+  formatDate,
+  formatTime,
+  timeFormatDay,
+} from '@shared/utils/date.helper';
+import { MovieActions } from '@domain/movie/data-access/movie.actions';
 
 @Component({
   selector: 'app-form',
@@ -50,8 +55,6 @@ import { formatDate, formatTime } from '@shared/utils/date.helper';
     NzFormModule,
     NzInputModule,
     NzSelectModule,
-    AsyncPipe,
-    NgTemplateOutlet,
     NzTimePickerModule,
     NzIconModule,
     SlicePipe,
@@ -60,22 +63,25 @@ import { formatDate, formatTime } from '@shared/utils/date.helper';
   styleUrl: './showtime-form.component.css',
 })
 export class FormShowtimeComponent implements OnInit, OnDestroy {
-  mode: 'add' | 'edit' | 'view' = 'add';
-  showtimeId!: number;
-  form!: FormGroup;
   private fb = inject(FormBuilder);
   private modelRef = inject(NzModalRef);
   private store = inject(Store);
   private actions$ = inject(Actions);
 
-  theaters$ = this.store.select(selectAllTheaters);
-  searchMovie$ = this.store.select(selectSearchQuery);
-  private movieService = inject(MovieService);
-
+  mode: 'add' | 'edit' | 'view' = 'add';
+  showtimeId!: number;
+  form!: FormGroup;
   searchCtrl = this.fb.control('');
-  searchResults = signal<any | null>(null);
+
+  theaters = this.store.selectSignal(selectAllTheaters);
+  searchMovie = this.store.selectSignal(selectAllMovies);
+  isSearching = signal(false);
   selectedMovie = signal<any>(null);
-  private initialForm: any = null;
+  searchResults = computed(() => {
+    return this.isSearching() && this.searchCtrl.value
+      ? this.searchMovie()
+      : [];
+  });
   destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit() {
@@ -100,30 +106,30 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
         .subscribe((theater) => {
           if (theater) {
             this.patchFormValue(theater);
-            this.initialForm = this.form.value;
             if (this.mode === 'view') {
               this.disableForm();
             }
-          } else {
-            this.initialForm = this.form.value;
           }
         });
     }
-
-    this.searchMovie();
+    this.search();
   }
 
-  searchMovie() {
+  search() {
     this.searchCtrl.valueChanges
       .pipe(
-        debounceTime(1000),
+        debounceTime(300),
         map((v) => v?.trim()),
-        switchMap((query) => {
-          if (!query) return of([]);
-          return this.movieService.getMovieLists(query);
-        }),
+        distinctUntilChanged(),
       )
-      .subscribe((res) => this.searchResults.set(res));
+      .subscribe((search) => {
+        if (search) {
+          this.isSearching.set(true);
+          this.store.dispatch(MovieActions.searchMovies({ search: search }));
+        } else {
+          this.isSearching.set(false);
+        }
+      });
   }
 
   private disableForm() {
@@ -133,14 +139,14 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
   }
 
   selectMovie(movie: Movie) {
-    console.log(movie);
+    const movieResult = this.searchMovie().find((m) => m.id === movie?.id);
     this.form.patchValue({
       movieId: movie.id,
       moviePosterUrl: movie.poster,
     });
-    this.selectedMovie.set(movie);
-    this.searchResults.set(null);
-    this.searchCtrl.setValue('');
+    this.selectedMovie.set(movieResult);
+    this.isSearching.set(false);
+    this.searchCtrl.setValue('', { emitEvent: false });
   }
 
   initForm() {
@@ -166,17 +172,11 @@ export class FormShowtimeComponent implements OnInit, OnDestroy {
       moviePosterUrl: showtime.moviePosterUrl,
       // Showtime
       price: showtime.price,
-      seats: showtime.totalSeats,
+      totalSeats: showtime.totalSeats,
       // Showtime Date
       showDate: showtime.showDate,
-      showTime: showtime.showTime,
+      showTime: timeFormatDay(showtime.showTime),
     });
-  }
-
-  hasData(): boolean {
-    return Object.values(this.form.value).some(
-      (v) => v !== null && v !== '' && !(Array.isArray(v) && v.length === 0),
-    );
   }
 
   submit() {
