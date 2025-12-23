@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -10,10 +10,11 @@ import { UserStore } from '@domain/user/data-access/user.store';
 
 interface MenuItem {
   title: string;
-  icon: any;
+  icon: string;
   link?: string;
   action?: () => void;
-  isDanger?: boolean; // Thêm option cho nút Logout màu đỏ
+  role: 'admin' | 'user' | 'both';
+  isDanger?: boolean;
 }
 
 @Component({
@@ -30,29 +31,49 @@ export class ProfileMenuComponent implements OnInit {
   ngOnInit() {
     const userId = this.store.selectSignal(selectUserId)();
 
-    if (userId !== undefined && userId !== null) {
+    if (userId) {
       this.userStore.loadUser(userId);
     }
   }
 
-  public profileMenu: MenuItem[] = [
+  public readonly profileMenu: MenuItem[] = [
+    {
+      title: 'Admin',
+      icon: 'Gauge',
+      link: '/admin',
+      role: 'admin',
+    },
     {
       title: 'Your Profile',
       icon: 'CircleUserRound',
       link: '/profile',
+      role: 'user',
     },
     {
       title: 'Settings',
       icon: 'Settings',
       link: '/settings',
+      role: 'user',
     },
     {
       title: 'Log out',
       icon: 'LogOut',
       action: () => this.logout(),
       isDanger: true,
+      role: 'both',
     },
   ];
+
+  filterMenu = computed(() => {
+    const user = this.userStore.selectedUser();
+    const role = user?.role[0]?.toLowerCase();
+
+    return this.profileMenu.filter((item) => {
+      if (item.role === 'both') return true;
+
+      return item.role === role;
+    });
+  });
 
   handleItemClick(item: MenuItem) {
     if (item.action) {
