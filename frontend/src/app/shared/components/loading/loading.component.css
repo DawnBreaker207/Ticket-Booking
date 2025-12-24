@@ -26,7 +26,6 @@
   pointer-events: none !important;
 }
 
-
 ::ng-deep .ant-spin-dot {
   position: absolute !important;
   top: 50% !important;
