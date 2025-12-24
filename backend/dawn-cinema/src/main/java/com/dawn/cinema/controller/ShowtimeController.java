@@ -37,9 +37,9 @@ public class ShowtimeController {
 
     @GetMapping("/movies/{movieId}")
     @Operation(summary = "Get showtime by movie", description = "Returns showtime for a specific movie")
-    public ResponseObject<List<ShowtimeResponse>> getShowtimeByMovie(@PathVariable Long movieId) {
+    public ResponseObject<ResponsePage<ShowtimeResponse>> getShowtimeByMovie(@PathVariable Long movieId, Pageable pageable) {
         log.info("Fetching showtime for movie id: {}", movieId);
-        return ResponseObject.success(showtimeService.getByMovie(movieId));
+        return ResponseObject.success(showtimeService.getByMovie(movieId, pageable));
     }
 
     @GetMapping("/theaters/{theaterId}")
