@@ -84,7 +84,7 @@ export const UserStore = signalStore(
               next: (user) => {
                 patchState(store, (state) => {
                   const existed = state.users.findIndex(
-                    (u) => u.userId === user.userId,
+                    (u: User) => u.userId === user.userId,
                   );
                   const updatedUsers =
                     existed >= 0
