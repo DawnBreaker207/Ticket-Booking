@@ -10,24 +10,17 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { Store } from '@ngrx/store';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzFormLabelComponent } from 'ng-zorro-antd/form';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { StatusTagsPipe } from '@shared/pipes/status-tags.pipe';
-import {
-  selectPaginationReservation,
-  selectReservationError,
-  selectReservationLoading,
-  selectReservations,
-} from '@domain/reservation/data-access/reservation.selectors';
 import { ReservationStatus } from '@core/constants/enum';
 import { headerColumns } from '@core/constants/column';
-import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
 import { formatDate } from '@shared/utils/date.helper';
 import { FormReservationComponent } from '@features/admin/reservation/form/reservation-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { ReservationStore } from '@domain/reservation/data-access/reservation.store';
 
 @Component({
   selector: 'app-reservation',
@@ -57,13 +50,8 @@ export class ReservationComponent implements OnInit {
   form!: FormGroup;
 
   private fb = inject(FormBuilder);
-  private store = inject(Store);
   private modalService = inject(NzModalService);
-
-  reservations = this.store.selectSignal(selectReservations);
-  pagination = this.store.selectSignal(selectPaginationReservation);
-  loading = this.store.selectSignal(selectReservationLoading);
-  error = this.store.selectSignal(selectReservationError);
+  readonly reservationStore = inject(ReservationStore);
 
   headerColumn = headerColumns.reservation;
   reservationStatus: ReservationStatus[] = ['CONFIRMED', 'CANCELED'];
@@ -101,15 +89,13 @@ export class ReservationComponent implements OnInit {
   }
 
   onSubmit() {
-    const currentSize = this.pagination()?.pageSize ?? 10;
+    const currentSize = this.reservationStore.pagination()?.pageSize ?? 10;
     this.loadData(1, currentSize);
   }
 
   private loadData(page: number, size: number) {
     const filter = this.getFilter(page, size);
-    this.store.dispatch(
-      ReservationActions.loadReservations({ filter: filter }),
-    );
+    this.reservationStore.loadReservations({ filter: filter });
   }
 
   openModal(reservationId: string) {

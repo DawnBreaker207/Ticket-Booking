@@ -102,10 +102,10 @@
   </div>
 
   <!--  TABLE -->
-  @let errorMsg = error();
-  @let pag = pagination();
-  <app-loading [isLoading]="loading()">
-    @if (reservations(); as reservations) {
+  @let errorMsg = reservationStore.error();
+  @let pag = reservationStore.pagination();
+  <app-loading [isLoading]="reservationStore.loading()">
+    @if (reservationStore.reservations(); as reservations) {
       <div
         class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
       >

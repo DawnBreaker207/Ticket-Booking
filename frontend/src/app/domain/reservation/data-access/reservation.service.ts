@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import {
   Reservation,
@@ -56,8 +56,8 @@ export class ReservationService {
   }
 
   getReservation(id: string) {
-    return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`, {}).pipe(
-      map((res: any) => res.data),
+    return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`).pipe(
+      map((res) => res.data),
       catchError(this.handleError<Reservation>('Get reservation')),
     );
   }
@@ -69,9 +69,11 @@ export class ReservationService {
         ApiRes<ResponsePage<ReservationProfile[]>>
       >(`${this.URL}/me`, { params })
       .pipe(
-        map((res) => res.data.content),
+        map((res) => res.data),
         catchError(
-          this.handleError<ReservationProfile[]>('Reservation Profile'),
+          this.handleError<ResponsePage<ReservationProfile[]>>(
+            'Reservation Profile',
+          ),
         ),
       );
   }
@@ -114,10 +116,10 @@ export class ReservationService {
       );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation') {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
-      return of(result as T);
+      return throwError(() => error);
     };
   }
 }
