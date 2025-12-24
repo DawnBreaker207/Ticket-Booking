@@ -1,21 +1,20 @@
 <nz-layout class="min-h-screen">
   <app-slider />
 
-  <nz-content class="max-w-[1200px] mx-auto my-10">
+  <nz-content class="max-w-5xl mx-auto my-10">
     <h2 nz-typography class="text-center mb-8">Phim Đang Chiếu</h2>
-
     <div nz-row [nzGutter]="[40, 40]" class="">
-      @if (movies$ | async; as movies) {
+      @if (homeStore.movies(); as movies) {
         @for (item of movies; track item.id) {
           <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="9" [nzLg]="6">
             <app-movie-item
               [movie]="item"
-              (selectMovie)="onSelectMovie(item.id)"
+              (selectMovie)="onSelectedMovie(item.id)"
             />
           </div>
         }
       } @else {
-        <nz-empty></nz-empty>
+        <nz-empty />
       }
     </div>
   </nz-content>
