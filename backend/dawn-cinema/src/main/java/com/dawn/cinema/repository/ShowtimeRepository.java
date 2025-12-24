@@ -31,7 +31,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                    OR :#{#to} IS NULL
                    OR (s.showDate BETWEEN :#{#from} AND :#{#to})
                )
-               ORDER BY s.showDate ASC
+               ORDER BY s.showDate DESC
             """)
     Page<Showtime> findByTheater(Theater theater, LocalDate from, LocalDate to, Pageable pageable);
 
