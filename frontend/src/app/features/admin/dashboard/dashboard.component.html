@@ -129,11 +129,21 @@
         </button>
         <nz-dropdown-menu #exportMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item>
+            <li
+              nz-menu-item
+              tabindex="0"
+              (click)="exportReport('pdf')"
+              (keyup.enter)="exportReport('pdf')"
+            >
               <nz-icon nzType="file-pdf" class="mr-2 text-red-500" />
               PDF
             </li>
-            <li nz-menu-item>
+            <li
+              nz-menu-item
+              tabindex="0"
+              (click)="exportReport('excel')"
+              (keyup.enter)="exportReport('excel')"
+            >
               <nz-icon nzType="file-excel" class="mr-2 text-green-500" />
               Excel
             </li>
