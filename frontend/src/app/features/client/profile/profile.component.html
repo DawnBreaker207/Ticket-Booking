@@ -36,7 +36,7 @@
             Lịch sử đặt vé
           </div>
         </ng-template>
-        @if (tickets$ | async; as tickets) {
+        @if (reservationStore.reservationProfile(); as tickets) {
           <app-booking-history [tickets]="tickets" />
         }
       </nz-tab>
