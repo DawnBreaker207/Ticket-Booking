@@ -15,6 +15,7 @@
       <nz-icon nzType="plus" nzTheme="outline" />
     </button>
   </div>
+  <!-- Search -->
   <div class="mb-5 flex items-center justify-between">
     <div class="relative">
       <nz-input-group nzPrefixIcon="search" class="rounded-xl max-w-lg">
@@ -24,15 +25,16 @@
           style="width: 500px"
           type="text"
           [formControl]="searchCtrl"
+          (focus)="isSearching.set(true)"
         />
       </nz-input-group>
-      <!--   Search result list-->
-      @if (searchResults() && searchResults().length > 0) {
+      @let results = searchResults();
+      @if (results.length > 0) {
         <div
           class="absolute z-50 top-full mt-1 w-full bg-white border rounded shadow max-h-72 overflow-y-auto"
         >
           <nz-list
-            [nzDataSource]="searchResults()"
+            [nzDataSource]="results"
             [nzRenderItem]="item"
             [nzBordered]="true"
             class="max-h-52 overflow-y-auto"
@@ -83,20 +85,22 @@
       <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
     </nz-select>
   </div>
-  <nz-spin [nzSpinning]="loading$ | async">
+
+  @let errorMsg = error();
+  @let pag = pagination();
+  <app-loading [isLoading]="loading()">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
       <nz-table
-        [nzData]="movieList"
-        nzShowPagination
+        [nzData]="movies()"
         [nzFrontPagination]="false"
-        [nzTotal]="pagination?.totalElements || 0"
-        [nzPageIndex]="pageIndex"
-        [nzPageSize]="pageSize"
+        [nzTotal]="pag?.totalElements || 0"
+        [nzPageIndex]="(pag?.pageNumber ?? 0) + 1"
+        [nzPageSize]="pag?.pageSize ?? 10"
         [nzShowSizeChanger]="true"
-        (nzPageIndexChange)="onPageChange($event)"
-        (nzPageSizeChange)="onSizeChange($event)"
+        nzShowPagination
+        (nzQueryParams)="onQueryParamsChange($event)"
       >
         <thead>
           <tr>
@@ -108,7 +112,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of movieList; track item.id) {
+          @for (item of movies(); track item.id) {
             <tr
               class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
             >
@@ -182,10 +186,10 @@
         </tbody>
       </nz-table>
     </div>
-  </nz-spin>
-  @let error = error$ | async;
-  @if (error) {
-    <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
+  </app-loading>
+
+  @if (errorMsg) {
+    <nz-alert nzType="error" [nzMessage]="errorMsg" nzShowIcon nzCloseable>
     </nz-alert>
   }
 </div>

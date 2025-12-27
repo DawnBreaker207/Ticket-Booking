@@ -2,7 +2,6 @@ package com.dawn.booking.dto.response;
 
 import com.dawn.common.constant.ReservationStatus;
 import com.dawn.common.dto.response.BaseResponse;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -19,9 +18,9 @@ import java.util.List;
 public class ReservationResponse extends BaseResponse {
     private String id;
 
-    private Long userId;
+    private UserDTO user;
 
-    private Long showtimeId;
+    private ShowtimeDTO showtime;
 
     private ReservationStatus reservationStatus;
 
@@ -29,10 +28,6 @@ public class ReservationResponse extends BaseResponse {
 
     @Builder.Default
     private List<String> seats = new ArrayList<>();
-
-    @JsonIgnore
-    @Builder.Default
-    private List<Long> seatsIds = new ArrayList<>();
 
     private Boolean isDeleted;
 

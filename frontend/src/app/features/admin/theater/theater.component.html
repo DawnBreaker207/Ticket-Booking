@@ -24,18 +24,21 @@
       <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
     </nz-select>
   </div>
-  <nz-spin [nzSpinning]="loading$ | async">
+  @let errorMsg = error();
+  @let pag = pagination();
+  <app-loading [isLoading]="loading()">
     <div
       class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
     >
       <nz-table
-        [nzData]="theaterList"
-        nzShowPagination
+        [nzData]="theaters()"
         [nzFrontPagination]="false"
-        [nzTotal]="pagination?.totalElements || 0"
-        [nzPageIndex]="pageIndex"
-        [nzPageSize]="pageSize"
+        [nzTotal]="pag?.totalElements || 0"
+        [nzPageIndex]="(pag?.pageNumber ?? 0) + 1"
+        [nzPageSize]="pag?.pageSize ?? 10"
+        nzShowPagination
         [nzShowSizeChanger]="true"
+        (nzQueryParams)="onQueryParamsChange($event)"
       >
         <thead>
           <tr>
@@ -47,7 +50,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of theaterList; track item.id) {
+          @for (item of theaters(); track item.id) {
             <tr
               class="group hover:bg-gray-50 transition-colors border-b border-gray-100"
             >
@@ -106,10 +109,9 @@
         </tbody>
       </nz-table>
     </div>
-  </nz-spin>
-  @let error = error$ | async;
-  @if (error) {
-    <nz-alert nzType="error" [nzMessage]="error" nzShowIcon nzCloseable>
+  </app-loading>
+  @if (errorMsg) {
+    <nz-alert nzType="error" [nzMessage]="errorMsg" nzShowIcon nzCloseable>
     </nz-alert>
   }
 </div>

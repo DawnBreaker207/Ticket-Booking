@@ -64,11 +64,11 @@ export const movieReducer = createReducer(
       error: null,
     };
   }),
-  on(MovieActions.searchMoviesSuccess, (state, { page }) => {
+  on(MovieActions.searchMoviesSuccess, (state, { movies, pagination }) => {
     return {
       ...state,
-      movies: page.content,
-      pagination: page.pagination,
+      movies: movies,
+      pagination: pagination,
       loading: false,
       error: null,
     };

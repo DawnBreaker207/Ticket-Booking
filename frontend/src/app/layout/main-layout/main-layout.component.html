@@ -3,9 +3,9 @@
   <nz-content>
     <div class="relative">
       @if (loading()) {
-        <nz-spin nzTip="Loading...">
+        <app-loading tip="Loading...">
           <router-outlet />
-        </nz-spin>
+        </app-loading>
       } @else {
         <router-outlet />
       }

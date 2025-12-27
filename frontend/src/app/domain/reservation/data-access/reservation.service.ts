@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import {
   Reservation,
@@ -10,7 +10,7 @@ import {
   ReservationProfile,
   ReservationRequest,
 } from '@domain/reservation/models/reservation.model';
-import { formatDate, formatTime } from '@shared/utils/date.helper';
+import { formatDate } from '@shared/utils/date.helper';
 import { ApiRes, ResponsePage } from '@core/models/common.model';
 import { ReservationStatus } from '@core/constants/enum';
 
@@ -32,9 +32,9 @@ export class ReservationService {
     params = params.set('page', page.toString());
     params = params.set('size', size.toString());
 
-    const startDate = formatDate(filter?.dateFrom);
-    const endDate = formatTime(filter?.dateTo);
-    filter = { ...filter, dateFrom: startDate, dateTo: endDate };
+    const startDate = formatDate(filter?.startDate);
+    const endDate = formatDate(filter?.endDate);
+    filter = { ...filter, startDate: startDate, endDate: endDate };
 
     if (filter) {
       Object.keys(filter).forEach((key) => {
@@ -56,8 +56,8 @@ export class ReservationService {
   }
 
   getReservation(id: string) {
-    return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`, {}).pipe(
-      map((res: any) => res.data),
+    return this.http.get<ApiRes<Reservation>>(`${this.URL}/${id}`).pipe(
+      map((res) => res.data),
       catchError(this.handleError<Reservation>('Get reservation')),
     );
   }
@@ -69,9 +69,11 @@ export class ReservationService {
         ApiRes<ResponsePage<ReservationProfile[]>>
       >(`${this.URL}/me`, { params })
       .pipe(
-        map((res) => res.data.content),
+        map((res) => res.data),
         catchError(
-          this.handleError<ReservationProfile[]>('Reservation Profile'),
+          this.handleError<ResponsePage<ReservationProfile[]>>(
+            'Reservation Profile',
+          ),
         ),
       );
   }
@@ -114,10 +116,10 @@ export class ReservationService {
       );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation') {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
-      return of(result as T);
+      return throwError(() => error);
     };
   }
 }

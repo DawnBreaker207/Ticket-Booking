@@ -30,7 +30,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             """)
     Page<Reservation> findAllWithFilter(ReservationFilterRequest reservation, Instant startDate, Instant endDate, Pageable pageable);
 
-
-    Page<Reservation> findAllByUserIdAndReservationStatus(Long userId, ReservationStatus status, Pageable pageable);
+    Page<Reservation> findAllByUserIdAndReservationStatusOrderByCreatedAtDesc(Long userId, ReservationStatus status, Pageable pageable);
 }
 

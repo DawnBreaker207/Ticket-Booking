@@ -7,28 +7,6 @@
       <h1 class="text-3xl font-bold text-gray-900">Quản lý đơn đặt</h1>
       <p class="text-gray-500 text-sm mt-1">Theo dõi và xử lý các đơn đặt vé</p>
     </div>
-    <!--  EXPORT   -->
-    <button
-      nz-button
-      nz-dropdown
-      [nzDropdownMenu]="exportMenu"
-      class="flex items-center gap-2 bg-white border-gray-300 text-gray-700 font-medium hover:text-primary hover:border-primary shadow-sm"
-    >
-      <nz-icon nzType="download" />
-      Xuất báo cáo
-    </button>
-    <nz-dropdown-menu #exportMenu="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="exportReport('pdf')">
-          <nz-icon nzType="file-pdf" class="mr-2 text-red-500" />
-          PDF
-        </li>
-        <li nz-menu-item (click)="exportReport('excel')">
-          <nz-icon nzType="file-excel" class="mr-2 text-green-500" />
-          Excel
-        </li>
-      </ul>
-    </nz-dropdown-menu>
   </div>
 
   <!--  FILTER -->
@@ -38,8 +16,8 @@
         <!--  Search  -->
         <div class="lg:col-span-1">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tìm kiếm</nz-form-label
-          >
+            >Tìm kiếm
+          </nz-form-label>
           <nz-input-group nzPrefixIcon="search" class="w-full rounded-lg">
             <input formControlName="query" nz-input placeholder="Mã đơn" />
           </nz-input-group>
@@ -48,8 +26,8 @@
         <!--  Status  -->
         <div class="">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Trạng thái đơn</nz-form-label
-          >
+            >Trạng thái đơn
+          </nz-form-label>
           <nz-select
             formControlName="reservationStatus"
             class="w-full"
@@ -65,8 +43,8 @@
         <!--  Day filter -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Ngày tạo đơn</nz-form-label
-          >
+            >Ngày tạo đơn
+          </nz-form-label>
           <nz-range-picker
             formControlName="dateRange"
             class="w-full"
@@ -76,8 +54,8 @@
         <!--  Total Amount -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tổng tiền</nz-form-label
-          >
+            >Tổng tiền
+          </nz-form-label>
           <nz-input-group nzPrefixIcon="dollar" class="w-full rounded-lg">
             <input
               formControlName="totalAmount"
@@ -92,8 +70,8 @@
         <!--  Sort  -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Sắp xếp theo</nz-form-label
-          >
+            >Sắp xếp theo
+          </nz-form-label>
           <nz-select formControlName="sortBy" class="w-full">
             <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
             <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
@@ -124,21 +102,22 @@
   </div>
 
   <!--  TABLE -->
-  <nz-spin [nzSpinning]="loading$ | async">
-    @if (reservation$ | async; as reservations) {
+  @let errorMsg = reservationStore.error();
+  @let pag = reservationStore.pagination();
+  <app-loading [isLoading]="reservationStore.loading()">
+    @if (reservationStore.reservations(); as reservations) {
       <div
         class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 overflow-hidden"
       >
         <nz-table
           [nzData]="reservations"
-          nzShowPagination
           [nzFrontPagination]="false"
-          [nzTotal]="(pagination$ | async)?.totalElements || 0"
-          [nzPageIndex]="pageIndex"
-          [nzPageSize]="pageSize"
+          [nzTotal]="pag?.totalElements || 0"
+          [nzPageIndex]="(pag?.pageNumber ?? 0) + 1"
+          [nzPageSize]="pag?.pageSize ?? 10"
           [nzShowSizeChanger]="true"
-          (nzPageIndexChange)="onPageChange($event)"
-          (nzPageSizeChange)="onSizeChange($event)"
+          nzShowPagination
+          (nzQueryParams)="onQueryParamsChange($event)"
         >
           <thead class="bg-gray-50">
             <tr>
@@ -214,14 +193,13 @@
         </nz-table>
       </div>
     }
-  </nz-spin>
+  </app-loading>
 
-  @let error = error$ | async;
-  @if (error) {
+  @if (errorMsg) {
     <div class="fixed bottom-5 right-5 z-50">
       <nz-alert
         nzType="error"
-        [nzMessage]="error"
+        [nzMessage]="errorMsg"
         nzShowIcon
         nzCloseable
         class="shadow-lg"

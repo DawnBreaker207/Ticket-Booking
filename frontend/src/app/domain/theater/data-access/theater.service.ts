@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiRes, ResponsePage } from '@core/models/common.model';
 import { Theater, TheaterRequest } from '@domain/theater/models/theater.model';
@@ -72,10 +72,10 @@ export class TheaterService {
       .pipe(catchError(this.handleError<void>('theater')));
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation') {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error}`);
-      return of(result as T);
+      return throwError(() => error);
     };
   }
 }

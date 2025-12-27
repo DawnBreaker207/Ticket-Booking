@@ -36,7 +36,8 @@ export class GlobalErrorService {
     const status = error.status;
     let type = 'error';
     let title = `Error ${status}`;
-    let message = error.error?.message || error.message || 'Unknown error';
+    const serverMessage = error.error?.message;
+    let message = serverMessage || error.message || 'Unknown error';
 
     switch (status) {
       case 400:
@@ -44,30 +45,30 @@ export class GlobalErrorService {
         break;
       case 401:
         title = `${status}: Unauthorized`;
-        message = 'Unauthorized';
+        if (!serverMessage) message = 'Unauthorized';
         break;
       case 403:
         type = 'warning';
         title = `${status}: Forbidden`;
-        message = 'Forbidden';
+        if (!serverMessage) message = 'Forbidden';
         break;
       case 404:
         title = `${status}: Not Found`;
-        message = 'Not Found';
+        if (!serverMessage) message = 'Not Found';
         break;
       case 429:
         type = 'warning';
         title = `${status}: Too Many Requests`;
-        message = 'Too Many Requests';
+        if (!serverMessage) message = 'Too Many Requests';
         break;
       case 500:
         title = `${status}: Server Error`;
-        message = 'Server Error';
+        if (!serverMessage) message = 'Server Error';
         break;
       case 503:
         type = 'warning';
         title = `${status}: Service Unavailable`;
-        message = 'Service Unavailable';
+        if (!serverMessage) message = 'Service Unavailable';
         break;
       default:
         title = `Error ${status}`;

@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { NzContentComponent, NzLayoutComponent } from 'ng-zorro-antd/layout';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import {
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
@@ -11,6 +10,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-main-layout',
@@ -21,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzContentComponent,
     NzLayoutComponent,
     NzMenuModule,
-    NzSpinComponent,
+    LoadingComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',

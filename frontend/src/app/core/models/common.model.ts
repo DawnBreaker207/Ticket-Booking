@@ -32,8 +32,8 @@ export interface FilterSort {
 }
 
 export interface FilterDate {
-  dateFrom?: string;
-  dateTo?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface IsDeleted {

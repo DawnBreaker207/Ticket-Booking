@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface ReservationMappingHelper {
 
-    static ReservationResponse map(final Reservation reservation, final List<SeatDTO> seats) {
+    static ReservationResponse map(final Reservation reservation, final UserDTO user, final ShowtimeDTO showtime,  final List<SeatDTO> seats) {
         return
                 ReservationResponse
                         .builder()
                         .id(reservation.getId())
-                        .userId(reservation.getUserId())
-                        .showtimeId(reservation.getShowtimeId())
+                        .user(user)
+                        .showtime(showtime)
                         .reservationStatus(reservation.getReservationStatus())
                         .totalAmount(reservation.getTotalAmount())
                         .seats(seats
