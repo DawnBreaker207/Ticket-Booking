@@ -16,6 +16,29 @@
 
 It serves as a technical showcase for how to keep a large system clean using isolated domain modules and a reactive frontend.
 
+## 📁 Project structure
+
+```text
+├── frontend/             # Angular Application
+│   ├── src/app/
+│   │   ├── core/         # Singleton services, interceptors, and guards
+│   │   ├── domain/       # Models, domain services and state management
+│   │   ├── features/     # Feature modules (Admin dashboard, Client portal, Error pages)
+│   │   ├── layout/       # Static layout components (Header, Footer, Sidebar)
+│   │   └── shared/       # Reusable components, pipes, directives, and utility services
+├── backend/              # Spring Boot Modular Monolith
+│   ├── dawn-web/         # Application entry point & API Gateway Layer
+│   ├── dawn-common/      # Shared kernel: Common utilities, base DTOs, and global exceptions
+│   ├── dawn-booking/     # Domain: Seat reservation lifecycle & Redis locking logic
+│   ├── dawn-cinema/      # Domain: Theater management and showtimes
+│   ├── dawn-identity/    # Domain: Security core, JWT, and RBAC
+│   └── dawn-*            # Other isolated domain modules (Catalog, Notification, etc.)
+├── infra/                # Infrastructure & Orchestration
+│   ├── docker-compose.yml# Multi-container setup (App, MySQL, Redis, RabbitMQ)
+│   └── nginx.conf        # Reverse proxy, SSL termination, and Load balancing
+└── docs/                 # Extended Technical Documentation & API Refs
+```
+
 ## 🏗️ System Architecture
 
 - **Backend (`dawn-*` modules):** A modular monolith approach where core contexts (Booking, Catalog, Identity) are isolated, sharing infrastructure through a dedicated `common` module.
@@ -30,7 +53,7 @@ It serves as a technical showcase for how to keep a large system clean using iso
 
 | Layer              | Technologies                                                                      |
 | :----------------- | :-------------------------------------------------------------------------------- |
-| **Backend**        | Java 17, Spring Boot 3.5, Spring Data JPA, Spring Security(JWT), Flyway           |
+| **Backend**        | Java 17, Spring Boot 3.5, Spring Data JPA, Spring Security (JWT), Flyway          |
 | **Frontend**       | Angular 17+, NgRx (Store & Effects), RxJS, TailwindCSS, Ng-Zorro                  |
 | **Infrastructure** | MySQL 8.0, Redis (Pub/Sub & KV), RabbitMQ (Message Queue), Docker                 |
 | **Services**       | VNPay(Payment), Jasper Reports(PDF), ZXing (Barcode), Cloudinary (Images Storage) |
