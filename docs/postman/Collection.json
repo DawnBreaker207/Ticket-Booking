@@ -1,0 +1,2465 @@
+{
+  "info": {
+    "_postman_id": "4961a158-79f9-484b-90bf-65f286d6f8b1",
+    "name": "Booking Ticket",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32068679"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"user123\",\r\n    \"email\": \"user123@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_AUTH}}/register",
+              "host": [
+                "{{BASE_URL_AUTH}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if(jsonData.message === \"Success\" && jsonData.data){",
+                  "",
+                  "if (jsonData.data.accessToken) {",
+                  "    pm.environment.set(\"accessToken\", jsonData.data.accessToken);",
+                  "}",
+                  "",
+                  "if (jsonData.data.refreshToken) {",
+                  "    pm.environment.set(\"refreshToken\", jsonData.data.refreshToken);",
+                  "}",
+                  "",
+                  "",
+                  "console.log(\"Access token and refresh token saved to environment\");",
+                  "",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"identifier\": \"user1\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_AUTH}}/login",
+              "host": [
+                "{{BASE_URL_AUTH}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"lmao\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_AUTH}}/logout",
+              "host": [
+                "{{BASE_URL_AUTH}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if(jsonData.message === \"Success\" && jsonData.data){",
+                  "",
+                  "if (jsonData.data.token) {",
+                  "    pm.environment.set(\"accessToken\", jsonData.data.accessToken);",
+                  "}",
+                  "",
+                  "console.log(\"Access token and refresh token saved to environment\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "refreshToken",
+                "value": "{{refreshToken}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_AUTH}}/refresh-token",
+              "host": [
+                "{{BASE_URL_AUTH}}"
+              ],
+              "path": [
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Movie",
+      "item": [
+        {
+          "name": "Get All Movie",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Movie By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}/1",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Movie By Movie ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}/filmId/1061474",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ],
+              "path": [
+                "filmId",
+                "1061474"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\n    \"title\": \"Superman\",\n    \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\n    \"duration\": 130,\n    \"language\": \"en\",\n    \"genres\": [\n        \"Khoa Học Viễn Tưởng\",\n        \"Phiêu Lưu\",\n        \"Hành Động\"\n    ],\n    \"releaseDate\": \"2025-07-09\",\n    \"imdbId\": \"tt5950044\",\n    \"filmId\": 1061474\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}/2",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ],
+              "path": [
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_MOVIE}}/2",
+              "host": [
+                "{{BASE_URL_MOVIE}}"
+              ],
+              "path": [
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Article",
+      "item": [
+        {
+          "name": "Get All Article",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_ARTICLE}}",
+              "host": [
+                "{{BASE_URL_ARTICLE}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Article By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_ARTICLE}}/1",
+              "host": [
+                "{{BASE_URL_ARTICLE}}"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Article",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\n    \"title\": \"Superman\",\n    \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\n    \"duration\": 130,\n    \"language\": \"en\",\n    \"genres\": [\n        \"Khoa Học Viễn Tưởng\",\n        \"Phiêu Lưu\",\n        \"Hành Động\"\n    ],\n    \"releaseDate\": \"2025-07-09\",\n    \"imdbId\": \"tt5950044\",\n    \"filmId\": 1061474\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_ARTICLE}}",
+              "host": [
+                "{{BASE_URL_ARTICLE}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Article",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_ARTICLE}}/2",
+              "host": [
+                "{{BASE_URL_ARTICLE}}"
+              ],
+              "path": [
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Article",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_ARTICLE}}/2",
+              "host": [
+                "{{BASE_URL_ARTICLE}}"
+              ],
+              "path": [
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Theater",
+      "item": [
+        {
+          "name": "Get All Theater",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Theater By Location",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Balo\",\r\n    \"price\":\"2000000\",\r\n    \"sku\":\"GHFG4567\",\r\n    \"price\":\"1200\",\r\n    \"currency\":\"$\",\r\n    \"description\": \"Ahihihihihi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}/search?location=thanh",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "thanh"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Theater By ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}/1",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Theater",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Theater 2\",\r\n    \"location\": \"Yen Nghia\",\r\n    \"capacity\": \"50\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Theater",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Theater 2\",\r\n    \"location\": \"Yen Nghia\",\r\n    \"capacity\": \"50\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}/1",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Theater",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_THEATER}}",
+              "host": [
+                "{{BASE_URL_THEATER}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Showtime",
+      "item": [
+        {
+          "name": "Get Showtime By Date",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/?date=2025-10-08T14:16:07.181034",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2025-10-08T14:16:07.181034"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Showtime By Movie Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/movies/1",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "movies",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Showtime By Theater",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Balo\",\r\n    \"price\":\"2000000\",\r\n    \"sku\":\"GHFG4567\",\r\n    \"price\":\"1200\",\r\n    \"currency\":\"$\",\r\n    \"description\": \"Ahihihihihi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/theaters/2",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "theaters",
+                "2"
+              ],
+              "query": [
+                {
+                  "key": "size",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2025-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-11-30",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Showtime",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Balo\",\r\n    \"price\":\"2000000\",\r\n    \"sku\":\"GHFG4567\",\r\n    \"price\":\"1200\",\r\n    \"currency\":\"$\",\r\n    \"description\": \"Ahihihihihi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/available",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "available"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Showtime By Movie",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Balo\",\r\n    \"price\":\"2000000\",\r\n    \"sku\":\"GHFG4567\",\r\n    \"price\":\"1200\",\r\n    \"currency\":\"$\",\r\n    \"description\": \"Ahihihihihi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/available/movies/1",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "available",
+                "movies",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Showtime By Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Balo\",\r\n    \"price\":\"2000000\",\r\n    \"sku\":\"GHFG4567\",\r\n    \"price\":\"1200\",\r\n    \"currency\":\"$\",\r\n    \"description\": \"Ahihihihihi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/1",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Showtime",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"movieId\": 1,\r\n    \"theaterId\": 1,\r\n    \"showDate\": \"2025-10-25\",\r\n    \"showTime\": \"10:30:00\",\r\n    \"price\": 50000,\r\n    \"totalSeats\": 50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Showtime",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"movieId\": 1,\r\n    \"theaterId\": 1,\r\n    \"showDate\": \"2025-10-12\",\r\n    \"showTime\": \"10:30:00\",\r\n    \"price\": 50000,\r\n    \"totalSeats\": 5\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/3",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Showtime",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SHOWTIME}}/2",
+              "host": [
+                "{{BASE_URL_SHOWTIME}}"
+              ],
+              "path": [
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Seat",
+      "item": [
+        {
+          "name": "Get Seat By Showtime",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/showtime/5",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "showtime",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Seat By Showtime",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/showtime/5/available",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "showtime",
+                "5",
+                "available"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find By Reservation Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"\",\r\n    \"movie\": {\r\n        \"id\": 1,\r\n        \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\r\n        \"title\": \"Superman\",\r\n        \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\r\n        \"duration\": 130,\r\n        \"language\": \"en\",\r\n        \"genres\": [\r\n            \"Khoa Học Viễn Tưởng\",\r\n            \"Phiêu Lưu\",\r\n            \"Hành Động\"\r\n        ],\r\n        \"releaseDate\": \"2025-07-09\",\r\n        \"imdbId\": \"tt5950044\",\r\n        \"filmId\": 1061474\r\n    },\r\n    \"movieSession\": \"2025-08-28T14:18:36.184Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/showtime/1/create",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "showtime",
+                "1",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save All",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"\",\r\n    \"movie\": {\r\n        \"id\": 1,\r\n        \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\r\n        \"title\": \"Superman\",\r\n        \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\r\n        \"duration\": 130,\r\n        \"language\": \"en\",\r\n        \"genres\": [\r\n            \"Khoa Học Viễn Tưởng\",\r\n            \"Phiêu Lưu\",\r\n            \"Hành Động\"\r\n        ],\r\n        \"releaseDate\": \"2025-07-09\",\r\n        \"imdbId\": \"tt5950044\",\r\n        \"filmId\": 1061474\r\n    },\r\n    \"movieSession\": \"2025-08-28T14:18:36.184Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/saveAll",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "saveAll"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Seat For Showtime",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"\",\r\n    \"movie\": {\r\n        \"id\": 1,\r\n        \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\r\n        \"title\": \"Superman\",\r\n        \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\r\n        \"duration\": 130,\r\n        \"language\": \"en\",\r\n        \"genres\": [\r\n            \"Khoa Học Viễn Tưởng\",\r\n            \"Phiêu Lưu\",\r\n            \"Hành Động\"\r\n        ],\r\n        \"releaseDate\": \"2025-07-09\",\r\n        \"imdbId\": \"tt5950044\",\r\n        \"filmId\": 1061474\r\n    },\r\n    \"movieSession\": \"2025-08-28T14:18:36.184Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/showtime/1/create",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "showtime",
+                "1",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find Seat By Id With Lock",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"\",\r\n    \"movie\": {\r\n        \"id\": 1,\r\n        \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\r\n        \"title\": \"Superman\",\r\n        \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\r\n        \"duration\": 130,\r\n        \"language\": \"en\",\r\n        \"genres\": [\r\n            \"Khoa Học Viễn Tưởng\",\r\n            \"Phiêu Lưu\",\r\n            \"Hành Động\"\r\n        ],\r\n        \"releaseDate\": \"2025-07-09\",\r\n        \"imdbId\": \"tt5950044\",\r\n        \"filmId\": 1061474\r\n    },\r\n    \"movieSession\": \"2025-08-28T14:18:36.184Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/locks",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "locks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find All Seat By Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"\",\r\n    \"movie\": {\r\n        \"id\": 1,\r\n        \"poster\": \"https://image.tmdb.org/t/p/original//f4hJ5yVSiOSnW9S6vtoGlNYvW5J.jpg\",\r\n        \"title\": \"Superman\",\r\n        \"overview\": \"Superman cố gắng can thiệp vào một cuộc khủng hoảng toàn cầu do Lex Luthor gây ra, nhưng lại bị công chúng hiểu lầm. Mọi chuyện trở nên nghiêm trọng hơn khi Luthor tạo ra một bản sao đen tối của Superman – Ultraman. Với sự giúp đỡ của Lois Lane và chú chó siêu năng lực Krypto, Superman phải đối mặt với chính bản ngã của mình để giành lại niềm tin từ nhân loại.\",\r\n        \"duration\": 130,\r\n        \"language\": \"en\",\r\n        \"genres\": [\r\n            \"Khoa Học Viễn Tưởng\",\r\n            \"Phiêu Lưu\",\r\n            \"Hành Động\"\r\n        ],\r\n        \"releaseDate\": \"2025-07-09\",\r\n        \"imdbId\": \"tt5950044\",\r\n        \"filmId\": 1061474\r\n    },\r\n    \"movieSession\": \"2025-08-28T14:18:36.184Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_SEAT}}/all/id",
+              "host": [
+                "{{BASE_URL_SEAT}}"
+              ],
+              "path": [
+                "all",
+                "id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reservation",
+      "item": [
+        {
+          "name": "Get All Reservation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}?size=10&page=15&sortBy=newest&startDate=2025-11-25&endDate=2025-11-25",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "query": [
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "15"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2025-11-25"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-11-25"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/ORD-B990B624DCEC",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "ORD-B990B624DCEC"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/me",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Reservation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if(jsonData.message === \"Success\" && jsonData.data){",
+                  "",
+                  "if (jsonData.data) {",
+                  "    pm.environment.set(\"reservationId\", jsonData.data);",
+                  "}",
+                  "",
+                  "",
+                  "console.log(\"Reservation Id is saved to environment\");",
+                  "",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reservationId\": \"{{reservationId}}\",\r\n    \"userId\": 4,\r\n    \"showtimeId\": 5,\r\n    \"theaterId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/ORD-8B25036B1E11/restore",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "ORD-8B25036B1E11",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Init Reservation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if(jsonData.message === \"Success\" && jsonData.data){",
+                  "",
+                  "if (jsonData.data) {",
+                  "    pm.environment.set(\"reservationId\", jsonData.data);",
+                  "}",
+                  "",
+                  "",
+                  "console.log(\"Reservation Id is saved to environment\");",
+                  "",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reservationId\": \"{{reservationId}}\",\r\n    \"userId\": 4,\r\n    \"showtimeId\": 5,\r\n    \"theaterId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/init",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "init"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hold Seat Reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reservationId\": \"{{reservationId}}\",\r\n    \"userId\": 4,\r\n    \"showtimeId\": 5,\r\n    \"seatIds\": [\r\n        27,\r\n        28,\r\n        29\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/seatHold",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "seatHold"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reservationId\": \"{{reservationId}}\",\r\n    \"userId\": 4,\r\n    \"showtimeId\": 5,\r\n    \"seatIds\": [\r\n        27,\r\n        28,\r\n        29\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/confirm",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "confirm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_RESERVATION}}/1/cancel",
+              "host": [
+                "{{BASE_URL_RESERVATION}}"
+              ],
+              "path": [
+                "1",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get All",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/user",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/email",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Role Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/role/ADMIN",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "role",
+                "ADMIN"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Existed By Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/role/existed/ADMIN",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "role",
+                "existed",
+                "ADMIN"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/update/1/status",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "update",
+                "1",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Info",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_USER}}/update/1/profile",
+              "host": [
+                "{{BASE_URL_USER}}"
+              ],
+              "path": [
+                "update",
+                "1",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "VNPay Request",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reservationId\": \"ORD-44DDB5BBBF65\",\n    \"amount\": 1000000,\n    \"paymentType\": \"vnpay\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_PAYMENT}}/create?reservationId=ORD-312414141&amount=1000000&paymentType=vnpay",
+              "host": [
+                "{{BASE_URL_PAYMENT}}"
+              ],
+              "path": [
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "reservationId",
+                  "value": "ORD-312414141"
+                },
+                {
+                  "key": "amount",
+                  "value": "1000000"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "vnpay"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Momo Request",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_PAYMENT}}/create?reservationId=ORD-312414141&amount=1000000&paymentType=momo",
+              "host": [
+                "{{BASE_URL_PAYMENT}}"
+              ],
+              "path": [
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "reservationId",
+                  "value": "ORD-312414141"
+                },
+                {
+                  "key": "amount",
+                  "value": "1000000"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "momo"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Zalo Pay Request",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reservationId\": \"ORD-44DDB5BBBF65\",\n    \"amount\": 1000000,\n    \"paymentType\": \"vnpay\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_PAYMENT}}/create?reservationId=ORD-312414141&amount=1000000&paymentType=zaloPay",
+              "host": [
+                "{{BASE_URL_PAYMENT}}"
+              ],
+              "path": [
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "reservationId",
+                  "value": "ORD-312414141"
+                },
+                {
+                  "key": "amount",
+                  "value": "1000000"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "zaloPay"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "VNPay Request Copy",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reservationId\": \"ORD-44DDB5BBBF65\",\n    \"amount\": 1000000,\n    \"paymentType\": \"vnpay\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_PAYMENT}}/update",
+              "host": [
+                "{{BASE_URL_PAYMENT}}"
+              ],
+              "path": [
+                "update"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Test Mail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_NOTIFICATION}}/mail/test",
+              "host": [
+                "{{BASE_URL_NOTIFICATION}}"
+              ],
+              "path": [
+                "mail",
+                "test"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send to channel",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clientId\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL_NOTIFICATION}}/subscribe/showtime/1",
+              "host": [
+                "{{BASE_URL_NOTIFICATION}}"
+              ],
+              "path": [
+                "subscribe",
+                "showtime",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Report",
+      "item": [
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Metrics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_DASHBOARD}}/metrics?startDate=2025-10-01&endDate=2025-10-25",
+                  "host": [
+                    "{{BASE_URL_DASHBOARD}}"
+                  ],
+                  "path": [
+                    "metrics"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-10-25"
+                    },
+                    {
+                      "key": "movieId",
+                      "value": "9",
+                      "disabled": true
+                    },
+                    {
+                      "key": "theaterId",
+                      "value": "1",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Revenue",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_DASHBOARD}}/revenue?startDate=2025-11-01&endDate=2025-11-25",
+                  "host": [
+                    "{{BASE_URL_DASHBOARD}}"
+                  ],
+                  "path": [
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-11-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-11-25"
+                    },
+                    {
+                      "key": "movieId",
+                      "value": "9",
+                      "disabled": true
+                    },
+                    {
+                      "key": "theaterId",
+                      "value": "1",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Top Movies",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_DASHBOARD}}/top-movies?startDate=2025-11-01&endDate=2025-11-25",
+                  "host": [
+                    "{{BASE_URL_DASHBOARD}}"
+                  ],
+                  "path": [
+                    "top-movies"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-11-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-11-25"
+                    },
+                    {
+                      "key": "movieId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "theaterId",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Top Theaters",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_DASHBOARD}}/top-theaters?startDate=2025-11-01&endDate=2025-11-25",
+                  "host": [
+                    "{{BASE_URL_DASHBOARD}}"
+                  ],
+                  "path": [
+                    "top-theaters"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-11-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-11-25"
+                    },
+                    {
+                      "key": "movieId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "theaterId",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Payment Distribution",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_DASHBOARD}}/payment-distribution?startDate=2025-11-01&endDate=2025-11-25",
+                  "host": [
+                    "{{BASE_URL_DASHBOARD}}"
+                  ],
+                  "path": [
+                    "payment-distribution"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-11-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-11-25"
+                    },
+                    {
+                      "key": "movieId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "theaterId",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Export Report PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_REPORT}}/export/pdf",
+              "host": [
+                "{{BASE_URL_REPORT}}"
+              ],
+              "path": [
+                "export",
+                "pdf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Report HTML",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_REPORT}}/export/html",
+              "host": [
+                "{{BASE_URL_REPORT}}"
+              ],
+              "path": [
+                "export",
+                "html"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Report Excel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_REPORT}}/export/excel",
+              "host": [
+                "{{BASE_URL_REPORT}}"
+              ],
+              "path": [
+                "export",
+                "excel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/home/dawnbreaker/Downloads/78de7e6d21f8aba6f2e9.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/cloudinary/upload",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "cloudinary",
+                "upload"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": null,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "let accessToken = pm.environment.get(\"accessToken\");",
+          "if (accessToken) {",
+          "    pm.request.headers.upsert({",
+          "        key: \"Authorization\",",
+          "        value: \"Bearer \" + accessToken",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:8888/api/v1"
+    },
+    {
+      "key": "BASE_URL_AUTH",
+      "value": "http://localhost:8888/api/v1/auth"
+    },
+    {
+      "key": "BASE_URL_MOVIE",
+      "value": "http://localhost:8888/api/v1/movie"
+    },
+    {
+      "key": "BASE_URL_USER",
+      "value": "http://localhost:8888/api/v1/user"
+    },
+    {
+      "key": "BASE_URL_PAYMENT",
+      "value": "http://localhost:8888/api/v1/payment"
+    },
+    {
+      "key": "BASE_URL_REPORT",
+      "value": "http://localhost:8888/api/v1/report"
+    },
+    {
+      "key": "BASE_URL_THEATER",
+      "value": "http://localhost:8888/api/v1/theater"
+    },
+    {
+      "key": "BASE_URL_SEAT",
+      "value": "http://localhost:8888/api/v1/seats"
+    },
+    {
+      "key": "BASE_URL_SHOWTIME",
+      "value": "http://localhost:8888/api/v1/showtime"
+    },
+    {
+      "key": "BASE_URL_RESERVATION",
+      "value": "http://localhost:8888/api/v1/reservation"
+    },
+    {
+      "key": "BASE_URL_NOTIFICATION",
+      "value": "http://localhost:8888/api/v1/notification"
+    },
+    {
+      "key": "BASE_URL_DASHBOARD",
+      "value": "http://localhost:8888/api/v1/dashboard"
+    },
+    {
+      "key": "BASE_URL_ARTICLE",
+      "value": "http://localhost:8888/api/v1/article"
+    }
+  ]
+}
