@@ -9,7 +9,7 @@
   <div
     class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[600px]"
   >
-    <nz-tabset
+    <nz-tabs
       [nzTabPosition]="tabPosition"
       nzType="line"
       nzSize="large"
@@ -23,7 +23,7 @@
             Hồ sơ cá nhân
           </div>
         </ng-template>
-        @if (user$ | async; as user) {
+        @if (userStore.selectedUser(); as user) {
           <app-info [user]="user" />
         }
       </nz-tab>
@@ -36,7 +36,7 @@
             Lịch sử đặt vé
           </div>
         </ng-template>
-        @if (tickets$ | async; as tickets) {
+        @if (reservationStore.reservationProfile(); as tickets) {
           <app-booking-history [tickets]="tickets" />
         }
       </nz-tab>
@@ -82,6 +82,6 @@
           <p class="text-gray-500">Tính năng đang phát triển</p>
         </div>
       </nz-tab>
-    </nz-tabset>
+    </nz-tabs>
   </div>
 </div>

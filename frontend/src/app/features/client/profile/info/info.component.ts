@@ -23,6 +23,9 @@ import { NzWaveModule } from 'ng-zorro-antd/core/wave';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UserProfile } from '@domain/user/models/user.model';
 import { MovieTicket } from '@features/client/profile/booking-history/booking-history.component';
+import { lastValueFrom } from 'rxjs';
+import { UserStore } from '@domain/user/data-access/user.store';
+import { UploadService } from '@core/services/upload/upload.service';
 
 @Component({
   selector: 'app-info',
@@ -45,8 +48,10 @@ export class InfoComponent implements OnInit {
   user = input.required<UserProfile>();
 
   private fb = inject(FormBuilder);
+  readonly userStore = inject(UserStore);
   private msg = inject(NzMessageService);
   private cdr = inject(ChangeDetectorRef);
+  private uploadService = inject(UploadService);
   selectedFile: File | null = null;
   isSaving: boolean = false;
   selectedTicket: MovieTicket | null = null;
@@ -62,6 +67,7 @@ export class InfoComponent implements OnInit {
     this.profileForm = this.fb.group({
       username: [this.user().username, [Validators.required]],
       email: [{ value: this.user().email, disabled: true }],
+      avatar: [''],
       phone: [
         '0912345678',
         [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
@@ -104,31 +110,48 @@ export class InfoComponent implements OnInit {
     this.msg.info('Đã hủy thay đổi ảnh');
   }
 
-  submitProfile() {
-    if (this.profileForm.valid) {
-      this.isSaving = true;
-
-      setTimeout(() => {
-        this.isSaving = false;
-
-        this.user().username = this.profileForm.get('username')?.value;
-
-        if (this.selectedFile) {
-          this.user().avatar = this.avatarPreview;
-          this.selectedTicket = null;
-        }
-
-        this.msg.success('Lưu thành công');
-        this.cdr.markForCheck();
-      }, 1000);
-    } else {
-      Object.values(this.profileForm.controls).forEach((control) => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+  async submitProfile() {
+    if (this.profileForm.invalid) {
+      this.markFormGroup(this.profileForm);
+      return;
     }
+    this.isSaving = true;
+    try {
+      let finalAvatarUrl = this.user().avatar;
+      if (this.selectedFile) {
+        const uploadRes = await lastValueFrom(
+          this.uploadService.uploadAssets(this.selectedFile),
+        );
+        finalAvatarUrl = uploadRes;
+      }
+
+      const updatedData: UserProfile = {
+        ...this.user(),
+        username: this.profileForm.get('username')?.value,
+        phone: this.profileForm.get('phone')?.value,
+        address: this.profileForm.get('address')?.value,
+        avatar: finalAvatarUrl,
+      };
+
+      const userId = this.user().userId;
+
+      this.userStore.updateUserProfile({ id: userId, user: updatedData });
+
+      this.msg.success('Lưu thành công');
+      this.selectedFile = null;
+    } catch (error) {
+      this.msg.error('Error when uploading profile');
+    } finally {
+      this.isSaving = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  private markFormGroup(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsDirty();
+      control.updateValueAndValidity({ onlySelf: true });
+    });
   }
 
   private getBase64(img: File, callback: (img: string) => void) {

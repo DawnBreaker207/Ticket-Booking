@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -15,11 +15,12 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
-import { Observable, of } from 'rxjs';
 import { BookingHistoryComponent } from '@features/client/profile/booking-history/booking-history.component';
 import { InfoComponent } from '@features/client/profile/info/info.component';
-import { UserProfile } from '@domain/user/models/user.model';
-import { ReservationProfile } from '@domain/reservation/models/reservation.model';
+import { UserStore } from '@domain/user/data-access/user.store';
+import { Store } from '@ngrx/store';
+import { selectUserId } from '@core/auth/auth.selectors';
+import { ReservationStore } from '@domain/reservation/data-access/reservation.store';
 
 @Component({
   selector: 'app-profile',
@@ -49,79 +50,19 @@ import { ReservationProfile } from '@domain/reservation/models/reservation.model
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  isSaving: boolean = false;
-  user$: Observable<UserProfile> = of({
-    avatar: 'https://i.pravatar.cc/300?img=12',
-    username: 'Nguyễn Văn A',
-    email: 'nguyenvana@gmail.com',
-    role: 'Member',
-  });
-  tickets$: Observable<ReservationProfile[]> = of([
-    {
-      reservationId: 'ORD-6A0A71A0D0EF',
-      movieTitle: 'Dune: Hành Tinh Cát 2',
-      moviePoster:
-        'https://image.tmdb.org/t/p/w200/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
-      theater: 'CGV Vincom',
-      room: 'IMAX 01',
-      date: '2025-11-28',
-      time: '19:30:00',
-      seats: ['F12', 'F13'],
-      amount: 320000,
-    },
-    {
-      reservationId: 'ORD-6A0A71A0D0EF',
-      movieTitle: 'Kung Fu Panda 4',
-      moviePoster:
-        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
-      theater: 'Lotte Cinema',
-      room: 'Std 05',
-      date: '2025-10-15',
-      time: '14:00:00',
-      seats: ['A1'],
-      amount: 150000,
-    },
-    {
-      reservationId: 'ORD-6A0A71A0D0EF',
-      movieTitle: 'Kung Fu Panda 4',
-      moviePoster:
-        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
-      theater: 'Lotte Cinema',
-      room: 'Std 05',
-      date: '2025-10-15',
-      time: '14:00:00',
-      seats: ['A1'],
-      amount: 150000,
-    },
-    {
-      reservationId: 'ORD-6A0A71A0D0EF',
-      movieTitle: 'Kung Fu Panda 4',
-      moviePoster:
-        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
-      theater: 'Lotte Cinema',
-      room: 'Std 05',
-      date: '2025-10-15',
-      time: '14:00:00',
-      seats: ['A1'],
-      amount: 150000,
-    },
-    {
-      reservationId: 'ORD-6A0A71A0D0EF',
-      movieTitle: 'Kung Fu Panda 4',
-      moviePoster:
-        'https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg',
-      theater: 'Lotte Cinema',
-      room: 'Std 05',
-      date: '2025-10-15',
-      time: '14:00:00',
-      seats: ['A1'],
-      amount: 150000,
-    },
-  ]);
+  private store = inject(Store);
+  readonly userStore = inject(UserStore);
+  readonly reservationStore = inject(ReservationStore);
   tabPosition: NzTabPosition = 'left';
 
   ngOnInit() {
     this.checkScreenSize();
+    const userId = this.store.selectSignal(selectUserId)();
+
+    if (userId !== undefined && userId !== null) {
+      this.userStore.loadUser(userId);
+      this.reservationStore.loadReservationProfile(userId);
+    }
   }
 
   @HostListener('window:resize')

@@ -1,5 +1,5 @@
 <div class="relative ml-3">
-  @if (user$ | async; as user) {
+  @if (userStore.selectedUser(); as user) {
     <!-- Trigger Button -->
     <button
       nz-dropdown
@@ -13,7 +13,9 @@
       <!-- Avatar-->
       <nz-avatar
         [nzSize]="40"
-        [nzSrc]="'https://avatars.githubusercontent.com/u/12519008?v=4'"
+        [nzSrc]="
+          user.avatar || 'https://avatars.githubusercontent.com/u/12519008?v=4'
+        "
         class="cursor-pointer shadow-sm border border-gray-200"
       ></nz-avatar>
     </button>
@@ -29,7 +31,10 @@
         >
           <nz-avatar
             [nzSize]="40"
-            [nzSrc]="'https://avatars.githubusercontent.com/u/12519008?v=4'"
+            [nzSrc]="
+              user.avatar ||
+              'https://avatars.githubusercontent.com/u/12519008?v=4'
+            "
             class="shrink-0 border border-white shadow-sm"
           ></nz-avatar>
           <div class="flex-1 min-w-0">
@@ -44,7 +49,7 @@
 
         <!-- Menu List -->
         <ul class="p-2 flex flex-col gap-1">
-          @for (item of profileMenu; track $index) {
+          @for (item of filterMenu(); track $index) {
             <li
               (click)="handleItemClick(item)"
               (keydown.enter)="handleItemClick(item)"

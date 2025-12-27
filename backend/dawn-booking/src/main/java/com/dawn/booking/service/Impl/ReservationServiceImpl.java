@@ -67,7 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ResponsePage<UserReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
         log.debug("Finding reservation for user {}, status={}", request.getUserId(), request.getStatus());
 
-        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndReservationStatus(request.getUserId(), ReservationStatus.CONFIRMED, pageable);
+        Page<Reservation> reservations = reservationRepository.findAllByUserIdAndReservationStatusOrderByCreatedAtDesc(request.getUserId(), ReservationStatus.CONFIRMED, pageable);
 
         log.info("Found {} reservations for user {}", reservations.getSize(), request.getUserId());
 
@@ -95,7 +95,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .findAllWithFilter(req, startDate, endDate, pageable)
                 .map(reservation -> {
                     List<SeatDTO> seats = seatService.findAllByReservationId(reservation.getId());
-                    return ReservationMappingHelper.map(reservation, seats);
+                    ShowtimeDTO showtime = showtimeService.findById(reservation.getShowtimeId());
+                    UserDTO user = userService.findById(reservation.getUserId());
+                    return ReservationMappingHelper.map(reservation, user, showtime, seats);
                 }));
     }
 
@@ -106,8 +108,10 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND));
 
         List<SeatDTO> seats = seatService.findAllByReservationId(reservation.getId());
-
-        return ReservationMappingHelper.map(reservation, seats);
+        ShowtimeDTO showtime = showtimeService.findById(reservation.getShowtimeId());
+        MovieDTO movie = movieService.findOne(showtime.getMovieId());
+        UserDTO user = userService.findById(reservation.getUserId());
+        return ReservationMappingHelper.map(reservation, user, showtime, seats);
     }
 
     @Override
@@ -226,7 +230,7 @@ public class ReservationServiceImpl implements ReservationService {
         String reservationId = request.getReservationId();
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
 
-        ReservationResponse cachedData = getFromRedis(reservationId);
+        ReservationRedisDTO cachedData = getFromRedis(reservationId);
 
         if (request.getUserId() == null || !cachedData.getUserId().equals(request.getUserId())) {
             throw new PermissionDeniedException("User mismatch or invalid user");
@@ -246,6 +250,7 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("All {} seats verified as available in DB for reservation {}", seatEntities.size(), reservationId);
         ShowtimeDTO showtime = showtimeService.findById(request.getShowtimeId());
         BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
+        UserDTO user = userService.findById(request.getUserId());
         log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
 
         Reservation reservation = Reservation
@@ -268,7 +273,7 @@ public class ReservationServiceImpl implements ReservationService {
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
 
         log.info("Successfully confirmed reservation: {} with {} seats", reservation.getId(), seatEntities.size());
-        return ReservationMappingHelper.map(savedReservation, seatEntities);
+        return ReservationMappingHelper.map(savedReservation,user, showtime, seatEntities);
     }
 
     @Override
@@ -278,7 +283,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         //        Get reservation id from redis
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
-        ReservationResponse cachedData = getFromRedis(reservationId);
+        ReservationRedisDTO cachedData = getFromRedis(reservationId);
         if (!cachedData.getUserId().equals(userId)) {
             throw new PermissionDeniedException("You don't have permission to confirm this reservation");
         }
@@ -440,7 +445,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     //    Get data from redis
-    private ReservationResponse getFromRedis(String reservationId) {
+    private ReservationRedisDTO getFromRedis(String reservationId) {
         Map<Object, Object> data = redisService.getReservationData(reservationId);
         if (data == null || data.isEmpty()) {
             throw new ReservationExpiredException(Message.Exception.RESERVATION_EXPIRED);
@@ -460,7 +465,7 @@ public class ReservationServiceImpl implements ReservationService {
             log.error("Error parsing seat IDs from Redis", ex);
             throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
-        return ReservationResponse
+        return ReservationRedisDTO
                 .builder()
                 .id(reservationId)
                 .userId(userId)

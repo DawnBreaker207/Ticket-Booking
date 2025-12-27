@@ -39,6 +39,9 @@ import { PaymentChartComponent } from '@features/admin/dashboard/components/paym
 import { TheaterChartComponent } from '@features/admin/dashboard/components/theater-chart/theater-chart.component';
 import { MovieChartComponent } from '@features/admin/dashboard/components/movie-chart/movie-chart.component';
 import { RevenueChartComponent } from '@features/admin/dashboard/components/revenue-chart/revenue-chart.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { saveAs } from 'file-saver';
+import { ReportService } from '@core/services/report/report.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -65,6 +68,7 @@ import { RevenueChartComponent } from '@features/admin/dashboard/components/reve
     NzMenuModule,
     NzDropDownModule,
     DashboardItemComponent,
+    LoadingComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -72,8 +76,9 @@ import { RevenueChartComponent } from '@features/admin/dashboard/components/reve
 export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private destroyRef = inject(DestroyRef);
+  private reportService = inject(ReportService);
 
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   filterType: 'week' | 'month' | 'quarter' | 'year' = 'week';
   private filterSubject = new BehaviorSubject<any>(this.getFilterPayload());
   selectedDate: Date = new Date();
@@ -171,4 +176,13 @@ export class DashboardComponent implements OnInit {
     const payload = this.getFilterPayload();
     this.filterSubject.next(payload);
   }
+
+  exportReport(type: 'pdf' | 'excel') {
+    this.reportService.downloadReport(type).subscribe((res) => {
+      const ext = type === 'excel' ? 'xlsx' : type;
+      saveAs(res, `report.${ext}`);
+    });
+  }
+
+  protected readonly onkeyup = onkeyup;
 }

@@ -36,8 +36,8 @@ export class ShowtimeEffects {
           .getShowtimeByTheater(theaterId, {
             page,
             size,
-            endDate: dateRange?.dateTo,
-            startDate: dateRange?.dateFrom,
+            startDate: dateRange?.startDate,
+            endDate: dateRange?.endDate,
           })
           .pipe(
             map(({ content, pagination }) =>

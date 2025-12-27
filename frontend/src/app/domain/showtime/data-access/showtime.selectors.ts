@@ -10,7 +10,7 @@ export const selectShowtimeState =
 
 export const selectAllShowtimes = createSelector(
   selectShowtimeState,
-  (state) => state.showtimes,
+  (state) => state.showtimes || [],
 );
 export const selectPaginationShowtime = createSelector(
   selectShowtimeState,

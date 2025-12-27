@@ -9,6 +9,7 @@ import com.dawn.identity.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,6 +37,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}/status")
+    @PreAuthorize("@roleSecurity.canUpdate(#id, authentication)")
     public ResponseObject<UserResponse> updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
         return ResponseObject.success(userService.updateStatus(id, status));
     }

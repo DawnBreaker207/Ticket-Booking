@@ -57,16 +57,14 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public List<ShowtimeResponse> getByMovie(Long movieId) {
+    public ResponsePage<ShowtimeResponse> getByMovie(Long movieId, Pageable pageable) {
         log.info("Fetching showtime for movie id: {}", movieId);
-        return showtimeRepository
-                .findByMovieId(movieId)
-                .stream()
+        return ResponsePage.of(showtimeRepository
+                .findByMovieId(movieId, pageable)
                 .map((showtime) -> {
                     MovieDTO movie = movieService.findOne(movieId);
                     return ShowtimeMappingHelper.map(showtime, movie);
-                })
-                .toList();
+                }));
     }
 
     @Override

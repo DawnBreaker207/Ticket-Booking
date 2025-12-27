@@ -33,35 +33,69 @@
 
     <div class="lg:col-span-8 flex flex-col gap-4">
       <!--  Search Movie    -->
-      <div class="relative z-20">
-        <nz-form-item class="mb-0">
-          <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Chọn phim</nz-form-label
-          >
-          <nz-form-control>
-            <nz-input-group
-              nzPrefixIcon="search"
-              class="rounded-lg h-10 shadow-sm"
+      @if (mode !== "view") {
+        <div class="relative">
+          <nz-form-item class="mb-0">
+            <nz-form-label nzRequired class="font-bold text-gray-700"
+              >Chọn phim
+            </nz-form-label>
+            <nz-form-control>
+              <nz-input-group
+                nzPrefixIcon="search"
+                class="rounded-lg h-10 shadow-sm"
+              >
+                <input
+                  nz-input
+                  placeholder="Tìm kiếm"
+                  style="width: 500px"
+                  [formControl]="searchCtrl"
+                  class="h-full border-none focus:shadow-none"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          @let results = searchResults();
+          @if (results.length > 0) {
+            <div
+              class="absolute z-[1000] top-12 left-0 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-80 overflow-y-auto animate-fade-in"
             >
-              <input
-                nz-input
-                placeholder="Tìm kiếm"
-                style="width: 500px"
-                [formControl]="searchCtrl"
-                class="h-full border-none focus:shadow-none"
-              />
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-        <ng-container *ngTemplateOutlet="searchDropdown"></ng-container>
-      </div>
-
+              <ul class="py-2 m-0 list-none">
+                @for (movie of searchResults(); track movie.id) {
+                  <li
+                    (click)="selectMovie(movie)"
+                    class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex gap-4 items-center border-b border-gray-50 last:border-0 transition-colors"
+                    [class.bg-blue-50]="selectedMovie()?.id === movie.id"
+                  >
+                    <img
+                      [src]="
+                        movie.poster || 'https://via.placeholder.com/150x200'
+                      "
+                      alt=""
+                      class="w-10 h-14 object-cover rounded bg-gray-200 shrink-0"
+                    />
+                    <!--  Info   -->
+                    <div class="">
+                      <p class="font-bold text-gray-800 text-sm mb-0.5">
+                        {{ movie.title }}
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        {{ movie.releaseDate | date: "yyyy" }} •
+                        {{ movie.overview | slice: 0 : 50 }}
+                      </p>
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
       <!--   DATE & TIME   -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Ngày chiếu</nz-form-label
-          >
+            >Ngày chiếu
+          </nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng chọn ngày">
             <nz-date-picker
               nzSize="default"
@@ -75,8 +109,8 @@
 
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Show time</nz-form-label
-          >
+            >Show time
+          </nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng chọn giờ">
             <nz-time-picker
               nzSize="default"
@@ -92,8 +126,8 @@
 
       <nz-form-item>
         <nz-form-label nzRequired class="font-semibold"
-          >Rạp chiếu</nz-form-label
-        >
+          >Rạp chiếu
+        </nz-form-label>
         <nz-form-control nzErrorTip="Vui lòng chọn rạp">
           <nz-select
             formControlName="theaterId"
@@ -101,7 +135,7 @@
             nzPlaceHolder="Chọn rạp chiếu"
             class="rounded-lg h-10 w-full"
           >
-            @for (theater of theaters$ | async; track theater.id) {
+            @for (theater of theaters(); track theater.id) {
               <nz-option [nzLabel]="theater.name" [nzValue]="theater.id">
               </nz-option>
             }
@@ -129,8 +163,8 @@
 
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Tổng số ghế</nz-form-label
-          >
+            >Tổng số ghế
+          </nz-form-label>
           <nz-form-control nzErrorTip="Chọn số ghế">
             <nz-select
               formControlName="totalSeats"
@@ -148,37 +182,3 @@
     </div>
   </div>
 </form>
-
-<ng-template #searchDropdown>
-  @if (searchResults() && searchResults().length > 0) {
-    <div
-      class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-80 overflow-y-auto z-50 animate-fade-in"
-    >
-      <ul class="py-2 m-0 list-none">
-        @for (movie of searchResults(); track movie.id) {
-          <li
-            (click)="selectedMovie()"
-            class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex gap-4 items-center border-b border-gray-50 last:border-0 transition-colors"
-            [class.bg-blue-50]="selectedMovie()?.id === movie.id"
-          >
-            <img
-              [src]="movie.poster || 'https://via.placeholder.com/150x200'"
-              alt=""
-              class="w-10 h-14 object-cover rounded bg-gray-200 shrink-0"
-            />
-            <!--  Info   -->
-            <div class="">
-              <p class="font-bold text-gray-800 text-sm mb-0.5">
-                {{ movie.title }}
-              </p>
-              <p class="text-xs text-gray-500">
-                {{ movie.releaseDate | date: "yyyy" }} •
-                {{ movie.overview | slice: 0 : 50 }}
-              </p>
-            </div>
-          </li>
-        }
-      </ul>
-    </div>
-  }
-</ng-template>
