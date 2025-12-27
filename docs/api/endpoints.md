@@ -65,9 +65,9 @@ We provide a pre-configured collection to help you test the APIs instantly.
     "data": {
       "content": [ ... ],
       "pagination": {
-        "pageNumber": 0
-        "pageSize": 20
-        "totalElements": 10
+        "pageNumber": 0,
+        "pageSize": 20,
+        "totalElements": 10,
         "totalPages": 1
       }
     }
