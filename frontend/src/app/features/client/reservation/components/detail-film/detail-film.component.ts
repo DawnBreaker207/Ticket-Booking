@@ -16,6 +16,7 @@ import {
 import { selectSelectedSeats } from '@domain/seat/data-access/seat.selectors';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { timeFormat } from '@shared/utils/date.helper';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-film',
@@ -26,6 +27,7 @@ import { timeFormat } from '@shared/utils/date.helper';
     NzWaveDirective,
     CommonModule,
     CountdownComponent,
+    TranslatePipe,
   ],
   templateUrl: './detail-film.component.html',
   styleUrl: './detail-film.component.css',

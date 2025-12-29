@@ -12,6 +12,7 @@ import {
   selectPrice,
   selectTotalPrice,
 } from '@domain/showtime/data-access/showtime.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-confirm',
@@ -23,6 +24,7 @@ import {
     NzButtonModule,
     CurrencyPipe,
     NzInputModule,
+    TranslatePipe,
   ],
   templateUrl: './confirm.component.html',
   styleUrl: './confirm.component.css',

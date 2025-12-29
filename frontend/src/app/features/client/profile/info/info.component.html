@@ -2,7 +2,7 @@
   <!-- Avatar Manager -->
   <div class="mb-8 pb-8 border-b border-gray-100">
     <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">
-      Ảnh đại diện
+      {{ "Ảnh đại diện" | translate }}
     </h3>
     <input
       #fileInput
@@ -42,7 +42,7 @@
             <span
               class="text-white text-[10px] font-bold uppercase tracking-wider"
             >
-              Đổi ảnh
+              {{ "Đổi ảnh" | translate }}
             </span>
           </div>
         </div>
@@ -72,7 +72,7 @@
               class="h-10 rounded-lg font-medium flex items-center gap-2"
             >
               <nz-icon nzType="undo" />
-              Hủy
+              {{ "Hủy" | translate }}
             </button>
           }
         </div>
@@ -84,12 +84,12 @@
               class="text-sm text-blue-600 font-semibold animate-pulse flex items-center justify-center sm:justify-start gap-2 bg-blue-50 py-1 px-3 rounded-lg w-fit"
             >
               <nz-icon nzType="info-circle" nzTheme="fill" />
-              Ảnh chưa lưu. Bấm "Lưu thay đổi" bên dưới.
+              {{ 'Ảnh chưa lưu.Bấm "Lưu thay đổi" bên dưới.' | translate }}
             </p>
           } @else {
             <div class="text-xs text-gray-500 space-y-1">
-              <p>• Hỗ trợ: JPG, PNG.</p>
-              <p>• Tối đa: 2MB.</p>
+              <p>{{ "• Hỗ trợ: JPG, PNG." | translate }}</p>
+              <p>{{ "• Tối đa: 2MB." | translate }}</p>
             </div>
           }
         </div>
@@ -106,29 +106,31 @@
   >
     <div class="mb-6">
       <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">
-        Thông tin cơ bản
+        {{ "Thông tin cơ bản" | translate }}
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
         <nz-form-item>
           <nz-form-label nzRequired class="font-semibold text-gray-700"
-            >Họ và tên
+            >{{ "Họ và tên" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập họ tên">
+          <nz-form-control [nzErrorTip]="'Vui lòng nhập họ tên' | translate">
             <input
               nz-input
               formControlName="username"
               class="h-11 rounded-lg px-4 border-gray-200"
-              placeholder="Ví dụ: Nguyễn Văn A"
+              [placeholder]="'Ví dụ: Nguyễn Văn A' | translate"
             />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzRequired class="font-semibold text-gray-700"
-            >Số điện thoại
+            >{{ "Số điện thoại" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập số điện thoại">
+          <nz-form-control
+            [nzErrorTip]="'Vui lòng nhập số điện thoại' | translate"
+          >
             <input
               nz-input
               formControlName="phone"
@@ -140,7 +142,7 @@
 
         <nz-form-item class="md:col-span-2">
           <nz-form-label class="font-semibold text-gray-700"
-            >Email
+            >{{ "Email" | translate }}
           </nz-form-label>
           <nz-form-control>
             <div class="relative group">
@@ -154,7 +156,7 @@
                   nzType="lock"
                   class="text-gray-400"
                   nz-tooltip
-                  nzTooltipTitle="Không thể thay đổi"
+                  [nzTooltipTitle]="'Không thể thay đổi' | translate"
                 />
               </div>
             </div>
@@ -163,7 +165,7 @@
 
         <nz-form-item class="md:col-span-2">
           <nz-form-label class="font-semibold text-gray-700"
-            >Địa chỉ
+            >{{ "Địa chỉ" | translate }}
           </nz-form-label>
           <nz-form-control>
             <textarea
@@ -171,7 +173,7 @@
               formControlName="address"
               rows="3"
               class="rounded-lg p-3 border-gray-200 text-base"
-              placeholder="Nhập địa chỉ giao hàng..."
+              [placeholder]="'Nhập địa chỉ giao hàng...' | translate"
             ></textarea>
           </nz-form-control>
         </nz-form-item>
@@ -189,7 +191,7 @@
         class="px-8 rounded-lg font-bold shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all"
         [nzLoading]="isSaving"
       >
-        Lưu thay đổi
+        {{ "Lưu thay đổi" | translate }}
       </button>
     </div>
   </form>

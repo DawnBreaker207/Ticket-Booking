@@ -30,10 +30,10 @@
         <div class="flex-1 mb-4">
           <div class="flex items-center gap-3 mb-2">
             <span class="text-gray-300 text-sm">{{
-                movie.releaseDate | date: "dd/MM/yyy"
-              }}</span>
+              movie.releaseDate | date: "dd/MM/yyy"
+            }}</span>
             <span class="text-gray-300 text-sm"
-            >• {{ movie.duration }} phút</span
+              >• {{ movie.duration }} phút</span
             >
           </div>
 
@@ -68,7 +68,7 @@
               nzSize="large"
               class="bg-red-600 border-none hover:bg-red-700 font-bold! px-8 rounded-full shadow-lg shadow-red-600/30"
             >
-              Đặt vé ngay
+              {{ "Đặt vé ngay" | translate }}
             </button>
 
             <button
@@ -77,8 +77,8 @@
               nzSize="large"
               class="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md rounded-full px-6"
             >
-              <nz-icon nzType="play-circle" nzTheme="fill" class="mr-2"/>
-              Xem Trailer
+              <nz-icon nzType="play-circle" nzTheme="fill" class="mr-2" />
+              {{ "Xem Trailer" | translate }}
             </button>
           </div>
         </div>
@@ -96,7 +96,7 @@
           <h2
             class="text-2xl font-bold mb-6 border-l-4 border-red-500 pl-3 text-white!"
           >
-            Lịch Chiếu
+            {{ "Lịch Chiếu" | translate }}
           </h2>
 
           <!-- Date Selector -->
@@ -123,7 +123,6 @@
               <div
                 class="bg-[#0f172a]/50 p-4 rounded-xl border border-white/5 hover:border-white/10 transition"
               >
-
                 <div class="flex flex-wrap gap-3">
                   @for (show of cinema.showtimes; track show.time) {
                     <div
@@ -141,7 +140,9 @@
                           class="text-[10px] font-medium group-hover:text-red-400"
                         >
                           {{
-                            show.availableSeats > 0 ? show.availableSeats + 'ghế trống' : 'Hết vé'
+                            show.availableSeats > 0
+                              ? show.availableSeats + ("ghế trống" | translate)
+                              : ("Hết vé" | translate)
                           }}
                         </span>
                       </div>
@@ -158,7 +159,9 @@
                   class="text-5xl text-gray-600 mb-4"
                 ></nz-icon>
                 <p class="text-gray-500 text-lg">
-                  Hôm nay không có suất chiếu nào cho phim này
+                  {{
+                    "Hôm nay không có suất chiếu nào cho phim này" | translate
+                  }}
                 </p>
                 <button
                   nz-button
@@ -166,7 +169,7 @@
                   (click)="selectDate(dates()[0])"
                   class="text-red-500"
                 >
-                  Xem lịch ngày khác
+                  {{ "Xem lịch ngày khác" | translate }}
                 </button>
               </div>
             }
@@ -184,19 +187,19 @@
               </p>
               <div class="mt-6 grid grid-cols-2 gap-4 text-sm text-gray-400">
                 <div>
-                  <strong>Khởi chiếu:</strong>
+                  <strong>{{ "Khởi chiếu:" | translate }}</strong>
                   <span class="text-white ml-2">
                     {{ movie.releaseDate | date: "dd/MM/yyyy" }}
                   </span>
                 </div>
                 <div>
-                  <strong>Quốc gia:</strong>
+                  <strong>{{ "Quốc gia:" | translate }}</strong>
                   <span class="text-white ml-2">
                     {{ movie.country }}
                   </span>
                 </div>
                 <div>
-                  <strong>Ngôn ngữ</strong>
+                  <strong>{{ "Ngôn ngữ" | translate }}</strong>
                   <span class="text-white ml-2">
                     {{ movie.language }}
                   </span>
@@ -204,7 +207,9 @@
               </div>
             </nz-tab>
             <!--  Review  -->
-            <nz-tab [nzTitle]="'Đánh giá (' + reviews.length + ')'">
+            <nz-tab
+              [nzTitle]="('Đánh giá' | translate) + ' (' + reviews.length + ')'"
+            >
               <div class="space-y-6">
                 @for (review of reviews; track review.user) {
                   <div
@@ -217,8 +222,8 @@
                     <div>
                       <div class="flex items-center gap-2 mb-1">
                         <span class="font-bold text-white">{{
-                            review.user
-                          }}</span>
+                          review.user
+                        }}</span>
                         <nz-rate
                           [ngModel]="review.rating"
                           nzDisabled
@@ -227,8 +232,8 @@
                       </div>
                       <p class="text-gray-300 text-sm">{{ review.comment }}</p>
                       <span class="text-xs text-gray-500 mt-1 block">{{
-                          review.date
-                        }}</span>
+                        review.date
+                      }}</span>
                     </div>
                   </div>
                 }
@@ -238,7 +243,7 @@
                   nzType="dashed"
                   class="text-gray-400 hover:text-white border-gray-600"
                 >
-                  Viết đánh giá của bạn
+                  {{ "Viết đánh giá của bạn" | translate }}
                 </button>
               </div>
             </nz-tab>
@@ -251,5 +256,5 @@
     </div>
   </div>
 } @else {
-  <app-loading/>
+  <app-loading />
 }

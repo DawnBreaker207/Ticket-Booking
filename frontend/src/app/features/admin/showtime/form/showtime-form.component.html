@@ -21,9 +21,9 @@
                 class="flex flex-col items-center justify-center text-gray-400"
               >
                 <nz-icon nzType="picture" class="text-4xl mb-2 opacity-50" />
-                <span class="text-xs font-semibold uppercase tracking-wider"
-                  >No Image</span
-                >
+                <span class="text-xs font-semibold uppercase tracking-wider">{{
+                  "Không có ảnh" | translate
+                }}</span>
               </div>
             }
           </div>
@@ -37,7 +37,7 @@
         <div class="relative">
           <nz-form-item class="mb-0">
             <nz-form-label nzRequired class="font-bold text-gray-700"
-              >Chọn phim
+              >{{ "Chọn phim" | translate }}
             </nz-form-label>
             <nz-form-control>
               <nz-input-group
@@ -94,9 +94,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Ngày chiếu
+            >{{ "Ngày chiếu" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng chọn ngày">
+          <nz-form-control [nzErrorTip]="'Vui lòng chọn ngày' | translate">
             <nz-date-picker
               nzSize="default"
               class="w-full rounded-lg h-10"
@@ -109,9 +109,9 @@
 
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Show time
+            >{{ "Giờ chiếu" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng chọn giờ">
+          <nz-form-control [nzErrorTip]="'Vui lòng chọn giờ' | translate">
             <nz-time-picker
               nzSize="default"
               class="w-full rounded-lg h-10"
@@ -126,13 +126,13 @@
 
       <nz-form-item>
         <nz-form-label nzRequired class="font-semibold"
-          >Rạp chiếu
+          >{{ "Rạp chiếu" | translate }}
         </nz-form-label>
         <nz-form-control nzErrorTip="Vui lòng chọn rạp">
           <nz-select
             formControlName="theaterId"
             [nzDisabled]="mode === 'view'"
-            nzPlaceHolder="Chọn rạp chiếu"
+            [nzPlaceHolder]="'Chọn rạp chiếu' | translate"
             class="rounded-lg h-10 w-full"
           >
             @for (theater of theaters(); track theater.id) {
@@ -146,12 +146,14 @@
       <!--   PRICE & SEATS   -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired class="font-semibold">Giá vé</nz-form-label>
-          <nz-form-control nzErrorTip="Chọn giá vé">
+          <nz-form-label nzRequired class="font-semibold">{{
+            "Giá vé" | translate
+          }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Chọn giá vé' | translate">
             <nz-select
               formControlName="price"
               [nzDisabled]="mode === 'view'"
-              nzPlaceHolder="Chọn mệnh giá"
+              [nzPlaceHolder]="'Chọn mệnh giá' | translate"
               class="rounded-lg"
             >
               <nz-option [nzLabel]="'50,000đ'" [nzValue]="50000"></nz-option>
@@ -163,18 +165,27 @@
 
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-semibold"
-            >Tổng số ghế
+            >{{ "Tổng số ghế" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Chọn số ghế">
+          <nz-form-control [nzErrorTip]="'Chọn số ghế' | translate">
             <nz-select
               formControlName="totalSeats"
               [nzDisabled]="mode === 'view'"
-              nzPlaceHolder="Chọn số lượng"
+              [nzPlaceHolder]="'Chọn số lượng' | translate"
               class="rounded-lg"
             >
-              <nz-option [nzLabel]="'40 ghế'" [nzValue]="40"></nz-option>
-              <nz-option [nzLabel]="'50 ghế'" [nzValue]="50"></nz-option>
-              <nz-option [nzLabel]="'60 ghế'" [nzValue]="60"></nz-option>
+              <nz-option
+                [nzLabel]="'40 ghế' | translate"
+                [nzValue]="40"
+              ></nz-option>
+              <nz-option
+                [nzLabel]="'50 ghế' | translate"
+                [nzValue]="50"
+              ></nz-option>
+              <nz-option
+                [nzLabel]="'60 ghế' | translate"
+                [nzValue]="60"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

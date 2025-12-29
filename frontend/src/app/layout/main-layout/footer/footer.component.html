@@ -12,8 +12,10 @@
           CINEPLEX
         </h2>
         <p class="text-sm text-gray-400">
-          Experience the best movies with premium sound and visual quality.
-          Booking tickets has never been easier.
+          {{
+            "Trải nghiệm những bộ phim hay nhất với chất lượng âm thanh và hình ảnh cao cấp. Đặt vé chưa bao giờ dễ dàng đến thế."
+              | translate
+          }}
         </p>
         <div class="flex gap-4 pt-2">
           <a
@@ -33,60 +35,72 @@
 
       <!-- Links -->
       <div>
-        <h4 class="text-white font-bold mb-6">Quick Links</h4>
+        <h4 class="text-white font-bold mb-6">
+          {{ "Liên kết nhanh" | translate }}
+        </h4>
         <ul class="space-y-3 text-sm">
           <li>
-            <a href="#" class="hover:text-primary transition-colors"
-              >About Us</a
-            >
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Về chúng tôi" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors">Movies</a>
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Phim" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors">Cinemas</a>
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Rạp chiếu" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors">Contact</a>
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Liên hệ" | translate
+            }}</a>
           </li>
         </ul>
       </div>
 
       <!-- Links -->
       <div>
-        <h4 class="text-white font-bold mb-6">Support</h4>
+        <h4 class="text-white font-bold mb-6">{{ "Hỗ trợ" | translate }}</h4>
         <ul class="space-y-3 text-sm">
           <li>
-            <a href="#" class="hover:text-primary transition-colors"
-              >Privacy Policy</a
-            >
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Chính sách bảo mật" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors"
-              >Terms of Service</a
-            >
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Điều khoản dịch vụ" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors">FAQ</a>
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Hỏi đáp (FAQ)" | translate
+            }}</a>
           </li>
           <li>
-            <a href="#" class="hover:text-primary transition-colors"
-              >Help Center</a
-            >
+            <a href="#" class="hover:text-primary transition-colors">{{
+              "Trung tâm hỗ trợ" | translate
+            }}</a>
           </li>
         </ul>
       </div>
 
       <!-- Newsletter -->
       <div>
-        <h4 class="text-white font-bold mb-6">Newsletter</h4>
+        <h4 class="text-white font-bold mb-6">
+          {{ "Bản tin" | translate }}
+        </h4>
         <p class="text-xs text-gray-400 mb-4">
-          Subscribe to get latest updates and offers.
+          {{ "Đăng ký để nhận những cập nhật và ưu đãi mới nhất." | translate }}
         </p>
         <div class="flex gap-2">
           <input
             type="text"
-            placeholder="Your email"
+            [placeholder]="'Email của bạn' | translate"
             class="bg-gray-500 border-none outline-none text-white text-sm px-4 py-2 rounded-l-lg w-full focus:ring-1 focus:ring-primary"
           />
           <button
@@ -100,7 +114,8 @@
     <div
       class="max-w-full mx-auto px-6 mt-12 pt-8 border-t border-gray-800 text-center text-xs text-gray-500"
     >
-      &copy; {{ date.getFullYear() }} CineTicket. All rights reserved.
+      &copy; {{ date.getFullYear() }} CineTicket.
+      {{ "Toàn bộ bản quyền được bảo lưu." | translate }}
     </div>
   </div>
 </nz-footer>

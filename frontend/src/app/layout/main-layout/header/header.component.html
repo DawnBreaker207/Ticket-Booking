@@ -36,13 +36,19 @@
             class="font-bold hover:text-primary transition-colors py-2"
             [routerLink]="header.path"
           >
-            {{ header.name | uppercase }}
+            {{ header.name | translate | uppercase }}
           </a>
         }
       </div>
 
       <!-- RIGHT SIDE -->
       <div class="flex items-center gap-3 h-10 shrink-8">
+        <div>
+          <button (click)="useLanguage('vi')">VI</button>
+          /
+          <button (click)="useLanguage('en')">EN</button>
+        </div>
+
         @if (authService.isAuthenticated()) {
           <app-profile-menu />
         } @else {
@@ -52,7 +58,7 @@
             nzType="primary"
             class="rounded-full px-5 md:px-6 font-semibold! shadow-lg shadow-blue-200 hover:scale-105 transition-transform"
           >
-            Đăng Nhập
+            {{ "Đăng Nhập" | translate }}
           </a>
         }
       </div>

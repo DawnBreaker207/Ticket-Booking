@@ -41,9 +41,9 @@
       <div
         class="flex justify-between items-center border-b border-gray-100 pb-2"
       >
-        <span class="flex-xs text-gray-500 font-medium uppercase"
-          >Rạp chiếu</span
-        >
+        <span class="flex-xs text-gray-500 font-medium uppercase">{{
+          "Rạp chiếu" | translate
+        }}</span>
         <span class="text-sm font-bold text-gray-500">{{
           (theater$ | async)?.name
         }}</span>
@@ -52,9 +52,9 @@
       <div
         class="flex justify-between items-center border-b border-gray-100 pb-2"
       >
-        <span class="text-xs text-gray-500 font-medium uppercase"
-          >Suất chiếu</span
-        >
+        <span class="text-xs text-gray-500 font-medium uppercase">{{
+          "Suất chiếu" | translate
+        }}</span>
         <div class="text-right">
           <span class="block text-sm font-bold text-primary">{{
             timeFormat((showtime$ | async)?.showTime)
@@ -74,7 +74,8 @@
         <span
           class="text-xs text-gray-500 font-bold uppercase flex items-center gap-1"
         >
-          <nz-icon nzType="appstore" /> Ghế ngồi
+          <nz-icon nzType="appstore" />
+          {{ "Ghế ngồi" | translate }}
         </span>
 
         @if ((selectedSeats$ | async)?.length) {
@@ -99,7 +100,7 @@
           </div>
         } @else {
           <p class="text-xs text-gray-400 italic">
-            Vui lòng chọn ghế trên sơ đồ
+            {{ "Vui lòng chọn ghế trên sơ đồ" | translate }}
           </p>
         }
       </div>
@@ -108,7 +109,9 @@
     <!--  TOTAL  -->
     <div>
       <div class="flex justify-between items-end mb-2">
-        <span class="text-sm text-gray-600 font-medium">Tổng cộng</span>
+        <span class="text-sm text-gray-600 font-medium">{{
+          "Tổng cộng" | translate
+        }}</span>
         <span class="text-xl font-extrabold text-orange-600 leading-none">
           {{ totalPrice$ | async | currency: "VND" }}
         </span>
@@ -119,7 +122,7 @@
         class="flex items-center justify-center gap-2 bg-red-50 py-2 rounded text-red-600 text-xs font-bold border border-red-600"
       >
         <nz-icon nzType="clock-circle" />
-        <span>Thời gian giữ vé</span>
+        <span>{{ "Thời gian giữ vé" | translate }}</span>
         <app-countdown />
       </div>
     </div>
@@ -153,9 +156,9 @@
       [disabled]="index() === 0 && (selectedSeats$ | async)?.length === 0"
     >
       @if (index() === steps().length - 1) {
-        Thanh toán ngay
+        {{ "Thanh toán ngay" | translate }}
       } @else {
-        Tiếp tục
+        {{ "Tiếp tục" | translate }}
         <nz-icon nzType="arrow-right" />
       }
     </button>

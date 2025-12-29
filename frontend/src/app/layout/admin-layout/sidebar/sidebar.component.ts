@@ -3,6 +3,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { NzMenuDirective, NzMenuItemComponent } from 'ng-zorro-antd/menu';
 import { NzSiderComponent } from 'ng-zorro-antd/layout';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,7 @@ import { RouterLink } from '@angular/router';
     NzMenuItemComponent,
     NzSiderComponent,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',

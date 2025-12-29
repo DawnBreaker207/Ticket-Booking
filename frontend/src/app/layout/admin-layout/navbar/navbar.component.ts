@@ -13,6 +13,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { ProfileMenuComponent } from '@shared/components/profile-menu/profile-menu.component';
 import { Breadcrumb } from '../admin-layout.component';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +27,7 @@ import { RouterLink } from '@angular/router';
     NzIconDirective,
     ProfileMenuComponent,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',

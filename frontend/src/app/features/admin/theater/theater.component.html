@@ -3,7 +3,9 @@
     class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
   >
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Quản Lý Rạp Chiếu</h1>
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ "Quản Lý Rạp Chiếu" | translate }}
+      </h1>
     </div>
     <button
       nz-button
@@ -16,12 +18,20 @@
   </div>
   <div class="mb-5 flex items-center justify-between">
     <nz-input-group nzPrefixIcon="search">
-      <input nz-input placeholder="Tìm kiếm" style="width: 500px" type="text" />
+      <input
+        nz-input
+        [placeholder]="'Tìm kiếm' | translate"
+        style="width: 500px"
+        type="text"
+      />
     </nz-input-group>
     <!--   Search result list-->
-    <nz-select class="w-[150px]" nzPlaceHolder="Sắp xếp">
-      <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
-      <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
+    <nz-select class="w-[150px]" [nzPlaceHolder]="'Sắp xếp' | translate">
+      <nz-option
+        [nzLabel]="'Mới nhất' | translate"
+        nzValue="newest"
+      ></nz-option>
+      <nz-option [nzLabel]="'Cũ nhất' | translate" nzValue="oldest"></nz-option>
     </nz-select>
   </div>
   @let errorMsg = error();
@@ -44,7 +54,7 @@
           <tr>
             @for (item of headerColumn; track item) {
               <th>
-                {{ item }}
+                {{ item | translate }}
               </th>
             }
           </tr>

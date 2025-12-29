@@ -9,7 +9,7 @@
       class="flex items-center justify-center rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 hover:ring-2 hover:ring-primary/20"
       type="button"
     >
-      <span class="sr-only">Open user menu</span>
+      <span class="sr-only">{{ "Mở menu người dùng" | translate }}</span>
       <!-- Avatar-->
       <nz-avatar
         [nzSize]="40"
@@ -67,7 +67,7 @@
                 [name]="item.icon"
                 class="w-4 h-4 opacity-70"
               ></i-lucide>
-              {{ item.title }}
+              {{ item.title | translate }}
             </li>
           }
         </ul>

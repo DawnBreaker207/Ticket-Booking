@@ -8,10 +8,11 @@ import { StorageService } from '@core/services/storage/storage.service';
 import { ReservationRequest } from '@domain/reservation/models/reservation.model';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-result',
-  imports: [NzResultModule, NzButtonModule, NzSpinModule],
+  imports: [NzResultModule, NzButtonModule, NzSpinModule, TranslatePipe],
   templateUrl: './payment-result.component.html',
   styleUrl: './payment-result.component.css',
 })

@@ -20,6 +20,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 
 export interface Breadcrumb {
   label: string;
@@ -41,6 +42,7 @@ export interface Breadcrumb {
     NzBreadCrumbModule,
     SidebarComponent,
     NavbarComponent,
+    TranslatePipe,
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css',

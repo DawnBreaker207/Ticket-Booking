@@ -77,10 +77,10 @@
           <div
             class="px-4 py-2 border-b border-gray-100 font-bold text-gray-700 flex justify-between"
           >
-            <span>Thông báo</span>
-            <span class="text-xs text-primary cursor-pointer"
-              >Đánh dấu đã đọc</span
-            >
+            <span>{{ "Thông báo" | translate }}</span>
+            <span class="text-xs text-primary cursor-pointer">{{
+              "Đánh dấu đã đọc" | translate
+            }}</span>
           </div>
           <ul class="max-h-64 overflow-y-auto">
             <li
@@ -93,9 +93,11 @@
               </div>
               <div>
                 <p class="text-sm text-gray-800 font-medium">
-                  Đơn hàng mới #1234
+                  {{ "Đơn hàng mới #1234" | translate }}
                 </p>
-                <p class="text-xs text-gray-500 mt-1">Vừa xong</p>
+                <p class="text-xs text-gray-500 mt-1">
+                  {{ "Vừa xong" | translate }}
+                </p>
               </div>
             </li>
           </ul>

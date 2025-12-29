@@ -6,10 +6,11 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { Showtime } from '@domain/showtime/models/showtime.model';
 import { formatDate } from '@shared/utils/date.helper';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theater',
-  imports: [NgClass, NzButtonComponent, NzIconDirective],
+  imports: [NgClass, NzButtonComponent, NzIconDirective, TranslatePipe],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })

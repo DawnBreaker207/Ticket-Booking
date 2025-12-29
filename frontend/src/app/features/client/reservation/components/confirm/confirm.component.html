@@ -11,7 +11,9 @@
       >
         <nz-icon nzType="user" nzTheme="outline" />
       </span>
-      <h3 class="text-lg font-bold text-gray-800 m-0">Thông tin nhận vé</h3>
+      <h3 class="text-lg font-bold text-gray-800 m-0">
+        {{ "Thông tin nhận vé" | translate }}
+      </h3>
     </div>
 
     <div class="p-6">
@@ -34,7 +36,7 @@
           <div class="space-y-1">
             <label
               class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
-              >Số điện thoại</label
+              >{{ "Số điện thoại" | translate }}</label
             >
             <div
               class="font-medium text-gray-900 text-base border-b border-gray-100 pb-2"
@@ -56,7 +58,10 @@
             </div>
             <p class="text-xs text-orange-500 mt-1 flex items-center gap-1">
               <nz-icon nzType="info-circle" />
-              Vé sẽ được gửi qua email này, vui lòng kiểm tra kỹ.
+              {{
+                "Vé sẽ được gửi qua email này, vui lòng kiểm tra kỹ."
+                  | translate
+              }}
             </p>
           </div>
         </div>
@@ -76,7 +81,9 @@
       >
         <nz-icon nzType="gift" nzTheme="outline" />
       </span>
-      <h3 class="text-lg font-bold text-gray-800 mb-0">Mã giảm giá/ Voucher</h3>
+      <h3 class="text-lg font-bold text-gray-800 mb-0">
+        {{ "Mã giảm giá/ Voucher" | translate }}
+      </h3>
     </div>
 
     <div class="p-6">
@@ -119,10 +126,11 @@
             </span>
             <div>
               <p class="text-sm font-bold text-green-700 m-0">
-                Đã áp dụng: {{ appliedVoucher.code }}
+                {{ "Đã áp dụng:" | translate }} {{ appliedVoucher.code }}
               </p>
               <p class="text-xs text-green-600 m-0">
-                Giảm {{ appliedVoucher.discountAmount | currency: "VND" }}
+                {{ "Giảm" | translate }}
+                {{ appliedVoucher.discountAmount | currency: "VND" }}
               </p>
             </div>
           </div>
@@ -137,7 +145,9 @@
 
       <!-- MY VOUCHER -->
       <div class="mt-4 flex flex-wrap gap-2">
-        <span class="text-xs text-gray-500 py-1">Voucher của bạn:</span>
+        <span class="text-xs text-gray-500 py-1">{{
+          "Voucher của bạn:" | translate
+        }}</span>
         <div
           class="cursor-pointer border border-dashed border-primary text-primary bg-blue-50/50 px-2 py-1 rounded text-xs hover:bg-blue-50 transition-colors"
           (click)="voucherCode = 'WELCOME10'"
@@ -168,149 +178,149 @@
           <nz-icon nzType="credit-card" nzTheme="outline" />
         </span>
         <h3 class="text-lg font-bold text-gray-800 m-0">
-          Phương thức thanh toán
+          {{ "Phương thức thanh toán" | translate }}
         </h3>
       </div>
-      <a href="#" class="text-sm text-primary hover:underline font-medium"
-        >Hướng dẫn</a
-      >
+      <a href="#" class="text-sm text-primary hover:underline font-medium">{{
+        "Hướng dẫn" | translate
+      }}</a>
     </div>
 
     <div class="p-6">
       <nz-radio-group [(ngModel)]="radioValue">
-        <label
-          nz-radio
-          nzValue="A"
-          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"
-          [class.border-blue-600]="radioValue === 'A'"
-          [class.bg-blue-50]="radioValue === 'A'"
-          [class.ring-1]="radioValue === 'A'"
-          [class.ring-blue-600]="radioValue === 'A'"
-          [class.border-gray-200]="radioValue !== 'A'"
-        >
-          <div class="flex items-center gap-4 w-full">
-            <div
-              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"
-            >
-              <img
-                src="assets/payment/ic-card-vn.png"
-                alt="ATM"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-gray-800">Thẻ ATM nội địa</div>
-              <div class="text-xs text-gray-500">
-                Cần đăng ký Internet Banking
-              </div>
-            </div>
-          </div>
-        </label>
+        <!--        <label-->
+        <!--          nz-radio-->
+        <!--          nzValue="A"-->
+        <!--          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"-->
+        <!--          [class.border-blue-600]="radioValue === 'A'"-->
+        <!--          [class.bg-blue-50]="radioValue === 'A'"-->
+        <!--          [class.ring-1]="radioValue === 'A'"-->
+        <!--          [class.ring-blue-600]="radioValue === 'A'"-->
+        <!--          [class.border-gray-200]="radioValue !== 'A'"-->
+        <!--        >-->
+        <!--          <div class="flex items-center gap-4 w-full">-->
+        <!--            <div-->
+        <!--              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"-->
+        <!--            >-->
+        <!--              <img-->
+        <!--                src="assets/payment/ic-card-vn.png"-->
+        <!--                alt="ATM"-->
+        <!--                class="w-full h-full object-contain"-->
+        <!--              />-->
+        <!--            </div>-->
+        <!--            <div class="flex-1">-->
+        <!--              <div class="font-bold text-gray-800">Thẻ ATM nội địa</div>-->
+        <!--              <div class="text-xs text-gray-500">-->
+        <!--                Cần đăng ký Internet Banking-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </label>-->
 
-        <label
-          nz-radio
-          nzValue="B"
-          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"
-          [class.border-blue-600]="radioValue === 'B'"
-          [class.bg-blue-50]="radioValue === 'B'"
-          [class.ring-1]="radioValue === 'B'"
-          [class.ring-blue-600]="radioValue === 'B'"
-          [class.border-gray-200]="radioValue !== 'B'"
-        >
-          <div class="flex items-center gap-4 w-full">
-            <div
-              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"
-            >
-              <img
-                src="assets/payment/ic-card-gb.png"
-                alt="VISA"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-gray-800">Thẻ Visa / Master /JCB</div>
-              <div class="text-xs text-gray-500">Thanh toán quốc tế</div>
-            </div>
-          </div>
-        </label>
+        <!--        <label-->
+        <!--          nz-radio-->
+        <!--          nzValue="B"-->
+        <!--          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"-->
+        <!--          [class.border-blue-600]="radioValue === 'B'"-->
+        <!--          [class.bg-blue-50]="radioValue === 'B'"-->
+        <!--          [class.ring-1]="radioValue === 'B'"-->
+        <!--          [class.ring-blue-600]="radioValue === 'B'"-->
+        <!--          [class.border-gray-200]="radioValue !== 'B'"-->
+        <!--        >-->
+        <!--          <div class="flex items-center gap-4 w-full">-->
+        <!--            <div-->
+        <!--              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"-->
+        <!--            >-->
+        <!--              <img-->
+        <!--                src="assets/payment/ic-card-gb.png"-->
+        <!--                alt="VISA"-->
+        <!--                class="w-full h-full object-contain"-->
+        <!--              />-->
+        <!--            </div>-->
+        <!--            <div class="flex-1">-->
+        <!--              <div class="font-bold text-gray-800">Thẻ Visa / Master /JCB</div>-->
+        <!--              <div class="text-xs text-gray-500">Thanh toán quốc tế</div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </label>-->
 
-        <label
-          nz-radio
-          nzValue="C"
-          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"
-          [class.border-blue-600]="radioValue === 'C'"
-          [class.bg-blue-50]="radioValue === 'C'"
-          [class.ring-1]="radioValue === 'C'"
-          [class.ring-blue-600]="radioValue === 'C'"
-          [class.border-gray-200]="radioValue !== 'C'"
-        >
-          <div class="flex items-center gap-4 w-full">
-            <div
-              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"
-            >
-              <img
-                src="assets/payment/shopeepay.png"
-                alt="ShopeePay"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-gray-800">Ví ShopeePay</div>
-            </div>
-          </div>
-        </label>
+        <!--        <label-->
+        <!--          nz-radio-->
+        <!--          nzValue="C"-->
+        <!--          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"-->
+        <!--          [class.border-blue-600]="radioValue === 'C'"-->
+        <!--          [class.bg-blue-50]="radioValue === 'C'"-->
+        <!--          [class.ring-1]="radioValue === 'C'"-->
+        <!--          [class.ring-blue-600]="radioValue === 'C'"-->
+        <!--          [class.border-gray-200]="radioValue !== 'C'"-->
+        <!--        >-->
+        <!--          <div class="flex items-center gap-4 w-full">-->
+        <!--            <div-->
+        <!--              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"-->
+        <!--            >-->
+        <!--              <img-->
+        <!--                src="assets/payment/shopeepay.png"-->
+        <!--                alt="ShopeePay"-->
+        <!--                class="w-full h-full object-contain"-->
+        <!--              />-->
+        <!--            </div>-->
+        <!--            <div class="flex-1">-->
+        <!--              <div class="font-bold text-gray-800">Ví ShopeePay</div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </label>-->
 
-        <label
-          nz-radio
-          nzValue="D"
-          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"
-          [class.border-blue-600]="radioValue === 'D'"
-          [class.bg-blue-50]="radioValue === 'D'"
-          [class.ring-1]="radioValue === 'D'"
-          [class.ring-blue-600]="radioValue === 'D'"
-          [class.border-gray-200]="radioValue !== 'D'"
-        >
-          <div class="flex items-center gap-4 w-full">
-            <div
-              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"
-            >
-              <img
-                src="assets/payment/momo.ico"
-                alt="Momo"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-gray-800">Ví Momo</div>
-            </div>
-          </div>
-        </label>
+        <!--        <label-->
+        <!--          nz-radio-->
+        <!--          nzValue="D"-->
+        <!--          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"-->
+        <!--          [class.border-blue-600]="radioValue === 'D'"-->
+        <!--          [class.bg-blue-50]="radioValue === 'D'"-->
+        <!--          [class.ring-1]="radioValue === 'D'"-->
+        <!--          [class.ring-blue-600]="radioValue === 'D'"-->
+        <!--          [class.border-gray-200]="radioValue !== 'D'"-->
+        <!--        >-->
+        <!--          <div class="flex items-center gap-4 w-full">-->
+        <!--            <div-->
+        <!--              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"-->
+        <!--            >-->
+        <!--              <img-->
+        <!--                src="assets/payment/momo.ico"-->
+        <!--                alt="Momo"-->
+        <!--                class="w-full h-full object-contain"-->
+        <!--              />-->
+        <!--            </div>-->
+        <!--            <div class="flex-1">-->
+        <!--              <div class="font-bold text-gray-800">Ví Momo</div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </label>-->
 
-        <label
-          nz-radio
-          nzValue="E"
-          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"
-          [class.border-blue-600]="radioValue === 'E'"
-          [class.bg-blue-50]="radioValue === 'E'"
-          [class.ring-1]="radioValue === 'E'"
-          [class.ring-blue-600]="radioValue === 'E'"
-          [class.border-gray-200]="radioValue !== 'E'"
-        >
-          <div class="flex items-center gap-4 w-full">
-            <div
-              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"
-            >
-              <img
-                src="assets/payment/zalopay.png"
-                alt="ZaloPay"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-gray-800">Ví ZaloPay</div>
-            </div>
-          </div>
-        </label>
+        <!--        <label-->
+        <!--          nz-radio-->
+        <!--          nzValue="E"-->
+        <!--          class="w-full border rounded-xl p-4 transition-all duration-200 hover:bg-gray-50 flex items-center"-->
+        <!--          [class.border-blue-600]="radioValue === 'E'"-->
+        <!--          [class.bg-blue-50]="radioValue === 'E'"-->
+        <!--          [class.ring-1]="radioValue === 'E'"-->
+        <!--          [class.ring-blue-600]="radioValue === 'E'"-->
+        <!--          [class.border-gray-200]="radioValue !== 'E'"-->
+        <!--        >-->
+        <!--          <div class="flex items-center gap-4 w-full">-->
+        <!--            <div-->
+        <!--              class="w-12 h-12 flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1 shrink-0 shadow-sm"-->
+        <!--            >-->
+        <!--              <img-->
+        <!--                src="assets/payment/zalopay.png"-->
+        <!--                alt="ZaloPay"-->
+        <!--                class="w-full h-full object-contain"-->
+        <!--              />-->
+        <!--            </div>-->
+        <!--            <div class="flex-1">-->
+        <!--              <div class="font-bold text-gray-800">Ví ZaloPay</div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </label>-->
 
         <label
           nz-radio
@@ -335,7 +345,7 @@
             <div class="flex-1">
               <div class="font-bold text-gray-800">VNPAY QR</div>
               <div class="text-xs text-gray-500">
-                Quét mã QR từ ứng dụng ngân hàng
+                {{ "Quét mã QR từ ứng dụng ngân hàng" | translate }}
               </div>
             </div>
           </div>

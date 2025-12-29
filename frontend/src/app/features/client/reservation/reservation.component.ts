@@ -26,6 +26,7 @@ import { ReservationActions } from '@domain/reservation/data-access/reservation.
 import { SeatComponent } from '@features/client/reservation/components/seat/seat.component';
 import { DetailFilmComponent } from '@features/client/reservation/components/detail-film/detail-film.component';
 import { ConfirmComponent } from '@features/client/reservation/components/confirm/confirm.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reservation',
@@ -38,6 +39,7 @@ import { ConfirmComponent } from '@features/client/reservation/components/confir
     DetailFilmComponent,
     CommonModule,
     ConfirmComponent,
+    TranslatePipe,
   ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.css',

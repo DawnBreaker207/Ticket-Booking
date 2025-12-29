@@ -56,6 +56,8 @@ import { TheaterEffects } from '@domain/theater/data-access/theater.effects';
 import { ShowtimeEffects } from '@domain/showtime/data-access/showtime.effects';
 import { ReservationEffects } from '@domain/reservation/data-access/reservation.effects';
 import { SeatEffects } from '@domain/seat/data-access/seat.effects';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService } from '@ngx-translate/core';
 
 registerLocaleData(localVi);
 export const appConfig: ApplicationConfig = {
@@ -84,6 +86,14 @@ export const appConfig: ApplicationConfig = {
       ReservationEffects,
       SeatEffects,
     ]),
+    provideTranslateService({
+      lang: 'vi',
+      fallbackLang: 'vi',
+      loader: provideTranslateHttpLoader({
+        prefix: '/i18n/',
+        suffix: '.json',
+      }),
+    }),
     importProvidersFrom(
       NgxEchartsModule.forRoot({
         echarts: () => import('echarts'),

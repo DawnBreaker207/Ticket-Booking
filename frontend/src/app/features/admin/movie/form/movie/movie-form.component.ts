@@ -15,7 +15,6 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { AsyncPipe } from '@angular/common';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -30,6 +29,8 @@ import {
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { Movie } from '@domain/movie/models/movie.model';
 import { FormMovieAPIComponent } from '@features/admin/movie/form/api/api-form.component';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-movie-form',
@@ -47,10 +48,11 @@ import { FormMovieAPIComponent } from '@features/admin/movie/form/api/api-form.c
     NzButtonComponent,
     NzSpaceModule,
     NzAutosizeDirective,
-    NzSpinComponent,
     AsyncPipe,
     NzAlertComponent,
     NzIconModule,
+    NzSpinModule,
+    TranslatePipe,
   ],
   templateUrl: './movie-form.component.html',
   styleUrl: './movie-form.component.css',

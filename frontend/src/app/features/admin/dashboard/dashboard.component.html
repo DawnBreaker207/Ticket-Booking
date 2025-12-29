@@ -10,7 +10,8 @@
         <span
           class="font-bold text-gray-700 mr-2 flex items-center gap-2 shrink-0"
         >
-          <nz-icon nzType="filter" nzTheme="outline" /> Filter:
+          <nz-icon nzType="filter" nzTheme="outline" />
+          {{ "Bộ lọc:" | translate }}
         </span>
 
         <!-- Times  -->
@@ -20,10 +21,22 @@
           [nzOptionHeightPx]="36"
           class="w-[140px]"
         >
-          <nz-option nzValue="week" nzLabel="Theo Tuần"></nz-option>
-          <nz-option nzValue="month" nzLabel="Theo Tháng"></nz-option>
-          <nz-option nzValue="quarter" nzLabel="Theo Quý"></nz-option>
-          <nz-option nzValue="year" nzLabel="Theo Năm"></nz-option>
+          <nz-option
+            nzValue="week"
+            [nzLabel]="'Theo Tuần' | translate"
+          ></nz-option>
+          <nz-option
+            nzValue="month"
+            [nzLabel]="'Theo Tháng' | translate"
+          ></nz-option>
+          <nz-option
+            nzValue="quarter"
+            [nzLabel]="'Theo Quý' | translate"
+          ></nz-option>
+          <nz-option
+            nzValue="year"
+            [nzLabel]="'Theo Năm' | translate"
+          ></nz-option>
         </nz-select>
 
         <!--  Dynamic Input    -->
@@ -64,7 +77,7 @@
               [(ngModel)]="selectedQuarter"
               (ngModelChange)="onFilterChange()"
               class="w-[120px] bg-transparent"
-              nzPlaceHolder="Quý"
+              [nzPlaceHolder]="'Quý' | translate"
             >
               @for (q of quarters; track q.value) {
                 <nz-option [nzLabel]="q.label" [nzValue]="q.value"></nz-option>
@@ -103,7 +116,7 @@
           nz-button
           nzType="text"
           (click)="onFilterChange()"
-          title="Làm mới dữ liệu"
+          [title]="'Làm mới dữ liệu' | translate"
         >
           <nz-icon nzType="reload" />
         </button>
@@ -114,7 +127,9 @@
         <div
           class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 h-[32px] rounded-full border border-gray-100 whitespace-nowrap"
         >
-          <span class="text-sm font-medium">Realtime Updates</span>
+          <span class="text-sm font-medium">{{
+            "Cập nhật thời gian thực" | translate
+          }}</span>
           <nz-switch nzSize="small"></nz-switch>
         </div>
 
@@ -125,7 +140,7 @@
           class="flex items-center gap-2"
         >
           <nz-icon nzType="download" />
-          Export
+          {{ "Xuất báo cáo" | translate }}
         </button>
         <nz-dropdown-menu #exportMenu="nzDropdownMenu">
           <ul nz-menu>
@@ -160,7 +175,7 @@
       <nz-row nzGutter="16">
         <nz-col nzSpan="6">
           <app-dashboard-item
-            title="Total Revenue"
+            [title]="'Doanh thu' | translate"
             [value]="
               (metrics()?.totalRevenue ?? 0 | currencyFormat)?.toString() ?? ''
             "
@@ -169,7 +184,7 @@
         </nz-col>
         <nz-col nzSpan="6">
           <app-dashboard-item
-            title="Ticket Sold"
+            [title]="'Vé đã bán' | translate"
             [value]="
               (metrics()?.ticketsSold || 0 | number: '1.0-0')?.toString() ?? ''
             "
@@ -178,14 +193,14 @@
         </nz-col>
         <nz-col nzSpan="6">
           <app-dashboard-item
-            title="Active Theaters"
+            [title]="'Rạp hoạt động' | translate"
             [value]="(metrics()?.activeTheaters || 0).toString()"
             icon="Theater"
           />
         </nz-col>
         <nz-col nzSpan="6">
           <app-dashboard-item
-            title="Seat Utilization"
+            [title]="'Hiệu suất ghế' | translate"
             [value]="(metrics()?.seatUtilization || 0) + '%'"
             icon="Armchair"
           />
@@ -219,7 +234,9 @@
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="12">
           <nz-card>
-            <div class="font-bold text-xl">Theater Performance</div>
+            <div class="font-bold text-xl">
+              {{ "Hiệu suất rạp" | translate }}
+            </div>
             <div style="height: 300px">
               <!-- Table-->
               <app-theater-table />
@@ -228,7 +245,9 @@
         </nz-col>
         <nz-col nzSpan="12">
           <nz-card>
-            <div class="font-bold text-xl">Movie Insights</div>
+            <div class="font-bold text-xl">
+              {{ "Phân tích phim" | translate }}
+            </div>
             <div style="height: 300px">
               <!-- Table-->
               <app-movie-table />

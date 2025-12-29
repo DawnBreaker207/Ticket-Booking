@@ -2,14 +2,13 @@
   <h2
     class="text-lg font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2"
   >
-    Vé đã đặt gần đây
+    {{ "Vé đã đặt gần đây" | translate }}
     <nz-tag
       class="ml-2 mr-0 rounded-full bg-gray-100 border-gray-200 text-gray-500 font-bold px-2"
     >
       {{ tickets().length }}
     </nz-tag>
   </h2>
-
   <div class="grid grid-cols-1 gap-4">
     @for (ticket of tickets(); track ticket.reservationId) {
       <div
@@ -54,7 +53,7 @@
 
               <p class="flex items-center gap-2">
                 <nz-icon nzType="appstore" class="text-gray-400" />
-                Ghế: {{ ticket.seats.join(",") }}
+                {{ "Ghế" | translate }}: {{ ticket.seats.join(",") }}
               </p>
             </div>
           </div>
@@ -66,7 +65,7 @@
               (click)="openTicketDetail(ticket)"
               class="rounded-md border-gray-200 text-gray-600 hover:text-primary hover:border-primary"
             >
-              Xem chi tiết
+              {{ "Xem chi tiết" | translate }}
             </button>
           </div>
         </div>
@@ -75,7 +74,9 @@
       <div
         class="flex flex-col items-center justify-center py-12 text-gray-400"
       >
-        <nz-empty [nzNotFoundContent]="'Chưa có lịch sử đặt vé'"></nz-empty>
+        <nz-empty
+          [nzNotFoundContent]="'Chưa có lịch sử đặt vé' | translate"
+        ></nz-empty>
       </div>
     }
   </div>
@@ -117,7 +118,7 @@
                   <p
                     class="text-xs text-gray-400 uppercase font-bold tracking-wider"
                   >
-                    Ngày chiếu
+                    {{ "Ngày chiếu" | translate }}
                   </p>
                   <p class="font-semibold text-gray-800">
                     {{ selectedTicket.date | date: "dd/MM/yyyy" }}
@@ -127,7 +128,7 @@
                   <p
                     class="text-xs text-gray-400 uppercase font-bold tracking-wider"
                   >
-                    Giờ chiếu
+                    {{ "Giờ chiếu" | translate }}
                   </p>
                   <p class="font-bold text-primary text-lg">
                     {{ selectedTicket.time }}
@@ -140,7 +141,7 @@
                   <p
                     class="text-xs text-gray-400 uppercase font-bold tracking-wider"
                   >
-                    Phòng
+                    {{ "Phòng" | translate }}
                   </p>
                   <p class="font-semibold text-gray-800">
                     {{ selectedTicket.room }}
@@ -150,7 +151,7 @@
                   <p
                     class="text-xs text-gray-400 uppercase font-bold tracking-wider"
                   >
-                    Ghế
+                    {{ "Ghế" | translate }}
                   </p>
                   <p class="font-bold text-lg">
                     {{ selectedTicket.seats.join(",") }}
@@ -172,7 +173,9 @@
 
           <!-- Total Price-->
           <div class="mt-6 flex justify-between items-center px-2">
-            <span class="text-gray-500 font-medium">Tổng tiền</span>
+            <span class="text-gray-500 font-medium">{{
+              "Tổng tiền" | translate
+            }}</span>
             <span class="text-xl font-bold text-primary">{{
               selectedTicket.amount | currencyFormat
             }}</span>
@@ -185,7 +188,7 @@
               nzType="primary"
               (click)="closeTicketDetail()"
             >
-              Đóng
+              {{ "Đóng" | translate }}
             </button>
           </div>
         </div>

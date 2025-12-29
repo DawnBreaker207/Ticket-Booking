@@ -26,6 +26,7 @@ import { MovieTicket } from '@features/client/profile/booking-history/booking-hi
 import { lastValueFrom } from 'rxjs';
 import { UserStore } from '@domain/user/data-access/user.store';
 import { UploadService } from '@core/services/upload/upload.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-info',
@@ -40,6 +41,7 @@ import { UploadService } from '@core/services/upload/upload.service';
     NzTooltipModule,
     NzWaveModule,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './info.component.html',
   styleUrl: './info.component.css',

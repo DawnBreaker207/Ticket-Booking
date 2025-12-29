@@ -12,7 +12,6 @@ type AllStatus = ReservationStatus | PaymentStatus | PaymentMethod;
 })
 export class StatusTagsPipe implements PipeTransform {
   private statusColors: Record<AllStatus, string> = {
-    CREATED: 'blue',
     CONFIRMED: 'green',
     CANCELED: 'red',
 

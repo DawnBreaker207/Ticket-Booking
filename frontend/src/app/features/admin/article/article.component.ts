@@ -12,8 +12,9 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '@domain/article/data-access/article.service';
 import { Article } from '@domain/article/models/article.model';
-import { headerColumns } from '@core/constants/column';
 import { ArticleFormComponent } from '@features/admin/article/form/article-form.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { HEADER_COLUMNS } from '@core/constants/column';
 
 @Component({
   selector: 'app-article',
@@ -28,6 +29,7 @@ import { ArticleFormComponent } from '@features/admin/article/form/article-form.
     FormsModule,
     NzPopconfirmModule,
     ArticleFormComponent,
+    TranslateModule,
   ],
   templateUrl: './article.component.html',
   styleUrl: './article.component.css',
@@ -37,7 +39,7 @@ export class ArticleComponent {
   private msg = inject(NzMessageService);
 
   articles = this.articleService.articles;
-  headerColumn = headerColumns.article;
+  headerColumn = HEADER_COLUMNS.ARTICLE;
   drawerVisible = false;
   editingArticle: Article | null = null;
 

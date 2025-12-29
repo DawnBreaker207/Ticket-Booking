@@ -34,7 +34,6 @@ import {
   selectShowtimeError,
   selectShowtimeLoading,
 } from '@domain/showtime/data-access/showtime.selectors';
-import { headerColumns } from '@core/constants/column';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { selectAllTheaters } from '@domain/theater/data-access/theater.selectors';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
@@ -42,6 +41,8 @@ import { formatDate } from '@shared/utils/date.helper';
 import { FormShowtimeComponent } from '@features/admin/showtime/form/showtime-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
+import { HEADER_COLUMNS } from '@core/constants/column';
 
 @Component({
   selector: 'app-showtime',
@@ -66,6 +67,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzProgressModule,
     NzDropDownModule,
     LoadingComponent,
+    TranslatePipe,
   ],
   templateUrl: './showtime.component.html',
   styleUrl: './showtime.component.css',
@@ -82,7 +84,7 @@ export class ShowtimeComponent implements OnInit {
   loading = this.store.selectSignal(selectShowtimeLoading);
   error = this.store.selectSignal(selectShowtimeError);
 
-  headerColumn = headerColumns.showtime;
+  headerColumn = HEADER_COLUMNS.SHOWTIME;
   form!: FormGroup;
 
   constructor() {

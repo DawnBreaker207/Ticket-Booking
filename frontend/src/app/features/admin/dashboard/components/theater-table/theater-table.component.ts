@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theater-table',
-  imports: [NzTableModule],
+  imports: [NzTableModule, TranslatePipe],
   templateUrl: './theater-table.component.html',
   styleUrl: './theater-table.component.css',
 })

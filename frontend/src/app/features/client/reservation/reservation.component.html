@@ -5,9 +5,11 @@
   >
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <nz-steps nzType="navigation" nzSize="small" [nzCurrent]="index()">
-        <nz-step nzTitle="Chọn ghế" nzIcon="table"> Vị trí ngồi </nz-step>
+        <nz-step nzTitle="Chọn ghế" nzIcon="table"
+          >{{ "Vị trí ngồi" | translate }}
+        </nz-step>
         <nz-step nzTitle="Xác nhận thông tin & phương thức" nzIcon="solution">
-          Xác nhận thông tin & phương thức
+          {{ "Xác nhận thông tin & phương thức" | translate }}
         </nz-step>
       </nz-steps>
     </div>

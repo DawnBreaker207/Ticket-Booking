@@ -19,10 +19,11 @@ import { Showtime } from '@domain/showtime/models/showtime.model';
 import { Seat } from '@domain/seat/models/seat.model';
 import { SeatStatus } from '@core/constants/enum';
 import { SeatActions } from '@domain/seat/data-access/seat.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: ' app-seat',
-  imports: [CommonModule, NzIconModule, SeatIconComponent],
+  imports: [CommonModule, NzIconModule, SeatIconComponent, TranslatePipe],
   templateUrl: './seat.component.html',
   styleUrl: './seat.component.css',
 })

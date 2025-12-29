@@ -42,6 +42,7 @@ import { RevenueChartComponent } from '@features/admin/dashboard/components/reve
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { saveAs } from 'file-saver';
 import { ReportService } from '@core/services/report/report.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -69,6 +70,7 @@ import { ReportService } from '@core/services/report/report.service';
     NzDropDownModule,
     DashboardItemComponent,
     LoadingComponent,
+    TranslatePipe,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
