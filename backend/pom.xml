@@ -100,6 +100,11 @@
                 <artifactId>dawn-payment</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.dawn.backend</groupId>
+                <artifactId>dawn-ai</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- API Document Packs-->
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -177,6 +182,7 @@
         <module>dawn-notification</module>
         <module>dawn-reporting</module>
         <module>dawn-payment</module>
+        <module>dawn-ai</module>
     </modules>
     <build>
         <plugins>
