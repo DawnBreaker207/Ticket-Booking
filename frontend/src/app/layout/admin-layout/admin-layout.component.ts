@@ -21,6 +21,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ChatComponent } from '@shared/components/chat/chat.component';
 
 export interface Breadcrumb {
   label: string;
@@ -43,6 +44,7 @@ export interface Breadcrumb {
     SidebarComponent,
     NavbarComponent,
     TranslatePipe,
+    ChatComponent,
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css',
