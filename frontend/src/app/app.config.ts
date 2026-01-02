@@ -58,6 +58,7 @@ import { ReservationEffects } from '@domain/reservation/data-access/reservation.
 import { SeatEffects } from '@domain/seat/data-access/seat.effects';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideTranslateService } from '@ngx-translate/core';
+import { provideAppSecurity } from '@core/config/app.security';
 
 registerLocaleData(localVi);
 export const appConfig: ApplicationConfig = {
@@ -106,6 +107,7 @@ export const appConfig: ApplicationConfig = {
       LucideAngularModule.pick(icons),
     ),
     { provide: LOCALE_ID, useValue: 'vi' },
+    provideAppSecurity(),
     provideAnimationsAsync(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
