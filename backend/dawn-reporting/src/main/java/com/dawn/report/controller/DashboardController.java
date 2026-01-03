@@ -19,6 +19,11 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
+    @GetMapping("/summary")
+    public ResponseObject<DashboardResponse> summary(@ModelAttribute DashboardFilterRequest req) {
+        return ResponseObject.success(dashboardService.getSummary(req));
+    }
+
     @GetMapping("/metrics")
     public ResponseObject<MetricsResponse> getMetrics(@ModelAttribute DashboardFilterRequest request) {
         return ResponseObject.success(dashboardService.getMetrics(request));

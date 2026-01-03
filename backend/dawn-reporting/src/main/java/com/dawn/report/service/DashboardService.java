@@ -8,6 +8,8 @@ import java.util.List;
 
 
 public interface DashboardService {
+    DashboardResponse getSummary(DashboardFilterRequest req);
+
     MetricsResponse getMetrics(DashboardFilterRequest req);
 
     List<RevenuePointResponse> getRevenueOverTime(DashboardFilterRequest req);

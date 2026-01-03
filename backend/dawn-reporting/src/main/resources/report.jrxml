@@ -227,9 +227,9 @@
                                 <dataSourceExpression><![CDATA[$P{ds_PaymentDist}]]></dataSourceExpression>
                             </datasetRun>
                         </dataset>
-                        <keyExpression><![CDATA[$F{method}]]></keyExpression>
-                        <valueExpression><![CDATA[$F{amount}]]></valueExpression>
-                        <labelExpression><![CDATA[$F{method}]]></labelExpression>
+                        <keyExpression><![CDATA[($F{method} == null || $F{method}.isEmpty()) ? "Other" : $F{method}]]></keyExpression>
+                        <valueExpression><![CDATA[($F{amount} != null) ? $F{amount} : 0L]]></valueExpression>
+                        <labelExpression><![CDATA[($F{method} == null || $F{method}.isEmpty()) ? "Other" : $F{method}]]></labelExpression>
                     </pieDataset>
                     <piePlot isCircular="true">
                         <plot/>
@@ -269,8 +269,8 @@
                         </dataset>
                         <categorySeries>
                             <seriesExpression><![CDATA["Revenue"]]></seriesExpression>
-                            <categoryExpression><![CDATA[$F{movieName}]]></categoryExpression>
-                            <valueExpression><![CDATA[$F{revenue}]]></valueExpression>
+                            <categoryExpression><![CDATA[($F{movieName} == null) ? "N/A" : $F{movieName}]]></categoryExpression>
+                            <valueExpression><![CDATA[($F{revenue} != null) ? $F{revenue} : 0L]]></valueExpression>
                         </categorySeries>
                     </categoryDataset>
 

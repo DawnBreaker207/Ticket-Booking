@@ -273,7 +273,7 @@ public class ReservationServiceImpl implements ReservationService {
         cleanupRedisLocks(redisKey, reservationId, seatEntities);
 
         log.info("Successfully confirmed reservation: {} with {} seats", reservation.getId(), seatEntities.size());
-        return ReservationMappingHelper.map(savedReservation,user, showtime, seatEntities);
+        return ReservationMappingHelper.map(savedReservation, user, showtime, seatEntities);
     }
 
     @Override
@@ -681,6 +681,11 @@ public class ReservationServiceImpl implements ReservationService {
                     RabbitMQConstants.EXCHANGE_NOTIFY,
                     RabbitMQConstants.ROUTING_KEY_NOTIFY,
                     event);
+
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConstants.EXCHANGE_NOTIFY,
+                    RabbitMQConstants.ROUTING_KEY_DASHBOARD,
+                    Collections.singletonMap("action", "REFRESH"));
         } catch (Exception e) {
             log.error("Failed to send notification for reservation {} ", reservation.getId(), e);
         }

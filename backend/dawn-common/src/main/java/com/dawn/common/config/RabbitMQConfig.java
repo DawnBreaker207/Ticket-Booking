@@ -13,8 +13,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Bean
-    public Queue queue() {
+    public Queue queueNotify() {
         return new Queue(RabbitMQConstants.QUEUE_NOTIFY);
+    }
+
+    @Bean
+    public Queue queueDashboard(){
+        return new Queue(RabbitMQConstants.QUEUE_DASHBOARD);
     }
 
     @Bean
@@ -23,11 +28,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
+    public Binding bindingNotify(Queue queueNotify, TopicExchange exchange) {
         return BindingBuilder
-                .bind(queue)
+                .bind(queueNotify)
                 .to(exchange)
                 .with(RabbitMQConstants.ROUTING_KEY_NOTIFY);
+    }
+
+    @Bean
+    public Binding bindingDashboard(Queue queueDashboard, TopicExchange exchange) {
+        return BindingBuilder
+                .bind(queueDashboard)
+                .to(exchange)
+                .with(RabbitMQConstants.ROUTING_KEY_DASHBOARD);
     }
 
     @Bean
