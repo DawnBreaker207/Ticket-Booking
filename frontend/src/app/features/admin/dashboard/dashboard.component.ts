@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -11,26 +11,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { DecimalPipe } from '@angular/common';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import {
-  BehaviorSubject,
-  catchError,
-  combineLatest,
-  finalize,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { DashboardService } from '@domain/dashboard/data-access/dashboard.service';
-import {
-  DashboardMetrics,
-  PaymentDistribution,
-  RevenuePoint,
-  TopMovie,
-  TopTheater,
-} from '@domain/dashboard/models/dashboard.model';
-import { formatDate } from '@shared/utils/date.helper';
 import { DashboardItemComponent } from '@features/admin/dashboard/components/dashboard-item/dashboard-item.component';
 import { CurrencyFormatPipe } from '@shared/pipes/currency-format.pipe';
 import { MovieTableComponent } from '@features/admin/dashboard/components/movie-table/movie-table.component';
@@ -43,6 +24,10 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { saveAs } from 'file-saver';
 import { ReportService } from '@core/services/report/report.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  DashboardState,
+  DashboardStore,
+} from '@features/admin/dashboard/dashboard.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -75,23 +60,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent implements OnInit {
-  private dashboardService = inject(DashboardService);
-  private destroyRef = inject(DestroyRef);
+export class DashboardComponent {
+  readonly dashboardStore = inject(DashboardStore);
   private reportService = inject(ReportService);
 
-  isLoading = signal<boolean>(true);
-  filterType: 'week' | 'month' | 'quarter' | 'year' = 'week';
-  private filterSubject = new BehaviorSubject<any>(this.getFilterPayload());
-  selectedDate: Date = new Date();
-  selectedQuarterYear: number = new Date().getFullYear();
-  selectedQuarter: number = Math.floor((new Date().getMonth() + 3) / 3);
-
-  metrics = signal<DashboardMetrics | null>(null);
-  revenues = signal<RevenuePoint[]>([]);
-  payments = signal<PaymentDistribution[]>([]);
-  theaters = signal<TopTheater[]>([]);
-  movies = signal<TopMovie[]>([]);
   quarters = [
     { label: 'Quý 1 (Q1)', value: 1 },
     { label: 'Quý 2 (Q2)', value: 2 },
@@ -101,82 +73,12 @@ export class DashboardComponent implements OnInit {
 
   years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
-  ngOnInit() {
-    this.filterSubject
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap(() => this.isLoading.set(true)),
-
-        switchMap((payload) => {
-          return combineLatest({
-            metrics: this.dashboardService.getMetrics(payload),
-            revenues: this.dashboardService.getRevenue(payload),
-            payment: this.dashboardService.getPaymentDistribution(payload),
-            theaters: this.dashboardService.getTopTheater(payload),
-            movies: this.dashboardService.getTopMovie(payload),
-          }).pipe(
-            catchError(() => {
-              return of(null);
-            }),
-            finalize(() => this.isLoading.set(false)),
-          );
-        }),
-      )
-      .subscribe({
-        next: (res) => {
-          if (res) {
-            const { metrics, revenues, payment, theaters, movies } = res;
-            this.metrics.set(metrics);
-            this.revenues.set(revenues);
-            this.payments.set(payment);
-            this.theaters.set(theaters);
-            this.movies.set(movies);
-          }
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
+  onFilterChange(key: keyof DashboardState, value: any) {
+    this.dashboardStore.updateFilter(key, value);
   }
 
-  getFilterPayload() {
-    let start: Date;
-    let end: Date;
-    const currentDate = this.selectedDate || new Date();
-    const startMonth = (this.selectedQuarter - 1) * 3;
-    const month = currentDate.getMonth();
-    const year = currentDate.getFullYear();
-    const currentDay = currentDate.getDay();
-    const diff = currentDay === 0 ? -6 : 1 - currentDay;
-    switch (this.filterType) {
-      case 'week':
-        start = new Date(currentDate);
-        start.setDate(currentDate.getDate() + diff);
-        end = new Date(start);
-        end.setDate(start.getDate() + 6);
-        break;
-      case 'month':
-        start = new Date(year, month, 1);
-        end = new Date(year, month + 1);
-        break;
-      case 'quarter':
-        start = new Date(this.selectedQuarterYear, startMonth, 1);
-        end = new Date(this.selectedQuarterYear, startMonth + 3, 0);
-        break;
-      case 'year':
-        start = new Date(year, 0, 1);
-        end = new Date(year, 11, 31);
-        break;
-    }
-    return {
-      startDate: formatDate(start),
-      endDate: formatDate(end),
-    };
-  }
-
-  onFilterChange() {
-    const payload = this.getFilterPayload();
-    this.filterSubject.next(payload);
+  refreshData() {
+    this.dashboardStore.loadSummary();
   }
 
   exportReport(type: 'pdf' | 'excel') {
@@ -185,6 +87,4 @@ export class DashboardComponent implements OnInit {
       saveAs(res, `report.${ext}`);
     });
   }
-
-  protected readonly onkeyup = onkeyup;
 }

@@ -16,8 +16,8 @@
 
         <!-- Times  -->
         <nz-select
-          [(ngModel)]="filterType"
-          (ngModelChange)="onFilterChange()"
+          [ngModel]="dashboardStore.filterType()"
+          (ngModelChange)="onFilterChange('filterType', $event)"
           [nzOptionHeightPx]="36"
           class="w-[140px]"
         >
@@ -42,11 +42,11 @@
         <!--  Dynamic Input    -->
 
         <!--  CASE DAY    -->
-        @if (filterType === "week") {
+        @if (dashboardStore.filterType() === "week") {
           <nz-date-picker
             nzMode="week"
-            [(ngModel)]="selectedDate"
-            (ngModelChange)="onFilterChange()"
+            [ngModel]="dashboardStore.selectedDate()"
+            (ngModelChange)="onFilterChange('selectedDate', $event)"
             [nzAllowClear]="false"
             nzFormat="dd/MM/yyyy"
             class="w-[200px]"
@@ -55,11 +55,11 @@
         }
 
         <!--  CASE MONTH   -->
-        @if (filterType === "month") {
+        @if (dashboardStore.filterType() === "month") {
           <nz-date-picker
             nzMode="month"
-            [(ngModel)]="selectedDate"
-            (ngModelChange)="onFilterChange()"
+            [ngModel]="dashboardStore.selectedDate()"
+            (ngModelChange)="onFilterChange('selectedDate', $event)"
             [nzAllowClear]="false"
             nzFormat="MM/yyyy"
             class="w-[200px]"
@@ -68,14 +68,14 @@
         }
 
         <!--   CASE QUARTER   -->
-        @if (filterType === "quarter") {
+        @if (dashboardStore.filterType() === "quarter") {
           <div
             class="flex items-center gap-2 bg-gray-50 px-2 rounded border border-gray-200 h-[32px]"
           >
             <!--  SELECT QUARTER  -->
             <nz-select
-              [(ngModel)]="selectedQuarter"
-              (ngModelChange)="onFilterChange()"
+              [ngModel]="dashboardStore.selectedQuarter()"
+              (ngModelChange)="onFilterChange('selectedQuarter', $event)"
               class="w-[120px] bg-transparent"
               [nzPlaceHolder]="'Quý' | translate"
             >
@@ -87,8 +87,8 @@
 
             <!--  SELECT YEAR OF QUARTER -->
             <nz-select
-              [(ngModel)]="selectedQuarterYear"
-              (ngModelChange)="onFilterChange()"
+              [ngModel]="dashboardStore.selectedQuarterYear()"
+              (ngModelChange)="onFilterChange('selectedQuarterYear', $event)"
               class="w-[90px]"
             >
               @for (y of years; track y) {
@@ -99,11 +99,11 @@
         }
 
         <!--   CASE YEAR   -->
-        @if (filterType === "year") {
+        @if (dashboardStore.filterType() === "year") {
           <nz-date-picker
             nzMode="year"
-            [(ngModel)]="selectedDate"
-            (ngModelChange)="onFilterChange()"
+            [ngModel]="dashboardStore.selectedDate()"
+            (ngModelChange)="onFilterChange('selectedDate', $event)"
             [nzAllowClear]="false"
             nzFormat="yyyy"
             class="w-[120px]"
@@ -115,7 +115,7 @@
         <button
           nz-button
           nzType="text"
-          (click)="onFilterChange()"
+          (click)="refreshData()"
           [title]="'Làm mới dữ liệu' | translate"
         >
           <nz-icon nzType="reload" />
@@ -130,7 +130,12 @@
           <span class="text-sm font-medium">{{
             "Cập nhật thời gian thực" | translate
           }}</span>
-          <nz-switch nzSize="small"></nz-switch>
+          <nz-switch
+            nzSize="small"
+            [ngModel]="dashboardStore.isAutoUpdate()"
+            (ngModelChange)="dashboardStore.toggleAutoUpdate()"
+          >
+          </nz-switch>
         </div>
 
         <button
@@ -168,7 +173,7 @@
     </div>
   </nz-header>
 
-  @if (isLoading()) {
+  @if (dashboardStore.isLoading()) {
     <app-loading />
   } @else {
     <nz-content class="m-4">
@@ -177,7 +182,9 @@
           <app-dashboard-item
             [title]="'Doanh thu' | translate"
             [value]="
-              (metrics()?.totalRevenue ?? 0 | currencyFormat)?.toString() ?? ''
+              (
+                dashboardStore.metrics()?.totalRevenue ?? 0 | currencyFormat
+              )?.toString() ?? ''
             "
             icon="DollarSign"
           />
@@ -186,7 +193,9 @@
           <app-dashboard-item
             [title]="'Vé đã bán' | translate"
             [value]="
-              (metrics()?.ticketsSold || 0 | number: '1.0-0')?.toString() ?? ''
+              (
+                dashboardStore.metrics()?.ticketsSold || 0 | number: '1.0-0'
+              )?.toString() ?? ''
             "
             icon="Tickets"
           />
@@ -194,14 +203,14 @@
         <nz-col nzSpan="6">
           <app-dashboard-item
             [title]="'Rạp hoạt động' | translate"
-            [value]="(metrics()?.activeTheaters || 0).toString()"
+            [value]="(dashboardStore.metrics()?.activeTheaters || 0).toString()"
             icon="Theater"
           />
         </nz-col>
         <nz-col nzSpan="6">
           <app-dashboard-item
             [title]="'Hiệu suất ghế' | translate"
-            [value]="(metrics()?.seatUtilization || 0) + '%'"
+            [value]="(dashboardStore.metrics()?.seatUtilization || 0) + '%'"
             icon="Armchair"
           />
         </nz-col>
@@ -211,22 +220,22 @@
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="14">
           <!-- Line Chart  -->
-          <app-revenue-chart [revenues]="revenues()" />
+          <app-revenue-chart [revenues]="dashboardStore.revenues()" />
         </nz-col>
         <nz-col nzSpan="10">
           <!-- Pie Chart  -->
-          <app-payment-chart [payments]="payments()" />
+          <app-payment-chart [payments]="dashboardStore.payments()" />
         </nz-col>
       </nz-row>
 
       <nz-row nzGutter="16" class="mt-4">
         <nz-col nzSpan="8">
           <!-- Bar Chart  -->
-          <app-theater-chart [theaters]="theaters()" />
+          <app-theater-chart [theaters]="dashboardStore.theaters()" />
         </nz-col>
         <nz-col nzSpan="16">
           <!-- Bar Chart  -->
-          <app-movie-chart [movies]="movies()" />
+          <app-movie-chart [movies]="dashboardStore.movies()" />
         </nz-col>
       </nz-row>
 
