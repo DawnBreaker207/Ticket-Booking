@@ -80,7 +80,7 @@ export const ReservationStore = signalStore(
           currentTTL: {
             reservationId: store.reservationId() || '',
             ttl: ttl,
-            expiredAt: new Date(),
+            expiredAt: new Date(Date.now() + ttl * 1000),
           },
         }));
 
@@ -125,15 +125,15 @@ export const ReservationStore = signalStore(
                       saving: false,
                       loading: false,
                     });
-                    startCountdown(ttl);
 
-                    const state = {
+                    storageService.setItem('reservationState', {
                       reservationId,
                       userId: req.userId,
                       showtimeId: req.showtimeId,
                       theaterId: req.theaterId,
-                    };
-                    storageService.setItem('reservationState', state);
+                    });
+
+                    startCountdown(ttl);
 
                     router.navigate([
                       `/reservation/${reservationId}/${req.showtimeId}`,
@@ -180,12 +180,14 @@ export const ReservationStore = signalStore(
             concatMap(({ reservation }) => {
               return reservationService.confirmReservation(reservation).pipe(
                 tapResponse({
-                  next: ({ reservation }) =>
+                  next: (reservation) => {
+                    stopCountdown();
                     patchState(store, {
                       reservation: reservation,
                       loading: false,
                       saving: false,
-                    }),
+                    });
+                  },
                   error: (err: any) =>
                     patchState(store, {
                       error: err.message,
@@ -210,6 +212,36 @@ export const ReservationStore = signalStore(
                   },
                   error: (err: any) =>
                     patchState(store, { error: err.message, saving: false }),
+                }),
+              ),
+            ),
+          ),
+        ),
+        //
+        restore: rxMethod<{ reservationId: string }>(
+          pipe(
+            tap(() => patchState(store, { loading: true, saving: true })),
+            switchMap(({ reservationId }) =>
+              reservationService.restoreReservation(reservationId).pipe(
+                tapResponse({
+                  next: ({ reservationId, ttl, expiredAt }) => {
+                    patchState(store, {
+                      reservationId: reservationId,
+                      currentTTL: {
+                        reservationId: reservationId,
+                        ttl: ttl,
+                        expiredAt: new Date(expiredAt),
+                      },
+                      saving: false,
+                      loading: false,
+                    });
+                    startCountdown(ttl);
+                  },
+                  error: (err: any) => {
+                    storageService.removeItem('reservationStore');
+                    patchState(store, { error: err.message, saving: false });
+                    router.navigate(['/home']);
+                  },
                 }),
               ),
             ),

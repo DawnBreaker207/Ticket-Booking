@@ -21,6 +21,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SeatStore } from '@features/client/reservation/components/seat/seat.store';
 import { ReservationStore } from '@features/client/reservation/reservation.store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { selectSelectedTheater } from '@domain/theater/data-access/theater.selectors';
 
 @Component({
   selector: 'app-reservation',
@@ -49,6 +50,7 @@ export class ReservationComponent implements OnInit {
 
   readonly showtime = this.store.selectSignal(selectSelectedShowtime);
   readonly user = this.store.selectSignal(selectJwt);
+  readonly theater = this.store.selectSignal(selectSelectedTheater);
   readonly reservationRoute = toSignal(
     this.route.paramMap.pipe(map((params) => params.get('reservationId'))),
   );
@@ -57,19 +59,21 @@ export class ReservationComponent implements OnInit {
 
   ngOnInit() {
     const state = this.storageService.getItem<any>('reservationState');
-    console.log(state);
-    if (!state || (!state.reservationId && !this.reservationRoute())) {
+    const routeId = this.reservationRoute();
+    if (!state || (!state.reservationId && !routeId)) {
       this.router.navigate(['/home']);
       return;
+    }
+
+    const reservationId = routeId || state.reservationId;
+
+    if (!this.reservationStore.reservationId() && reservationId) {
+      this.reservationStore.restore({ reservationId: reservationId });
     }
 
     this.store.dispatch(TheaterActions.loadTheater({ id: state.theaterId }));
     this.store.dispatch(ShowtimeActions.loadShowtime({ id: state.showtimeId }));
     this.seatStore.loadSeats({ showtimeId: state.showtimeId });
-
-    if (!this.reservationStore.reservationId()) {
-      console.log('Reservation id', this.reservationStore.reservationId());
-    }
   }
 
   onStepChange(newIndex: number) {
@@ -85,9 +89,10 @@ export class ReservationComponent implements OnInit {
       const selectedSeats = this.seatStore.selectedSeats();
       const user = this.user();
       const showtime = this.showtime();
+      const theater = this.theater();
       const resId = this.reservationStore.reservationId();
 
-      if (!selectedSeats.length || !user || !showtime || !resId) {
+      if (!selectedSeats.length || !user || !showtime || !resId || !theater) {
         return;
       }
 
@@ -98,7 +103,10 @@ export class ReservationComponent implements OnInit {
         seatIds: selectedSeats.map((s) => s.id),
       };
 
-      this.storageService.setItem('reservationState', payload);
+      this.storageService.setItem('reservationState', {
+        ...payload,
+        theaterId: theater.id,
+      });
       this.reservationStore.holdSeat({ reservation: payload });
 
       this.index.set(newIndex);

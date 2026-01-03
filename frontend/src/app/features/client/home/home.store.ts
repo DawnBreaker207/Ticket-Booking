@@ -141,9 +141,6 @@ export const HomeStore = signalStore(
           const theaterId = selectedTheaterId();
 
           if (!currentUser || !theaterId) return;
-          console.log(
-            `userId: ${currentUser.userId}, theaterId: ${theaterId}, showtimeId: ${showtimeId}`,
-          );
           reservationStore.initReservation({
             reservationId: '',
             userId: currentUser.userId,
