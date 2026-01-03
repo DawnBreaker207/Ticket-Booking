@@ -33,6 +33,9 @@
             nz-menu-item
             class="font-medium hover:bg-blue-50 hover:text-primary transition-colors px-6 py-3"
             (click)="onSelect(theater.id)"
+            (keyup.enter)="onSelect(theater.id)"
+            tabindex="0"
+            role="tab"
             [nzSelected]="(selectedTheaterId$ | async) === theater.id"
           >
             {{ theater.name }}

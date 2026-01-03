@@ -104,6 +104,9 @@
             @for (date of dates(); track date) {
               <div
                 (click)="selectDate(date)"
+                (keyup)="selectDate(date)"
+                tabindex="0"
+                role="button"
                 class="cursor-pointer min-w-[80px] flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-300"
                 [ngClass]="
                   (selectedDate() | date: 'ddMMyy') === (date | date: 'ddMMyy')

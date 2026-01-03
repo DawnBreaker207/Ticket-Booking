@@ -10,7 +10,6 @@ import { ProfileMenuComponent } from '@shared/components/profile-menu/profile-me
 import { SelectShowtimeComponent } from '@features/client/home/components/select/select.component';
 import {
   TranslateModule,
-  TranslatePipe,
   TranslateService,
 } from '@ngx-translate/core';
 import { HEADERS } from '@core/constants/column';

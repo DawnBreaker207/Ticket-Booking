@@ -63,6 +63,9 @@
                 @for (movie of searchResults(); track movie.id) {
                   <li
                     (click)="selectMovie(movie)"
+                    (keyup.enter)="selectMovie(movie)"
+                    tabindex="0"
+                    role="tab"
                     class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex gap-4 items-center border-b border-gray-50 last:border-0 transition-colors"
                     [class.bg-blue-50]="selectedMovie()?.id === movie.id"
                   >
