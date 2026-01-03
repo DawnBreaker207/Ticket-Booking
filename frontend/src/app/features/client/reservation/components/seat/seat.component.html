@@ -64,7 +64,7 @@
   <!-- SEAT MAP -->
   <div class="flex-1 overflow-auto flex justify-center items-start pb-8 px-4]">
     <div class="space-y-2">
-      @for (row of groupedSeats$ | async; track $index) {
+      @for (row of seatStore.groupedSeats(); track $index) {
         <div class="flex justify-center flex-nowrap">
           @for (seat of row; track $index) {
             <button

@@ -7,7 +7,6 @@ import {
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { nzIcons } from './icons-provider';
@@ -42,20 +41,10 @@ import {
   showtimeFeatureKey,
   showtimeReducer,
 } from '@domain/showtime/data-access/showtime.reducers';
-import {
-  reservationFeatureKey,
-  reservationReducer,
-} from '@domain/reservation/data-access/reservation.reducers';
-import {
-  seatFeatureKey,
-  seatReducer,
-} from '@domain/seat/data-access/seat.reducers';
 import { AuthEffects } from '@core/auth/auth.effects';
 import { MovieEffects } from '@domain/movie/data-access/movie.effects';
 import { TheaterEffects } from '@domain/theater/data-access/theater.effects';
 import { ShowtimeEffects } from '@domain/showtime/data-access/showtime.effects';
-import { ReservationEffects } from '@domain/reservation/data-access/reservation.effects';
-import { SeatEffects } from '@domain/seat/data-access/seat.effects';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideAppSecurity } from '@core/config/app.security';
@@ -76,16 +65,12 @@ export const appConfig: ApplicationConfig = {
       [movieFeatureKey]: movieReducer,
       [theaterFeatureKey]: theaterReducer,
       [showtimeFeatureKey]: showtimeReducer,
-      [reservationFeatureKey]: reservationReducer,
-      [seatFeatureKey]: seatReducer,
     }),
     provideEffects([
       AuthEffects,
       MovieEffects,
       TheaterEffects,
       ShowtimeEffects,
-      ReservationEffects,
-      SeatEffects,
     ]),
     provideTranslateService({
       lang: 'vi',

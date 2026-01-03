@@ -5,30 +5,28 @@
   <div class="relative h-32 bg-gray-900 overflow-hidden group">
     <div
       class="absolute inset-0 bg-cover bg-center opacity-50 blur-sm scale-110"
-      [style.backgroundImage]="
-        'url(' + ((filmDetail$ | async)?.poster || '') + ')'
-      "
+      [style.backgroundImage]="'url(' + (movie()?.poster || '') + ')'"
     ></div>
     <div
       class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
     ></div>
     <div class="relative z-10 p-4 flex gap-4 h-full items-end">
       <img
-        [src]="(filmDetail$ | async)?.poster"
-        [alt]="(filmDetail$ | async)?.title"
+        [src]="movie()?.poster"
+        [alt]="movie()?.title"
         class="w-20 h-28 object-cover rounded-lg shadow-lg border-2 border-white/20 -mb-2 bg-gray-800 shrink-0"
       />
 
       <div class="pb-1 text-white flex-1 win-w-0">
         <h1
           class="text-base font-bold text-gray-300! leading-tight truncate"
-          [title]="(filmDetail$ | async)?.title"
+          [title]="movie()?.title"
         >
-          {{ (filmDetail$ | async)?.title }}
+          {{ movie()?.title }}
         </h1>
 
         <p class="text-[10px] text-gray-300 mt-1 truncate">
-          {{ (filmDetail$ | async)?.genres?.join(", ") }}
+          {{ movie()?.genres?.join(", ") }}
         </p>
       </div>
     </div>
@@ -45,7 +43,7 @@
           "Rạp chiếu" | translate
         }}</span>
         <span class="text-sm font-bold text-gray-500">{{
-          (theater$ | async)?.name
+          theater()?.name
         }}</span>
       </div>
 
@@ -57,10 +55,10 @@
         }}</span>
         <div class="text-right">
           <span class="block text-sm font-bold text-primary">{{
-            timeFormat((showtime$ | async)?.showTime)
+            timeFormat(showtime()?.showTime)
           }}</span>
           <span class="block text-[10px] text-gray -400">{{
-            (showtime$ | async)?.showDate | date: "dd/MM/yyyy"
+            showtime()?.showDate | date: "dd/MM/yyyy"
           }}</span>
         </div>
       </div>
@@ -78,19 +76,19 @@
           {{ "Ghế ngồi" | translate }}
         </span>
 
-        @if ((selectedSeats$ | async)?.length) {
+        @if (seatStore.selectSeatsCount()) {
           <span
             class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-blue-100 text-blue-600 font-bold"
           >
-            {{ (selectedSeats$ | async)?.length }} vé
+            {{ seatStore.selectSeatsCount() }} vé
           </span>
         }
       </div>
 
       <div class="text-right">
-        @if ((selectedSeats$ | async)?.length) {
+        @if (seatStore.selectSeatsCount()) {
           <div class="flex flex-wrap justify-end gap-1.5">
-            @for (seat of selectedSeats$ | async; track seat) {
+            @for (seat of selectedSeatNumbers(); track seat) {
               <span
                 class="inline-block bg-white text-primary border border-blue-200 px-2 py-1 rounded text-xs font-bold shadow-sm"
               >
@@ -113,7 +111,7 @@
           "Tổng cộng" | translate
         }}</span>
         <span class="text-xl font-extrabold text-orange-600 leading-none">
-          {{ totalPrice$ | async | currency: "VND" }}
+          {{ seatStore.totalPrice() | currency: "VND" }}
         </span>
       </div>
 
@@ -153,7 +151,7 @@
       [class.bg-green-600]="index() === steps().length - 1"
       [class.borer-green-600]="index() === steps().length - 1"
       (click)="index() === steps().length - 1 ? saveSeats() : nextStep()"
-      [disabled]="index() === 0 && (selectedSeats$ | async)?.length === 0"
+      [disabled]="index() === 0 && seatStore.selectSeatsCount() === 0"
     >
       @if (index() === steps().length - 1) {
         {{ "Thanh toán ngay" | translate }}

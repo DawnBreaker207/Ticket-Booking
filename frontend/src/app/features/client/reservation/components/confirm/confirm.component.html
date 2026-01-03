@@ -17,7 +17,7 @@
     </div>
 
     <div class="p-6">
-      @if (user$ | async; as user) {
+      @if (user(); as user) {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!--    Username    -->
           <div class="space-y-1">

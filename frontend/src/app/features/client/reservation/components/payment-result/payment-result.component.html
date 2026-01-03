@@ -1,17 +1,17 @@
 <div class="flex h-screen w-screen justify-center items-center">
   <nz-result
-    [nzStatus]="status"
+    [nzStatus]="status()"
     [nzTitle]="
-      status === 'success'
+      status() === 'success'
         ? ('Đơn đã thanh toán thành công' | translate)
         : ('Thanh toán thất bại' | translate)
     "
     [nzSubTitle]="
-      status === 'success'
+      status() === 'success'
         ? ('Mã đơn' | translate) +
-          vnpTxnRef +
+          vnpTxnRef() +
           ('đã được thanh toán thành công' | translate)
-        : errorMessage
+        : errorMessage()
     "
   >
     <div nz-result-extra>
@@ -19,7 +19,7 @@
         {{ "Về trang chủ" | translate }}
       </button>
       <div class="mt-4 flex justify-center items-center gap-2">
-        <p>{{ "Tự động về trang chủ trong" | translate }} {{ countdown }}...</p>
+        <p>{{ "Tự động về trang chủ trong" | translate }} {{ countdown() }}...</p>
       </div>
     </div>
   </nz-result>

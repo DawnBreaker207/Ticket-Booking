@@ -5,28 +5,22 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, filter, map, take, tap } from 'rxjs';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { PaymentService } from '@domain/payment/data-access/payment.service';
 import { StorageService } from '@core/services/storage/storage.service';
-import {
-  selectSeats,
-  selectSelectedSeats,
-} from '@domain/seat/data-access/seat.selectors';
-import {
-  selectSelectedShowtime,
-  selectTotalPrice,
-} from '@domain/showtime/data-access/showtime.selectors';
+import { selectSelectedShowtime } from '@domain/showtime/data-access/showtime.selectors';
 import { selectJwt } from '@core/auth/auth.selectors';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
-import { SeatActions } from '@domain/seat/data-access/seat.actions';
 import { ReservationRequest } from '@domain/reservation/models/reservation.model';
-import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
 import { SeatComponent } from '@features/client/reservation/components/seat/seat.component';
 import { DetailFilmComponent } from '@features/client/reservation/components/detail-film/detail-film.component';
 import { ConfirmComponent } from '@features/client/reservation/components/confirm/confirm.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SeatStore } from '@features/client/reservation/components/seat/seat.store';
+import { ReservationStore } from '@features/client/reservation/reservation.store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-reservation',
@@ -46,86 +40,77 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class ReservationComponent implements OnInit {
   private store = inject(Store);
-  private paymentService = inject(PaymentService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  readonly seatStore = inject(SeatStore);
+  readonly reservationStore = inject(ReservationStore);
+  private paymentService = inject(PaymentService);
   private storageService = inject(StorageService);
-  selectedSeats$ = this.store.select(selectSelectedSeats);
-  totalSeats$ = this.store.select(selectSeats);
-  showtime$ = this.store.select(selectSelectedShowtime);
-  user$ = this.store.select(selectJwt);
 
-  totalPrice: number = 0;
-  reservationId!: string;
+  readonly showtime = this.store.selectSignal(selectSelectedShowtime);
+  readonly user = this.store.selectSignal(selectJwt);
+  readonly reservationRoute = toSignal(
+    this.route.paramMap.pipe(map((params) => params.get('reservationId'))),
+  );
   index = signal(0);
   steps = signal([0, 1]);
 
   ngOnInit() {
     const state = this.storageService.getItem<any>('reservationState');
-    if (!state) {
-      console.warn('No persisted reservation were found');
+    console.log(state);
+    if (!state || (!state.reservationId && !this.reservationRoute())) {
       this.router.navigate(['/home']);
       return;
     }
-    this.reservationId = state.reservationId;
-    this.route.paramMap
-      .pipe(map((params) => params.get('reservationId') as string))
-      .subscribe((params) => {
-        this.reservationId = params;
-      });
+
     this.store.dispatch(TheaterActions.loadTheater({ id: state.theaterId }));
     this.store.dispatch(ShowtimeActions.loadShowtime({ id: state.showtimeId }));
-    this.store.dispatch(
-      SeatActions.loadAllSeats({ showtimeId: state.showtimeId }),
-    );
-    this.store
-      .select(selectTotalPrice)
-      .subscribe((total) => (this.totalPrice = total));
+    this.seatStore.loadSeats({ showtimeId: state.showtimeId });
+
+    if (!this.reservationStore.reservationId()) {
+      console.log('Reservation id', this.reservationStore.reservationId());
+    }
   }
 
   onStepChange(newIndex: number) {
-    console.log(newIndex, this.index());
-    if (newIndex === 1 && this.index() === 0) {
-      combineLatest([
-        this.selectedSeats$.pipe(take(1)),
-        this.showtime$.pipe(take(1)),
-        this.user$.pipe(take(1)),
-      ])
-        .pipe(
-          map(([seats, showtime, user]) => {
-            console.log('Combine result:', { seats, showtime, user });
-            if (!seats.length || !showtime || !user || !this.reservationId)
-              return;
-            const payload: ReservationRequest = {
-              reservationId: this.reservationId,
-              userId: user.userId,
-              showtimeId: showtime.id,
-              seatIds: seats.map((s) => s.id),
-            };
-            this.storageService.setItem('reservationState', payload);
-            return payload;
-          }),
-          filter(
-            (payload): payload is ReservationRequest => payload !== undefined,
-          ),
-          tap((payload) => {
-            this.store.dispatch(
-              ReservationActions.createReservationHoldSeat({
-                reservation: payload,
-              }),
-            );
-          }),
-        )
-        .subscribe(() => {
-          this.index.set(newIndex);
-        });
+    const currentIndex = this.index();
+    console.log(currentIndex, newIndex);
+
+    if (newIndex < currentIndex) {
+      this.index.set(newIndex);
       return;
     }
-    if (newIndex === 2 && this.index() === 1) {
+
+    if (newIndex === 1 && currentIndex === 0) {
+      const selectedSeats = this.seatStore.selectedSeats();
+      const user = this.user();
+      const showtime = this.showtime();
+      const resId = this.reservationStore.reservationId();
+
+      if (!selectedSeats.length || !user || !showtime || !resId) {
+        return;
+      }
+
+      const payload: ReservationRequest = {
+        reservationId: resId,
+        userId: user.userId,
+        showtimeId: showtime.id,
+        seatIds: selectedSeats.map((s) => s.id),
+      };
+
+      this.storageService.setItem('reservationState', payload);
+      this.reservationStore.holdSeat({ reservation: payload });
+
+      this.index.set(newIndex);
+    }
+    if (newIndex === 2) {
+      const resId = this.reservationStore.reservationId();
+      if (!resId) return;
+
       this.paymentService
         .createPayment({
-          reservationId: this.reservationId,
-          amount: this.totalPrice,
+          reservationId: resId,
+          amount: this.seatStore.totalPrice(),
           paymentType: 'VNPAY',
         })
         .subscribe((res) => {

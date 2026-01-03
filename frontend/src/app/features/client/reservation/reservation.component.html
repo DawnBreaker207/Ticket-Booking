@@ -26,7 +26,7 @@
           >
             @switch (index()) {
               @case (0) {
-                @if (totalSeats$ | async) {
+                @if (seatStore.selectedSeats()) {
                   <app-seat />
                 }
               }
@@ -46,8 +46,8 @@
           <div class="sticky top-28">
             <app-detail-film
               [index]="index()"
-              (stepChange)="onStepChange($event)"
               [steps]="steps()"
+              (stepChange)="onStepChange($event)"
             />
           </div>
         </nz-sider>
