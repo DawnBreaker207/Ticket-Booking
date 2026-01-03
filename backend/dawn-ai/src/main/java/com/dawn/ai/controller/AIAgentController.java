@@ -3,18 +3,18 @@ package com.dawn.ai.controller;
 import com.dawn.ai.service.AiAgentProvider;
 import com.dawn.common.dto.response.ResponseObject;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/ai")
+@RequestMapping("/ai")
 @RequiredArgsConstructor
 public class AIAgentController {
 
     private final AiAgentProvider aiAgentProvider;
 
-    public ResponseObject<String> chat(@RequestParam String question) {
-        return ResponseObject.success(aiAgentProvider.ask(question));
+    @PostMapping("/chat")
+    public ResponseObject<String> chat(@RequestBody ChatRequest question) {
+        String answer = aiAgentProvider.ask(question.getMessage());
+        return ResponseObject.success(answer);
     }
 }

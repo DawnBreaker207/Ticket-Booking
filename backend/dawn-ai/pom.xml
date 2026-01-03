@@ -10,6 +10,9 @@
     </parent>
     <artifactId>dawn-ai</artifactId>
     <packaging>jar</packaging>
+    <properties>
+        <langchain.version>1.10.0-beta18</langchain.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -19,12 +22,12 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot-starter</artifactId>
-            <version>1.0.0-beta2</version>
+            <version>${langchain.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-ai-gemini-spring-boot-starter</artifactId>
-            <version>1.10.0-beta18</version>
+            <version>${langchain.version}</version>
         </dependency>
     </dependencies>
 

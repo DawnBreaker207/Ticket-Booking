@@ -15,4 +15,12 @@ public class AiAgentProviderImpl implements AiAgentProvider {
     public String ask(String question) {
         return aiAgentService.chat(question);
     }
+
+    public String askAdmin(String question) {
+        if(question == null || question.isBlank()){
+            return "Vui lòng nhập câu hỏi";
+        }
+        return aiAgentService.chat(question);
+    }
+
 }
