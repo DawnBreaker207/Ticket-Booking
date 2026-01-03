@@ -41,9 +41,10 @@ public class ReservationController {
         return ResponseObject.success(reservationService.findByUser(request, pageable));
     }
 
-    @GetMapping("/{id}/restore")
-    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String id){
-            return ResponseObject.success(reservationService.restoreReservation(id));
+    @GetMapping("/{reservationId}/restore")
+    @Operation(summary = "Restore a reservation", description = "Restore a reservation and return data")
+    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String reservationId){
+            return ResponseObject.success(reservationService.restoreReservation(reservationId));
     }
 
     @PostMapping("/init")
