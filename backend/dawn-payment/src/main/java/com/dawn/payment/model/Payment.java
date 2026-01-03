@@ -1,5 +1,6 @@
 package com.dawn.payment.model;
 
+import com.dawn.common.constant.PaymentMethod;
 import com.dawn.common.constant.PaymentStatus;
 import com.dawn.common.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -37,7 +38,7 @@ public class Payment extends AbstractMappedEntity {
 
     @Column(name = "method", nullable = false)
     @Enumerated(EnumType.STRING)
-    private PaymentStatus method;
+    private PaymentMethod method;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)

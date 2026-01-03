@@ -129,6 +129,7 @@ public class SeatServiceImpl implements SeatService {
         for (Seat seat : existingSeats) {
             SeatRequest request = requestMap.get(seat.getId());
                 seat.setStatus(request.getStatus());
+                seat.setReservationId(request.getReservationId());
         }
 
         seatRepository.saveAll(existingSeats);

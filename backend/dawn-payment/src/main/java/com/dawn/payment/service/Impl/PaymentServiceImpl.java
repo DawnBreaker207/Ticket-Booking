@@ -1,6 +1,7 @@
 package com.dawn.payment.service.Impl;
 
 import com.dawn.common.constant.Message;
+import com.dawn.common.constant.PaymentMethod;
 import com.dawn.common.constant.PaymentStatus;
 import com.dawn.payment.config.payment.MomoConfig;
 import com.dawn.payment.config.payment.VNPayConfig;
@@ -74,6 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .builder()
                 .reservationId(request.getReservationId())
                 .paymentIntentId(request.getReservationId())
+                .method(PaymentMethod.VNPAY)
                 .amount(request.getTotalAmount())
                 .status(status)
                 .createdAt(Instant.now())

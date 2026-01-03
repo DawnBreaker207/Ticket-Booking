@@ -630,6 +630,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         seats.forEach(seat -> {
             seat.setStatus(SeatStatus.BOOKED);
+            seat.setReservationId(reservation.getId());
         });
 
         //      Update Unavailable seats count in showtime
