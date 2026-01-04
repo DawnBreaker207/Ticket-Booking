@@ -6,6 +6,7 @@ import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.model.Role;
 import com.dawn.identity.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("")
+    @RateLimiter(name = "limit")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<ResponsePage<UserResponse>> getAll(Pageable pageable) {
         return ResponseObject.success(userService.findAll(pageable));

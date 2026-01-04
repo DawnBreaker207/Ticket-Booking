@@ -21,13 +21,11 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping("")
-    @RateLimiter(name = "limiter")
     public ResponseObject<ResponsePage<MovieResponse>> findAll(@ModelAttribute MovieRequest m, Pageable pageable) {
         return ResponseObject.success(movieService.findAll(m, pageable));
     }
 
     @GetMapping("/{id}")
-    @RateLimiter(name = "limiter")
     public ResponseObject<MovieResponse> findById(@PathVariable Long id) {
         return ResponseObject.success(movieService.findById(id));
     }
@@ -38,6 +36,7 @@ public class MovieController {
     }
 
     @PostMapping("")
+    @RateLimiter(name = "limit")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseObject<MovieResponse> create(@RequestBody MovieRequest m) {
         return ResponseObject.created(movieService.create(m));
