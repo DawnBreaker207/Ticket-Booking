@@ -2,6 +2,7 @@ package com.dawn.identity.service.Impl;
 
 import com.dawn.common.constant.Message;
 import com.dawn.common.constant.URole;
+import com.dawn.common.exception.wrapper.PermissionDeniedException;
 import com.dawn.common.exception.wrapper.ResourceAlreadyExistedException;
 import com.dawn.common.exception.wrapper.ResourceNotFoundException;
 import com.dawn.common.utils.JWTUtils;
@@ -122,6 +123,17 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(jwt)
                 .refreshToken(refreshToken.getToken())
                 .build();
+    }
+
+    @Override
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(Message.Exception.EMAIL_NOT_FOUND));
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new PermissionDeniedException(Message.Exception.PASSWORD_NOT_MATCH);
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     @Override

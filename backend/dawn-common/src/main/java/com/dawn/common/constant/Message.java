@@ -27,7 +27,7 @@ public class Message {
         public static final String USERNAME_NOT_FOUND = "Username not found";
         public static final String EMAIL_NOT_FOUND = "Email not found";
         public static final String EMAIL_EXISTED = "Email already exists";
-
+        public static final String PASSWORD_NOT_MATCH = "Password not match";
         //    Role
         public static final String ROLE_NOT_FOUND = "Role not found";
         public static final String PERMISSION_FORBIDDEN = "You don't have permission";
