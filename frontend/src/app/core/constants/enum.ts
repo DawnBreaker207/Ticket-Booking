@@ -1,4 +1,4 @@
-export type ReservationStatus = 'CREATED' | 'CONFIRMED' | 'CANCELED';
+export type ReservationStatus = 'CONFIRMED' | 'CANCELED';
 
 export type PaymentMethod = 'MOMO' | 'VNPAY' | 'ZALOPAY';
 

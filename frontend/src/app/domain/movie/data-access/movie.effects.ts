@@ -1,19 +1,49 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  concat,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { MovieService } from '@domain/movie/data-access/movie.service';
+import { StorageService } from '@core/services/storage/storage.service';
 
 @Injectable()
 export class MovieEffects {
   private actions$ = inject(Actions);
   private movieService = inject(MovieService);
-
+  private storage = inject(StorageService);
   loadMovies$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MovieActions.loadMovies),
-      switchMap(({ page, size }) =>
-        this.movieService.getMovieLists({ page, size }).pipe(
+      switchMap(({ page, size }) => {
+        const cache$ = from(this.storage.getMovies(page, size)).pipe(
+          filter((res) => res.content.length > 0),
+        );
+
+        const network$ = this.movieService.getMovieLists({ page, size }).pipe(
+          tap(({ content }) => this.storage.cacheMovie(content)),
+          catchError((err) => {
+            console.log('Network error ', err);
+            return EMPTY;
+          }),
+        );
+
+        return concat(cache$, network$).pipe(
+          distinctUntilChanged((prev, curr) => {
+            return (
+              JSON.stringify(prev.content) === JSON.stringify(curr.content) &&
+              prev.pagination.totalElements === curr.pagination.totalElements
+            );
+          }),
           map(({ content, pagination }) =>
             MovieActions.loadMoviesSuccess({
               movies: content,
@@ -23,8 +53,8 @@ export class MovieEffects {
           catchError((err) =>
             of(MovieActions.loadMoviesFailed({ error: err })),
           ),
-        ),
-      ),
+        );
+      }),
     );
   });
 
@@ -33,7 +63,12 @@ export class MovieEffects {
       ofType(MovieActions.searchMovies),
       switchMap(({ search }) =>
         this.movieService.getMovieLists(search).pipe(
-          map((page) => MovieActions.searchMoviesSuccess({ page: page })),
+          map(({ content, pagination }) =>
+            MovieActions.searchMoviesSuccess({
+              movies: content,
+              pagination: pagination,
+            }),
+          ),
           catchError((err) =>
             of(MovieActions.searchMoviesFailed({ error: err })),
           ),

@@ -9,6 +9,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { MovieService } from '@domain/movie/data-access/movie.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'movie-form-api',
@@ -22,6 +23,7 @@ import { MovieService } from '@domain/movie/data-access/movie.service';
     NzButtonModule,
     NzIconModule,
     NzSpinComponent,
+    TranslatePipe,
   ],
   templateUrl: './api-form.component.html',
   styleUrl: './api-form.component.css',

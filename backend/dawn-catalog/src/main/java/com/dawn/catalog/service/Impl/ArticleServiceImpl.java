@@ -6,7 +6,7 @@ import com.dawn.catalog.helper.ArticleMappingHelper;
 import com.dawn.catalog.model.Article;
 import com.dawn.catalog.repository.ArticleRepository;
 import com.dawn.catalog.service.ArticleService;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,9 @@
   <div
     class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
   >
-    <div class="text-3xl font-bold text-gray-900">Quản lý người dùng</div>
+    <div class="text-3xl font-bold text-gray-900">
+      {{ "Quản lý người dùng" | translate }}
+    </div>
   </div>
 
   <app-loading [isLoading]="userStore.loading()">
@@ -22,7 +24,7 @@
         <thead>
           <tr>
             @for (item of headerColumns; track item) {
-              <th>{{ item }}</th>
+              <th>{{ item | translate }}</th>
             }
           </tr>
         </thead>

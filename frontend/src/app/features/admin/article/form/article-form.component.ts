@@ -14,6 +14,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { Article } from '@domain/article/models/article.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form',
@@ -27,6 +28,7 @@ import { Article } from '@domain/article/models/article.model';
     NzSelectModule,
     NzUploadModule,
     NzIconModule,
+    TranslatePipe,
   ],
   templateUrl: './article-form.component.html',
   styleUrl: './article-form.component.css',

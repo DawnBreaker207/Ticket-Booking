@@ -12,6 +12,7 @@ import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { SliderComponent } from '@features/client/home/components/slider/slider.component';
 import { MovieItemComponent } from '@shared/components/movie-item/movie-item.component';
 import { HomeStore } from '@features/client/home/home.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client',
@@ -25,6 +26,7 @@ import { HomeStore } from '@features/client/home/home.store';
     NzModalModule,
     SliderComponent,
     MovieItemComponent,
+    TranslatePipe,
   ],
   providers: [NzImageService, NzModalService, HomeStore],
   templateUrl: './home.component.html',

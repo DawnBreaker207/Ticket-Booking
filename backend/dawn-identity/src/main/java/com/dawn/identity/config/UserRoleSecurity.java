@@ -1,7 +1,7 @@
 package com.dawn.identity.config;
 
-import com.dawn.common.exception.wrapper.PermissionDeniedException;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.exception.wrapper.PermissionDeniedException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.model.Role;
 import com.dawn.identity.model.User;
 import com.dawn.identity.repository.UserRepository;

@@ -8,9 +8,10 @@ import { DatePipe } from '@angular/common';
 import { NzTagComponent } from 'ng-zorro-antd/tag';
 import { FormsModule } from '@angular/forms';
 import { IsDeletedPipe } from '@core/pipes/is-deleted.pipe';
-import { headerColumns } from '@core/constants/column';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { UserStore } from '@domain/user/data-access/user.store';
+import { TranslatePipe } from '@ngx-translate/core';
+import { HEADER_COLUMNS } from '@core/constants/column';
 
 @Component({
   selector: 'app-user',
@@ -26,6 +27,7 @@ import { UserStore } from '@domain/user/data-access/user.store';
     FormsModule,
     IsDeletedPipe,
     LoadingComponent,
+    TranslatePipe,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
@@ -33,7 +35,7 @@ import { UserStore } from '@domain/user/data-access/user.store';
 export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
 
-  headerColumns = headerColumns.user;
+  headerColumns = HEADER_COLUMNS.USER;
   pageIndex = 1;
   pageSize = 10;
 

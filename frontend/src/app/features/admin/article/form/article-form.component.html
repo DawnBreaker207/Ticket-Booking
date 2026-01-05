@@ -2,12 +2,17 @@
   <!-- TITLE/SLUG -->
   <div class="grid grid-cols-1 gap-4">
     <nz-form-item class="mb-0">
-      <nz-form-label [nzSpan]="24" nzRequired>Tiêu đề bài viét</nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Vui lòng nhập tiêu đề">
+      <nz-form-label [nzSpan]="24" nzRequired>{{
+        "Tiêu đề bài viét" | translate
+      }}</nz-form-label>
+      <nz-form-control
+        [nzSpan]="24"
+        [nzErrorTip]="'Vui lòng nhập tiêu đề' | translate"
+      >
         <input
           nz-input
           formControlName="title"
-          placeholder="Nhập tiêu đề hấp dẫn..."
+          [placeholder]="'Nhập tiêu đề hấp dẫn...' | translate"
           class="text-lg font-semibold"
         />
       </nz-form-control>
@@ -18,7 +23,9 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Upload giả lập (Input URL) -->
     <nz-form-item class="mb-0">
-      <nz-form-label [nzSpan]="24" nzRequired>Hình ảnh (URL)</nz-form-label>
+      <nz-form-label [nzSpan]="24" nzRequired>{{
+        "Hình ảnh(URL)" | translate
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="24">
         <div class="flex flex-col gap-2">
           <input
@@ -38,13 +45,15 @@
     </nz-form-item>
 
     <nz-form-item class="mb-0">
-      <nz-form-label [nzSpan]="24" nzRequired>Tóm tắt ngắn</nz-form-label>
+      <nz-form-label [nzSpan]="24" nzRequired>{{
+        "Tóm tắt ngắn" | translate
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="24">
         <textarea
           nz-input
           formControlName="summary"
           rows="5"
-          placeholder="Mô tả ngắn gọn để hiển thị trang chủ..."
+          [placeholder]="'Mô tả ngắn gọn để hiển thị trang chủ...' | translate"
         ></textarea>
       </nz-form-control>
     </nz-form-item>
@@ -52,7 +61,9 @@
 
   <!-- QUILL EDITOR -->
   <nz-form-item class="mb-0">
-    <nz-form-label [nzSpan]="24" nzRequired>Nội dung chi tiết</nz-form-label>
+    <nz-form-label [nzSpan]="24" nzRequired>{{
+      "Nội dung chi tiết" | translate
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="24">
       <quill-editor
         formControlName="content"
@@ -70,24 +81,38 @@
   <!-- CATEGORY & STATUS -->
   <div class="grid grid-cols-2 gap-6 p-4 rounded-lg">
     <nz-form-item class="mb-0">
-      <nz-form-label [nzSpan]="24">Danh mục</nz-form-label>
+      <nz-form-label [nzSpan]="24">{{ "Danh mục" | translate }}</nz-form-label>
       <nz-form-control>
         <nz-select formControlName="category">
-          <nz-option nzValue="Tin tức" nzLabel="Tin tức"></nz-option>
-          <nz-option nzValue="Review Phim" nzLabel="Review Phim"></nz-option>
-          <nz-option nzValue="Khuyến mãi" nzLabel="Khuyến mãi"></nz-option>
+          <nz-option
+            nzValue="Tin tức"
+            [nzLabel]="'Tin tức' | translate"
+          ></nz-option>
+          <nz-option
+            nzValue="Review Phim"
+            [nzLabel]="'Review Phim' | translate"
+          ></nz-option>
+          <nz-option
+            nzValue="Khuyến mãi"
+            [nzLabel]="'Khuyến mãi' | translate"
+          ></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item class="mb-0">
-      <nz-form-label [nzSpan]="24">Trạng thái</nz-form-label>
+      <nz-form-label [nzSpan]="24">{{
+        "Trạng thái" | translate
+      }}</nz-form-label>
       <nz-form-control>
         <nz-select formControlName="status">
-          <nz-option nzValue="DRAFT" nzLabel="Bản nháp (Draft)"></nz-option>
+          <nz-option
+            nzValue="DRAFT"
+            [nzLabel]="'Bản nháp (Draft)' | translate"
+          ></nz-option>
           <nz-option
             nzValue="PUBLISHED"
-            nzLabel="Công khai (Published)"
+            [nzLabel]="'Công khai (Published)' | translate"
           ></nz-option>
         </nz-select>
       </nz-form-control>
@@ -97,7 +122,7 @@
   <!-- FOOTER -->
   <div class="flex justify-end gap-3 pt-4 border-t">
     <button nz-button type="button" (click)="cancelArticle.emit()">
-      Hủy bỏ
+      {{ "Hủy bỏ" | translate }}
     </button>
     <button
       nz-button
@@ -106,7 +131,11 @@
       [nzLoading]="isLoading"
       class="bg-blue-600"
     >
-      {{ isEditMode ? "Cập nhật bài viết" : "Đăng bài viết mới" }}
+      {{
+        isEditMode
+          ? ("Cập nhật bài viết" | translate)
+          : ("Đăng bài viết mới" | translate)
+      }}
     </button>
   </div>
 </form>

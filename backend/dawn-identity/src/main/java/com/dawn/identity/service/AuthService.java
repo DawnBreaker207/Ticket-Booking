@@ -13,4 +13,6 @@ public interface AuthService {
     JwtResponse login(LoginRequest user);
 
     TokenRefreshResponse refreshToken(String refreshToken);
+
+    void changePassword(String email, String oldPassword, String newPassword);
 }

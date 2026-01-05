@@ -1,7 +1,7 @@
 package com.dawn.booking.dto.response;
 
-import com.dawn.common.constant.ReservationStatus;
-import com.dawn.common.dto.response.BaseResponse;
+import com.dawn.common.core.constant.ReservationStatus;
+import com.dawn.common.core.dto.response.BaseResponse;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

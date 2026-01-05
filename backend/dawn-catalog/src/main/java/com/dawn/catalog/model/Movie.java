@@ -1,7 +1,7 @@
 package com.dawn.catalog.model;
 
 
-import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.common.core.model.AbstractMappedEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Hidden;

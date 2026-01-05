@@ -26,11 +26,12 @@ import {
   selectMoviesError,
   selectPaginationMovie,
 } from '@domain/movie/data-access/movie.selectors';
-import { headerColumns } from '@core/constants/column';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { FormMovieComponent } from '@features/admin/movie/form/movie/movie-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
+import { HEADER_COLUMNS } from '@core/constants/column';
 
 @Component({
   selector: 'app-movie',
@@ -53,6 +54,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzSpinModule,
     IsDeletedPipe,
     LoadingComponent,
+    TranslatePipe,
   ],
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
@@ -70,7 +72,7 @@ export class MovieComponent {
   readonly error = this.store.selectSignal(selectMoviesError);
 
   // Local State
-  readonly headerColumn = headerColumns.movie;
+  readonly headerColumn = HEADER_COLUMNS.MOVIE;
   readonly searchCtrl = this.fb.control('');
 
   isSearching = signal(false);

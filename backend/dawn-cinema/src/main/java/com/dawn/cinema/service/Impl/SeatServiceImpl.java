@@ -8,9 +8,9 @@ import com.dawn.cinema.model.Showtime;
 import com.dawn.cinema.repository.SeatRepository;
 import com.dawn.cinema.repository.ShowtimeRepository;
 import com.dawn.cinema.service.SeatService;
-import com.dawn.common.constant.Message;
-import com.dawn.common.constant.SeatStatus;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.constant.SeatStatus;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +129,7 @@ public class SeatServiceImpl implements SeatService {
         for (Seat seat : existingSeats) {
             SeatRequest request = requestMap.get(seat.getId());
                 seat.setStatus(request.getStatus());
+                seat.setReservationId(request.getReservationId());
         }
 
         seatRepository.saveAll(existingSeats);

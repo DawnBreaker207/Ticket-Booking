@@ -5,8 +5,8 @@ import com.dawn.booking.dto.response.ReservationInitResponse;
 import com.dawn.booking.dto.response.ReservationResponse;
 import com.dawn.booking.dto.response.UserReservationResponse;
 import com.dawn.booking.service.ReservationService;
-import com.dawn.common.dto.response.ResponseObject;
-import com.dawn.common.dto.response.ResponsePage;
+import com.dawn.common.core.dto.response.ResponseObject;
+import com.dawn.common.core.dto.response.ResponsePage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +41,10 @@ public class ReservationController {
         return ResponseObject.success(reservationService.findByUser(request, pageable));
     }
 
-    @GetMapping("/{id}/restore")
-    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String id){
-            return ResponseObject.success(reservationService.restoreReservation(id));
+    @GetMapping("/{reservationId}/restore")
+    @Operation(summary = "Restore a reservation", description = "Restore a reservation and return data")
+    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String reservationId){
+            return ResponseObject.success(reservationService.restoreReservation(reservationId));
     }
 
     @PostMapping("/init")

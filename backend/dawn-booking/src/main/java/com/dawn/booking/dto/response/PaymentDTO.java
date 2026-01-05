@@ -1,6 +1,6 @@
 package com.dawn.booking.dto.response;
 
-import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.common.core.model.AbstractMappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

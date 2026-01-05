@@ -1,6 +1,6 @@
 package com.dawn.report.controller;
 
-import com.dawn.common.dto.response.ResponseObject;
+import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.report.dto.request.DashboardFilterRequest;
 import com.dawn.report.dto.response.*;
 import com.dawn.report.service.DashboardService;
@@ -18,6 +18,11 @@ import java.util.List;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+
+    @GetMapping("/summary")
+    public ResponseObject<DashboardResponse> summary(@ModelAttribute DashboardFilterRequest req) {
+        return ResponseObject.success(dashboardService.getSummary(req));
+    }
 
     @GetMapping("/metrics")
     public ResponseObject<MetricsResponse> getMetrics(@ModelAttribute DashboardFilterRequest request) {

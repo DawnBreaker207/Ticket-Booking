@@ -23,6 +23,7 @@ import { take } from 'rxjs';
 import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 import { NzStringTemplateOutletDirective } from 'ng-zorro-antd/core/outlet';
 import { AuthActions } from '@core/auth/auth.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-auth',
@@ -40,6 +41,7 @@ import { AuthActions } from '@core/auth/auth.actions';
     NzFormDirective,
     NzCheckboxComponent,
     NzStringTemplateOutletDirective,
+    TranslatePipe,
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.css',

@@ -1,4 +1,6 @@
 #version: '4'
+include:
+  - path: docker-compose.monitor.yml
 
 networks:
   booking-net:
@@ -14,7 +16,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     command:
-      - mysqld 
+      - mysqld
       - --max_allowed_packet=128M
       - --innodb_buffer_pool_size=256M
     ports:
@@ -125,6 +127,9 @@ services:
       CLOUDINARY_CLOUD_NAME: ${CLOUD_NAME}
       CLOUDINARY_API_KEY: ${API_KEY}
       CLOUDINARY_API_SECRET: ${API_SECRET}
+      ###  Gemini API Config
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_API_MODEL: ${GEMINI_API_MODEL}
     build:
       context: ../backend
       dockerfile: Dockerfile

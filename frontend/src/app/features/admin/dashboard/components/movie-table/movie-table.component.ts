@@ -7,6 +7,7 @@ import {
   NzThMeasureDirective,
   NzTrDirective,
 } from 'ng-zorro-antd/table';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-movie-table',
@@ -17,6 +18,7 @@ import {
     NzThMeasureDirective,
     NzTheadComponent,
     NzTrDirective,
+    TranslatePipe,
   ],
   templateUrl: './movie-table.component.html',
   styleUrl: './movie-table.component.css',

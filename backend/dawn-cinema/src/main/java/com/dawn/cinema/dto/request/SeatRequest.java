@@ -1,7 +1,6 @@
 package com.dawn.cinema.dto.request;
 
-import com.dawn.cinema.model.Showtime;
-import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.core.constant.SeatStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,11 @@ public class SeatRequest {
 
     private Long id;
 
+    private String seatNumber;
+
     private Long showtimeId;
 
-    private String seatNumber;
+    private String reservationId;
 
     private SeatStatus status;
 }

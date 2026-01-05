@@ -1,7 +1,7 @@
 package com.dawn.notification.controller;
 
-import com.dawn.common.dto.request.BookingNotificationEvent;
-import com.dawn.common.helper.RedisKeyHelper;
+import com.dawn.common.core.dto.request.BookingNotificationEvent;
+import com.dawn.common.core.helper.RedisKeyHelper;
 import com.dawn.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -19,10 +19,10 @@ public class NotificationController {
 
     @GetMapping("/mail/test")
     public void sendEmail() {
-        notificationService.sendEmail(BookingNotificationEvent
+        notificationService.sendReservationEmail(BookingNotificationEvent
                 .builder()
-                .to("ngotunganh207@gmail.com")
-                .name("Ngo Tung Anh")
+                .to("demo@gmail.com")
+                .name("Dawnbreaker")
                 .reservationId("ORD-D4DAAD940C10")
                 .movieName("Overlord")
                 .theaterName("Thanh Xuan")

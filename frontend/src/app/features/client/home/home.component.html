@@ -2,7 +2,9 @@
   <app-slider />
 
   <nz-content class="max-w-5xl mx-auto my-10">
-    <h2 nz-typography class="text-center mb-8">Phim Đang Chiếu</h2>
+    <h2 nz-typography class="text-center mb-8">
+      {{ "Phim Đang Chiếu" | translate }}
+    </h2>
     <div nz-row [nzGutter]="[40, 40]" class="">
       @if (homeStore.movies(); as movies) {
         @for (item of movies; track item.id) {

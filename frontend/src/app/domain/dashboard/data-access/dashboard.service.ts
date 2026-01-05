@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   DashboardMetrics,
   DashboardQuery,
+  DashboardSummary,
   PaymentDistribution,
   RevenuePoint,
   TopMovie,
@@ -18,6 +19,23 @@ import { ApiRes } from '@core/models/common.model';
 export class DashboardService {
   URL = `${environment.apiUrl}/dashboard`;
   private http = inject(HttpClient);
+
+  getSummary(query?: Partial<DashboardQuery>) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
+    return this.http
+      .get<ApiRes<DashboardSummary>>(`${this.URL}/summary`, { params })
+      .pipe(
+        map((res) => res.data),
+        catchError(this.handleError<DashboardSummary>('Dashboard summary')),
+      );
+  }
 
   getMetrics(query?: Partial<DashboardQuery>) {
     let params = new HttpParams();

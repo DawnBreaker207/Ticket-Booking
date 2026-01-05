@@ -30,7 +30,7 @@ export interface ReservationInitResponse {
   reservationId: string;
   showtimeId: number;
   ttl: number;
-  expiresAt: Date;
+  expiredAt: Date;
 }
 
 export interface ReservationRequest {

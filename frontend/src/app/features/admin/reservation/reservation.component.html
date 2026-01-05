@@ -4,8 +4,12 @@
     class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
   >
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Quản lý đơn đặt</h1>
-      <p class="text-gray-500 text-sm mt-1">Theo dõi và xử lý các đơn đặt vé</p>
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ "Quản lý đơn đặt" | translate }}
+      </h1>
+      <p class="text-gray-500 text-sm mt-1">
+        {{ "Theo dõi và xử lý các đơn đặt vé" | translate }}
+      </p>
     </div>
   </div>
 
@@ -16,26 +20,30 @@
         <!--  Search  -->
         <div class="lg:col-span-1">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tìm kiếm
+            >{{ "Tìm kiếm" | translate }}
           </nz-form-label>
           <nz-input-group nzPrefixIcon="search" class="w-full rounded-lg">
-            <input formControlName="query" nz-input placeholder="Mã đơn" />
+            <input
+              formControlName="query"
+              nz-input
+              [placeholder]="'Mã đơn' | translate"
+            />
           </nz-input-group>
         </div>
 
         <!--  Status  -->
         <div class="">
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Trạng thái đơn
+            >{{ "Trạng thái đơn" | translate }}
           </nz-form-label>
           <nz-select
             formControlName="reservationStatus"
             class="w-full"
-            nzPlaceHolder="Trạng thái"
+            [nzPlaceHolder]="'Trạng thái' | translate"
             nzAllowClear
           >
             @for (s of reservationStatus; track s) {
-              <nz-option [nzLabel]="s" [nzValue]="s"></nz-option>
+              <nz-option [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
             }
           </nz-select>
         </div>
@@ -43,7 +51,7 @@
         <!--  Day filter -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Ngày tạo đơn
+            >{{ "Ngày tạo đơn" | translate }}
           </nz-form-label>
           <nz-range-picker
             formControlName="dateRange"
@@ -54,13 +62,13 @@
         <!--  Total Amount -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Tổng tiền
+            >{{ "Tổng tiền" | translate }}
           </nz-form-label>
           <nz-input-group nzPrefixIcon="dollar" class="w-full rounded-lg">
             <input
               formControlName="totalAmount"
               nz-input
-              placeholder="Giá"
+              [placeholder]="'Giá' | translate"
               type="number"
               class="!w-[100px]"
             />
@@ -70,11 +78,17 @@
         <!--  Sort  -->
         <div>
           <nz-form-label class="font-semibold text-xs text-gray-500 uppercase"
-            >Sắp xếp theo
+            >{{ "Sắp xếp theo" | translate }}
           </nz-form-label>
           <nz-select formControlName="sortBy" class="w-full">
-            <nz-option nzLabel="Mới nhất" nzValue="newest"></nz-option>
-            <nz-option nzLabel="Cũ nhất" nzValue="oldest"></nz-option>
+            <nz-option
+              [nzLabel]="'Mới nhất' | translate"
+              nzValue="newest"
+            ></nz-option>
+            <nz-option
+              [nzLabel]="'Cũ nhất' | translate"
+              nzValue="oldest"
+            ></nz-option>
           </nz-select>
         </div>
 
@@ -86,7 +100,7 @@
             type="submit"
           >
             <nz-icon nzType="filter" />
-            Apply
+            {{ "Áp dụng" | translate }}
           </button>
           <button
             nz-button
@@ -94,7 +108,7 @@
             (click)="clearFilter()"
             class="flex-1"
           >
-            Clear
+            {{ "Xóa lọc" | translate }}
           </button>
         </div>
       </div>
@@ -123,7 +137,7 @@
             <tr>
               @for (item of headerColumn; track item) {
                 <th nzAlign="center">
-                  {{ item }}
+                  {{ item | translate }}
                 </th>
               }
             </tr>

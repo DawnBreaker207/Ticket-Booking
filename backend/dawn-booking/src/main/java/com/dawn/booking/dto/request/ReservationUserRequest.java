@@ -1,6 +1,6 @@
 package com.dawn.booking.dto.request;
 
-import com.dawn.common.constant.ReservationStatus;
+import com.dawn.common.core.constant.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

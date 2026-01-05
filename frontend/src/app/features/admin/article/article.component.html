@@ -3,9 +3,11 @@
     class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
   >
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Quản lý bài viết</h1>
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ "Quản lý bài viết" | translate }}
+      </h1>
       <p class="text-gray-600">
-        Tạo nội dung tin tức, khuyến mãi và review phim.
+        {{ "Tạo nội dung tin tức, khuyến mãi và review phim." | translate }}
       </p>
     </div>
     <button
@@ -30,7 +32,7 @@
       <thead>
         <tr>
           @for (header of headerColumn; track header) {
-            <th>{{ header }}</th>
+            <th>{{ header | translate }}</th>
           }
         </tr>
       </thead>
@@ -69,11 +71,12 @@
             <td>
               @if (data.status === "PUBLISHED") {
                 <nz-tag [nzColor]="'success'" class="border-none">
-                  <span nz-icon nzType="check-circle"></span> Đã đăng
+                  <span nz-icon nzType="check-circle"></span>
+                  {{ "Đã đăng" | translate }}
                 </nz-tag>
               } @else {
                 <nz-tag [nzColor]="'default'" class="border-none">
-                  <span nz-icon nzType="edit"></span> Nháp
+                  <span nz-icon nzType="edit"></span> {{ "Nháp" | translate }}
                 </nz-tag>
               }
             </td>
@@ -88,7 +91,7 @@
                   nzShape="circle"
                   (click)="openDrawer(data)"
                   nz-tooltip
-                  nzTooltipTitle="Chỉnh sửa"
+                  [nzTooltipTitle]="'Chỉnh sửa' | translate"
                 >
                   <span nz-icon nzType="edit" class="text-blue-400"> </span>
                 </button>
@@ -98,10 +101,12 @@
                   nzDanger
                   nzShape="circle"
                   nz-popconfirm
-                  nzPopconfirmTitle="Bạn có chắc chắn muốn xóa bài này?"
+                  [nzPopconfirmTitle]="
+                    'Bạn có chắc chắn muốn xóa bài này?' | translate
+                  "
                   (nzOnConfirm)="deleteArticle(data.id)"
                   nz-tooltip
-                  nzTooltipTitle="Xóa"
+                  [nzTooltipTitle]="'Xóa' | translate"
                 >
                   <span nz-icon nzType="delete"> </span>
                 </button>
@@ -117,7 +122,11 @@
   [nzVisible]="drawerVisible"
   [nzWidth]="800"
   [nzBodyStyle]="{ padding: '0', background: '#f0f0f0', color: 'black' }"
-  [nzTitle]="editingArticle ? 'Chỉnh sửa bài viết' : 'Viết bài mới'"
+  [nzTitle]="
+    editingArticle
+      ? ('Chỉnh sửa bài viết' | translate)
+      : ('Viết bài mới' | translate)
+  "
   [nzPlacement]="'left'"
   (nzOnClose)="closeDrawer()"
 >

@@ -22,6 +22,7 @@ import {
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import dayjs from 'dayjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail',
@@ -36,6 +37,7 @@ import dayjs from 'dayjs';
     FormsModule,
     LoadingComponent,
     NgClass,
+    TranslatePipe,
   ],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.css',

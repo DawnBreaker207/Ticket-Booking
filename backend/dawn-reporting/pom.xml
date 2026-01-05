@@ -11,7 +11,9 @@
 
     <artifactId>dawn-reporting</artifactId>
     <packaging>jar</packaging>
-
+    <properties>
+        <jasperreports.version>6.20.6</jasperreports.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>com.dawn.backend</groupId>
@@ -21,6 +23,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
+            <version>${jasperreports.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

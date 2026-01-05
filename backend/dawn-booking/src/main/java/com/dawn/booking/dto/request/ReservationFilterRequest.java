@@ -1,7 +1,7 @@
 package com.dawn.booking.dto.request;
 
-import com.dawn.common.constant.ReservationStatus;
-import com.dawn.common.dto.request.DatetimeFilterRequest;
+import com.dawn.common.core.constant.ReservationStatus;
+import com.dawn.common.core.dto.request.DatetimeFilterRequest;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Data;

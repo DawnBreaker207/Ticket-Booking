@@ -7,6 +7,8 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { selectUserId } from '@core/auth/auth.selectors';
 import { AuthActions } from '@core/auth/auth.actions';
 import { UserStore } from '@domain/user/data-access/user.store';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PROFILE_MENU } from '@core/constants/column';
 
 interface MenuItem {
   title: string;
@@ -19,7 +21,12 @@ interface MenuItem {
 
 @Component({
   selector: 'app-profile-menu',
-  imports: [LucideAngularModule, NzDropDownModule, NzAvatarModule],
+  imports: [
+    LucideAngularModule,
+    NzDropDownModule,
+    NzAvatarModule,
+    TranslatePipe,
+  ],
   templateUrl: './profile-menu.component.html',
   styleUrl: './profile-menu.component.css',
 })
@@ -30,39 +37,15 @@ export class ProfileMenuComponent implements OnInit {
 
   ngOnInit() {
     const userId = this.store.selectSignal(selectUserId)();
-
     if (userId) {
       this.userStore.loadUser(userId);
     }
   }
 
-  public readonly profileMenu: MenuItem[] = [
-    {
-      title: 'Admin',
-      icon: 'Gauge',
-      link: '/admin',
-      role: 'admin',
-    },
-    {
-      title: 'Your Profile',
-      icon: 'CircleUserRound',
-      link: '/profile',
-      role: 'user',
-    },
-    {
-      title: 'Settings',
-      icon: 'Settings',
-      link: '/settings',
-      role: 'user',
-    },
-    {
-      title: 'Log out',
-      icon: 'LogOut',
-      action: () => this.logout(),
-      isDanger: true,
-      role: 'both',
-    },
-  ];
+  public readonly profileMenu: MenuItem[] = PROFILE_MENU.map((item) => ({
+    ...item,
+    action: item.action === 'logout' ? () => this.logout() : undefined,
+  })) as MenuItem[];
 
   filterMenu = computed(() => {
     const user = this.userStore.selectedUser();

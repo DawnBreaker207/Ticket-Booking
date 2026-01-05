@@ -6,18 +6,21 @@
 >
   <div nz-result-extra>
     <button nz-button nzType="primary" nzShape="round" (click)="goToHomePage()">
-      Home Page
+      {{ "Home Page" | translate }}
     </button>
   </div>
 </nz-result>
 
 <ng-template #Title>
-  <h1 class="ant-result-title text-4xl font-bold">Booo!</h1>
+  <h1 class="ant-result-title text-4xl font-bold">{{ "Ối!" | translate }}</h1>
 </ng-template>
 
 <ng-template #Subtitle>
   <h1 class="ant-result-subtitle text-sm">
-    The requested page is missing. Check the URL or return to
+    {{
+      "Trang bạn yêu cầu không tồn tại. Vui lòng kiểm tra lại URL hoặc quay về"
+        | translate
+    }}
   </h1>
 </ng-template>
 

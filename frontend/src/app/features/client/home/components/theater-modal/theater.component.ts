@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { Theater } from '@domain/theater/models/theater.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theater',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './theater.component.html',
   styleUrl: './theater.component.css',
 })
