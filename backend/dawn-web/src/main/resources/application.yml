@@ -127,3 +127,22 @@ resilience4j:
         timeout-duration: 0s
 service:
   url: http://localhost:8888/api/v1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://tempo:9411/api/v2/spans
+loki:
+  url: http://loki:3100/loki/api/v1/push
