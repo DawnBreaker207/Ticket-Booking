@@ -1,11 +1,11 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.common.constant.Message;
-import com.dawn.common.constant.URole;
-import com.dawn.common.exception.wrapper.PermissionDeniedException;
-import com.dawn.common.exception.wrapper.ResourceAlreadyExistedException;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
-import com.dawn.common.utils.JWTUtils;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.constant.URole;
+import com.dawn.common.core.exception.wrapper.PermissionDeniedException;
+import com.dawn.common.core.exception.wrapper.ResourceAlreadyExistedException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.utils.JWTUtils;
 import com.dawn.identity.dto.request.LoginRequest;
 import com.dawn.identity.dto.request.RegisterRequest;
 import com.dawn.identity.dto.response.JwtResponse;

@@ -3,7 +3,7 @@ package com.dawn.catalog.service.Impl;
 import com.dawn.catalog.model.Voucher;
 import com.dawn.catalog.repository.VoucherRepository;
 import com.dawn.catalog.service.VoucherService;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

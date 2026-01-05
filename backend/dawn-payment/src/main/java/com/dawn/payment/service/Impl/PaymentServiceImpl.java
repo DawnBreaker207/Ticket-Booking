@@ -1,8 +1,8 @@
 package com.dawn.payment.service.Impl;
 
-import com.dawn.common.constant.Message;
-import com.dawn.common.constant.PaymentMethod;
-import com.dawn.common.constant.PaymentStatus;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.constant.PaymentMethod;
+import com.dawn.common.core.constant.PaymentStatus;
 import com.dawn.payment.config.payment.MomoConfig;
 import com.dawn.payment.config.payment.VNPayConfig;
 import com.dawn.payment.dto.request.PaymentRequest;

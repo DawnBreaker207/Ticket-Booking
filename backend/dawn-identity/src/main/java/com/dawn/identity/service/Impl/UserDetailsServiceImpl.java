@@ -1,7 +1,7 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.common.constant.Message;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.model.User;
 import com.dawn.identity.model.UserDetailsImpl;
 import com.dawn.identity.repository.UserRepository;

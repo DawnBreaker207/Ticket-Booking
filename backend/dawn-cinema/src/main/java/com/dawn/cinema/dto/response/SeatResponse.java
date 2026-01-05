@@ -1,7 +1,7 @@
 package com.dawn.cinema.dto.response;
 
-import com.dawn.common.constant.SeatStatus;
-import com.dawn.common.dto.response.BaseResponse;
+import com.dawn.common.core.constant.SeatStatus;
+import com.dawn.common.core.dto.response.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

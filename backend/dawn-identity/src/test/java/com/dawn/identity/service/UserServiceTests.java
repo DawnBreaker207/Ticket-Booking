@@ -1,6 +1,6 @@
 package com.dawn.identity.service;
 
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.model.User;

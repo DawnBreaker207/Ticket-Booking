@@ -1,9 +1,9 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.common.constant.Message;
-import com.dawn.common.exception.wrapper.RefreshTokenExpiredException;
-import com.dawn.common.exception.wrapper.RefreshTokenNotFoundException;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.exception.wrapper.RefreshTokenExpiredException;
+import com.dawn.common.core.exception.wrapper.RefreshTokenNotFoundException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.model.RefreshToken;
 import com.dawn.identity.model.User;
 import com.dawn.identity.repository.RefreshTokenRepository;

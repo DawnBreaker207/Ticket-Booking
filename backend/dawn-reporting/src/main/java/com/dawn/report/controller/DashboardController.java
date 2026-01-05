@@ -1,6 +1,6 @@
 package com.dawn.report.controller;
 
-import com.dawn.common.dto.response.ResponseObject;
+import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.report.dto.request.DashboardFilterRequest;
 import com.dawn.report.dto.response.*;
 import com.dawn.report.service.DashboardService;

@@ -1,8 +1,8 @@
 package com.dawn.payment.model;
 
-import com.dawn.common.constant.PaymentMethod;
-import com.dawn.common.constant.PaymentStatus;
-import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.common.core.constant.PaymentMethod;
+import com.dawn.common.core.constant.PaymentStatus;
+import com.dawn.common.core.model.AbstractMappedEntity;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

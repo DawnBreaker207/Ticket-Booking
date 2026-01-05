@@ -2,7 +2,7 @@ package com.dawn.catalog.service;
 
 import com.dawn.catalog.dto.request.MovieRequest;
 import com.dawn.catalog.dto.response.MovieResponse;
-import com.dawn.common.dto.response.ResponsePage;
+import com.dawn.common.core.dto.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface MovieService {

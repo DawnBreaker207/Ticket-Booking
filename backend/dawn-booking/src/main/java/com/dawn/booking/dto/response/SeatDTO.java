@@ -1,6 +1,6 @@
 package com.dawn.booking.dto.response;
 
-import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.core.constant.SeatStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

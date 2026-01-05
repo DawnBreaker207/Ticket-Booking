@@ -1,7 +1,6 @@
 package com.dawn.cinema.dto.request;
 
-import com.dawn.cinema.model.Showtime;
-import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.core.constant.SeatStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

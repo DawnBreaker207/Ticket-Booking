@@ -2,9 +2,9 @@ package com.dawn.cinema.service.Impl;
 
 import com.dawn.cinema.dto.response.MovieDTO;
 import com.dawn.cinema.service.MovieClientCinemaService;
-import com.dawn.common.constant.Message;
-import com.dawn.common.dto.response.ResponseObject;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.dto.response.ResponseObject;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
