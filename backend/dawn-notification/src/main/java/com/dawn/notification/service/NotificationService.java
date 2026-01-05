@@ -1,8 +1,8 @@
 package com.dawn.notification.service;
 
-import com.dawn.common.constant.RabbitMQConstants;
-import com.dawn.common.dto.request.BookingNotificationEvent;
-import com.dawn.common.utils.BarcodeUtils;
+import com.dawn.common.core.constant.RabbitMQConstants;
+import com.dawn.common.core.dto.request.BookingNotificationEvent;
+import com.dawn.common.core.utils.BarcodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.thymeleaf.TemplateEngine;
@@ -24,6 +25,7 @@ import org.thymeleaf.context.Context;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +42,8 @@ public class NotificationService {
     private final Map<String, Map<String, SseEmitter>> emitters = new ConcurrentHashMap<>();
 
     private final ObjectMapper objectMapper;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -187,7 +191,7 @@ public class NotificationService {
     }
 
     @RabbitListener(queues = RabbitMQConstants.QUEUE_NOTIFY)
-    public void sendEmail(BookingNotificationEvent event) {
+    public void sendReservationEmail(BookingNotificationEvent event) {
         log.info("Got message from reservation");
         String barcodeBase64 = BarcodeUtils.generateCode128(event.getReservationId(), 300, 100);
 
@@ -216,10 +220,14 @@ public class NotificationService {
             mailSender.send(messagePreparator);
             log.info("Email notification sent!");
         } catch (MailException ex) {
-            log.error("Exception occurred when sending email", ex);
-            throw new RuntimeException("Exception occurred when sending email to demo@gmail.com", ex);
+            log.error("Exception occurred when sending email to {} with message: {}", event.getTo(),ex.getMessage());
         }
 
     }
 
+    @RabbitListener(queues = RabbitMQConstants.QUEUE_DASHBOARD)
+    public void handleUpdateDashboard() {
+        Map<String, String> payload = Collections.singletonMap("action", "REFRESH");
+        messagingTemplate.convertAndSend("/topic/dashboard/update", payload);
+    }
 }

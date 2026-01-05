@@ -115,8 +115,6 @@ public class DashboardRepository {
                     r.id = p.reservation_id
                 JOIN showtime s ON
                     r.showtime_id = s.id
-                LEFT JOIN seat se ON
-                    se.reservation_id = r.id
                 WHERE
                     (:from IS NULL OR p.created_at >= :from)
                     AND
