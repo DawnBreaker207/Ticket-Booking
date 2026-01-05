@@ -1,21 +1,25 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
-import { map } from 'rxjs';
 import { CountdownComponent } from '@features/client/reservation/components/countdown/countdown.component';
 import { selectSelectedMovie } from '@domain/movie/data-access/movie.selectors';
 import { selectSelectedTheater } from '@domain/theater/data-access/theater.selectors';
-import {
-  selectSelectedShowtime,
-  selectTotalPrice,
-} from '@domain/showtime/data-access/showtime.selectors';
-import { selectSelectedSeats } from '@domain/seat/data-access/seat.selectors';
+import { selectSelectedShowtime } from '@domain/showtime/data-access/showtime.selectors';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { timeFormat } from '@shared/utils/date.helper';
+import { TranslatePipe } from '@ngx-translate/core';
+import { SeatStore } from '@features/client/reservation/components/seat/seat.store';
 
 @Component({
   selector: 'app-detail-film',
@@ -26,53 +30,46 @@ import { timeFormat } from '@shared/utils/date.helper';
     NzWaveDirective,
     CommonModule,
     CountdownComponent,
+    TranslatePipe,
   ],
   templateUrl: './detail-film.component.html',
   styleUrl: './detail-film.component.css',
 })
-export class DetailFilmComponent implements OnInit {
+export class DetailFilmComponent {
   private store = inject(Store);
-  filmDetail$ = this.store.select(selectSelectedMovie);
-  theater$ = this.store.select(selectSelectedTheater);
-  showtime$ = this.store.select(selectSelectedShowtime);
-  totalPrice$ = this.store.select(selectTotalPrice);
+  readonly seatStore = inject(SeatStore);
 
   index = input<number>(0);
   steps = input<number[]>([]);
-  selectedSeats$ = this.store
-    .select(selectSelectedSeats)
-    .pipe(
-      map((seats) =>
-        seats
-          .filter((s) => s.status === 'SELECTED')
-          .map((s) => s.seatNumber.replace(/\s+/g, '')),
-      ),
-    );
-
   stepChange = output<number>();
 
-  ngOnInit() {
-    this.showtime$.subscribe((data) =>
-      this.store.dispatch(
-        MovieActions.loadMovie({ id: data?.movieId as number }),
-      ),
-    );
+  readonly movie = this.store.selectSignal(selectSelectedMovie);
+  readonly theater = this.store.selectSignal(selectSelectedTheater);
+  readonly showtime = this.store.selectSignal(selectSelectedShowtime);
+
+  readonly selectedSeatNumbers = computed(() =>
+    this.seatStore.selectedSeats().map((s) => s.seatNumber.replace(/\s+/g, '')),
+  );
+
+  constructor() {
+    effect(() => {
+      const movieId = this.showtime()?.movieId;
+      if (movieId) {
+        this.store.dispatch(MovieActions.loadMovie({ id: movieId as number }));
+      }
+    });
   }
 
   nextStep() {
-    if (this.index() < this.steps().length - 1) {
-      this.stepChange.emit(this.index() + 1);
-    }
+    this.stepChange.emit(this.index() + 1);
   }
 
   prevStep() {
-    if (this.index() > 0) {
-      this.stepChange.emit(this.index() - 1);
-    }
+    this.stepChange.emit(this.index() - 1);
   }
 
   saveSeats() {
-    this.stepChange.emit(this.index() + 1);
+    this.nextStep();
   }
 
   protected readonly timeFormat = timeFormat;

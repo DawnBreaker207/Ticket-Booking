@@ -1,5 +1,7 @@
 <div class="p-2">
-  <p class="text-lg font-bold mb-4 text-blue-600">Lịch chiếu phim</p>
+  <p class="text-lg font-bold mb-4 text-blue-600">
+    {{ "Lịch chiếu phim" | translate }}
+  </p>
 
   <div class="max-h-[25rem] overflow-y-auto pr-2">
     @for (group of groupShowtimes(); track group.date) {
@@ -7,7 +9,7 @@
         <div class="flex items-center gap-2 mb-3">
           <span
             class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold"
-            >Ngày</span
+            >{{ "Ngày" | translate }}</span
           >
           <span class="font-bold text-gray-700">{{
             formatShowtime(group.date)
@@ -29,7 +31,8 @@
             >
               <span class="text-sm">{{ st.showTime }}</span>
               <span class="text-[10px] text-gray-600">
-                {{ st?.availableSeats }}/{{ st?.totalSeats }} ghế
+                {{ st?.availableSeats }}/{{ st?.totalSeats }}
+                {{ "ghế" | translate }}
               </span>
 
               @if (st.id === selectedShowtimeId()) {
@@ -45,7 +48,7 @@
       </div>
     } @empty {
       <div class="text-center py-10 text-gray-400">
-        Rất tiếc, hiện không có suất chiếu này
+        {{ "Rất tiếc, hiện không có suất chiếu này" | translate }}
       </div>
     }
   </div>
@@ -60,7 +63,7 @@
       (click)="confirmSelection()"
       class="rounded-lg font-bold"
     >
-      XÁC NHẬN CHỌN SUẤT CHIẾU
+      {{ "XÁC NHẬN CHỌN SUẤT CHIẾU" | translate }}
     </button>
   </div>
 </div>

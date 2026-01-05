@@ -17,7 +17,7 @@
       <button
         [routerLink]="['/movie/detail', movie().id]"
         class="bg-white text-gray-900 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg border-none cursor-pointer"
-        title="Xem chi tiết"
+        [title]="'Xem chi tiết' | translate"
       >
         <nz-icon nzType="info-circle" class="text-xl" />
       </button>
@@ -44,7 +44,7 @@
       <!-- Durations -->
       <span class="flex items-center gap-1 shrink-0">
         <nz-icon nzType="clock-circle" />
-        {{ movie().duration }} phút
+        {{ movie().duration }} {{ "phút" | translate }}
       </span>
     </div>
 
@@ -56,7 +56,7 @@
       (click)="onSelectMovie(movie().id)"
       class="mt-auto border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-lg transition-colors h-10"
     >
-      Mua Vé
+      {{ "Mua Vé" | translate }}
     </button>
   </div>
 </div>

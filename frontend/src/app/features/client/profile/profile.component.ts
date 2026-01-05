@@ -21,6 +21,7 @@ import { UserStore } from '@domain/user/data-access/user.store';
 import { Store } from '@ngrx/store';
 import { selectUserId } from '@core/auth/auth.selectors';
 import { ReservationStore } from '@domain/reservation/data-access/reservation.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -45,6 +46,7 @@ import { ReservationStore } from '@domain/reservation/data-access/reservation.st
     NzTooltipModule,
     BookingHistoryComponent,
     InfoComponent,
+    TranslatePipe,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',

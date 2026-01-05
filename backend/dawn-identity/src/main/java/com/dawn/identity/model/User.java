@@ -1,6 +1,6 @@
 package com.dawn.identity.model;
 
-import com.dawn.common.model.AbstractMappedEntity;
+import com.dawn.common.core.model.AbstractMappedEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

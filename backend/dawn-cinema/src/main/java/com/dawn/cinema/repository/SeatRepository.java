@@ -2,7 +2,7 @@ package com.dawn.cinema.repository;
 
 import com.dawn.cinema.model.Seat;
 import com.dawn.cinema.model.Showtime;
-import com.dawn.common.constant.SeatStatus;
+import com.dawn.common.core.constant.SeatStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

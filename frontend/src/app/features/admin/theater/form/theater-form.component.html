@@ -3,37 +3,37 @@
     <!--  Poster-->
     <nz-col [nzSpan]="8">
       <nz-form-item class="mt-[60px]">
-        <nz-form-label>Name</nz-form-label>
+        <nz-form-label>{{ "Tên rạp" | translate }}</nz-form-label>
         <nz-form-control>
           <input
             nz-input
             formControlName="name"
             type="text"
-            placeholder="Location"
+            placeholder="Điền tên rạp"
             [readOnly]="mode === 'view'"
           />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item class="mt-[60px]">
-        <nz-form-label>Location</nz-form-label>
+        <nz-form-label>{{ "Địa điểm" | translate }}</nz-form-label>
         <nz-form-control>
           <input
             nz-input
             formControlName="location"
             type="text"
-            placeholder="Location"
+            [placeholder]="'Điền địa điểm' | translate"
             [readOnly]="mode === 'view'"
           />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item class="mt-[60px]">
-        <nz-form-label>Capaticy</nz-form-label>
+        <nz-form-label>{{ "Sức chứa" | translate }}</nz-form-label>
 
         <nz-select
           formControlName="capacity"
           [nzDisabled]="mode === 'view'"
-          nzPlaceHolder="'Select Capacity'"
+          [nzPlaceHolder]="'Chọn Sức chứa' | translate"
         >
           <nz-option [nzLabel]="40" [nzValue]="40"></nz-option>
           <nz-option [nzLabel]="50" [nzValue]="50"></nz-option>

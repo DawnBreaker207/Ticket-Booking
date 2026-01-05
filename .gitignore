@@ -1,3 +1,4 @@
 data/
 .env
 .idea/
+infra/docker/tempo/tempo-data

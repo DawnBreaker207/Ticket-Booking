@@ -2,7 +2,7 @@ package com.dawn.cinema.service;
 
 import com.dawn.cinema.dto.request.TheaterRequest;
 import com.dawn.cinema.dto.response.TheaterResponse;
-import com.dawn.common.dto.response.ResponsePage;
+import com.dawn.common.core.dto.response.ResponsePage;
 import org.springframework.data.domain.Pageable;
 
 public interface TheaterService {

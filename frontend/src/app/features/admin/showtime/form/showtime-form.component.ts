@@ -44,6 +44,7 @@ import {
   timeFormatDay,
 } from '@shared/utils/date.helper';
 import { MovieActions } from '@domain/movie/data-access/movie.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form',
@@ -58,6 +59,7 @@ import { MovieActions } from '@domain/movie/data-access/movie.actions';
     NzTimePickerModule,
     NzIconModule,
     SlicePipe,
+    TranslatePipe,
   ],
   templateUrl: './showtime-form.component.html',
   styleUrl: './showtime-form.component.css',

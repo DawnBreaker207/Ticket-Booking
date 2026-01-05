@@ -4,10 +4,11 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { PaymentDistribution } from '@domain/dashboard/models/dashboard.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-chart',
-  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule],
+  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule, TranslatePipe],
   templateUrl: './payment-chart.component.html',
   styleUrl: './payment-chart.component.css',
 })

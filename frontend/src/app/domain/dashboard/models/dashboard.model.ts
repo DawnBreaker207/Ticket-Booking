@@ -1,8 +1,8 @@
-export interface DashboardQuery {
-  from: Date;
-  to: Date;
-  movieId: number;
-  theaterId: number;
+import { FilterDate } from '@core/models/common.model';
+
+export interface DashboardQuery extends FilterDate {
+  // movieId: number;
+  // theaterId: number;
 }
 
 export interface DashboardMetrics {
@@ -31,6 +31,13 @@ export interface TopTheater {
 
 export interface RevenuePoint {
   date: Date;
-
   revenue: number;
+}
+
+export interface DashboardSummary {
+  metrics: DashboardMetrics;
+  revenues: RevenuePoint[];
+  movies: TopMovie[];
+  theaters: TopTheater[];
+  payments: PaymentDistribution[];
 }

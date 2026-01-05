@@ -1,47 +1,24 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { interval, Subject, takeUntil, withLatestFrom } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { AsyncPipe } from '@angular/common';
-import { FormattedCountdownPipe } from '@shared/pipes/formatted-countdown.pipe';
+import { Component, inject, OnInit } from '@angular/core';
 import { StorageService } from '@core/services/storage/storage.service';
-import { selectedRemainingTime } from '@domain/reservation/data-access/reservation.selectors';
-import { ReservationRequest } from '@domain/reservation/models/reservation.model';
-import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
+import { ReservationStore } from '@features/client/reservation/reservation.store';
 
 @Component({
   selector: 'app-countdown',
-  imports: [AsyncPipe, FormattedCountdownPipe],
+  imports: [],
   templateUrl: './countdown.component.html',
   styleUrl: './countdown.component.css',
 })
-export class CountdownComponent implements OnInit, OnDestroy {
-  private store = inject(Store);
+export class CountdownComponent implements OnInit {
+  readonly reservationStore = inject(ReservationStore);
   private storageService = inject(StorageService);
-  private destroy$ = new Subject<void>();
-
-  remainingTime$ = this.store.select(selectedRemainingTime);
 
   ngOnInit() {
-    const reservationState =
-      this.storageService.getItem<ReservationRequest>('reservationState');
-    const reservationId = reservationState?.reservationId;
-    const userId = reservationState?.userId;
-    if (!reservationId || !userId) return;
-
-    interval(1000)
-      .pipe(withLatestFrom(this.remainingTime$), takeUntil(this.destroy$))
-      .subscribe(([_, ttl]) => {
-        if (!ttl || ttl < 0) return;
-        if (ttl > 0) {
-          this.store.dispatch(
-            ReservationActions.updateReservationCountdownTTL({ ttl: ttl - 1 }),
-          );
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    const ttl = this.reservationStore.currentTTL()?.ttl;
+    if (!ttl) {
+      const state = this.storageService.getItem<any>('reservationState');
+      if (state && state.ttl > 0) {
+        this.reservationStore.startCountdown(state.ttl);
+      }
+    }
   }
 }

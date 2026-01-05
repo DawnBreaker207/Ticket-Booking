@@ -5,7 +5,7 @@
       nz-input
       [formControl]="searchCtrl"
       (keyup.enter)="onSearch()"
-      placeholder="Nhập tên phim API..."
+      [placeholder]="'Nhập tên phim API...' | translate"
       class="rounded-lg"
     />
     <button
@@ -32,6 +32,9 @@
             <div
               class="flex gap-4 p-3 rounded-xl border border-gray-100 hover:bg-blue-50 hover:border-blue-200 bg-white cursor-pointer transition-all group"
               (click)="selectMovie(movie)"
+              (keyup.enter)="selectMovie(movie)"
+              tabindex="0"
+              role="button"
             >
               <!-- Poster Image -->
               <img
@@ -46,7 +49,8 @@
                   {{ movie.title }}
                 </h4>
                 <p class="text-xs text-gray-500 mb-1">
-                  Release: {{ movie.release_date | date: "yyyy" }}
+                  {{ "Phát hành" | translate }}:
+                  {{ movie.release_date | date: "yyyy" }}
                 </p>
 
                 <!-- Rating -->
@@ -80,7 +84,7 @@
           class="flex flex-col items-center justify-center h-full text-gray-400"
         >
           <span nz-icon nzType="search" class="text-4xl mb-2"></span>
-          <p>Chưa có kết quả tìm kiếm</p>
+          <p>{{ "Chưa có kết quả tìm kiếm" | translate }}</p>
         </div>
       }
     }

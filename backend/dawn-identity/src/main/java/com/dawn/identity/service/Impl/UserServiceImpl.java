@@ -1,9 +1,9 @@
 package com.dawn.identity.service.Impl;
 
-import com.dawn.common.constant.Message;
-import com.dawn.common.constant.URole;
-import com.dawn.common.dto.response.ResponsePage;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.constant.URole;
+import com.dawn.common.core.dto.response.ResponsePage;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.helper.UserMappingHelper;

@@ -8,6 +8,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AuthService } from '@core/auth/auth.service';
 import { ProfileMenuComponent } from '@shared/components/profile-menu/profile-menu.component';
 import { SelectShowtimeComponent } from '@features/client/home/components/select/select.component';
+import {
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { HEADERS } from '@core/constants/column';
 
 @Component({
   selector: 'app-header',
@@ -20,15 +25,19 @@ import { SelectShowtimeComponent } from '@features/client/home/components/select
     ProfileMenuComponent,
     SelectShowtimeComponent,
     NzIconModule,
+    TranslateModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
   authService = inject(AuthService);
-  headers = [
-    { name: 'Phim', path: '/client' },
-    { name: ' Rạp', path: '' },
-    { name: 'Tin mới và ưu đãi', path: '' },
-  ];
+  private translateService = inject(TranslateService);
+
+  headers = HEADERS;
+
+  useLanguage(lang: string) {
+    console.log('Use lang ', lang);
+    this.translateService.use(lang);
+  }
 }

@@ -6,7 +6,7 @@ import com.dawn.cinema.helper.TheaterMappingHelper;
 import com.dawn.cinema.model.Theater;
 import com.dawn.cinema.repository.TheaterRepository;
 import com.dawn.cinema.service.Impl.TheaterServiceImpl;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

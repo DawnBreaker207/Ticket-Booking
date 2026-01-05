@@ -1,10 +1,11 @@
 <app-loading [isLoading]="reservationStore.loading()">
   @if (reservationStore.reservation(); as reservation) {
     <div class="w-full h-full">
-      <div>Reservation Id: {{ reservation.id }}</div>
-      <div>Name: {{ reservation.user.username }}</div>
+      <div>{{ "Mã vé" | translate }}: {{ reservation.id }}</div>
+      <div>{{ "Name" | translate }}: {{ reservation.user.username }}</div>
       <div>
-        Showtime: {{ reservation.showtime.showDate | date: "dd/MM/yyyy" }}
+        {{ "Suất chiếu" | translate }}:
+        {{ reservation.showtime.showDate | date: "dd/MM/yyyy" }}
       </div>
       <div>
         Status:
@@ -12,13 +13,17 @@
           {{ (reservation.reservationStatus | tags).status }}
         </nz-tag>
       </div>
-      <div>Total Amount: {{ reservation.totalAmount | currency: "VND" }}</div>
       <div>
-        Reservation Day: {{ reservation.createdAt | date: "dd/MM/yyyy" }}
+        {{ "Tổng tiền" | translate }}:
+        {{ reservation.totalAmount | currency: "VND" }}
       </div>
-      <div>Seats: {{ reservation.seats }}</div>
+      <div>
+        {{ "Ngày đặt vé" | translate }}:
+        {{ reservation.createdAt | date: "dd/MM/yyyy" }}
+      </div>
+      <div>{{ "Ghế" | translate }}: {{ reservation.seats }}</div>
     </div>
   } @else {
-    <p>Error</p>
+    <p>{{ "Lỗi" | translate }}</p>
   }
 </app-loading>

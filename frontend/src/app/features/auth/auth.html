@@ -17,21 +17,26 @@
           routerLink="/"
           class="flex items-center gap-2 text-decoration-none w-fit"
         >
-          <nz-icon nzType="shop" nzTheme="fill" class="text-4xl text-primary" />
+          <nz-icon nzType="shop" nzTheme="fill" class="text-4xl text-primary"/>
           <span class="text-3xl font-bold tracking-tighter"
-            >CINE<span class="text-primary">PLEX</span></span
+          >CINE<span class="text-primary">PLEX</span></span
           >
         </a>
       </div>
 
       <div class="mb-8">
-        <h1 class="text-5xl text-gray-300! fond-bold mb-4 leading-tight">
-          Magic of Cinema <br />
-          at your fingertips.
+        <h1
+          class="text-5xl text-gray-300! fond-bold mb-4 leading-tight"
+          translate
+        >
+          {{ "Phép màu Điện ảnh" | translate }}<br/>
+          {{ "ngay trong tầm tay." | translate }}
         </h1>
         <p class="text-lg text-gray-300 max-w-md">
-          Book tickets for the latest blockbusters, enjoy exclusive popcorn
-          deals, and experience the best visual quality.
+          {{
+            "Đặt vé cho những siêu phẩm mới nhất, tận hưởng ưu đãi bắp nước độc quyền và trải nghiệm chất lượng hình ảnh tuyệt đỉnh."
+              | translate
+          }}
         </p>
       </div>
     </div>
@@ -45,9 +50,9 @@
       <!--  LOGO ON MOBILE ONLY  -->
       <div class="lg:hidden text-center mb-8">
         <a routerLink="/" class="inline-flex items-center gap-2">
-          <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary" />
+          <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary"/>
           <span class="text-2xl font-bold text-gray-900"
-            >CINE <span class="text-primary">PLEX</span></span
+          >CINE <span class="text-primary">PLEX</span></span
           >
         </a>
       </div>
@@ -63,10 +68,13 @@
       <ng-template #registerTpl>
         <div class="mb-8">
           <h2 class="text-3xl font-bold text-gray-900 mb-2">
-            Create Account 🚀
+            {{ "Tạo tài khoản 🚀" | translate }}
           </h2>
           <p class="text-gray-500">
-            Join us to book tickets and get exclusive offers.
+            {{
+              "Tham gia cùng chúng tôi để đặt vé và nhận ưu đãi độc quyền."
+                | translate
+            }}
           </p>
         </div>
 
@@ -77,8 +85,13 @@
           nzLayout="vertical"
         >
           <nz-form-item class="mb-5">
-            <nz-form-label nzRequired>Full Name</nz-form-label>
-            <nz-form-control nzErrorTip="What should we call you?">
+            <nz-form-label nzRequired>{{
+                "Họ và tên" | translate
+              }}
+            </nz-form-label>
+            <nz-form-control
+              [nzErrorTip]="'Chúng tôi nên gọi bạn là gì?' | translate"
+            >
               <nz-input-group
                 nzPrefixIcon="user"
                 nzSize="large"
@@ -88,15 +101,20 @@
                   nz-input
                   type="text"
                   formControlName="username"
-                  placeholder="John Doe"
+                  [placeholder]="'Nguyễn Văn A' | translate"
                 />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item class="mb-5">
-            <nz-form-label nzRequired>Email Address</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter a valid email">
+            <nz-form-label nzRequired>{{
+                "Địa chỉ Email" | translate
+              }}
+            </nz-form-label>
+            <nz-form-control
+              [nzErrorTip]="'Vui lòng nhập đúng định dạng email' | translate"
+            >
               <nz-input-group
                 nzPrefixIcon="mail"
                 nzSize="large"
@@ -106,7 +124,7 @@
                   nz-input
                   type="email"
                   formControlName="email"
-                  placeholder="name@example.com"
+                  [placeholder]="'name@gmail.com' | translate"
                 />
               </nz-input-group>
             </nz-form-control>
@@ -114,8 +132,11 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <nz-form-item class="mb-5">
-              <nz-form-label nzRequired>Password</nz-form-label>
-              <nz-form-control nzErrorTip="Password required!">
+              <nz-form-label nzRequired>{{
+                  "Mật khẩu" | translate
+                }}
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="'Yêu cầu mật khẩu!' | translate">
                 <nz-input-group
                   nzPrefixIcon="lock"
                   nzSize="large"
@@ -132,7 +153,10 @@
             </nz-form-item>
 
             <nz-form-item class="mb-5">
-              <nz-form-label nzRequired>Confirm</nz-form-label>
+              <nz-form-label nzRequired>{{
+                  "Xác nhận" | translate
+                }}
+              </nz-form-label>
               <nz-form-control [nzErrorTip]="confirmErrorTpl">
                 <nz-input-group
                   nzPrefixIcon="lock"
@@ -148,10 +172,10 @@
                 </nz-input-group>
                 <ng-template #confirmErrorTpl let-control>
                   @if (control.hasError("required")) {
-                    <ng-container>Required!</ng-container>
+                    <ng-container>{{ "Bắt buộc!" | translate }}</ng-container>
                   }
                   @if (control.hasError("confirm")) {
-                    <ng-container>Not match!</ng-container>
+                    <ng-container>{{ "Không khớp!" | translate }}</ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -166,25 +190,33 @@
             [nzLoading]="isRegisterLoading"
             class="font-bold h-12 text-base rounded-lg mb-6"
           >
-            Register Account
+            {{ "Đăng ký tài khoản" | translate }}
           </button>
         </form>
 
         <div class="text-center text-gray-600">
-          Already have an account?
+          {{ "Bạn đã có tài khoản?" | translate }}
           <a
             (click)="toggleMode()"
+            (keyup.enter)="toggleMode()"
+            tabindex="0"
+            role="button"
             class="font-bold text-primary hover:underline cursor-pointer ml-1"
-            >Sign in here</a
+          >{{ "Đăng nhập tại đây" | translate }}</a
           >
         </div>
       </ng-template>
 
       <ng-template #loginTpl>
         <div class="mb-8">
-          <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back 👋</h2>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            {{ "Chào mừng quay trở lại 👋" | translate }}
+          </h2>
           <p class="text-gray-500">
-            Enter your credentials to access your account.
+            {{
+              "Nhập thông tin đăng nhập để truy cập tài khoản của bạn."
+                | translate
+            }}
           </p>
         </div>
 
@@ -195,8 +227,13 @@
           nzLayout="vertical"
         >
           <nz-form-item class="mb-5">
-            <nz-form-label nzRequired>Email Address or Username</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter a valid name!">
+            <nz-form-label nzRequired>{{
+                "Email hoặc Tên đăng nhập" | translate
+              }}
+            </nz-form-label>
+            <nz-form-control
+              [nzErrorTip]="'Vui lòng nhập đúng tên đăng nhập!' | translate"
+            >
               <nz-input-group
                 nzPrefixIcon="mail"
                 nzSize="large"
@@ -206,15 +243,20 @@
                   nz-input
                   type="email"
                   formControlName="identifier"
-                  placeholder="name@example.com"
+                  [placeholder]="'name@gmail.com' | translate"
                 />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item class="mb-2">
-            <nz-form-label nzRequired>Password</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter you password!">
+            <nz-form-label nzRequired>{{
+                "Mật khẩu" | translate
+              }}
+            </nz-form-label>
+            <nz-form-control
+              [nzErrorTip]="'Vui lòng nhập mật khẩu!' | translate"
+            >
               <nz-input-group
                 nzPrefixIcon="lock"
                 [nzSuffix]="suffixTemplate"
@@ -239,10 +281,12 @@
           </nz-form-item>
 
           <div class="flex items-center justify-between mb-6">
-            <label nz-checkbox formControlName="remember">Remember me</label>
+            <span nz-checkbox formControlName="remember">{{
+                "Ghi nhớ đăng nhập" | translate
+              }}</span>
             <a
               class="text-sm font-semibold text-primary hover:text-blue-700 hober:underline cursor-pointer"
-              >Forgot password?</a
+            >{{ "Quên mật khẩu?" | translate }}</a
             >
           </div>
 
@@ -254,16 +298,19 @@
             [nzLoading]="isLoginLoading"
             class="font-bold h-12 text-base rounded-lg mb-6"
           >
-            Sign In to Account
+            {{ "Đăng nhập vào tài khoản" | translate }}
           </button>
         </form>
 
         <div class="text-center text-gray-600">
-          Not a member yet?
+          {{ "Chưa là thành viên?" | translate }}
           <a
             (click)="toggleMode()"
+            (keyup.enter)="toggleMode()"
+            tabindex="0"
+            role="button"
             class="font-bold text-primary hover:underline cursor-pointer ml-1"
-            >Create an account</a
+          >{{ "Tạo tài khoản mới" | translate }}</a
           >
         </div>
       </ng-template>
@@ -275,9 +322,9 @@
             <div class="w-full border-t border-gray-200"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white text-gray-500 font-medium"
-              >Or continue with</span
-            >
+            <span class="px-4 bg-white text-gray-500 font-medium">{{
+                "Hoặc tiếp tục với" | translate
+              }}</span>
           </div>
         </div>
 
@@ -286,7 +333,7 @@
             type="button"
             class="flex items-center justify-center w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all"
           >
-            <nz-icon nzType="google" class="mr-2 text-xl text-red-500" />
+            <nz-icon nzType="google" class="mr-2 text-xl text-red-500"/>
             Google
           </button>
 
@@ -299,7 +346,7 @@
               nzTheme="fill"
               class="mr-2 text-xl text-blue-500"
             />
-            Google
+            Facebook
           </button>
         </div>
       </div>

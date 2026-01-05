@@ -15,12 +15,12 @@ import { NzFormLabelComponent } from 'ng-zorro-antd/form';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { StatusTagsPipe } from '@shared/pipes/status-tags.pipe';
-import { ReservationStatus } from '@core/constants/enum';
-import { headerColumns } from '@core/constants/column';
 import { formatDate } from '@shared/utils/date.helper';
 import { FormReservationComponent } from '@features/admin/reservation/form/reservation-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { ReservationStore } from '@domain/reservation/data-access/reservation.store';
+import { TranslatePipe } from '@ngx-translate/core';
+import { HEADER_COLUMNS, RESERVATION_STATUS } from '@core/constants/column';
 
 @Component({
   selector: 'app-reservation',
@@ -41,6 +41,7 @@ import { ReservationStore } from '@domain/reservation/data-access/reservation.st
     NzFormLabelComponent,
     NzTooltipDirective,
     LoadingComponent,
+    TranslatePipe,
   ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.css',
@@ -53,8 +54,8 @@ export class ReservationComponent implements OnInit {
   private modalService = inject(NzModalService);
   readonly reservationStore = inject(ReservationStore);
 
-  headerColumn = headerColumns.reservation;
-  reservationStatus: ReservationStatus[] = ['CONFIRMED', 'CANCELED'];
+  headerColumn = HEADER_COLUMNS.RESEVATION;
+  reservationStatus = RESERVATION_STATUS;
 
   ngOnInit() {
     this.initialForm();

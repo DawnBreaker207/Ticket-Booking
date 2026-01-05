@@ -10,7 +10,6 @@ import { NzSpaceComponent } from 'ng-zorro-antd/space';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { Store } from '@ngrx/store';
 import { NzAlertComponent } from 'ng-zorro-antd/alert';
-import { headerColumns } from '@core/constants/column';
 import {
   selectAllTheaters,
   selectPaginationTheater,
@@ -20,6 +19,8 @@ import {
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { FormTheaterComponent } from '@features/admin/theater/form/theater-form.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { TranslatePipe } from '@ngx-translate/core';
+import { HEADER_COLUMNS } from '@core/constants/column';
 
 @Component({
   selector: 'app-theater',
@@ -34,6 +35,7 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
     ReactiveFormsModule,
     NzAlertComponent,
     LoadingComponent,
+    TranslatePipe,
   ],
   providers: [NzModalService],
   templateUrl: './theater.component.html',
@@ -43,7 +45,7 @@ export class TheaterComponent {
   private modalService = inject(NzModalService);
   private store = inject(Store);
 
-  readonly headerColumn = headerColumns.theater;
+  readonly headerColumn = HEADER_COLUMNS.THEATER;
   theaters = this.store.selectSignal(selectAllTheaters);
   pagination = this.store.selectSignal(selectPaginationTheater);
   loading = this.store.selectSignal(selectTheaterLoading);

@@ -4,10 +4,11 @@ import type { EChartsCoreOption } from 'echarts/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { RevenuePoint } from '@domain/dashboard/models/dashboard.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-revenue-chart',
-  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule],
+  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule, TranslatePipe],
   templateUrl: './revenue-chart.component.html',
   styleUrl: './revenue-chart.component.css',
 })

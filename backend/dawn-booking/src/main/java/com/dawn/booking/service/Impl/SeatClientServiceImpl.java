@@ -2,9 +2,9 @@ package com.dawn.booking.service.Impl;
 
 import com.dawn.booking.dto.response.SeatDTO;
 import com.dawn.booking.service.SeatClientService;
-import com.dawn.common.constant.Message;
-import com.dawn.common.dto.response.ResponseObject;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.dto.response.ResponseObject;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;

@@ -6,14 +6,14 @@
         <!-- Movie Title & Auto-fill Button -->
         <nz-form-item class="mb-6">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Movie Title
+            >{{ "Tiêu đề phim" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Required">
+          <nz-form-control [nzErrorTip]="'Bắt buộc' | translate">
             <div class="flex items-center gap-2">
               <input
                 nz-input
                 formControlName="title"
-                placeholder="Movie Name"
+                [placeholder]="'Tên phim' | translate"
                 class="rounded-lg h-12 px-4 text-base shadow-sm"
                 [readOnly]="mode === 'view'"
               />
@@ -28,7 +28,7 @@
                   (click)="openMovieModal()"
                 >
                   <nz-icon nzType="cloud-download" />
-                  Auto-fill
+                  {{ "Tự động điền" | translate }}
                 </button>
               }
             </div>
@@ -40,13 +40,15 @@
           class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-100"
         >
           <nz-form-item class="mb-0">
-            <nz-form-label nzRequired>Duration (mins)</nz-form-label>
-            <nz-form-control nzErrorTip="Enter duration">
+            <nz-form-label nzRequired>{{
+              "Thời lượng (phút)" | translate
+            }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Nhập thời lượng' | translate">
               <input
                 type="number"
                 nz-input
                 formControlName="duration"
-                placeholder="e.g 120"
+                [placeholder]="'https://image.tmdb.org/...' | translate"
                 class="rounded-lg h-11"
                 [readOnly]="mode === 'view'"
               />
@@ -54,8 +56,10 @@
           </nz-form-item>
 
           <nz-form-item class="mb-0">
-            <nz-form-label nzRequired>Release Date</nz-form-label>
-            <nz-form-control nzErrorTip="Enter release date">
+            <nz-form-label nzRequired>{{
+              "Ngày phát hành" | translate
+            }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Nhập ngày phát hành' | translate">
               <nz-date-picker
                 formControlName="releaseDate"
                 class="w-full rounded-lg h-11"
@@ -66,13 +70,15 @@
         </div>
 
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired>Backdrop</nz-form-label>
-          <nz-form-control nzErrorTip="Enter backdrop">
+          <nz-form-label nzRequired>{{
+            "Ảnh nền (Backdrop)" | translate
+          }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Nhập URL ảnh nền' | translate">
             <input
               type="text"
               nz-input
               formControlName="backdrop"
-              placeholder="e.g 120"
+              [placeholder]="'ví dụ: 120' | translate"
               class="rounded-lg h-11"
               [readOnly]="mode === 'view'"
             />
@@ -80,43 +86,52 @@
         </nz-form-item>
 
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired>Language</nz-form-label>
-          <nz-form-control nzErrorTip="Enter language">
+          <nz-form-label nzRequired>{{ "Ngôn ngữ" | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Nhập ngôn ngữ' | translate">
             <nz-select
               formControlName="language"
               nzPlaceHolder="Select language"
               [nzDisabled]="mode === 'view'"
               class="rounded-lg h-11 flex items-center"
             >
-              <nz-option nzLabel="English" nzValue="en"></nz-option>
-              <nz-option nzLabel="Vietnamese" nzValue="vi"></nz-option>
+              <nz-option
+                [nzLabel]="'English' | translate"
+                nzValue="en"
+              ></nz-option>
+              <nz-option
+                [nzLabel]="'Vietnamese' | translate"
+                nzValue="vi"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired>Country</nz-form-label>
-          <nz-form-control nzErrorTip="Enter Country">
+          <nz-form-label nzRequired>{{ "Quốc gia" | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Nhập quốc gia' | translate">
             <nz-select
               formControlName="country"
-              nzPlaceHolder="Select Country"
+              [nzPlaceHolder]="'Select Country' | translate"
               [nzDisabled]="mode === 'view'"
               class="rounded-lg h-11 flex items-center"
             >
-              <nz-option nzLabel="America" nzValue="US"></nz-option>
-              <nz-option nzLabel="Vietnam" nzValue="VI"></nz-option>
+              <nz-option [nzLabel]="'US' | translate" nzValue="US"></nz-option>
+              <nz-option
+                [nzLabel]="'Vietnam' | translate"
+                nzValue="VI"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired>Original Title</nz-form-label>
-          <nz-form-control nzErrorTip="Enter original title">
+          <nz-form-label nzRequired>{{ "Tên gốc" | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Nhập tên gốc' | translate">
             <input
               type="text"
               nz-input
               formControlName="originalTitle"
-              placeholder="e.g 120"
+              [placeholder]="'Tiêu đề gốc' | translate"
               class="rounded-lg h-11"
               [readOnly]="mode === 'view'"
             />
@@ -124,12 +139,12 @@
         </nz-form-item>
 
         <nz-form-item class="mb-0">
-          <nz-form-label nzRequired>Genre</nz-form-label>
-          <nz-form-control nzErrorTip="Enter genre">
+          <nz-form-label nzRequired>{{ "Thể loại" | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Nhập thể loại' | translate">
             <nz-select
               formControlName="genres"
               nzMode="tags"
-              nzPlaceHolder="Type and press enter"
+              [nzPlaceHolder]="'Type and press enter' | translate"
               [nzDisabled]="mode === 'view'"
               class="rounded-lg min-h-[44px] flex items-center"
             ></nz-select>
@@ -139,15 +154,18 @@
         <!-- Description -->
         <nz-form-item class="flex-1 mb-0">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Description
+            >{{ "Mô tả" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Enter description" class="h-full">
+          <nz-form-control
+            [nzErrorTip]="'Nhập mô tả phim' | translate"
+            class="h-full"
+          >
             <textarea
               nz-input
               formControlName="overview"
               [nzAutosize]="{ minRows: 5, maxRows: 10 }"
               class="rounded-xl resize-none text-base p-4 shadow-sm h-full"
-              placeholder="Movie synopsis..."
+              [placeholder]="'Tóm tắt phim...' | translate"
               [readOnly]="mode === 'view'"
             ></textarea>
           </nz-form-control>
@@ -158,9 +176,9 @@
       <div class="lg:col-span-4 space-y-6">
         <nz-form-item class="mb-0">
           <nz-form-label nzRequired class="font-bold text-gray-700"
-            >Poster URL
+            >{{ "URL Poster" | translate }}
           </nz-form-label>
-          <nz-form-control nzErrorTip="Required">
+          <nz-form-control [nzErrorTip]="'Bắt buộc' | translate">
             <input
               nz-input
               formControlName="poster"
@@ -188,7 +206,9 @@
               class="absolute inset-0 hidden flex-col items-center justify-center text-gray-400 bg-gray-100"
             >
               <nz-icon nzType="frown" class="text-3xl mb-2" />
-              <span class="text-xs font-semibold">Image not found</span>
+              <span class="text-xs font-semibold">{{
+                "Không tìm thấy ảnh" | translate
+              }}</span>
             </div>
           } @else {
             <!-- Empty State -->
@@ -198,7 +218,7 @@
               <nz-icon nzType="file-image" class="text-4xl mb-2 opacity-50" />
               <span
                 class="text-xs uppercase font-bold tracking-wider opacity-70"
-                >No Poster</span
+                >{{ "Không có Poster" | translate }}</span
               >
             </div>
           }

@@ -82,7 +82,7 @@ export class ReservationService {
     return this.http
       .post<ApiRes<ReservationInitResponse>>(`${this.URL}/init`, reservation)
       .pipe(
-        map((res: any) => res.data),
+        map((res) => res.data),
         catchError(
           this.handleError<ReservationInitResponse>('Init reservation'),
         ),
@@ -93,7 +93,7 @@ export class ReservationService {
     return this.http
       .post<ApiRes<void>>(`${this.URL}/seatHold`, reservation)
       .pipe(
-        map((res: any) => res.data),
+        map((res) => res.data),
         catchError(this.handleError<void>('hold seat reservation')),
       );
   }
@@ -102,7 +102,7 @@ export class ReservationService {
     return this.http
       .post<ApiRes<Reservation>>(`${this.URL}/confirm`, reservation)
       .pipe(
-        map((res: any) => res.data),
+        map((res) => res.data),
         catchError(this.handleError<Reservation>('Confirm reservation')),
       );
   }
@@ -111,8 +111,21 @@ export class ReservationService {
     return this.http
       .post<ApiRes<void>>(`${this.URL}/${reservationId}/cancel`, userId)
       .pipe(
-        map((res: any) => res.data),
+        map((res) => res.data),
         catchError(this.handleError<void>('Cancel reservation')),
+      );
+  }
+
+  restoreReservation(reservationId: string) {
+    return this.http
+      .get<
+        ApiRes<ReservationInitResponse>
+      >(`${this.URL}/${reservationId}/restore`)
+      .pipe(
+        map((res) => res.data),
+        catchError(
+          this.handleError<ReservationInitResponse>('Restore reservation'),
+        ),
       );
   }
 

@@ -1,6 +1,6 @@
 package com.dawn.identity.dto.response;
 
-import com.dawn.common.dto.response.BaseResponse;
+import com.dawn.common.core.dto.response.BaseResponse;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -1,6 +1,6 @@
 package com.dawn.identity.service;
 
-import com.dawn.common.dto.response.ResponsePage;
+import com.dawn.common.core.dto.response.ResponsePage;
 import com.dawn.identity.dto.request.UserRequest;
 import com.dawn.identity.dto.response.UserResponse;
 import com.dawn.identity.model.Role;

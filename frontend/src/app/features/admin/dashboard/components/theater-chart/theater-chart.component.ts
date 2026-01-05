@@ -4,10 +4,11 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TopTheater } from '@domain/dashboard/models/dashboard.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theater-chart',
-  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule],
+  imports: [NgxEchartsDirective, NzIconModule, NzButtonModule, TranslatePipe],
   templateUrl: './theater-chart.component.html',
   styleUrl: './theater-chart.component.css',
 })

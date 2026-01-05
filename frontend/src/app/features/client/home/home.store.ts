@@ -3,10 +3,8 @@ import { Movie } from '@domain/movie/models/movie.model';
 import { signalStore, withMethods } from '@ngrx/signals';
 import { computed, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from '@core/services/storage/storage.service';
-import { Router } from '@angular/router';
 import {
   selectAllTheaters,
   selectSelectedTheaterId,
@@ -19,18 +17,16 @@ import { MovieActions } from '@domain/movie/data-access/movie.actions';
 import { ShowtimeActions } from '@domain/showtime/data-access/showtime.actions';
 import { TheaterModalComponent } from '@features/client/home/components/theater-modal/theater.component';
 import { ShowtimeModalComponent } from '@features/client/home/components/showtime-modal/modal.component';
-import { ReservationActions } from '@domain/reservation/data-access/reservation.actions';
-import { take } from 'rxjs';
+import { ReservationStore } from '@features/client/reservation/reservation.store';
 
 export const HomeStore = signalStore(
   withMethods(
     (
       store,
       ngrxStore = inject(Store),
-      action$ = inject(Actions),
       modalService = inject(NzModalService),
       storageService = inject(StorageService),
-      router = inject(Router),
+      reservationStore = inject(ReservationStore),
     ) => {
       const theaters = ngrxStore.selectSignal(selectAllTheaters);
       const showtimes = ngrxStore.selectSignal(selectAllShowtimes);
@@ -145,34 +141,12 @@ export const HomeStore = signalStore(
           const theaterId = selectedTheaterId();
 
           if (!currentUser || !theaterId) return;
-
-          ngrxStore.dispatch(
-            ReservationActions.createReservationInit({
-              reservation: {
-                reservationId: '',
-                userId: currentUser.userId,
-                showtimeId,
-                theaterId,
-              },
-            }),
-          );
-          action$
-            .pipe(
-              ofType(ReservationActions.createReservationInitSuccess),
-              take(1),
-            )
-            .subscribe(({ reservationId }) => {
-              const state = {
-                reservationId,
-                userId: currentUser.userId,
-                showtimeId,
-                theaterId,
-              };
-              storageService.setItem('reservationState', state);
-              router.navigate([`/reservation/${reservationId}/${showtimeId}`], {
-                state,
-              });
-            });
+          reservationStore.initReservation({
+            reservationId: '',
+            userId: currentUser.userId,
+            showtimeId: showtimeId,
+            theaterId: theaterId,
+          });
         },
       };
     },

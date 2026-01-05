@@ -20,6 +20,7 @@ import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { TheaterActions } from '@domain/theater/data-access/theater.actions';
 import { selectTheaterById } from '@domain/theater/data-access/theater.selectors';
 import { Theater } from '@domain/theater/models/theater.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theater-form',
@@ -34,6 +35,7 @@ import { Theater } from '@domain/theater/models/theater.model';
     ReactiveFormsModule,
     NzOptionComponent,
     NzSelectComponent,
+    TranslatePipe,
   ],
   templateUrl: './theater-form.component.html',
   styleUrl: './theater-form.component.css',

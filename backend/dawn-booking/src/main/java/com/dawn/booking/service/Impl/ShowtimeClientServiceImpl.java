@@ -2,9 +2,9 @@ package com.dawn.booking.service.Impl;
 
 import com.dawn.booking.dto.response.ShowtimeDTO;
 import com.dawn.booking.service.ShowtimeClientService;
-import com.dawn.common.constant.Message;
-import com.dawn.common.dto.response.ResponseObject;
-import com.dawn.common.exception.wrapper.ResourceNotFoundException;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.dto.response.ResponseObject;
+import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

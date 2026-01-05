@@ -2,7 +2,7 @@ package com.dawn.booking.repository;
 
 import com.dawn.booking.dto.request.ReservationFilterRequest;
 import com.dawn.booking.model.Reservation;
-import com.dawn.common.constant.ReservationStatus;
+import com.dawn.common.core.constant.ReservationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
