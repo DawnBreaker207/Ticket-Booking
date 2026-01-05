@@ -7,14 +7,14 @@ import com.dawn.booking.model.Reservation;
 import com.dawn.booking.repository.ReservationRepository;
 import com.dawn.booking.service.*;
 import com.dawn.booking.utils.ReservationUtils;
-import com.dawn.common.constant.Message;
-import com.dawn.common.constant.RabbitMQConstants;
-import com.dawn.common.constant.ReservationStatus;
-import com.dawn.common.constant.SeatStatus;
-import com.dawn.common.dto.request.BookingNotificationEvent;
-import com.dawn.common.dto.response.ResponsePage;
-import com.dawn.common.exception.wrapper.*;
-import com.dawn.common.helper.RedisKeyHelper;
+import com.dawn.common.core.constant.Message;
+import com.dawn.common.core.constant.RabbitMQConstants;
+import com.dawn.common.core.constant.ReservationStatus;
+import com.dawn.common.core.constant.SeatStatus;
+import com.dawn.common.core.dto.request.BookingNotificationEvent;
+import com.dawn.common.core.dto.response.ResponsePage;
+import com.dawn.common.core.exception.wrapper.*;
+import com.dawn.common.core.helper.RedisKeyHelper;
 import com.dawn.notification.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -61,7 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ObjectMapper mapper;
 
-    private final RedisService redisService;
+    private final ReservationRedisService reservationRedisService;
 
     @Override
     public ResponsePage<UserReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
@@ -117,14 +117,14 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationInitResponse restoreReservation(String reservationId) {
         log.info("Restore reservation with id: {}", reservationId);
-        Long ttl = redisService.getReservationTtl(reservationId);
+        Long ttl = reservationRedisService.getReservationTtl(reservationId);
 
         if (ttl == null || ttl <= 0) {
             log.warn("Reservation {} not found or expired in Redis", reservationId);
             throw new ResourceNotFoundException(Message.Exception.RESERVATION_EXPIRED);
         }
 
-        Map<Object, Object> reservation = redisService.getReservationData(reservationId);
+        Map<Object, Object> reservation = reservationRedisService.getReservationData(reservationId);
 
         if (reservation == null || reservation.isEmpty()) {
             throw new ResourceNotFoundException(Message.Exception.RESERVATION_NOT_FOUND);
@@ -156,7 +156,7 @@ public class ReservationServiceImpl implements ReservationService {
                 "seats", "[]");
 
         //        Create expired time on redis key
-        redisService.saveReservationInit(reservationId, initialData, HOLD_TIMEOUT);
+        reservationRedisService.saveReservationInit(reservationId, initialData, HOLD_TIMEOUT);
 
         log.info("Reservation initialize, Id: {}, user Id: {}, showtime Id: {}, theater Id: {} , ttl: {}",
                 reservationId,
@@ -186,7 +186,7 @@ public class ReservationServiceImpl implements ReservationService {
         //        Define locks to update seat
         List<Long> successfulLockedSeatIds = new ArrayList<>();
         try {
-            Map<Object, Object> reservationData = redisService.getReservationData(reservationId);
+            Map<Object, Object> reservationData = reservationRedisService.getReservationData(reservationId);
             validateReservationOwnership(reservationData, reservationId, userId);
 
             validateShowtimeAndAvailability(showtimeId, seatIds.size());
@@ -201,7 +201,7 @@ public class ReservationServiceImpl implements ReservationService {
 
             successfulLockedSeatIds = acquireSeatLock(seatIds, seats, redisKey);
             //        Update seat in redis
-            redisService.updateReservationSeats(reservationId, seatIds);
+            reservationRedisService.updateReservationSeats(reservationId, seatIds);
 
             List<Map<String, Object>> seatInfo = notificationService.getSeatSnapshot(showtimeId);
             Map<String, Object> event = Map.of(
@@ -211,7 +211,7 @@ public class ReservationServiceImpl implements ReservationService {
                     "seatIds", seatInfo
             );
             //            Send notification via pub sub
-            redisService.publishSeatEvent(showtimeId, event);
+            reservationRedisService.publishSeatEvent(showtimeId, event);
             success = true;
             log.info("Successfully hold {} seats with user id {} for reservation {}: {} ", seatIds.size(), userId, reservationId, seatIds);
         } finally {
@@ -317,7 +317,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.save(reservation);
         log.info("Updated reservation {} status to FAILED", reservationId);
 
-        redisService.deleteReservation(reservationId);
+        reservationRedisService.deleteReservation(reservationId);
         log.info("Remove reservation hold key {}", redisKey);
 
         List<Map<String, Object>> seatInfo = notificationService.getSeatSnapshot(showtime.getId());
@@ -329,7 +329,7 @@ public class ReservationServiceImpl implements ReservationService {
         );
 
         //            Send notification via pub sub
-        redisService.publishSeatEvent(showtime.getId(), event);
+        reservationRedisService.publishSeatEvent(showtime.getId(), event);
         log.info("Published seat release event for showtime {}: {}", showtime.getId(), seatIds);
 
         log.info("Cancelled reservation hold {} successfully", reservationId);
@@ -337,7 +337,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void deleteSeatLocks(List<Long> seatIds, String redisKey) {
         for (Long seatId : seatIds) {
-            Boolean deleted = redisService.deleteSeatLockIfOwner(seatId, redisKey);
+            Boolean deleted = reservationRedisService.deleteSeatLockIfOwner(seatId, redisKey);
             if (deleted) {
                 log.warn("Release lock for seat {} in", seatId);
             } else {
@@ -353,9 +353,9 @@ public class ReservationServiceImpl implements ReservationService {
         //        Check seat in showtime was booked in redis
         for (Long seatId : seatIds) {
             //            Check seat lock in redis
-            Boolean acquired = redisService.lockSeat(seatId, redisKey, HOLD_TIMEOUT);
+            Boolean acquired = reservationRedisService.lockSeat(seatId, redisKey, HOLD_TIMEOUT);
             //            Get owner of this seat
-            String owner = redisService.getSeatOwner(seatId);
+            String owner = reservationRedisService.getSeatOwner(seatId);
             if (acquired) {
                 successfulSeatIds.add(seatId);
                 log.debug("Successfully locked seat {} for reservation {}", seatId, redisKey);
@@ -363,7 +363,7 @@ public class ReservationServiceImpl implements ReservationService {
                 //                Check the right owner
             }
             if (redisKey.equals(owner)) {
-                redisService.refreshSeatLockIfOwner(seatId, redisKey, HOLD_TIMEOUT);
+                reservationRedisService.refreshSeatLockIfOwner(seatId, redisKey, HOLD_TIMEOUT);
                 log.debug("Refreshed existing lock for seat {} in reservation {}", seatId, redisKey);
                 successfulSeatIds.add(seatId);
             } else {
@@ -446,7 +446,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     //    Get data from redis
     private ReservationRedisDTO getFromRedis(String reservationId) {
-        Map<Object, Object> data = redisService.getReservationData(reservationId);
+        Map<Object, Object> data = reservationRedisService.getReservationData(reservationId);
         if (data == null || data.isEmpty()) {
             throw new ReservationExpiredException(Message.Exception.RESERVATION_EXPIRED);
         }
@@ -479,16 +479,16 @@ public class ReservationServiceImpl implements ReservationService {
     private void cleanupRedisLocks(String redisKey, String reservationId, List<SeatDTO> seats) {
         int deletedLocks = 0;
         for (SeatDTO seat : seats) {
-            Boolean deleted = redisService.deleteSeatLockIfOwner(seat.getId(), redisKey);
+            Boolean deleted = reservationRedisService.deleteSeatLockIfOwner(seat.getId(), redisKey);
             if (deleted) {
                 deletedLocks++;
                 log.debug("Deleted lock for seat {}", seat.getId());
             } else {
-                String currentOwner = redisService.getSeatOwner(seat.getId());
+                String currentOwner = reservationRedisService.getSeatOwner(seat.getId());
                 log.warn("Lock for seat {} has unexpected owner: {}. Expected: {}", seat.getId(), currentOwner, redisKey);
             }
         }
-        redisService.deleteReservation(reservationId);
+        reservationRedisService.deleteReservation(reservationId);
         log.info("Cleaned up Redis: {} seat locks deleted, reservation key deleted", deletedLocks);
     }
 
@@ -552,7 +552,7 @@ public class ReservationServiceImpl implements ReservationService {
     private void removeOldSeatLocks(Collection<Long> oldSeatIds, Collection<Long> newSeatIds, String redisKey) {
         for (Long oldSeatId : oldSeatIds) {
             if (!newSeatIds.contains(oldSeatId)) {
-                redisService.deleteSeatLockIfOwner(oldSeatId, redisKey);
+                reservationRedisService.deleteSeatLockIfOwner(oldSeatId, redisKey);
             }
         }
     }
@@ -562,9 +562,9 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Rolling back {} seat lock for reservation {}", seatIds.size(), expectedOwner);
         for (Long seatId : seatIds) {
             try {
-                String currentOwner = redisService.getSeatOwner(seatId);
+                String currentOwner = reservationRedisService.getSeatOwner(seatId);
                 if (expectedOwner.equals(currentOwner)) {
-                    redisService.deleteSeatLockIfOwner(seatId, expectedOwner);
+                    reservationRedisService.deleteSeatLockIfOwner(seatId, expectedOwner);
                 } else {
                     log.warn("Lock {} ownership changed during rollback. Expected: {}, Current: {}", seatId, expectedOwner, currentOwner);
                 }
@@ -580,7 +580,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Long> stolenLocks = new ArrayList<>();
 
         for (Long seatId : seatIds) {
-            String lockOwner = redisService.getSeatOwner(seatId);
+            String lockOwner = reservationRedisService.getSeatOwner(seatId);
             if (lockOwner == null) {
                 expiredLocks.add(seatId);
                 log.warn("Lock expired for seat {} in reservation {}", seatId, reservationId);

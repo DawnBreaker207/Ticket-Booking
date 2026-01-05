@@ -1,49 +1,47 @@
 package com.dawn.booking.service;
 
-import com.dawn.common.exception.wrapper.RedisStorageException;
-import com.dawn.common.helper.RedisKeyHelper;
+import com.dawn.common.core.exception.wrapper.RedisStorageException;
+import com.dawn.common.core.helper.RedisKeyHelper;
+import com.dawn.common.infra.redis.service.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedisService {
+public class ReservationRedisService {
 
+    private final RedisService redisService;
     private final RedisPublisher redisPublisher;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper mapper;
 
 
     //    Reservation data
     public void saveReservationInit(String reservationId, Map<String, String> data, Duration ttl) {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
-        redisTemplate.opsForHash().putAll(key, data);
-        redisTemplate.expire(key, ttl);
+        redisService.putHash(key, data, ttl);
     }
 
     public Long getReservationTtl(String reservationId) {
-        return redisTemplate.getExpire(RedisKeyHelper.reservationHoldKey(reservationId), TimeUnit.SECONDS);
+        return redisService.getExpired(RedisKeyHelper.reservationHoldKey(reservationId));
     }
 
     public Map<Object, Object> getReservationData(String reservationId) {
-        return redisTemplate.opsForHash().entries(RedisKeyHelper.reservationHoldKey(reservationId));
+        return redisService.getHash(RedisKeyHelper.reservationHoldKey(reservationId));
     }
 
     public void updateReservationSeats(String reservationId, List<Long> seats) {
         try {
             String key = RedisKeyHelper.reservationHoldKey(reservationId);
-            redisTemplate.opsForHash().put(key, "seats", mapper.writeValueAsString(seats));
+            redisService.put(key, "seats", mapper.writeValueAsString(seats));
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize seats for reservation {}: {}", reservationId, e.getMessage(), e);
         }
@@ -51,38 +49,37 @@ public class RedisService {
 
     public void deleteReservation(String reservationId) {
         String key = RedisKeyHelper.reservationHoldKey(reservationId);
-        redisTemplate.delete(key);
+        redisService.delete(key);
     }
 
     //    Seat locking
     public Boolean lockSeat(Long seatId, String ownerKey, Duration ttl) {
-        Boolean ok = redisTemplate.opsForValue().setIfAbsent(RedisKeyHelper.seatLockKey(seatId), ownerKey, ttl);
-        return ok != null && ok;
+        return redisService.setIfAbsent(RedisKeyHelper.seatLockKey(seatId), ownerKey, ttl);
     }
 
     public String getSeatOwner(Long seatId) {
-        Object val = redisTemplate.opsForValue().get(RedisKeyHelper.seatLockKey(seatId));
+        Object val = redisService.get(RedisKeyHelper.seatLockKey(seatId));
         return val != null ? String.valueOf(val) : null;
     }
 
     public void refreshSeatLockIfOwner(Long seatId, String ownerKey, Duration ttl) {
         String key = RedisKeyHelper.seatLockKey(seatId);
-        String current = (String) redisTemplate.opsForValue().get(key);
+        String current = getSeatOwner(seatId);
         if (ownerKey.equals(current)) {
-            redisTemplate.expire(key, ttl);
+            redisService.expire(key, ttl);
         }
     }
 
     public void releaseSeat(Long seatId) {
-        redisTemplate.delete(RedisKeyHelper.seatLockKey(seatId));
+        redisService.delete(RedisKeyHelper.seatLockKey(seatId));
     }
 
 
     public Boolean deleteSeatLockIfOwner(Long seatId, String expectedOwner) {
         String key = RedisKeyHelper.seatLockKey(seatId);
-        String current = (String) redisTemplate.opsForValue().get(key);
+        String current = (String) redisService.get(key);
         if (expectedOwner.equals(current)) {
-            return redisTemplate.delete(key);
+            return redisService.delete(key);
         }
         return false;
     }
