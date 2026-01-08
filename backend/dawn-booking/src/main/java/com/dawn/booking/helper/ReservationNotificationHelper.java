@@ -1,10 +1,11 @@
 package com.dawn.booking.helper;
 
-import com.dawn.booking.dto.request.PaymentRequestDTO;
-import com.dawn.booking.dto.response.*;
+import com.dawn.booking.dto.response.MovieDTO;
+import com.dawn.booking.dto.response.SeatDTO;
+import com.dawn.booking.dto.response.ShowtimeDTO;
+import com.dawn.booking.dto.response.UserDTO;
 import com.dawn.booking.model.Reservation;
 import com.dawn.booking.service.MovieClientBookingService;
-import com.dawn.booking.service.PaymentClientService;
 import com.dawn.booking.service.ReservationRedisService;
 import com.dawn.booking.service.UserClientService;
 import com.dawn.common.core.constant.RabbitMQConstants;
@@ -28,8 +29,6 @@ import java.util.stream.Collectors;
 @Component
 public class ReservationNotificationHelper {
 
-    private final PaymentClientService paymentService;
-
     private final RabbitTemplate rabbitTemplate;
 
     private final MovieClientBookingService movieService;
@@ -40,14 +39,7 @@ public class ReservationNotificationHelper {
 
     private final ReservationRedisService reservationRedisService;
 
-    public void handlePaymentAndNotification(Reservation reservation, ShowtimeDTO showtime, List<SeatDTO> seats) {
-        PaymentDTO payment = paymentService.updatePayment(PaymentRequestDTO
-                .builder()
-                .reservationId(reservation.getId())
-                .totalAmount(reservation.getTotalAmount())
-                .isSuccess(true)
-                .build());
-
+    public void handleNotification(Reservation reservation, ShowtimeDTO showtime, List<SeatDTO> seats) {
         try {
 
             UserDTO user = userService.findById(reservation.getUserId());
@@ -58,7 +50,7 @@ public class ReservationNotificationHelper {
             String seatNumbers = seats.stream().map(SeatDTO::getSeatNumber).collect(Collectors.joining(","));
 
             String paymentTimeStr = LocalDateTime
-                    .ofInstant(payment.getCreatedAt(), ZoneId.of("Asia/Ho_Chi_Minh"))
+                    .ofInstant(reservation.getCreatedAt(), ZoneId.of("Asia/Ho_Chi_Minh"))
                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 
             String showtimeStr = LocalDateTime
@@ -100,6 +92,7 @@ public class ReservationNotificationHelper {
                 "userId", userId,
                 "seatIds", seatInfo
         );
+        log.info("Get seat hold: {}", event);
         reservationRedisService.publishSeatEvent(showtimeId, event);
     }
 
@@ -111,6 +104,7 @@ public class ReservationNotificationHelper {
                 "userId", userId,
                 "seatIds", seatInfo
         );
+        log.info("Get seat release: {}", event);
         reservationRedisService.publishSeatEvent(showtimeId, event);
     }
 }

@@ -20,8 +20,8 @@ public interface ReservationService {
 
     void holdReservationSeats(ReservationHoldSeatRequest reservation);
 
-    ReservationResponse confirmReservation(ReservationRequest reservation);
+    ReservationResponse confirmReservation(String reservationId);
 
-    void cancelReservation(String reservationId, Long userId);
+    void cancelReservation(String reservationId);
 
 }

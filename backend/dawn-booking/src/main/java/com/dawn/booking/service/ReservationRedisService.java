@@ -48,7 +48,8 @@ public class ReservationRedisService {
     public void updateReservationSeats(String reservationId, List<Long> seats) {
         try {
             String key = RedisKeyHelper.reservationHoldKey(reservationId);
-            redisService.put(key, "seats", mapper.writeValueAsString(seats));
+            redisService.put(key, "seatIds", mapper.writeValueAsString(seats));
+            log.info("Updated seats to redis success");
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize seats for reservation {}: {}", reservationId, e.getMessage(), e);
         }
@@ -125,7 +126,9 @@ public class ReservationRedisService {
                 successfulSeatIds.add(seatId);
             } else {
                 //                Check if the seat was hold by another owner
-                SeatDTO seat = seats.stream().filter(s -> s
+                SeatDTO seat = seats
+                        .stream()
+                        .filter(s -> s
                                 .getId()
                                 .equals(seatId))
                         .findFirst()
@@ -166,7 +169,9 @@ public class ReservationRedisService {
         }
     }
 
-    public void validateSeatLocks(String redisKey, String reservationId, List<Long> seatIds) {
+    public void validateSeatLocks(String reservationId, List<Long> seatIds) {
+
+        String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
         List<Long> expiredLocks = new ArrayList<>();
         List<Long> stolenLocks = new ArrayList<>();
 
@@ -218,7 +223,8 @@ public class ReservationRedisService {
     }
 
     //        Clean up Redis
-    public void cleanupRedisLocks(String redisKey, String reservationId, List<SeatDTO> seats) {
+    public void cleanupRedisLocks(String reservationId, List<SeatDTO> seats) {
+        String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
         int deletedLocks = 0;
         for (SeatDTO seat : seats) {
             Boolean deleted = deleteSeatLockIfOwner(seat.getId(), redisKey);
@@ -234,7 +240,8 @@ public class ReservationRedisService {
         log.info("Cleaned up Redis: {} seat locks deleted, reservation key deleted", deletedLocks);
     }
 
-    public void deleteSeatLocks(List<Long> seatIds, String redisKey) {
+    public void deleteSeatLocks(List<Long> seatIds, String reservationId) {
+        String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
         for (Long seatId : seatIds) {
             Boolean deleted = deleteSeatLockIfOwner(seatId, redisKey);
             if (deleted) {
@@ -249,6 +256,7 @@ public class ReservationRedisService {
     //    Get data from redis
     public ReservationRedisDTO getFromRedis(String reservationId) {
         Map<Object, Object> data = getReservationData(reservationId);
+        log.info("Get from redis: {}", data);
         if (data == null || data.isEmpty()) {
             throw new ReservationExpiredException(Message.Exception.RESERVATION_EXPIRED);
         }
@@ -256,9 +264,10 @@ public class ReservationRedisService {
 
         Long userId = safeParseLong((String) data.get("userId"), "userId");
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
+        Long theaterId = safeParseLong((String) data.get("theaterId"), "theaterId");
         List<Long> seatIds = Collections.emptyList();
         try {
-            String seatJson = (String) data.get("seats");
+            String seatJson = (String) data.get("seatIds");
             if (seatJson != null) {
                 seatIds = mapper.readValue(seatJson, new TypeReference<>() {
                 });
@@ -272,14 +281,15 @@ public class ReservationRedisService {
                 .id(reservationId)
                 .userId(userId)
                 .showtimeId(showtimeId)
+                .theaterId(theaterId)
                 .seatsIds(seatIds)
-                .seats(Collections.emptyList())
                 .build();
     }
 
     public List<Long> parseSeatIdsFromReservationData(Map<Object, Object> reservationData) {
         try {
             String currentSeatsJson = (String) reservationData.get("seats");
+            log.info("Get current seat json: {}", currentSeatsJson);
             if (currentSeatsJson == null || currentSeatsJson.isEmpty()) {
                 return Collections.emptyList();
             }

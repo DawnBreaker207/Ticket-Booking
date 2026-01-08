@@ -22,8 +22,5 @@ public class ReservationRedisDTO {
     private Long theaterId;
 
     @Builder.Default
-    private List<String> seats = new ArrayList<>();
-
-    @Builder.Default
     private List<Long> seatsIds = new ArrayList<>();
 }

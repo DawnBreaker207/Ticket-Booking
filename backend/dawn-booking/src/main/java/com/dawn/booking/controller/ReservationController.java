@@ -1,6 +1,9 @@
 package com.dawn.booking.controller;
 
-import com.dawn.booking.dto.request.*;
+import com.dawn.booking.dto.request.ReservationFilterRequest;
+import com.dawn.booking.dto.request.ReservationHoldSeatRequest;
+import com.dawn.booking.dto.request.ReservationInitRequest;
+import com.dawn.booking.dto.request.ReservationUserRequest;
 import com.dawn.booking.dto.response.ReservationInitResponse;
 import com.dawn.booking.dto.response.ReservationResponse;
 import com.dawn.booking.dto.response.UserReservationResponse;
@@ -62,18 +65,18 @@ public class ReservationController {
         return ResponseObject.success(null);
     }
 
-    @PostMapping("/confirm")
+    @PostMapping("/confirm/{reservationId}")
 //    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Save reservation after payment ", description = "Returns reservation after booking seats and payment success")
-    public ResponseObject<ReservationResponse> reservationConfirm(@RequestBody ReservationRequest o) {
-        return ResponseObject.created(reservationService.confirmReservation(o));
+    public ResponseObject<ReservationResponse> reservationConfirm(@PathVariable String reservationId) {
+        return ResponseObject.created(reservationService.confirmReservation(reservationId));
     }
 
     @PostMapping("/{reservationId}/cancel")
 //    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Cancel reservation after payment ", description = "Cancel reservation after booking seats and payment failed")
-    public ResponseObject<Void> reservationCancel(@PathVariable String reservationId, @RequestBody Long userId) {
-        reservationService.cancelReservation(reservationId, userId);
+    public ResponseObject<Void> reservationCancel(@PathVariable String reservationId) {
+        reservationService.cancelReservation(reservationId);
         return ResponseObject.success(null);
     }
 
