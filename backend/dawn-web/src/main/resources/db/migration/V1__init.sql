@@ -209,31 +209,24 @@ CREATE TABLE IF NOT EXISTS article
 CREATE TABLE IF NOT EXISTS vouchers
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
-
     name                VARCHAR(255)             NOT NULL COMMENT 'Name voucher: MA GIAM GIA',
     code                VARCHAR(50)              NOT NULL UNIQUE COMMENT 'Code voucher: MAGIAMGIA',
-
     start_at            DATETIME                 NOT NULL COMMENT 'Campaign start',
     end_at              DATETIME                 NOT NULL COMMENT 'Campaign end',
-
-    quantity_total      INT                               DEFAULT 0 COMMENT 'Total discount can be use',
-    quantity_used       INT                               DEFAULT 0 COMMENT 'Total discount was used',
-
-    category            ENUM ('CAMPAIGN','SYSTEM')        DEFAULT 'CAMPAIGN' COMMENT 'voucher type',
-    group_ref           VARCHAR(50)              NULL COMMENT 'Voucher group',
-
+    quantity_total      BIGINT                   NOT NULL DEFAULT 0 COMMENT 'Total discount can be use',
+    quantity_used       BIGINT                   NOT NULL DEFAULT 0 COMMENT 'Total discount was used',
+    min_order_value     BIGINT                   NOT NULL DEFAULT 0 COMMENT 'Minimum booking can be used',
     discount_type       ENUM ('FIXED','PERCENT') NOT NULL COMMENT 'Discount type',
-
     discount_value      BIGINT                   NOT NULL COMMENT 'Discount value',
     max_discount_amount BIGINT                            DEFAULT NULL COMMENT 'Max discount',
-    min_order_value     BIGINT                            DEFAULT 0 COMMENT 'Minimum booking can be used',
-
+    conditions          JSON                     NULL,
+    category            ENUM ('CAMPAIGN','SYSTEM')        DEFAULT 'CAMPAIGN' COMMENT 'voucher type',
+    group_ref           VARCHAR(50)              NULL COMMENT 'Voucher group',
     is_active           BOOLEAN                           DEFAULT TRUE COMMENT 'Active voucher',
-
+    version             BIGINT                   NOT NULL DEFAULT 0,
     created_at          DATETIME                 NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME                 NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_code (code),
-    INDEX idx_category_time (category, start_at, end_at)
+    INDEX idx_voucher_validity (code, is_active, start_at, end_at)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
