@@ -19,7 +19,7 @@ import org.springframework.web.client.RestClient;
 public class ShowtimeClientServiceImpl implements ShowtimeClientService {
 
     private final RestClient restClient;
-    @Value("${service.url}")
+    @Value("${service.url.base}")
     private String url;
 
     @Override

@@ -20,7 +20,7 @@ public class MovieClientBookingServiceImpl implements MovieClientBookingService 
 
     private final RestClient restClient;
 
-    @Value("${service.url}")
+    @Value("${service.url.base}")
     private String url;
 
     @Override
