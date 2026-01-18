@@ -17,7 +17,7 @@
       nzShape="circle"
       (click)="openDrawer()"
     >
-      <nz-icon nzType="plus" nzTheme="outline"/>
+      <nz-icon nzType="plus" nzTheme="outline" />
     </button>
   </div>
 
@@ -36,11 +36,11 @@
         (nzQueryParams)="onQueryParamsChange($event)"
       >
         <thead>
-        <tr>
-          @for (header of headerColumn; track header) {
-            <th>{{ header | translate }}</th>
-          }
-        </tr>
+          <tr>
+            @for (header of headerColumn; track header) {
+              <th>{{ header | translate }}</th>
+            }
+          </tr>
         </thead>
         <tbody>
           @for (item of articleStore.articles(); track item.id) {

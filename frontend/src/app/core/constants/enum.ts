@@ -6,7 +6,7 @@ export type PaymentStatus = 'PENDING' | 'PAID' | 'CANCELED';
 
 export type SeatStatus = 'AVAILABLE' | 'BOOKED' | 'SELECTED' | 'HOLD';
 
-export type Mode = 'add' | 'edit' | 'view'
+export type Mode = 'add' | 'edit' | 'view';
 
 export enum Role {
   USER = 'USER',

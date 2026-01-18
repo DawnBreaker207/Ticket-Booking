@@ -13,10 +13,12 @@
       nzShape="circle"
       (click)="openModal('add')"
     >
-      <nz-icon nzType="plus" nzTheme="outline"/>
+      <nz-icon nzType="plus" nzTheme="outline" />
     </button>
   </div>
-  <div class="mb-5 flex flex-col md:flex-row items-center justify-between gap-4">
+  <div
+    class="mb-5 flex flex-col md:flex-row items-center justify-between gap-4"
+  >
     <!--   Search result list-->
     <div class="w-full md:w-auto flex-1 max-w-lg">
       <nz-input-group nzPrefixIcon="search" class="w-full">
@@ -31,15 +33,33 @@
 
     <div class="flex gap-2 w-full md:w-auto">
       <!---->
-      <nz-select class="w-full md:w-[180px]" [nzPlaceHolder]="'Trạng thái' | translate">
-        <nz-option [nzLabel]="'Tất cả' | translate" [nzValue]="null"></nz-option>
-        <nz-option [nzLabel]="'Đang hoạt động' | translate" [nzValue]="true"></nz-option>
-        <nz-option [nzLabel]="'Tạm ngưng' | translate" [nzValue]="false"></nz-option>
+      <nz-select
+        class="w-full md:w-[180px]"
+        [nzPlaceHolder]="'Trạng thái' | translate"
+      >
+        <nz-option
+          [nzLabel]="'Tất cả' | translate"
+          [nzValue]="null"
+        ></nz-option>
+        <nz-option
+          [nzLabel]="'Đang hoạt động' | translate"
+          [nzValue]="true"
+        ></nz-option>
+        <nz-option
+          [nzLabel]="'Tạm ngưng' | translate"
+          [nzValue]="false"
+        ></nz-option>
       </nz-select>
       <!-- -->
       <nz-select class="w-[150px]" [nzPlaceHolder]="'Sắp xếp' | translate">
-        <nz-option [nzLabel]="'Mới nhất' | translate" nzValue="newest"></nz-option>
-        <nz-option [nzLabel]="'Cũ nhất' | translate" nzValue="oldest"></nz-option>
+        <nz-option
+          [nzLabel]="'Mới nhất' | translate"
+          nzValue="newest"
+        ></nz-option>
+        <nz-option
+          [nzLabel]="'Cũ nhất' | translate"
+          nzValue="oldest"
+        ></nz-option>
       </nz-select>
     </div>
   </div>
@@ -58,11 +78,11 @@
         (nzQueryParams)="onQueryParamsChange($event)"
       >
         <thead>
-        <tr>
-          @for (header of headerColumn; track header) {
-            <th [nzAlign]="'center'">{{ header | translate }}</th>
-          }
-        </tr>
+          <tr>
+            @for (header of headerColumn; track header) {
+              <th [nzAlign]="'center'">{{ header | translate }}</th>
+            }
+          </tr>
         </thead>
         <tbody>
           @for (item of voucherStore.vouchers(); track item.id) {
@@ -75,7 +95,8 @@
                   <span class="font-medium text-gray-900">{{ item.name }}</span>
                   <div class="flex justify-center items-center gap-1 mt-1">
                     <span
-                      class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded border border-blue-200 font-mono">
+                      class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded border border-blue-200 font-mono"
+                    >
                       {{ item.code }}
                     </span>
                   </div>
@@ -85,24 +106,24 @@
               <td class="text-center">
                 <div class="flex flex-col text-xs text-gray-600">
                   <span>
-                {{ item.startAt | date: "dd/MM/yyyy" }}
+                    {{ item.startAt | date: "dd/MM/yyyy" }}
                   </span>
                   <span class="text-gray-400 mx-1">↓</span>
                   <span>
-                {{ item.endAt | date: "dd/MM/yyyy" }}
+                    {{ item.endAt | date: "dd/MM/yyyy" }}
                   </span>
                 </div>
               </td>
               <!--   Discount -->
               <td class="text-center">
                 <div class="font-semibold text-orange-600">
-                  @if (item.discountType === 'PERCENT') {
+                  @if (item.discountType === "PERCENT") {
                     {{ item.discountValue }}%
                     <div class="text-[10px] text-gray-400 font-normal">
                       ( Tối đa :{{ item.maxDiscountAmount | currencyFormat }})
                     </div>
                   } @else {
-                    {{ item.discountValue  | currencyFormat }}
+                    {{ item.discountValue | currencyFormat }}
                   }
                 </div>
               </td>
@@ -111,21 +132,29 @@
                 <div class="w-full px-2">
                   <div class="flex justify-between text-xs mb-1">
                     <span class="text-gray-500">Đã dùng</span>
-                    <span class="font-medium text-gray-700">{{ item.quantityUsed }}/{{ item.quantityTotal }}</span>
+                    <span class="font-medium text-gray-700"
+                      >{{ item.quantityUsed }}/{{ item.quantityTotal }}</span
+                    >
                   </div>
                   <nz-progress
                     [nzPercent]="(item.quantityUsed / item.quantityTotal) * 100"
                     [nzShowInfo]="false"
                     nzSize="small"
-                    [nzStrokeColor]="(item.quantityUsed / item.quantityTotal) >= 1 ? '#ff4d4f' : '#1890ff'"
+                    [nzStrokeColor]="
+                      item.quantityUsed / item.quantityTotal >= 1
+                        ? '#ff4d4f'
+                        : '#1890ff'
+                    "
                   >
                   </nz-progress>
                 </div>
               </td>
               <!--     Scope  -->
               <td class="text-center">
-                <nz-tag [nzColor]="item.category === 'SYSTEM' ? 'purple' : 'cyan'">
-                  {{ item.category === 'SYSTEM' ? 'Hệ thống' : 'Chiến dịch' }}
+                <nz-tag
+                  [nzColor]="item.category === 'SYSTEM' ? 'purple' : 'cyan'"
+                >
+                  {{ item.category === "SYSTEM" ? "Hệ thống" : "Chiến dịch" }}
                 </nz-tag>
               </td>
               <!--     Status  -->
@@ -148,7 +177,7 @@
                       nzShape="circle"
                       (click)="openModal('view', item.id)"
                     >
-                      <nz-icon nzType="eye" nzTheme="twotone"/>
+                      <nz-icon nzType="eye" nzTheme="twotone" />
                     </button>
                     <button
                       nz-button
@@ -184,7 +213,12 @@
     </div>
   </app-loading>
   @if (voucherStore.error()) {
-    <nz-alert nzType="error" [nzMessage]="voucherStore.error()" nzShowIcon nzCloseable>
+    <nz-alert
+      nzType="error"
+      [nzMessage]="voucherStore.error()"
+      nzShowIcon
+      nzCloseable
+    >
     </nz-alert>
   }
 </div>

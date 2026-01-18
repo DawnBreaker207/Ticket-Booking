@@ -72,7 +72,6 @@ export class ArticleFormComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.form.valid);
     if (this.form.invalid) {
       Object.values(this.form.controls).forEach((control) => {
         if (control.invalid) {
