@@ -12,7 +12,7 @@
     class="h-16 flex items-center justify-center border-b border-gray-100 sticky top-0 bg-white z-10"
   >
     <a routerLink="/" class="flex items-center gap-2 text-decoration-none">
-      <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary" />
+      <nz-icon nzType="shop" nzTheme="fill" class="text-3xl text-primary"/>
       @if (!isCollapsed()) {
         <h1
           class="text-xl font-bold tracking-wide text-gray-800 m-0 animate-fade-in"
@@ -31,32 +31,37 @@
     [nzInlineCollapsed]="isCollapsed()"
   >
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/dashboard']">
-      <nz-icon nzType="dashboard" nzTheme="outline" />
+      <nz-icon nzType="dashboard" nzTheme="outline"/>
       <span>{{ "Thống Kê" | translate }}</span>
     </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/movie']">
-      <nz-icon nzType="video-camera" nzTheme="outline" />
+      <nz-icon nzType="video-camera" nzTheme="outline"/>
       <span>{{ "Phim" | translate }}</span>
     </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/theater']">
-      <nz-icon nzType="shop" nzTheme="outline" />
+      <nz-icon nzType="shop" nzTheme="outline"/>
       <span>{{ "Rạp Chiếu" | translate }}</span>
     </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/showtime']">
-      <nz-icon nzType="calendar" nzTheme="outline" />
+      <nz-icon nzType="calendar" nzTheme="outline"/>
       <span>{{ "Suất Chiếu" | translate }}</span>
     </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/reservation']">
-      <nz-icon nzType="ordered-list" nzTheme="outline" />
+      <nz-icon nzType="ordered-list" nzTheme="outline"/>
       <span>{{ "Vé đã đặt" | translate }}</span>
     </li>
+    <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/voucher']">
+      <nz-icon nzType="tags" nzTheme="outline"/>
+      <span>{{ "Voucher" | translate }}</span>
+    </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/user']">
-      <nz-icon nzType="user" nzTheme="outline" />
+      <nz-icon nzType="user" nzTheme="outline"/>
       <span>{{ "Người dùng" | translate }}</span>
     </li>
     <li nz-menu-item nzMatchRouterExact [routerLink]="['/admin/article']">
-      <nz-icon nzType="form" nzTheme="outline" />
+      <nz-icon nzType="form" nzTheme="outline"/>
       <span>{{ "Bài viết" | translate }}</span>
     </li>
+
   </ul>
 </nz-sider>
