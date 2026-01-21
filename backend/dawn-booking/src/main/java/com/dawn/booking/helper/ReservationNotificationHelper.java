@@ -1,16 +1,13 @@
 package com.dawn.booking.helper;
 
-import com.dawn.booking.dto.response.MovieDTO;
-import com.dawn.booking.dto.response.SeatDTO;
-import com.dawn.booking.dto.response.ShowtimeDTO;
-import com.dawn.booking.dto.response.UserDTO;
+import com.dawn.booking.dto.response.*;
 import com.dawn.booking.model.Reservation;
 import com.dawn.booking.service.MovieClientBookingService;
 import com.dawn.booking.service.ReservationRedisService;
 import com.dawn.booking.service.UserClientService;
 import com.dawn.common.core.constant.RabbitMQConstants;
 import com.dawn.common.core.dto.request.BookingNotificationEvent;
-import com.dawn.notification.service.NotificationService;
+import com.dawn.notification.service.SseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,9 +32,9 @@ public class ReservationNotificationHelper {
 
     private final UserClientService userService;
 
-    private final NotificationService notificationService;
-
     private final ReservationRedisService reservationRedisService;
+
+    private final SseService notificationService;
 
     public void handleNotification(Reservation reservation, ShowtimeDTO showtime, List<SeatDTO> seats) {
         try {
@@ -84,8 +81,8 @@ public class ReservationNotificationHelper {
         }
     }
 
-    public void getSeatHold(Long showtimeId, Long userId) {
-        List<Map<String, Object>> seatInfo = notificationService.getSeatSnapshot(showtimeId);
+    public void sendSeatHold(Long showtimeId, Long userId) {
+        List<SseDTO> seatInfo = reservationRedisService.getLockedSeatsByShowtime(showtimeId);
         Map<String, Object> event = Map.of(
                 "event", "SEAT_HOLD",
                 "showtimeId", showtimeId,
@@ -97,7 +94,7 @@ public class ReservationNotificationHelper {
     }
 
     public void getSeatRelease(Long showtimeId, Long userId) {
-        List<Map<String, Object>> seatInfo = notificationService.getSeatSnapshot(showtimeId);
+        List<SseDTO> seatInfo = reservationRedisService.getLockedSeatsByShowtime(showtimeId);
         Map<String, Object> event = Map.of(
                 "event", "SEAT_RELEASE",
                 "showtimeId", showtimeId,
@@ -105,6 +102,16 @@ public class ReservationNotificationHelper {
                 "seatIds", seatInfo
         );
         log.info("Get seat release: {}", event);
+        reservationRedisService.publishSeatEvent(showtimeId, event);
+    }
+
+    public void sendSeatRelease(Long showtimeId, List<Long> seatIds) {
+        Map<String, Object> event = Map.of(
+                "event", "SEAT_RELEASE",
+                "showtimeId", showtimeId,
+                "seatIds", seatIds
+        );
+        log.info("Publishing SEAT_RELEASE event: {}", event);
         reservationRedisService.publishSeatEvent(showtimeId, event);
     }
 }

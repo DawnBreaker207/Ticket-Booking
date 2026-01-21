@@ -3,19 +3,25 @@ package com.dawn.booking.service;
 import com.dawn.booking.dto.SeatLockFailure;
 import com.dawn.booking.dto.response.ReservationRedisDTO;
 import com.dawn.booking.dto.response.SeatDTO;
+import com.dawn.booking.dto.response.SseDTO;
 import com.dawn.common.core.constant.Message;
 import com.dawn.common.core.exception.wrapper.RedisStorageException;
 import com.dawn.common.core.exception.wrapper.ReservationExpiredException;
 import com.dawn.common.core.exception.wrapper.SeatUnavailableException;
 import com.dawn.common.core.helper.RedisKeyHelper;
+import com.dawn.common.infra.redis.service.RedisPublisher;
 import com.dawn.common.infra.redis.service.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,8 +33,11 @@ import java.util.stream.Collectors;
 public class ReservationRedisService {
 
     private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
+
     private final RedisService redisService;
+
     private final RedisPublisher redisPublisher;
+
     private final ObjectMapper mapper;
 
     //    Reservation data
@@ -78,11 +87,6 @@ public class ReservationRedisService {
         }
     }
 
-    public void releaseSeat(Long seatId) {
-        redisService.delete(RedisKeyHelper.seatLockKey(seatId));
-    }
-
-
     public Boolean deleteSeatLockIfOwner(Long seatId, String expectedOwner) {
         String key = RedisKeyHelper.seatLockKey(seatId);
         String current = (String) redisService.get(key);
@@ -108,24 +112,24 @@ public class ReservationRedisService {
     public List<Long> acquireSeatLock(List<Long> seatIds, List<SeatDTO> seats, String redisKey) {
         List<Long> successfulSeatIds = new ArrayList<>();
         List<SeatLockFailure> failures = new ArrayList<>();
-        //        Check seat in showtime was booked in redis
+        //  Check seat in showtime was booked in redis
         for (Long seatId : seatIds) {
-            //            Check seat lock in redis
+            //  Check seat lock in redis
             Boolean acquired = lockSeat(seatId, redisKey, HOLD_TIMEOUT);
-            //            Get owner of this seat
+            //  Get owner of this seat
             String owner = getSeatOwner(seatId);
             if (acquired) {
                 successfulSeatIds.add(seatId);
                 log.debug("Successfully locked seat {} for reservation {}", seatId, redisKey);
                 continue;
-                //                Check the right owner
+                //  Check the right owner
             }
             if (redisKey.equals(owner)) {
                 refreshSeatLockIfOwner(seatId, redisKey, HOLD_TIMEOUT);
                 log.debug("Refreshed existing lock for seat {} in reservation {}", seatId, redisKey);
                 successfulSeatIds.add(seatId);
             } else {
-                //                Check if the seat was hold by another owner
+                //  Check if the seat was hold by another owner
                 SeatDTO seat = seats
                         .stream()
                         .filter(s -> s
@@ -145,7 +149,7 @@ public class ReservationRedisService {
             rollbackLocks(successfulSeatIds, redisKey);
             String failedSeatMessage = failures
                     .stream()
-                    .map(f -> f.seatNumber() + " (hold by " + f.ownerReservationId() + ")")
+                    .map(f -> f.seatNumber() + " (held by " + f.ownerReservationId() + ")")
                     .collect(Collectors.joining((", ")));
             throw new SeatUnavailableException("Cannot hold seats. The following seats are currently hold by other users: " + failedSeatMessage);
         }
@@ -205,14 +209,6 @@ public class ReservationRedisService {
         log.info("ALl Redis locks verified for reservation {}", reservationId);
     }
 
-    public void removeOldSeatLocks(Collection<Long> oldSeatIds, Collection<Long> newSeatIds, String redisKey) {
-        for (Long oldSeatId : oldSeatIds) {
-            if (!newSeatIds.contains(oldSeatId)) {
-                deleteSeatLockIfOwner(oldSeatId, redisKey);
-            }
-        }
-    }
-
     public Long safeParseLong(String value, String fieldName) {
         try {
             return Long.parseLong(value);
@@ -243,12 +239,7 @@ public class ReservationRedisService {
     public void deleteSeatLocks(List<Long> seatIds, String reservationId) {
         String redisKey = RedisKeyHelper.reservationHoldKey(reservationId);
         for (Long seatId : seatIds) {
-            Boolean deleted = deleteSeatLockIfOwner(seatId, redisKey);
-            if (deleted) {
-                log.warn("Release lock for seat {} in", seatId);
-            } else {
-                log.warn("Seat {} lock not owned by this reservation, skip", seatId);
-            }
+            deleteSeatLockIfOwner(seatId, redisKey);
         }
         log.info("ALl Redis locks verified for reservation {}", redisKey);
     }
@@ -288,7 +279,7 @@ public class ReservationRedisService {
 
     public List<Long> parseSeatIdsFromReservationData(Map<Object, Object> reservationData) {
         try {
-            String currentSeatsJson = (String) reservationData.get("seats");
+            String currentSeatsJson = (String) reservationData.get("seatIds");
             log.info("Get current seat json: {}", currentSeatsJson);
             if (currentSeatsJson == null || currentSeatsJson.isEmpty()) {
                 return Collections.emptyList();
@@ -300,4 +291,55 @@ public class ReservationRedisService {
             throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
     }
+
+    public List<SseDTO> getLockedSeatsByShowtime(Long showtimeId) {
+        if (showtimeId == null) return Collections.emptyList();
+        List<SseDTO> seatState = new ArrayList<>();
+        String pattern = "seat:locked:*";
+
+        redisService.execute((RedisCallback<Void>) connection -> {
+            ScanOptions options = ScanOptions.scanOptions()
+                    .match(pattern)
+                    .count(500)
+                    .build();
+
+            try (Cursor<byte[]> cursor = connection.keyCommands().scan(options)) {
+                while (cursor.hasNext()) {
+                    String key = new String(cursor.next(), StandardCharsets.UTF_8);
+
+                    //     Take data from Redis
+                    Object rawValue = redisService.get(key);
+                    if (rawValue == null) continue;
+
+                    String reservationKey = rawValue.toString();
+                    String reservationId = reservationKey.substring(reservationKey.lastIndexOf(":") + 1);
+
+
+                    Map<Object, Object> reservationData = redisService.getHash(reservationKey);
+
+                    if (reservationData.isEmpty()) continue;
+
+                    String storedShowtimeId = (String) reservationData.get("showtimeId");
+
+                    if (!showtimeId.toString().equals(storedShowtimeId)) {
+                        continue;
+                    }
+
+                    Long seatId = Long.parseLong(key.substring(key.lastIndexOf(":") + 1));
+
+                    SseDTO initialState = SseDTO
+                            .builder()
+                            .seatId(seatId)
+                            .reservationId(reservationId)
+                            .build();
+
+                    seatState.add(initialState);
+                }
+            }
+            return null;
+        });
+
+        return seatState;
+    }
+
 }

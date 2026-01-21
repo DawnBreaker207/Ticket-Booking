@@ -6,7 +6,9 @@ import com.dawn.booking.dto.request.ReservationInitRequest;
 import com.dawn.booking.dto.request.ReservationUserRequest;
 import com.dawn.booking.dto.response.ReservationInitResponse;
 import com.dawn.booking.dto.response.ReservationResponse;
+import com.dawn.booking.dto.response.SseDTO;
 import com.dawn.booking.dto.response.UserReservationResponse;
+import com.dawn.booking.service.ReservationRedisService;
 import com.dawn.booking.service.ReservationService;
 import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.common.core.dto.response.ResponsePage;
@@ -16,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/reservation")
 @Tag(name = "Reservation", description = "Operations related to reservation")
@@ -23,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
 
     private final ReservationService reservationService;
+
+    private final ReservationRedisService redisService;
 
     @GetMapping("")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
@@ -46,8 +52,8 @@ public class ReservationController {
 
     @GetMapping("/{reservationId}/restore")
     @Operation(summary = "Restore a reservation", description = "Restore a reservation and return data")
-    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String reservationId){
-            return ResponseObject.success(reservationService.restoreReservation(reservationId));
+    public ResponseObject<ReservationInitResponse> restoreReservation(@PathVariable String reservationId) {
+        return ResponseObject.success(reservationService.restoreReservation(reservationId));
     }
 
     @PostMapping("/init")
@@ -80,4 +86,8 @@ public class ReservationController {
         return ResponseObject.success(null);
     }
 
+    @GetMapping("/showtimes/{showtimeId}/locked-seats")
+    public List<SseDTO> getLockedSeats(@PathVariable Long showtimeId) {
+        return redisService.getLockedSeatsByShowtime(showtimeId);
+    }
 }

@@ -180,12 +180,19 @@ public class ReservationServiceImpl implements ReservationService {
             Map<Object, Object> reservationData = reservationRedisService.getReservationData(reservationId);
             log.info("Get reservation redis from hold seat {}", reservationData);
             validateReservationOwnership(reservationData, reservationId, userId);
-
             validateShowtimeAndAvailability(showtimeId, seatIds.size());
 
             // Delete old seats in Redis
             List<Long> oldSeatIds = reservationRedisService.parseSeatIdsFromReservationData(reservationData);
-            reservationRedisService.removeOldSeatLocks(oldSeatIds, seatIds, redisKey);
+            List<Long> seatRelease = oldSeatIds
+                    .stream()
+                    .filter(id -> !seatIds.contains(id))
+                    .toList();
+            if (!seatRelease.isEmpty()) {
+                reservationRedisService.deleteSeatLocks(seatRelease, reservationId);
+                reservationNotificationHelper.sendSeatRelease(showtimeId, seatRelease);
+                log.info("Released seats {} for reservation {}", seatRelease, reservationId);
+            }
 
             //        Load seats from DB and validate
             List<SeatDTO> seats = seatService.findAllById(seatIds);
@@ -196,7 +203,7 @@ public class ReservationServiceImpl implements ReservationService {
             //        Update seat in redis
             reservationRedisService.updateReservationSeats(reservationId, seatIds);
 
-            reservationNotificationHelper.getSeatHold(showtimeId, userId);
+            reservationNotificationHelper.sendSeatHold(showtimeId, userId);
             success = true;
             log.info("Successfully hold {} seats with user id {} for reservation {}: {} ", seatIds.size(), userId, reservationId, seatIds);
         } finally {
