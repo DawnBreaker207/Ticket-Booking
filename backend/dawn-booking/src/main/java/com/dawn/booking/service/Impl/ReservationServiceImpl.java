@@ -19,7 +19,9 @@ import com.dawn.common.core.exception.wrapper.PermissionDeniedException;
 import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import com.dawn.common.core.exception.wrapper.SeatUnavailableException;
 import com.dawn.common.core.helper.RedisKeyHelper;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,23 +38,26 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReservationServiceImpl implements ReservationService {
 
-    private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
+    static Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
-    private final ReservationRepository reservationRepository;
+    ReservationRepository reservationRepository;
 
-    private final SeatClientService seatService;
+    SeatClientService seatService;
 
-    private final UserClientService userService;
+    UserClientService userService;
 
-    private final ShowtimeClientService showtimeService;
+    ShowtimeClientService showtimeService;
 
-    private final MovieClientBookingService movieService;
+    MovieClientBookingService movieService;
 
-    private final ReservationNotificationHelper reservationNotificationHelper;
+    ReservationNotificationHelper reservationNotificationHelper;
 
-    private final ReservationRedisService reservationRedisService;
+    ReservationRedisService reservationRedisService;
+
+    VoucherClientService voucherClientService;
 
     @Override
     public ResponsePage<UserReservationResponse> findByUser(ReservationUserRequest request, Pageable pageable) {
@@ -215,12 +220,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor = Exception.class)
     public ReservationResponse confirmReservation(String reservationId) {
         log.info("Confirming reservation: {}", reservationId);
-
         //        Get reservation from redis
         ReservationRedisDTO cachedData = reservationRedisService.getFromRedis(reservationId);
+        String voucherCode = cachedData.getVoucherCode();
+
         log.info("Get reservation from redis: {}", cachedData);
         UserDTO user = userService.findById(cachedData.getUserId());
         log.info("Get user from reservation {}", user);
@@ -237,7 +243,18 @@ public class ReservationServiceImpl implements ReservationService {
 
         log.info("All {} seats verified as available in DB for reservation {}", seatEntities.size(), reservationId);
         ShowtimeDTO showtime = showtimeService.findById(cachedData.getShowtimeId());
-        BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
+        BigDecimal originalAmount = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        BigDecimal total = originalAmount;
+
+        if (voucherCode != null && !voucherCode.isBlank()) {
+            voucherClientService.useVoucher(voucherCode);
+
+            VoucherDiscountDTO finalCalc = voucherClientService.calculateVoucher(voucherCode, originalAmount);
+
+            discountAmount = finalCalc.getDiscountAmount();
+            total = finalCalc.getFinalAmount();
+        }
 
         log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
 
@@ -247,12 +264,15 @@ public class ReservationServiceImpl implements ReservationService {
                 .userId(user.getUserId())
                 .showtimeId(showtime.getId())
                 .reservationStatus(ReservationStatus.CONFIRMED)
+                .originalAmount(originalAmount)
+                .discountAmount(discountAmount)
                 .totalAmount(total)
+                .voucherCode(voucherCode)
                 .isPaid(true)
                 .isDeleted(false)
                 .build();
 
-        Reservation savedReservation = reservationRepository.save(reservation);
+        Reservation savedReservation = reservationRepository.saveAndFlush(reservation);
 
         updateSeatsAndShowtime(seatEntities, savedReservation);
 
@@ -265,52 +285,71 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public VoucherDiscountDTO applyVoucher(String reservationId, String code) {
+        ReservationRedisDTO redisData = reservationRedisService.getFromRedis(reservationId);
+
+        ShowtimeDTO showtime = showtimeService.findById(redisData.getShowtimeId());
+        BigDecimal seatTotal = showtime.getPrice().multiply(BigDecimal.valueOf(redisData.getSeatsIds().size()));
+
+        VoucherDiscountDTO discount = voucherClientService.calculateVoucher(code, seatTotal);
+
+        redisData.setVoucherCode(code);
+        reservationRedisService.saveVoucher(redisData);
+
+        return discount;
+    }
+
+    @Override
     @Transactional
     public void cancelReservation(String reservationId) {
-        log.info("Cancel reservation {}", reservationId);
+        log.info("Processing cancellation tracking for: {}", reservationId);
 
         //        Get reservation id from redis
         ReservationRedisDTO cachedData = reservationRedisService.getFromRedis(reservationId);
         log.info("Get reservation from redis: {}", cachedData);
-        UserDTO user = userService.findById(cachedData.getUserId());
-        log.info("Get user from reservation {}", user);
+
 
         //      Load seats from DB
         List<Long> seatIds = cachedData.getSeatsIds();
         if (seatIds != null && !seatIds.isEmpty()) {
             reservationRedisService.deleteSeatLocks(seatIds, reservationId);
+        } else {
+            reservationRedisService.deleteReservation(reservationId);
+            log.info("Remove reservation hold key {}", reservationId);
+            return;
         }
-        //        Take seat from request
-        List<SeatDTO> seatEntities = seatService.findByIdWithLock(seatIds);
+
         //        Create reservation to save
         ShowtimeDTO showtime = showtimeService.findById(cachedData.getShowtimeId());
 
+        BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatIds.size()));
+        log.info("Calculated total amount: {} for {} seats", total, seatIds.size());
 
-        BigDecimal total = showtime.getPrice().multiply(BigDecimal.valueOf(seatEntities.size()));
-        log.info("Calculated total amount: {} for {} seats", total, seatEntities.size());
+        String intendedVoucher = cachedData.getVoucherCode();
 
 
         Reservation reservation = Reservation
                 .builder()
                 .id(reservationId)
-                .userId(user.getUserId())
+                .userId(cachedData.getUserId())
                 .showtimeId(showtime.getId())
                 .reservationStatus(ReservationStatus.CANCELED)
+                .originalAmount(total)
                 .totalAmount(total)
+                .voucherCode(intendedVoucher)
                 .isPaid(false)
                 .isDeleted(false)
                 .build();
 
         reservationRepository.save(reservation);
-        log.info("Updated reservation {} status to FAILED", reservationId);
+        log.info("Saved PAYMENT_FAILED log to DB for tracking: {}", reservationId);
+
 
         reservationRedisService.deleteReservation(reservationId);
-        log.info("Remove reservation hold key {}", reservationId);
-
-        reservationNotificationHelper.getSeatRelease(showtime.getId(), user.getUserId());
-        log.info("Published seat release event for showtime {}: {}", showtime.getId(), seatIds);
-
         log.info("Cancelled reservation hold {} successfully", reservationId);
+
+        reservationNotificationHelper.getSeatRelease(showtime.getId(), cachedData.getUserId());
+        log.info("Published seat release event for showtime {}: {}", showtime.getId(), seatIds);
     }
 
     private void validateSeatsForReservation(List<SeatDTO> seats, Long showtimeId, List<Long> seatIds) {

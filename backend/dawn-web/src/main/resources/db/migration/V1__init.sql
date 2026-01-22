@@ -116,15 +116,19 @@ CREATE TABLE IF NOT EXISTS showtime
 
 CREATE TABLE IF NOT EXISTS reservation
 (
-    id           VARCHAR(50)    NOT NULL PRIMARY KEY,
-    user_id      BIGINT         NOT NULL,
-    showtime_id  BIGINT         NOT NULL,
-    status       ENUM ('CONFIRMED','CANCELED'),
-    total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    is_paid      BOOLEAN                 DEFAULT FALSE,
-    is_deleted   BOOLEAN                 DEFAULT FALSE,
-    created_at   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id              VARCHAR(50)    NOT NULL PRIMARY KEY,
+    user_id         BIGINT         NOT NULL,
+    showtime_id     BIGINT         NOT NULL,
+    status          ENUM ('CONFIRMED','CANCELED'),
+    total_amount    DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    # Voucher
+    voucher_code    VARCHAR(50)    NULL COMMENT 'Voucher Used',
+    original_amount DECIMAL(10, 2)          DEFAULT 0 COMMENT 'Total Original',
+    discount_amount DECIMAL(10, 2)          DEFAULT 0 COMMENT 'Total Discount',
+    is_paid         BOOLEAN                 DEFAULT FALSE,
+    is_deleted      BOOLEAN                 DEFAULT FALSE,
+    created_at      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_reservation_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_reservation_showtime FOREIGN KEY (showtime_id) REFERENCES showtime (id) ON DELETE CASCADE,
     INDEX idx_user_id (user_id),

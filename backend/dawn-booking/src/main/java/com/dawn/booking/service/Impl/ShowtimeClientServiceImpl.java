@@ -5,7 +5,10 @@ import com.dawn.booking.service.ShowtimeClientService;
 import com.dawn.common.core.constant.Message;
 import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,18 +19,22 @@ import org.springframework.web.client.RestClient;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ShowtimeClientServiceImpl implements ShowtimeClientService {
 
-    private final RestClient restClient;
+    RestClient restClient;
+
     @Value("${service.url.base}")
-    private String url;
+    @NonFinal
+    String url;
 
     @Override
     public ShowtimeDTO findById(Long id) {
         ResponseObject<ShowtimeDTO> response = restClient
                 .get()
                 .uri(url + "/showtime/{id}", id)
-                .retrieve().onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
                     throw new ResourceNotFoundException(Message.Exception.SHOWTIME_NOT_FOUND);
                 })
                 .body(new ParameterizedTypeReference<>() {

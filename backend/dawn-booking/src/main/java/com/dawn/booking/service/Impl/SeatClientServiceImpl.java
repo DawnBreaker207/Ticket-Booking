@@ -5,7 +5,10 @@ import com.dawn.booking.service.SeatClientService;
 import com.dawn.common.core.constant.Message;
 import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
@@ -17,12 +20,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class SeatClientServiceImpl implements SeatClientService {
 
-    private final RestClient restClient;
+    RestClient restClient;
 
     @Value("${service.url.base}")
-    private String url;
+    @NonFinal
+    String url;
 
     @Override
     public List<SeatDTO> findByIdWithLock(List<Long> seatIds) {

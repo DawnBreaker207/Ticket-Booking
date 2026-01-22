@@ -6,7 +6,10 @@ import com.dawn.booking.service.UserClientService;
 import com.dawn.common.core.constant.Message;
 import com.dawn.common.core.dto.response.ResponseObject;
 import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,12 +20,14 @@ import org.springframework.web.client.RestClient;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserClientServiceImpl implements UserClientService {
 
-    private final RestClient restClient;
+    RestClient restClient;
 
     @Value("${service.url.base}")
-    private String url;
+    @NonFinal
+    String url;
 
     @Override
     public boolean existsByRolesName(String roleName) {

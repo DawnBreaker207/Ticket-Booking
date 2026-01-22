@@ -8,7 +8,9 @@ import com.dawn.booking.service.UserClientService;
 import com.dawn.common.core.constant.RabbitMQConstants;
 import com.dawn.common.core.dto.request.BookingNotificationEvent;
 import com.dawn.notification.service.SseService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -24,17 +26,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Component
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReservationNotificationHelper {
 
-    private final RabbitTemplate rabbitTemplate;
+    RabbitTemplate rabbitTemplate;
 
-    private final MovieClientBookingService movieService;
+    MovieClientBookingService movieService;
 
-    private final UserClientService userService;
+    UserClientService userService;
 
-    private final ReservationRedisService reservationRedisService;
-
-    private final SseService notificationService;
+    ReservationRedisService reservationRedisService;
 
     public void handleNotification(Reservation reservation, ShowtimeDTO showtime, List<SeatDTO> seats) {
         try {

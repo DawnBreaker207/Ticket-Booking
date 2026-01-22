@@ -14,13 +14,16 @@ import com.dawn.common.infra.redis.service.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
@@ -30,15 +33,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReservationRedisService {
 
-    private static final Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
+    static Duration HOLD_TIMEOUT = Duration.ofMinutes(15);
 
-    private final RedisService redisService;
+    RedisService redisService;
 
-    private final RedisPublisher redisPublisher;
+    RedisPublisher redisPublisher;
 
-    private final ObjectMapper mapper;
+    ObjectMapper mapper;
 
     //    Reservation data
     public void saveReservationInit(String reservationId, Map<String, String> data, Duration ttl) {
@@ -57,7 +61,12 @@ public class ReservationRedisService {
     public void updateReservationSeats(String reservationId, List<Long> seats) {
         try {
             String key = RedisKeyHelper.reservationHoldKey(reservationId);
-            redisService.put(key, "seatIds", mapper.writeValueAsString(seats));
+            Map<String, String> updates = new HashMap<>();
+
+            updates.put("seatIds", mapper.writeValueAsString(seats));
+            updates.put("voucherCode", "");
+
+            redisService.putHash(key, updates, HOLD_TIMEOUT);
             log.info("Updated seats to redis success");
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize seats for reservation {}: {}", reservationId, e.getMessage(), e);
@@ -256,6 +265,14 @@ public class ReservationRedisService {
         Long userId = safeParseLong((String) data.get("userId"), "userId");
         Long showtimeId = safeParseLong((String) data.get("showtimeId"), "showtimeId");
         Long theaterId = safeParseLong((String) data.get("theaterId"), "theaterId");
+
+        String voucherCode = (String) data.get("voucherCode");
+        BigDecimal tempFinal = null;
+        String tempFinalStr = (String) data.get("tempFinalAmount");
+        if (tempFinalStr != null) {
+            tempFinal = new BigDecimal(tempFinalStr);
+        }
+
         List<Long> seatIds = Collections.emptyList();
         try {
             String seatJson = (String) data.get("seatIds");
@@ -274,6 +291,7 @@ public class ReservationRedisService {
                 .showtimeId(showtimeId)
                 .theaterId(theaterId)
                 .seatsIds(seatIds)
+                .voucherCode(voucherCode)
                 .build();
     }
 
@@ -290,6 +308,25 @@ public class ReservationRedisService {
             log.error(e.getMessage());
             throw new RedisStorageException("Info in redis not exists or error when getting that");
         }
+    }
+
+    public void saveVoucher(ReservationRedisDTO data) {
+        String key = RedisKeyHelper.reservationHoldKey(data.getId());
+
+        Map<String, String> updates = new HashMap<>();
+
+        if (data.getVoucherCode() != null) {
+            updates.put("voucherCode", data.getVoucherCode());
+        }
+
+        try {
+            updates.put("seatIds", mapper.writeValueAsString(data.getSeatsIds()));
+        } catch (JsonProcessingException e) {
+            log.error("Serialize seat ids failed", e);
+        }
+
+        redisService.putHash(key, updates, HOLD_TIMEOUT);
+        log.info("Updated Redis for reservation {}: Voucher={}, TTL Reset", data.getId(), data.getVoucherCode());
     }
 
     public List<SseDTO> getLockedSeatsByShowtime(Long showtimeId) {
