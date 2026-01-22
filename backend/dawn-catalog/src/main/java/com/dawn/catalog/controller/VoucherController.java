@@ -55,6 +55,18 @@ public class VoucherController {
         return ResponseObject.success(voucherService.update(id, req));
     }
 
+    @PostMapping("/use")
+    public ResponseObject<Void> applyVoucher(@RequestParam(name = "code") String code) {
+        voucherService.useVoucher(code);
+        return ResponseObject.success(null);
+    }
+
+    @PostMapping("/release")
+    public ResponseObject<Void> releaseVoucher(@RequestParam(name = "code") String code) {
+        voucherService.releaseVoucher(code);
+        return ResponseObject.success(null);
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete voucher")
     public ResponseObject<Void> delete(@PathVariable Long id) {

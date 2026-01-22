@@ -1,4 +1,4 @@
-package com.dawn.catalog.dto.response;
+package com.dawn.booking.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,10 +8,10 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder
-public class VoucherCalculation {
+@NoArgsConstructor
+@AllArgsConstructor
+public class VoucherDiscountDTO {
 
     private String code;
 

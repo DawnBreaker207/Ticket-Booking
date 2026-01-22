@@ -12,6 +12,7 @@ import com.dawn.common.core.dto.response.ResponsePage;
 import com.dawn.common.core.exception.wrapper.ResourceAlreadyExistedException;
 import com.dawn.common.core.exception.wrapper.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService {
@@ -95,6 +95,7 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     @Transactional
     public void useVoucher(String code) {
+        log.info("User voucher: {}", code);
         int updated = voucherRepository.useVoucher(code, Instant.now());
         if (updated == 0) {
             throw new ResourceNotFoundException("Voucher usage failed (Expired/No Stock)");
@@ -108,40 +109,59 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VoucherCalculation calculate(String code, BigDecimal total) {
+        log.info("Calculate voucher with code: {} and total: {}", code, total);
         Voucher voucher = voucherRepository
                 .findByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Voucher Invalid"));
-        Instant now = Instant.now();
-        if (!Boolean.TRUE.equals(voucher.getIsActive())) throw new ResourceNotFoundException("Voucher inactive");
-        if (now.isBefore(voucher.getStartAt())) throw new ResourceNotFoundException("Not started yet");
-        if (now.isAfter(voucher.getEndAt())) throw new ResourceNotFoundException("Expired");
-        if (voucher.getQuantityUsed() >= voucher.getQuantityTotal())
-            throw new ResourceNotFoundException("Out of stock");
 
-        if (total.compareTo(BigDecimal.valueOf(voucher.getMinOrderValue())) < 0) {
-            throw new ResourceNotFoundException("Order total is less than minimum requirement");
-        }
-
-        BigDecimal discount;
-        if (voucher.getDiscountType() == DiscountType.FIXED) {
-            discount = BigDecimal.valueOf(voucher.getDiscountValue());
-        } else {
-            discount = total
-                    .multiply(BigDecimal.valueOf(voucher.getDiscountValue()))
-                    .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP);
-            if (voucher.getMaxDiscountAmount() != null) {
-                discount = discount.min(BigDecimal.valueOf(voucher.getMaxDiscountAmount()));
-            }
-        }
-
-        discount = discount.min(total);
+        validateVoucher(voucher, total);
+        BigDecimal discountAmount = computeDiscount(voucher, total);
+        log.info("Discount amount: {}", discountAmount);
+        BigDecimal finalAmount = total.subtract(discountAmount).max(BigDecimal.ZERO);
 
         return VoucherCalculation
                 .builder()
                 .code(voucher.getCode())
-                .discountAmount(discount)
-                .finalAmount(total.subtract(discount))
+                .originalAmount(total)
+                .discountAmount(discountAmount)
+                .finalAmount(finalAmount)
                 .build();
+    }
+
+    private void validateVoucher(Voucher voucher, BigDecimal value) {
+        Instant now = Instant.now();
+        if (!Boolean.TRUE.equals(voucher.getIsActive())) throw new ResourceNotFoundException("Voucher inactive");
+
+        if (now.isBefore(voucher.getStartAt())) throw new ResourceNotFoundException("Not started yet");
+
+        if (now.isAfter(voucher.getEndAt())) throw new ResourceNotFoundException("Expired");
+
+        if (voucher.getQuantityUsed() >= voucher.getQuantityTotal())
+            throw new ResourceNotFoundException("Out of stock");
+
+        if (value.compareTo(BigDecimal.valueOf(voucher.getMinOrderValue())) < 0) {
+            throw new ResourceNotFoundException("Order total is less than minimum requirement");
+        }
+    }
+
+
+    private BigDecimal computeDiscount(Voucher voucher, BigDecimal value) {
+        BigDecimal discount;
+
+        if (voucher.getDiscountType() == DiscountType.FIXED) {
+            discount = BigDecimal.valueOf(voucher.getDiscountValue());
+        } else {
+            discount = value
+                    .multiply(BigDecimal.valueOf(voucher.getDiscountValue()))
+                    .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP);
+            if (voucher.getMaxDiscountAmount() != null) {
+                BigDecimal maxDiscount = discount.min(BigDecimal.valueOf(voucher.getMaxDiscountAmount()));
+                discount = discount.min(maxDiscount);
+            }
+        }
+
+        return discount.min(value);
     }
 }

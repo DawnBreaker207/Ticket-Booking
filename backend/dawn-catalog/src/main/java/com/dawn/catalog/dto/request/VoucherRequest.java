@@ -22,7 +22,6 @@ public class VoucherRequest {
 
     private String code;
 
-
     private Long quantityTotal;
 
     @Enumerated(EnumType.STRING)
